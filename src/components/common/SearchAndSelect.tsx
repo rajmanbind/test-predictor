@@ -1,0 +1,293 @@
+import useOutsideClick from "@/hooks/useOutsideClick"
+import { IOption } from "@/types/GlobalTypes"
+import { ICommonComponentProps } from "@/types/GlobalTypes"
+import { cn, debounce, isEmpty } from "@/utils/utils"
+import { Info } from "lucide-react"
+import React, { SetStateAction, useEffect, useRef, useState } from "react"
+import { Controller, FieldError } from "react-hook-form"
+import { v4 as uuidv4 } from "uuid"
+
+import { SmallSpinner } from "./SmallSpinner"
+
+interface SearchAndSelectProps extends ICommonComponentProps {
+  className?: string
+  options: IOption[]
+  value: IOption | undefined
+  onChange: ({
+    name,
+    selectedValue,
+  }: {
+    name: string
+    selectedValue: IOption
+  }) => void
+  listClass?: string
+  listOptionClass?: string
+  onInputClear?: () => void
+  displayIdToo?: boolean
+  minInputLengthToCallAPI?: number
+  debounceDelay?: number
+  forceRequired?: boolean
+  searchAPI: (
+    text: string,
+    setListOptions: React.Dispatch<SetStateAction<IOption[]>>,
+  ) => void
+}
+
+export const SearchAndSelect = ({
+  name,
+  className,
+  errors,
+  required,
+  label,
+  labelHint,
+  labelTooltipIcon,
+  options,
+  onChange,
+  control,
+  value,
+  placeholder = "Start Typing...",
+  onInputClear,
+  minInputLengthToCallAPI = 0,
+  debounceDelay = 500,
+  searchAPI,
+  defaultOption,
+  setValue,
+  ...props
+}: SearchAndSelectProps) => {
+  const [input, setInput] = useState(defaultOption ? defaultOption.text : "")
+  const [optionListOpen, setOptionListOpen] = useState(false)
+  const [selectedValue, setSelectedValue] = useState<IOption>()
+  const [listOptions, setListOptions] = useState(options)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const internalRef = useRef(null)
+
+  useOutsideClick(internalRef, () => {
+    if (isLoading) return
+
+    if (selectedValue?.text !== input || defaultOption?.text !== input) {
+      let textValue = ""
+
+      if (selectedValue?.text && !isEmpty(input)) {
+        textValue = selectedValue?.text
+      } else {
+        textValue = defaultOption?.text ? defaultOption?.text : ""
+      }
+
+      setInput(textValue)
+    }
+
+    setOptionListOpen(false)
+  })
+
+  useEffect(() => {
+    if (!isEmpty(input) && input?.length >= minInputLengthToCallAPI) {
+      setIsLoading(true)
+    }
+  }, [input, optionListOpen])
+
+  useEffect(() => {
+    setIsLoading(false)
+  }, [listOptions])
+
+  useEffect(() => {
+    if (defaultOption?.text) {
+      setValue(name, defaultOption)
+      setInput(defaultOption.text)
+    }
+  }, [defaultOption])
+
+  function isRequired() {
+    return (required && !props?.disabled) || props?.forceRequired ? "*" : ""
+  }
+
+  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e?.target?.value
+
+    setInput(value)
+
+    if (value?.trim() === "") {
+      onInputClear?.()
+      return
+    }
+
+    if (value?.length >= minInputLengthToCallAPI) {
+      setOptionListOpen(true)
+      debounce(searchAPI, debounceDelay)(value, setListOptions)
+    }
+  }
+
+  function onOptionSelected(option: IOption, fieldOnChange: any) {
+    onChange({ name, selectedValue: option })
+    setSelectedValue(option)
+    setInput(option.text)
+    setOptionListOpen(false)
+    fieldOnChange(option)
+  }
+
+  function isRulesRequired() {
+    if (props?.forceRequired) {
+      return true
+    }
+
+    return props?.disabled ? false : required
+  }
+
+  const error = errors?.[name] as FieldError | undefined
+
+  return (
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required: isRulesRequired() }}
+      render={({ field }) => {
+        return (
+          <div className={cn("text-color-text", props?.wrapperClass)}>
+            <div className="flex items-baseline gap-2">
+              <label className="text-lg mb-[6px] block font-semibold">
+                {isRequired() + label}
+              </label>
+
+              {labelHint}
+              {labelTooltipIcon}
+            </div>
+
+            <div
+              className={cn(
+                "relative flex justify-between items-center gap-2 w-full",
+                "componentsBox",
+                error && "border-red-500",
+                props?.disabled
+                  ? "bg-[#DCE5DD] border border-[#CCCCCC] cursor-not-allowed"
+                  : "",
+                props?.boxWrapperClass,
+              )}
+              ref={internalRef}
+            >
+              <input
+                name={name}
+                className={cn(
+                  "flex placeholder:text-mane-primary-dark-color focus:outline-none focus-visible:outline-none disabled:bg-[#DCE5DD] disabled:cursor-not-allowed",
+                  "bg-color-white_black w-full font-[400] text-[14px]",
+                  className,
+                )}
+                ref={field.ref}
+                value={input}
+                onChange={onInputChange}
+                placeholder={placeholder}
+                disabled={props?.disabled}
+                onFocus={() => {
+                  if (input?.length >= minInputLengthToCallAPI) {
+                    setOptionListOpen(true)
+                    debounce(searchAPI, debounceDelay)(input, setListOptions)
+                  }
+                }}
+              />
+
+              {error && <Info className="flex-shrink-0 text-red-500" />}
+
+              {optionListOpen && (
+                <ListOptions
+                  options={listOptions}
+                  selectedValue={selectedValue}
+                  fieldOnChange={field.onChange}
+                  inputValue={input}
+                  isLoading={isLoading}
+                  onOptionSelected={onOptionSelected}
+                  minInputLengthToCallAPI={minInputLengthToCallAPI}
+                  displayIdToo={props?.displayIdToo}
+                  listOptionClass={props?.listOptionClass}
+                />
+              )}
+            </div>
+
+            {error && (
+              <p
+                className={cn(
+                  "text-sm mt-1 text-red-500 font-normal",
+                  props?.errorClass,
+                )}
+              >
+                {error?.message ? error?.message : `${label} is required!`}
+              </p>
+            )}
+          </div>
+        )
+      }}
+    />
+  )
+}
+
+export default SearchAndSelect
+
+interface ListOptionsProps {
+  selectedValue: IOption | undefined
+  options: IOption[]
+  onOptionSelected: (option: IOption, fieldOnChange: any) => void
+  inputValue: string
+  isLoading: boolean
+  fieldOnChange: any
+  minInputLengthToCallAPI: number
+  displayIdToo?: boolean
+  listOptionClass?: string
+}
+
+function ListOptions({
+  options,
+  selectedValue,
+  onOptionSelected,
+  inputValue,
+  isLoading,
+  fieldOnChange,
+  displayIdToo,
+  minInputLengthToCallAPI,
+  listOptionClass,
+}: ListOptionsProps) {
+  return (
+    <>
+      {!isEmpty(inputValue) && inputValue?.length >= minInputLengthToCallAPI ? (
+        <div
+          className={cn(
+            "w-full absolute top-full translate-y-[1px] left-0 z-[999] overflow-auto",
+            "max-h-52",
+            "bg-color-form-background border border-color-border rounded-sm",
+            listOptionClass,
+          )}
+        >
+          {!isLoading &&
+            options?.map((option) => (
+              <div
+                key={uuidv4()}
+                className={cn(
+                  "cursor-pointer items-center gap-2 select-none text-color-text group hover:bg-mane-primary-color hover:text-color-accent w-full",
+                )}
+                onClick={() => onOptionSelected(option, fieldOnChange)}
+              >
+                <p className="text-xs font-semibold py-2 px-7">{option.text}</p>
+                {displayIdToo && (
+                  <p
+                    className={cn(
+                      "text-xs px-7 text-[#8A8A8A] -mt-1 pb-2 group-hover:text-white/80",
+                    )}
+                  >
+                    {option?.id}
+                  </p>
+                )}
+              </div>
+            ))}
+
+          {options?.length === 0 && !isLoading && (
+            <p className="text-xs font-semibold py-3 px-7">No results...</p>
+          )}
+
+          {isLoading && (
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold py-3 px-7">Loading...</p>
+              <SmallSpinner />
+            </div>
+          )}
+        </div>
+      ) : null}
+    </>
+  )
+}

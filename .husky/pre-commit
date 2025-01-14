@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo " "
+echo "⏳ Formatting Code and Sorting Imports [Please wait...]"
+
+npx prettier --write . --log-level warn
+git add .
+
+echo " "
+echo "✅ Code Formatted and Imports Sorted..."
+echo " "

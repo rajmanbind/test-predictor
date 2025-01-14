@@ -1,0 +1,13 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo " "
+echo "⏳ Running build test before pushing [Please wait...]"
+if ! npm run build; then
+  echo "❌ Build failed. Push aborted. [Please fix this before pushing...]"
+  exit 1
+fi
+
+echo " "
+echo "🎉 Build succeeded! Preparing to push..."
+echo " "

@@ -5,7 +5,7 @@ import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { IOption } from "@/types/GlobalTypes"
-import { states } from "@/utils/static"
+import { categories, courses, states } from "@/utils/static"
 import { onOptionSelected, onTextFieldChange } from "@/utils/utils"
 import { SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form"
 interface IFormData {
   rank?: number | string
   state?: IOption
-  course?: IOption
+  courses?: IOption
 }
 
 export function CollegePredictorForm() {
@@ -42,6 +42,27 @@ export function CollegePredictorForm() {
       ),
     )
   }
+  function autoCompleteCourses(
+    text: string,
+    setOptions: React.Dispatch<SetStateAction<IOption[]>>,
+  ) {
+    setOptions(
+      courses.filter((st) =>
+        st?.text?.toLowerCase().includes(text.toLowerCase()),
+      ),
+    )
+  }
+
+  function autoCompleteCategory(
+    text: string,
+    setOptions: React.Dispatch<SetStateAction<IOption[]>>,
+  ) {
+    setOptions(
+      categories.filter((st) =>
+        st?.text?.toLowerCase().includes(text.toLowerCase()),
+      ),
+    )
+  }
 
   return (
     <Card className="tab:mx-16">
@@ -64,6 +85,7 @@ export function CollegePredictorForm() {
         <SearchAndSelect
           name="state"
           label="State"
+          placeholder="Search and Select"
           value={formData?.state}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
@@ -77,9 +99,10 @@ export function CollegePredictorForm() {
         />
 
         <SearchAndSelect
-          name="course"
+          name="courses"
           label="Course"
-          value={formData?.course}
+          placeholder="Search and Select"
+          value={formData?.courses}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
           }}
@@ -87,7 +110,22 @@ export function CollegePredictorForm() {
           setValue={setValue}
           options={[]}
           debounceDelay={0}
-          searchAPI={autoCompleteStates}
+          searchAPI={autoCompleteCourses}
+          errors={errors}
+        />
+        <SearchAndSelect
+          name="category"
+          label="Category"
+          placeholder="Search and Select"
+          value={formData?.courses}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+          }}
+          control={control}
+          setValue={setValue}
+          options={[]}
+          debounceDelay={0}
+          searchAPI={autoCompleteCategory}
           errors={errors}
         />
 

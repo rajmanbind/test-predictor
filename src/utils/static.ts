@@ -36,3 +36,23 @@ export const states = [
   { id: 34, text: "Lakshadweep" },
   { id: 35, text: "Puducherry" },
 ]
+export const courses = [
+  { id: 0, text: "MBBS" },
+  { id: 1, text: "BDS" },
+  { id: 1, text: "BSc Nursing" },
+]
+
+export const categories = [
+  { id: 0, text: "General" },
+  { id: 1, text: "General-EWS" },
+  { id: 2, text: "EWS" },
+  { id: 3, text: "EWS-PwD" },
+  { id: 4, text: "OBC" },
+  { id: 5, text: "OBC-PwD" },
+  { id: 6, text: "Open" },
+  { id: 7, text: "Open-PwD" },
+  { id: 8, text: "SC" },
+  { id: 9, text: "SC-PwD" },
+  { id: 10, text: "ST" },
+  { id: 11, text: "ST-PwD" },
+]

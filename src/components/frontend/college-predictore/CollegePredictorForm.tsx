@@ -14,6 +14,7 @@ interface IFormData {
   rank?: number | string
   state?: IOption
   courses?: IOption
+  categories?: IOption
 }
 
 export function CollegePredictorForm() {
@@ -32,34 +33,14 @@ export function CollegePredictorForm() {
 
   function onSubmit() {}
 
-  function autoCompleteStates(
+  function autoComplete(
     text: string,
+    data: IOption[],
     setOptions: React.Dispatch<SetStateAction<IOption[]>>,
   ) {
     setOptions(
-      states.filter((st) =>
-        st?.text?.toLowerCase().includes(text.toLowerCase()),
-      ),
-    )
-  }
-  function autoCompleteCourses(
-    text: string,
-    setOptions: React.Dispatch<SetStateAction<IOption[]>>,
-  ) {
-    setOptions(
-      courses.filter((st) =>
-        st?.text?.toLowerCase().includes(text.toLowerCase()),
-      ),
-    )
-  }
-
-  function autoCompleteCategory(
-    text: string,
-    setOptions: React.Dispatch<SetStateAction<IOption[]>>,
-  ) {
-    setOptions(
-      categories.filter((st) =>
-        st?.text?.toLowerCase().includes(text.toLowerCase()),
+      data.filter((item) =>
+        item?.text?.toLowerCase().includes(text.toLowerCase()),
       ),
     )
   }
@@ -94,7 +75,9 @@ export function CollegePredictorForm() {
           setValue={setValue}
           options={[]}
           debounceDelay={0}
-          searchAPI={autoCompleteStates}
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, states, setOptions)
+          }
           errors={errors}
         />
 
@@ -110,14 +93,16 @@ export function CollegePredictorForm() {
           setValue={setValue}
           options={[]}
           debounceDelay={0}
-          searchAPI={autoCompleteCourses}
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, courses, setOptions)
+          }
           errors={errors}
         />
         <SearchAndSelect
           name="category"
           label="Category"
           placeholder="Search and Select"
-          value={formData?.courses}
+          value={formData?.categories}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
           }}
@@ -125,7 +110,9 @@ export function CollegePredictorForm() {
           setValue={setValue}
           options={[]}
           debounceDelay={0}
-          searchAPI={autoCompleteCategory}
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, categories, setOptions)
+          }
           errors={errors}
         />
 

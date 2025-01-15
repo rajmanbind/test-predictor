@@ -39,7 +39,7 @@ export const states = [
 export const courses = [
   { id: 0, text: "MBBS" },
   { id: 1, text: "BDS" },
-  { id: 1, text: "BSc Nursing" },
+  { id: 2, text: "BSc Nursing" },
 ]
 
 export const categories = [

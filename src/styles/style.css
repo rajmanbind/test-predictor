@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------------------------------- */
+
+/* Reusable Global Styles */
+@layer components {
+  .componentsBox {
+    @apply w-full border border-color-border bg-color-white_black rounded px-4 py-3;
+  }
+
+  .defaultTextStyles {
+    @apply text-color-text font-semibold text-base;
+  }
+}
+
+@keyframes bubble-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 200vw;
+    height: 200vw;
+    opacity: 0.8;
+  }
+}
+
+.animate-bubble-expand {
+  animation: bubble-expand 0.7s ease-in-out forwards;
+}

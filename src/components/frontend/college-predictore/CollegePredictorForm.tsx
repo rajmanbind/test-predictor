@@ -6,22 +6,24 @@ import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { IOption } from "@/types/GlobalTypes"
 import { categories, courses, states } from "@/utils/static"
-import { onOptionSelected, onTextFieldChange } from "@/utils/utils"
-import { SetStateAction, useState } from "react"
+import {
+  autoComplete,
+  isEmpty,
+  onOptionSelected,
+  onTextFieldChange,
+} from "@/utils/utils"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IFormData {
   rank?: number | string
   state?: IOption
   courses?: IOption
-  categories?: IOption
+  category?: IOption
 }
 
 export function CollegePredictorForm() {
-  const [formData, setFormData] = useState<IFormData>({
-    rank: "",
-  })
-
   const {
     handleSubmit,
     control,
@@ -31,17 +33,29 @@ export function CollegePredictorForm() {
     shouldFocusError: true,
   })
 
-  function onSubmit() {}
+  const [formData, setFormData] = useState<IFormData>({
+    rank: "",
+  })
 
-  function autoComplete(
-    text: string,
-    data: IOption[],
-    setOptions: React.Dispatch<SetStateAction<IOption[]>>,
-  ) {
-    setOptions(
-      data.filter((item) =>
-        item?.text?.toLowerCase().includes(text.toLowerCase()),
-      ),
+  const router = useRouter()
+
+  function onSubmit() {
+    const searchParams = new URLSearchParams()
+
+    searchParams.set("rank", formData?.rank?.toString() || "")
+    searchParams.set("state", formData?.state?.text || "")
+    searchParams.set("courses", formData?.courses?.text || "")
+    searchParams.set("category", formData?.category?.text || "")
+
+    router.push(`/results?${searchParams.toString()}`)
+  }
+
+  function disableCheck() {
+    return (
+      isEmpty(formData?.rank) ||
+      isEmpty(formData?.state?.text) ||
+      isEmpty(formData?.courses?.text) ||
+      isEmpty(formData?.category?.text)
     )
   }
 
@@ -73,7 +87,7 @@ export function CollegePredictorForm() {
           }}
           control={control}
           setValue={setValue}
-          options={[]}
+          options={states}
           debounceDelay={0}
           searchAPI={(text, setOptions) =>
             autoComplete(text, states, setOptions)
@@ -91,7 +105,7 @@ export function CollegePredictorForm() {
           }}
           control={control}
           setValue={setValue}
-          options={[]}
+          options={courses}
           debounceDelay={0}
           searchAPI={(text, setOptions) =>
             autoComplete(text, courses, setOptions)
@@ -102,13 +116,13 @@ export function CollegePredictorForm() {
           name="category"
           label="Category"
           placeholder="Search and Select"
-          value={formData?.categories}
+          value={formData?.category}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
           }}
           control={control}
           setValue={setValue}
-          options={[]}
+          options={categories}
           debounceDelay={0}
           searchAPI={(text, setOptions) =>
             autoComplete(text, categories, setOptions)
@@ -116,7 +130,9 @@ export function CollegePredictorForm() {
           errors={errors}
         />
 
-        <Button className="mt-6">Predict My College</Button>
+        <Button className="mt-6" onClick={onSubmit} disabled={disableCheck()}>
+          Predict My College
+        </Button>
       </form>
     </Card>
   )

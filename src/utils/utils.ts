@@ -1,3 +1,4 @@
+import { IOption } from "@/types/GlobalTypes"
 import clsx, { ClassValue } from "clsx"
 import { Dispatch, SetStateAction } from "react"
 import { twMerge } from "tailwind-merge"
@@ -64,4 +65,16 @@ export function onOptionSelected(
     ...prevState,
     [filedName]: selectedOption,
   }))
+}
+
+export function autoComplete(
+  text: string,
+  data: IOption[],
+  setOptions: React.Dispatch<SetStateAction<IOption[]>>,
+) {
+  setOptions(
+    data.filter((item) =>
+      item?.text?.toLowerCase().includes(text.toLowerCase()),
+    ),
+  )
 }

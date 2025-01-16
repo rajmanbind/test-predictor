@@ -1,3 +1,8 @@
+"use client"
+
+import { Card } from "@/components/common/Card"
+import { Pagination } from "@/components/common/Pagination"
+import { Table, TableColumn } from "@/components/common/Table"
 import { Container } from "@/components/frontend/Container"
 import { FE_Layout } from "@/components/frontend/FE_Layout"
 import { CollegePredictorForm } from "@/components/frontend/college-predictore/CollegePredictorForm"

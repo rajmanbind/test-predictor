@@ -36,9 +36,11 @@ button {
   --separator-color: #d0d0d0;
 
   --hover-color: rgba(255, 255, 255, 0.3);
-  --accent-color: #00cc99;
-  --accent-dark-color: #009977;
+
   --color-white_black: #ffffff;
+  --color-black_white: #050505;
+
+  --table-header-color: #e7e7e7;
 }
 
 /* Dark Mode */
@@ -52,9 +54,11 @@ button {
   --separator-color: #444444;
 
   --hover-color: rgba(255, 255, 255, 0.3);
-  --accent-color: #00cc99;
-  --accent-dark-color: #009977;
+
   --color-white_black: #050505;
+  --color-black_white: ##ffffff;
+
+  --table-header-color: #363636;
 }
 /* --------------- */
 

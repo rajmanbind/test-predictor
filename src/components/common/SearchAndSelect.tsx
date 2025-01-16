@@ -2,7 +2,7 @@ import useOutsideClick from "@/hooks/useOutsideClick"
 import { IOption } from "@/types/GlobalTypes"
 import { ICommonComponentProps } from "@/types/GlobalTypes"
 import { cn, debounce, isEmpty } from "@/utils/utils"
-import { Info } from "lucide-react"
+import { ChevronDown, Info } from "lucide-react"
 import React, { SetStateAction, useEffect, useRef, useState } from "react"
 import { Controller, FieldError } from "react-hook-form"
 import { v4 as uuidv4 } from "uuid"
@@ -59,7 +59,6 @@ export const SearchAndSelect = ({
   const [selectedValue, setSelectedValue] = useState<IOption>()
   const [listOptions, setListOptions] = useState(options)
   const [isLoading, setIsLoading] = useState(false)
-
   const internalRef = useRef(null)
 
   useOutsideClick(internalRef, () => {
@@ -68,7 +67,7 @@ export const SearchAndSelect = ({
     if (selectedValue?.text !== input || defaultOption?.text !== input) {
       let textValue = ""
 
-      if (selectedValue?.text && !isEmpty(input)) {
+      if (selectedValue?.text) {
         textValue = selectedValue?.text
       } else {
         textValue = defaultOption?.text ? defaultOption?.text : ""
@@ -101,13 +100,13 @@ export const SearchAndSelect = ({
     return (required && !props?.disabled) || props?.forceRequired ? "*" : ""
   }
 
-  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e?.target?.value
-
+  function onInputChange(value: string) {
     setInput(value)
 
     if (value?.trim() === "") {
       onInputClear?.()
+      setListOptions(options)
+      setOptionListOpen(true)
       return
     }
 
@@ -156,7 +155,7 @@ export const SearchAndSelect = ({
               className={cn(
                 "relative flex justify-between items-center gap-2 w-full",
                 "componentsBox",
-                error && "border-red-500",
+                error && "border-red-600",
                 props?.disabled
                   ? "bg-[#DCE5DD] border border-[#CCCCCC] cursor-not-allowed"
                   : "",
@@ -167,24 +166,34 @@ export const SearchAndSelect = ({
               <input
                 name={name}
                 className={cn(
-                  "flex placeholder:text-mane-primary-dark-color focus:outline-none focus-visible:outline-none disabled:bg-[#DCE5DD] disabled:cursor-not-allowed",
+                  "flex focus:outline-none focus-visible:outline-none disabled:bg-[#DCE5DD] disabled:cursor-not-allowed",
                   "bg-color-white_black w-full font-[400] text-[14px]",
                   className,
                 )}
                 ref={field.ref}
                 value={input}
-                onChange={onInputChange}
+                onChange={(e) => onInputChange(e.target.value)}
                 placeholder={placeholder}
                 disabled={props?.disabled}
+                autoComplete="off"
                 onFocus={() => {
                   if (input?.length >= minInputLengthToCallAPI) {
+                    setInput("")
+                    setListOptions(options)
                     setOptionListOpen(true)
-                    debounce(searchAPI, debounceDelay)(input, setListOptions)
+                    setIsLoading(false)
                   }
                 }}
               />
 
-              {error && <Info className="flex-shrink-0 text-red-500" />}
+              <ChevronDown
+                className={cn(
+                  "flex-shrink-0 text-color-text transition-transform duration-300",
+                  optionListOpen ? "rotate-180" : "",
+                )}
+              />
+
+              {error && <Info className="flex-shrink-0 text-red-600" />}
 
               {optionListOpen && (
                 <ListOptions
@@ -204,7 +213,7 @@ export const SearchAndSelect = ({
             {error && (
               <p
                 className={cn(
-                  "text-sm mt-1 text-red-500 font-normal",
+                  "text-sm mt-1 text-red-600 font-normal",
                   props?.errorClass,
                 )}
               >
@@ -245,7 +254,7 @@ function ListOptions({
 }: ListOptionsProps) {
   return (
     <>
-      {!isEmpty(inputValue) && inputValue?.length >= minInputLengthToCallAPI ? (
+      {inputValue?.length >= minInputLengthToCallAPI ? (
         <div
           className={cn(
             "w-full absolute top-full translate-y-[1px] left-0 z-[999] overflow-auto",
@@ -259,7 +268,7 @@ function ListOptions({
               <div
                 key={uuidv4()}
                 className={cn(
-                  "cursor-pointer items-center gap-2 select-none text-color-text group hover:bg-mane-primary-color hover:text-color-accent w-full",
+                  "cursor-pointer items-center gap-2 select-none text-color-text group hover:bg-color-accent hover:text-white w-full",
                 )}
                 onClick={() => onOptionSelected(option, fieldOnChange)}
               >

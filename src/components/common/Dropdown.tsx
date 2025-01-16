@@ -115,7 +115,7 @@ export function Dropdown({
                     ? "bg-[#DCE5DD] border border-[#CCCCCC] cursor-not-allowed"
                     : "",
                   props?.boxWrapperClass,
-                  error && "border-mane-error-color",
+                  error && "border-red-600",
                 )}
                 ref={field.ref}
               >
@@ -125,14 +125,14 @@ export function Dropdown({
 
                 {props?.disabled ? null : (
                   <ChevronDown
-                    className={cn("flex-shrink-0", error ? "text-red-500" : "")}
+                    className={cn("flex-shrink-0", error ? "text-red-600" : "")}
                   />
                 )}
               </div>
               {optionListOpen && (
                 <div
                   className={cn(
-                    "bg-mane-page-bg-color border border-[#C0C0C0] rounded-sm",
+                    "bg-color-white_black border border-[#C0C0C0] rounded-sm",
                     "focus:outline-none",
                     "w-full absolute top-full translate-y-[1px] left-0 z-[999] overflow-auto",
                     props?.displayIdToo ? "max-h-48" : "max-h-36",
@@ -148,10 +148,10 @@ export function Dropdown({
                       <div
                         key={option.id}
                         className={cn(
-                          "group cursor-default items-center gap-2 select-none text-mane-primary-dark-color",
+                          "group cursor-default items-center gap-2 select-none text-color-text",
                           option?.disable
                             ? "opacity-70 cursor-not-allowed"
-                            : "hover:bg-mane-primary-color hover:text-white",
+                            : "hover:bg-color-accent-dark hover:text-white",
                           props?.listOptionClass,
                         )}
                         onClick={() => {
@@ -181,7 +181,7 @@ export function Dropdown({
             {error && (
               <p
                 className={cn(
-                  "text-sm mt-1 text-red-500 font-normal",
+                  "text-sm mt-1 text-red-600 font-normal",
                   props?.errorClass,
                 )}
               >

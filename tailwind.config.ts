@@ -29,6 +29,8 @@ const config: Config = {
         "color-white_black": "var(--color-white_black)",
         "color-black_white": "var(--c--color-black_white)",
         "color-table-header": "var(--table-header-color)",
+        "color-disabled-bg": "var(--disabled-color)",
+        "color-disabled-text": "var(--disabled-text-color)",
       },
     },
   },

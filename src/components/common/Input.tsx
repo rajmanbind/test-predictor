@@ -127,7 +127,7 @@ export function Input({
               className={cn(
                 "relative flex justify-between items-center gap-2 w-full",
                 "componentsBox",
-                error && "border-red-500",
+                error && "border-red-600",
                 props?.disabled
                   ? "bg-[#DCE5DD] border border-[#CCCCCC] cursor-not-allowed"
                   : "",
@@ -138,7 +138,7 @@ export function Input({
                 name={name}
                 type={type === "password" ? passType : type || "text"}
                 className={cn(
-                  "flex placeholder:text-mane-primary-dark-color focus:outline-none focus-visible:outline-none disabled:bg-[#DCE5DD] disabled:cursor-not-allowed",
+                  "flex focus:outline-none focus-visible:outline-none disabled:bg-[#DCE5DD] disabled:cursor-not-allowed",
                   "bg-color-white_black w-full text-sm font-[400] text-[14px]",
                   className,
                   props?.readOnly && "cursor-not-allowed",
@@ -173,12 +173,12 @@ export function Input({
                 />
               )}
 
-              {error && <Info className="flex-shrink-0 text-red-500" />}
+              {error && <Info className="flex-shrink-0 text-red-600" />}
             </div>
             {error && (
               <p
                 className={cn(
-                  "text-sm mt-1 text-red-500 font-normal",
+                  "text-sm mt-1 text-red-600 font-normal",
                   errorClass,
                 )}
               >

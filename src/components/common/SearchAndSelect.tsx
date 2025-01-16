@@ -269,6 +269,7 @@ function ListOptions({
                 key={uuidv4()}
                 className={cn(
                   "cursor-pointer items-center gap-2 select-none text-color-text group hover:bg-color-accent hover:text-white w-full",
+                  option.id === selectedValue?.id && "text-color-accent",
                 )}
                 onClick={() => onOptionSelected(option, fieldOnChange)}
               >

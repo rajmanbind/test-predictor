@@ -110,7 +110,7 @@ export function Input({
               >
                 <label
                   className={cn(
-                    "text-[16px] xl:text-[18px] mb-[6px] block font-semibold",
+                    "text-base pc:text-lg mb-[6px] block font-medium",
                     labelClass,
                   )}
                   htmlFor={props?.id}
@@ -125,7 +125,7 @@ export function Input({
 
             <div
               className={cn(
-                "relative flex justify-between items-center gap-2 w-full",
+                "relative flex justify-between items-center gap-2 w-full py-[13px]",
                 "componentsBox",
                 error && "border-red-600",
                 props?.disabled
@@ -139,7 +139,7 @@ export function Input({
                 type={type === "password" ? passType : type || "text"}
                 className={cn(
                   "flex focus:outline-none focus-visible:outline-none disabled:bg-[#DCE5DD] disabled:cursor-not-allowed",
-                  "bg-color-white_black w-full text-sm font-[400] text-[14px]",
+                  "bg-color-white_black w-full text-sm font-[400] text-[14px] pt-[1px]",
                   className,
                   props?.readOnly && "cursor-not-allowed",
                 )}

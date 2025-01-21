@@ -2,7 +2,7 @@ import useOutsideClick from "@/hooks/useOutsideClick"
 import { IOption } from "@/types/GlobalTypes"
 import { ICommonComponentProps } from "@/types/GlobalTypes"
 import { cn, debounce, isEmpty } from "@/utils/utils"
-import { ChevronDown, Info } from "lucide-react"
+import { ChevronDown, Info, X } from "lucide-react"
 import React, { SetStateAction, useEffect, useRef, useState } from "react"
 import { Controller, FieldError } from "react-hook-form"
 import { v4 as uuidv4 } from "uuid"
@@ -12,13 +12,13 @@ import { SmallSpinner } from "./SmallSpinner"
 interface SearchAndSelectProps extends ICommonComponentProps {
   className?: string
   options: IOption[]
-  value: IOption | undefined
+  value: IOption[] | undefined
   onChange: ({
     name,
-    selectedValue,
+    selectedOptions,
   }: {
     name: string
-    selectedValue: IOption
+    selectedOptions: IOption[]
   }) => void
   listClass?: string
   listOptionClass?: string
@@ -33,7 +33,7 @@ interface SearchAndSelectProps extends ICommonComponentProps {
   ) => void
 }
 
-export const SearchAndSelect = ({
+export const MultiSelect = ({
   name,
   className,
   errors,
@@ -56,26 +56,13 @@ export const SearchAndSelect = ({
 }: SearchAndSelectProps) => {
   const [input, setInput] = useState(defaultOption ? defaultOption.text : "")
   const [optionListOpen, setOptionListOpen] = useState(false)
-  const [selectedValue, setSelectedValue] = useState<IOption>()
   const [listOptions, setListOptions] = useState(options)
   const [isLoading, setIsLoading] = useState(false)
   const internalRef = useRef(null)
+  const [selectedOptions, setSelectedOptions] = useState<IOption[]>([])
 
   useOutsideClick(internalRef, () => {
     if (isLoading) return
-
-    if (selectedValue?.text !== input || defaultOption?.text !== input) {
-      let textValue = ""
-
-      if (selectedValue?.text) {
-        textValue = selectedValue?.text
-      } else {
-        textValue = defaultOption?.text ? defaultOption?.text : ""
-      }
-
-      setInput(textValue)
-    }
-
     setOptionListOpen(false)
   })
 
@@ -117,11 +104,23 @@ export const SearchAndSelect = ({
   }
 
   function onOptionSelected(option: IOption, fieldOnChange: any) {
-    onChange({ name, selectedValue: option })
-    setSelectedValue(option)
-    setInput(option.text)
-    setOptionListOpen(false)
-    fieldOnChange(option)
+    setSelectedOptions((prevState) => {
+      let updatedOptions = [...prevState]
+
+      if (Boolean(updatedOptions.find((item) => item?.id === option?.id))) {
+        updatedOptions = updatedOptions.filter(
+          (item) => item?.id !== option?.id,
+        )
+      } else {
+        updatedOptions.push(option)
+      }
+
+      onChange({ name, selectedOptions: updatedOptions })
+      // setInput(option.text)
+      fieldOnChange(updatedOptions)
+
+      return updatedOptions
+    })
   }
 
   function isRulesRequired() {
@@ -163,6 +162,23 @@ export const SearchAndSelect = ({
               )}
               ref={internalRef}
             >
+              {selectedOptions?.length > 0 && (
+                <div
+                  className={cn(
+                    "bg-color-accent-dark text-white text-xs px-2 py-1 rounded-[4px] flex-shrink-0 cursor-pointer flex items-center gap-2",
+                    props?.disabled && "cursor-not-allowed opacity-70",
+                  )}
+                  onClick={() => {
+                    if (props?.disabled) return
+                    setSelectedOptions([])
+                    field.onChange([])
+                  }}
+                >
+                  <p>{selectedOptions?.length} Selected</p>
+                  <X size={14} color="#fff" />
+                </div>
+              )}
+
               <input
                 name={name}
                 className={cn(
@@ -206,7 +222,7 @@ export const SearchAndSelect = ({
               {optionListOpen && (
                 <ListOptions
                   options={listOptions}
-                  selectedValue={selectedValue}
+                  selectedOptions={selectedOptions}
                   fieldOnChange={field.onChange}
                   inputValue={input}
                   isLoading={isLoading}
@@ -235,10 +251,10 @@ export const SearchAndSelect = ({
   )
 }
 
-export default SearchAndSelect
+export default MultiSelect
 
 interface ListOptionsProps {
-  selectedValue: IOption | undefined
+  selectedOptions: IOption[]
   options: IOption[]
   onOptionSelected: (option: IOption, fieldOnChange: any) => void
   inputValue: string
@@ -251,7 +267,7 @@ interface ListOptionsProps {
 
 function ListOptions({
   options,
-  selectedValue,
+  selectedOptions,
   onOptionSelected,
   inputValue,
   isLoading,
@@ -260,6 +276,10 @@ function ListOptions({
   minInputLengthToCallAPI,
   listOptionClass,
 }: ListOptionsProps) {
+  function isChecked(id: string) {
+    return !!selectedOptions?.find((option) => option.id === id)
+  }
+
   return (
     <>
       {inputValue?.length >= minInputLengthToCallAPI ? (
@@ -276,21 +296,34 @@ function ListOptions({
               <div
                 key={uuidv4()}
                 className={cn(
-                  "cursor-pointer items-center gap-2 select-none text-color-text group hover:bg-color-accent hover:text-white w-full",
-                  option.id === selectedValue?.id && "text-color-accent",
+                  "cursor-pointer flex items-start gap-[10px] select-none text-color-text group hover:bg-color-accent hover:text-white w-full px-4 py-2",
                 )}
-                onClick={() => onOptionSelected(option, fieldOnChange)}
+                onClick={() => {
+                  onOptionSelected(option, fieldOnChange)
+                }}
               >
-                <p className="text-xs font-semibold py-2 px-7">{option.text}</p>
-                {displayIdToo && (
-                  <p
-                    className={cn(
-                      "text-xs px-7 text-[#8A8A8A] -mt-1 pb-2 group-hover:text-white/80",
-                    )}
-                  >
-                    {option?.id}
-                  </p>
-                )}
+                <input
+                  type="checkbox"
+                  checked={isChecked(option.id)}
+                  className={cn(
+                    "bg-mane-page-bg-color border-[#28553D] flex-shrink-0 translate-y-[4px]",
+                  )}
+                  readOnly
+                  // onChange={() => handleCheckboxChange(item.name, "selectAll")}
+                />
+
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold">{option.text}</p>
+                  {displayIdToo && (
+                    <p
+                      className={cn(
+                        "text-xs text-[#8A8A8A] -mt-1 group-hover:text-white/80",
+                      )}
+                    >
+                      {option?.id}
+                    </p>
+                  )}
+                </div>
               </div>
             ))}
 

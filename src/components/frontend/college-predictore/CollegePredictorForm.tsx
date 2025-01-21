@@ -68,6 +68,7 @@ export function CollegePredictorForm() {
           name="rank"
           label="Rank"
           type="number"
+          placeholder="Enter Rank"
           value={formData?.rank}
           onChange={(e) => onTextFieldChange(e, setFormData)}
           control={control}
@@ -80,7 +81,7 @@ export function CollegePredictorForm() {
         <SearchAndSelect
           name="state"
           label="State"
-          placeholder="Search and Select"
+          placeholder="Select State"
           value={formData?.state}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
@@ -98,7 +99,7 @@ export function CollegePredictorForm() {
         <SearchAndSelect
           name="courses"
           label="Course"
-          placeholder="Search and Select"
+          placeholder="Select Course"
           value={formData?.courses}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
@@ -115,7 +116,7 @@ export function CollegePredictorForm() {
         <SearchAndSelect
           name="category"
           label="Category"
-          placeholder="Search and Select"
+          placeholder="Select Category"
           value={formData?.category}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)

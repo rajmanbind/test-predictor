@@ -6,18 +6,14 @@ export interface TableColumn {
   tableKey: string
   maxWidth?: string
   renderer?: (props: {
-    rowData: TableRow
+    rowData: any
     cellData: React.ReactNode
   }) => React.ReactNode
 }
 
-interface TableRow {
-  [key: string]: React.ReactNode
-}
-
 interface TableProps {
   columns: TableColumn[]
-  data: TableRow[]
+  data: any[]
   hideSLNo?: boolean
 }
 
@@ -26,21 +22,26 @@ const headerTHClass =
 
 export function Table({ hideSLNo, columns, data }: TableProps) {
   return (
-    <div className="overflow-x-auto border rounded-lg border-color-border">
+    <div
+      className="overflow-x-auto border rounded-lg border-color-border"
+      style={{
+        overflowX: "auto",
+        WebkitOverflowScrolling: "touch",
+      }}
+    >
       <table
         className="min-w-full border-collapse table-fixed"
         style={{
           tableLayout: "fixed",
+          minWidth: "100%",
         }}
       >
         <thead>
           <tr className="bg-color-table-header">
             {!hideSLNo && (
               <th
-                className={headerTHClass}
+                className={cn(headerTHClass, "px-3")}
                 style={{
-                  maxWidth: "8px",
-                  width: "8px",
                   whiteSpace: "normal",
                   wordWrap: "break-word",
                 }}
@@ -78,11 +79,11 @@ export function Table({ hideSLNo, columns, data }: TableProps) {
             >
               {!hideSLNo && (
                 <td
-                  className={cn("px-4 py-3 text-left text-xs font-normal")}
+                  className={cn("p-3 text-left text-xs font-normal")}
                   style={{
-                    maxWidth: "8px",
-                    width: "8px",
                     whiteSpace: "normal",
+                    width: "10px",
+                    maxWidth: "10px",
                     wordWrap: "break-word",
                     color: "var(--text-sub-color)",
                   }}

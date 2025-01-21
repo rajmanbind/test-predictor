@@ -296,7 +296,7 @@ function ListOptions({
               <div
                 key={uuidv4()}
                 className={cn(
-                  "cursor-pointer flex items-start gap-[10px] select-none text-color-text group hover:bg-color-accent hover:text-white w-full px-4 py-2",
+                  "cursor-pointer flex items-center gap-[10px] select-none text-color-text group hover:bg-color-accent hover:text-white w-full px-4 py-2",
                 )}
                 onClick={() => {
                   onOptionSelected(option, fieldOnChange)
@@ -306,14 +306,14 @@ function ListOptions({
                   type="checkbox"
                   checked={isChecked(option.id)}
                   className={cn(
-                    "bg-mane-page-bg-color border-[#28553D] flex-shrink-0 translate-y-[4px]",
+                    "bg-mane-page-bg-color border-[#28553D] flex-shrink-0",
                   )}
                   readOnly
                   // onChange={() => handleCheckboxChange(item.name, "selectAll")}
                 />
 
                 <div className="space-y-2">
-                  <p className="text-sm font-semibold">{option.text}</p>
+                  <p className="text-xs font-semibold">{option.text}</p>
                   {displayIdToo && (
                     <p
                       className={cn(

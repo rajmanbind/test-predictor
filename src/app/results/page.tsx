@@ -43,7 +43,7 @@ export default function ResultPage() {
         <SearchForm />
 
         <div className="mt-10 bg-color-form-background flex items-start py-4 rounded-lg pr-3">
-          <Filter className="p-3 flex-shrink-0 max-w-[300px]" />
+          <Filter className="p-3 flex-shrink-0 w-[300px]" />
 
           <div
             className="flex-1 pl-3 border-l border-color-border"

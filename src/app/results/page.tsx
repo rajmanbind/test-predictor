@@ -1,53 +1,68 @@
 "use client"
 
-import { Card } from "@/components/common/Card"
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
 import { Container } from "@/components/frontend/Container"
 import { FE_Layout } from "@/components/frontend/FE_Layout"
+import { Filter } from "@/components/frontend/college-predictore/Filter"
+import { SearchForm } from "@/components/frontend/college-predictore/SearchForm"
+import { tempData } from "@/components/frontend/college-predictore/temp"
 
 const columns: TableColumn[] = [
-  { title: "Name", tableKey: "name", maxWidth: "400px" },
-  { title: "Age", tableKey: "age", maxWidth: "100px" },
   {
-    title: "Action",
-    tableKey: "action",
-    renderer: ({ rowData, cellData }) => (
-      <button
-        className="bg-red-600"
-        onClick={() => alert(`Clicked on ${rowData.name}'s Action`)}
-      >
-        Click Me
-      </button>
-    ),
+    title: "Institute",
+    tableKey: "institute",
+    maxWidth: "200px",
+    renderer: ({ cellData }: any) => cellData?.name,
   },
-]
-
-const data = [
-  { name: "John Doe", age: 30, action: "123 Main St" },
+  { title: "Institute Type", tableKey: "institute_type" },
+  { title: "State", tableKey: "state" },
   {
-    name: "Vardhman Mahavir Medical College & Safdarjung Hospital, Delhi	",
-    age: 25,
-    action: "456 Elm St",
+    title: "Course",
+    tableKey: "course",
+    renderer: ({ cellData }: any) => cellData?.name,
   },
-  { name: "Jane Smith", age: 25, action: "456 Elm St" },
+  {
+    title: "Quota",
+    tableKey: "quota",
+    renderer: ({ cellData }: any) => cellData?.name,
+  },
+  { title: "Category", tableKey: "category" },
+  { title: "Closing Rank 2023", tableKey: "closing_rank" },
+  { title: "Fee", tableKey: "fee" },
 ]
 
 export default function ResultPage() {
   return (
     <FE_Layout>
-      <Container className="py-16 pc:py-20">
-        <Card className="mt-10">
-          <Table columns={columns} data={data} />
-          <Pagination
-            currentPage={1}
-            totalItems={100}
-            wrapperClass="pb-[50px]"
-            onPageChange={(page: number) => {
-              console.log(page)
+      <Container className="py-10">
+        <h2 className="text-color-text text-3xl pb-6">
+          NEET Collage Predictor
+        </h2>
+
+        <SearchForm />
+
+        <div className="mt-10 bg-color-form-background flex items-start py-4 rounded-lg pr-3">
+          <Filter className="p-3 flex-shrink-0 max-w-[300px]" />
+
+          <div
+            className="flex-1 pl-3 border-l border-color-border"
+            style={{
+              overflowX: "auto",
             }}
-          />
-        </Card>
+          >
+            <Table columns={columns} data={tempData} />
+
+            <Pagination
+              currentPage={1}
+              totalItems={100}
+              wrapperClass="pb-[50px]"
+              onPageChange={(page: number) => {
+                console.log(page)
+              }}
+            />
+          </div>
+        </div>
       </Container>
     </FE_Layout>
   )

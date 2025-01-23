@@ -5,15 +5,17 @@ export function Button({
   className,
   onClick,
   disabled,
+  type = "button",
 }: {
   children: React.ReactNode
   className?: string
   onClick?: () => void
+  type?: "button" | "submit" | "reset"
   disabled?: boolean
 }) {
   return (
     <button
-      type="button"
+      type={type}
       disabled={disabled}
       onClick={onClick}
       className={cn(

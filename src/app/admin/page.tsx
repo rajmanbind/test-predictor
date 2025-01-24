@@ -30,7 +30,7 @@ export default function LoginCard() {
   return (
     <FE_Layout>
       <div className={`flex justify-center items-center min-h-screen`}>
-        <Card className="tab:mx-18">
+        <Card className=" lg:w-[470px] lg:h-[450px] tab:mx-30">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-color-text  ml-8">
               Admin Login

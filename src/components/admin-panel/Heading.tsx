@@ -1,6 +1,7 @@
 import { cn } from "@/utils/utils"
+import React from "react"
 
-export function Card({
+export function Heading({
   children,
   className,
 }: {
@@ -8,13 +9,13 @@ export function Card({
   className?: string
 }) {
   return (
-    <div
+    <h2
       className={cn(
-        "bg-color-form-background shadow-2xl rounded-lg px-4 py-3",
+        "text-[18px] text-color-text font-semibold pc:text-[24px] pb-2",
         className,
       )}
     >
       {children}
-    </div>
+    </h2>
   )
 }

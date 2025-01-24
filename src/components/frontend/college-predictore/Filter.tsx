@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
+import { FeeRangeSlider } from "../FeeRangeSlider"
+
 interface IFormData {
   rank?: number | string
   state: IOption[]
@@ -130,6 +132,9 @@ export function Filter({ className }: { className?: string }) {
         }
         errors={errors}
       />
+
+      <FeeRangeSlider />
+
       <Button
         className="mt-2"
         // onClick={onSubmit} disabled={disableCheck()}

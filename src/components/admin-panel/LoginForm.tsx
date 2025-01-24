@@ -1,0 +1,102 @@
+"use client"
+
+import { Button } from "@/components/common/Button"
+import { Card } from "@/components/common/Card"
+import { Input } from "@/components/common/Input"
+import { FE_Layout } from "@/components/frontend/FE_Layout"
+import useFetch from "@/hooks/useFetch"
+import { onTextFieldChange } from "@/utils/utils"
+import { useRouter } from "next/navigation"
+import React, { useState } from "react"
+import { useForm } from "react-hook-form"
+
+import { showToast } from "../common/ToastProvider"
+
+export default function LoginForm() {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  })
+
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    shouldFocusError: true,
+  })
+  const { fetchData } = useFetch()
+  const router = useRouter()
+
+  async function onSubmit() {
+    const res = await fetchData({
+      url: "/api/login",
+      method: "POST",
+      data: {
+        username: formData.username,
+        password: formData.password,
+      },
+    })
+
+    if (res?.success) {
+      if (res?.payload?.isAuthenticated) {
+        showToast("success", res?.payload?.msg)
+        router.replace("/admin/dashboard")
+      } else {
+        showToast("error", res?.payload?.msg)
+      }
+    }
+  }
+
+  return (
+    <FE_Layout>
+      <div className={`flex justify-center items-center min-h-screen`}>
+        <Card className="w-full max-w-[400px] p-7 tab:p-10">
+          <div className=" mb-6 text-center">
+            <h2 className="text-2xl font-semibold text-color-text text-center">
+              Admin Login
+            </h2>
+          </div>
+
+          <form
+            className="flex flex-col gap-6"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Input
+              name="username"
+              label="Username"
+              type="text"
+              placeholder="Enter Rank"
+              value={formData?.username}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              rules={{
+                required: true,
+              }}
+              errors={errors}
+            />
+
+            <Input
+              name="password"
+              label="Password"
+              type="password"
+              placeholder="Enter Rank"
+              value={formData?.password}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              rules={{
+                required: true,
+              }}
+              errors={errors}
+            />
+
+            <Button className="mt-3" type="submit">
+              Login
+            </Button>
+          </form>
+        </Card>
+      </div>
+    </FE_Layout>
+  )
+}

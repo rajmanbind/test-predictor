@@ -1,3 +1,5 @@
+"use client"
+
 import { useAppStateStore } from "./appStateStore"
 
 export function useAppState() {

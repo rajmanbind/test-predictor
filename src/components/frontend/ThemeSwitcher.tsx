@@ -5,6 +5,8 @@ import { MoonStar, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useRef, useState } from "react"
 
+import { Portal } from "../common/Portal"
+
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme()
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -38,18 +40,20 @@ export function ThemeSwitcher() {
       </button>
 
       {isAnimating && (
-        <div
-          className={cn(
-            "fixed rounded-full z-10 animate-bubble-expand",
-            theme === "light" ? "bg-[#181818]" : "bg-[#e9e9e9]",
-          )}
-          style={{
-            top: bubblePos.y,
-            left: bubblePos.x,
-            transform: "translate(-50%, -50%)",
-          }}
-          onAnimationEnd={handleAnimationEnd}
-        ></div>
+        <Portal>
+          <div
+            className={cn(
+              "fixed rounded-full z-[1500] animate-bubble-expand",
+              theme === "light" ? "bg-[#181818]" : "bg-[#e9e9e9]",
+            )}
+            style={{
+              top: bubblePos.y,
+              left: bubblePos.x,
+              transform: "translate(-50%, -50%)",
+            }}
+            onAnimationEnd={handleAnimationEnd}
+          ></div>
+        </Portal>
       )}
     </div>
   )

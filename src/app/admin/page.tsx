@@ -1,33 +1,9 @@
-"use client"
+import LoginForm from "@/components/admin-panel/LoginForm"
+import { Loader } from "@/components/common/Loader"
 
-// Add this at the top of the file
-import { Button } from "@/components/common/Button"
-import { Card } from "@/components/common/Card"
-import { Input } from "@/components/common/Input"
-import { FE_Layout } from "@/components/frontend/FE_Layout"
-import { ThemeSwitcher } from "@/components/frontend/ThemeSwitcher"
-import { onTextFieldChange } from "@/utils/utils"
-import React, { useState } from "react"
-import { useForm } from "react-hook-form"
-
-export default function LoginCard() {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  })
-
-  const {
-    handleSubmit,
-    control,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    shouldFocusError: true,
-  })
-
-  function onSubmit() {}
-
+export default function AdminLoginPage() {
   return (
+
     <FE_Layout>
       <div className={`flex justify-center items-center min-h-screen`}>
         <Card className=" lg:w-[470px] lg:h-[450px] tab:mx-30">
@@ -76,5 +52,10 @@ export default function LoginCard() {
         </Card>
       </div>
     </FE_Layout>
+
+    <>
+      <LoginForm />
+      <Loader />
+    </>
   )
 }

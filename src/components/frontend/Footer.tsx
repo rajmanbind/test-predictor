@@ -4,7 +4,7 @@ import Link from "next/link"
 
 import { Logo } from "../common/Logo"
 import { Container } from "./Container"
-import { NavbarItem, navbarMenus } from "./Navigation"
+import { NavbarItem, navbarMenus } from "./Navbar"
 
 const socialLinks = [
   {

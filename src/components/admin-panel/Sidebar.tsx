@@ -35,6 +35,7 @@ export function Sidebar() {
       <ul className="mt-6">
         {sidebarMenus.map((menu, index) => (
           <Link
+            key={menu?.title}
             href={menu.link}
             className="flex items-center gap-2 py-3 px-4 hover:bg-color-accent/30"
           >

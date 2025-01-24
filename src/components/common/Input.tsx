@@ -1,5 +1,5 @@
 import { cn } from "@/utils/utils"
-import { Eye, EyeClosed, Info } from "lucide-react"
+import { Eye, EyeOff, Info } from "lucide-react"
 import * as React from "react"
 import {
   Control,
@@ -160,14 +160,14 @@ export function Input({
               />
 
               {type === "password" && passType === "password" && (
-                <EyeClosed
+                <Eye
                   className="flex-shrink-0 cursor-pointer"
                   onClick={() => setPassType("text")}
                 />
               )}
 
               {type === "password" && passType === "text" && (
-                <Eye
+                <EyeOff
                   className="flex-shrink-0 cursor-pointer"
                   onClick={() => setPassType("password")}
                 />

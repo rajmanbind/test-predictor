@@ -60,7 +60,7 @@ export function CollegePredictorForm() {
   }
 
   return (
-    <Card className="tab:mx-16">
+    <Card className="tab:mx-16 p-7 tab:p-10">
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         <h3 className="text-2xl font-medium">Enter Details</h3>
 

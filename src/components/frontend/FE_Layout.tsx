@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 
 import { Footer } from "./Footer"
-import { Navbar } from "./Navigation"
+import { Navbar } from "./Navbar"
 
 export function FE_Layout({ children }: { children: React.ReactNode }) {
   const [isThemeLoaded, setIsThemeLoaded] = useState(false)

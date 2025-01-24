@@ -56,3 +56,112 @@ export const categories = [
   { id: 10, text: "ST" },
   { id: 11, text: "ST-PwD" },
 ]
+
+export const instituteTypes = [
+  { id: 0, text: "AFMS" },
+  { id: 1, text: "Deemed" },
+  { id: 2, text: "Government Institute" },
+  { id: 3, text: "INI (Institute of National Importance)" },
+  { id: 4, text: "Private Institute (State University)" },
+  { id: 5, text: "State Private University" },
+  { id: 6, text: "State Society/PPP (State University)" },
+]
+
+export const quotas = [
+  {
+    id: 169,
+    name: "AIIMS - Foreign Nationals",
+  },
+  {
+    id: 149,
+    name: "AIIMS - Open",
+  },
+  {
+    id: 148,
+    name: "All India Quota",
+  },
+  {
+    id: 150,
+    name: "AMU - Internal",
+  },
+  {
+    id: 151,
+    name: "AMU - NRI",
+  },
+  {
+    id: 152,
+    name: "AMU - Open",
+  },
+  {
+    id: 153,
+    name: "BHU - Open",
+  },
+  {
+    id: 154,
+    name: "CW of Armed Forces Personnel",
+  },
+  {
+    id: 160,
+    name: "Deemed - Jain Minority",
+  },
+  {
+    id: 165,
+    name: "Deemed - Muslim Minority",
+  },
+  {
+    id: 168,
+    name: "Deemed - NRI",
+  },
+  {
+    id: 166,
+    name: "Deemed - Paid Seats (PS)",
+  },
+  {
+    id: 214,
+    name: "Delhi Univ - Delhi CW",
+  },
+  {
+    id: 155,
+    name: "Delhi Univ - DU Quota (State)",
+  },
+  {
+    id: 156,
+    name: "ESI - Insured Persons",
+  },
+  {
+    id: 215,
+    name: "IP Univ - Delhi CW",
+  },
+  {
+    id: 157,
+    name: "IP Univ - IP Quota (State)",
+  },
+  {
+    id: 159,
+    name: "Jamia - Internal",
+  },
+  {
+    id: 161,
+    name: "Jamia - Muslim",
+  },
+  {
+    id: 167,
+    name: "Jamia - Muslim Women",
+  },
+  {
+    id: 164,
+    name: "Jamia - Open",
+  },
+  {
+    id: 163,
+    name: "JIPMER - NRI",
+  },
+  {
+    id: 162,
+    name: "JIPMER - Open",
+  },
+  {
+    id: 158,
+    name: "JIPMER - Pondicherry Domicile",
+  },
+]

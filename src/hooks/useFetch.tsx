@@ -10,9 +10,7 @@ interface FetchState<T> {
   loading: boolean
 }
 
-interface FetchOptions extends AxiosRequestConfig {}
-
-interface FetchParams extends FetchOptions {
+interface FetchParams extends AxiosRequestConfig {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
   url: string
   data?: any

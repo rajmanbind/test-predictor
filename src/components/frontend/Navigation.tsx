@@ -4,6 +4,7 @@ import { cn } from "@/utils/utils"
 import { Menu } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import { Button } from "../common/Button"
 import { Logo } from "../common/Logo"
@@ -44,6 +45,8 @@ export function NavbarItem({
 export function Navbar() {
   const { theme } = useTheme()
 
+  const pathname = usePathname()
+
   return (
     <Container>
       <div className="flex items-center justify-between h-[94px]">
@@ -73,7 +76,7 @@ export function Navbar() {
             <ThemeSwitcher />
           </div>
           <Button className="text-[10px] tab:text-sm pc:text-base py-3">
-            Sign in / Sign up
+            {pathname?.includes("admin") ? "Admin Panel" : "Sign in / Sign up"}
           </Button>
         </div>
       </div>

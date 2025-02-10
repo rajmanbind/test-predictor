@@ -4,12 +4,12 @@ import { Card } from "@/components/common/Card"
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
 import { Container } from "@/components/frontend/Container"
-import { FE_Layout } from "@/components/frontend/FE_Layout"
+import { FELayout } from "@/components/frontend/FELayout"
 import { CollegePredictorForm } from "@/components/frontend/college-predictore/CollegePredictorForm"
 
 export default function Home() {
   return (
-    <FE_Layout>
+    <FELayout>
       <Container className="py-16 pc:py-20">
         <h1 className="text-[26px] tab:text-4xl font-semibold text-color-text pb-10 tab:pb-20 pc:hidden">
           NEET College Predictor
@@ -49,6 +49,6 @@ export default function Home() {
           <CollegePredictorForm />
         </div>
       </Container>
-    </FE_Layout>
+    </FELayout>
   )
 }

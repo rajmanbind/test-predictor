@@ -3,7 +3,7 @@
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
 import { Container } from "@/components/frontend/Container"
-import { FE_Layout } from "@/components/frontend/FE_Layout"
+import { FELayout } from "@/components/frontend/FELayout"
 import { Filter } from "@/components/frontend/college-predictore/Filter"
 import { SearchForm } from "@/components/frontend/college-predictore/SearchForm"
 import { tempData } from "@/components/frontend/college-predictore/temp"
@@ -34,7 +34,7 @@ const columns: TableColumn[] = [
 
 export default function ResultPage() {
   return (
-    <FE_Layout>
+    <FELayout>
       <Container className="py-10">
         <h2 className="text-color-text text-3xl pb-6">
           NEET Collage Predictor
@@ -64,6 +64,6 @@ export default function ResultPage() {
           </div>
         </div>
       </Container>
-    </FE_Layout>
+    </FELayout>
   )
 }

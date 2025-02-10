@@ -3,7 +3,7 @@
 import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
-import { FE_Layout } from "@/components/frontend/FE_Layout"
+import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
 import { onTextFieldChange } from "@/utils/utils"
 import { useRouter } from "next/navigation"
@@ -14,7 +14,7 @@ import { showToast } from "../common/ToastProvider"
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   })
 
@@ -31,10 +31,10 @@ export default function LoginForm() {
 
   async function onSubmit() {
     const res = await fetchData({
-      url: "/api/login",
+      url: "/api/admin/login",
       method: "POST",
       data: {
-        username: formData.username,
+        email: formData.email,
         password: formData.password,
       },
     })
@@ -43,14 +43,12 @@ export default function LoginForm() {
       if (res?.payload?.isAuthenticated) {
         showToast("success", res?.payload?.msg)
         router.replace("/admin/dashboard")
-      } else {
-        showToast("error", res?.payload?.msg)
       }
     }
   }
 
   return (
-    <FE_Layout>
+    <FELayout>
       <div className={`flex justify-center items-center min-h-screen`}>
         <Card className="w-full max-w-[400px] p-7 tab:p-10">
           <div className=" mb-6 text-center">
@@ -64,15 +62,20 @@ export default function LoginForm() {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Input
-              name="username"
-              label="Username"
-              type="text"
+              name="email"
+              label="Email"
+              type="email"
               placeholder="Enter Rank"
-              value={formData?.username}
+              value={formData?.email}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               rules={{
                 required: true,
+                pattern: {
+                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message:
+                    "Invalid Email ID! Please enter a valid email address.",
+                },
               }}
               errors={errors}
             />
@@ -97,6 +100,6 @@ export default function LoginForm() {
           </form>
         </Card>
       </div>
-    </FE_Layout>
+    </FELayout>
   )
 }

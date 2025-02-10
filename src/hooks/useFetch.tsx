@@ -91,8 +91,6 @@ const useFetch = () => {
       try {
         const response = await axiosInstance(config)
 
-        console.log("response: ", response)
-
         if (response.status !== 200) {
           const errorMsg = response?.data?.msg || "An error occurred"
           showToast("error", errorMsg)

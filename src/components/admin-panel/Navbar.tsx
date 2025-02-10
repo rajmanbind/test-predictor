@@ -1,17 +1,33 @@
 "use client"
 
-import { cn } from "@/utils/utils"
+import useFetch from "@/hooks/useFetch"
+import useOutsideClick from "@/hooks/useOutsideClick"
 import { Menu } from "lucide-react"
-import { useTheme } from "next-themes"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { useRef, useState } from "react"
 
-import { Button } from "../common/Button"
-import { Logo } from "../common/Logo"
 import { ThemeSwitcher } from "../frontend/ThemeSwitcher"
-import { BE_Container } from "./BE_Container"
 
 export function Navbar() {
+  const [popOver, setPopOver] = useState(false)
+  const ref = useRef(null)
+
+  useOutsideClick(ref, () => setPopOver(false))
+  const { fetchData } = useFetch()
+
+  const router = useRouter()
+
+  async function handleLogout() {
+    const res = await fetchData({
+      url: "/api/admin/logout",
+    })
+
+    if (res?.success) {
+      router.replace("/admin")
+    }
+  }
+
   return (
     <div className="flex items-center justify-between bg-color-accent-dark px-8 py-3 fixed top-0 left-0 w-full">
       <div>
@@ -24,13 +40,30 @@ export function Navbar() {
         <Menu size={28} className="text-color-text pc:hidden" />
 
         <ThemeSwitcher />
-        <Image
-          className="rounded-full size-[40px]"
-          src={"/logo.png"}
-          width={60}
-          height={60}
-          alt="admin-dp"
-        />
+        <button
+          ref={ref}
+          className="relative block"
+          onClick={() => setPopOver((prev) => !prev)}
+        >
+          <Image
+            className="rounded-full size-[40px]"
+            src={"/logo.png"}
+            width={60}
+            height={60}
+            alt="admin-dp"
+          />
+
+          {popOver && (
+            <div className="bg-color-form-background absolute top-0 right-0 w-[100px] mt-12 rounded-[4px] overflow-hidden shadow-lg">
+              <button
+                className="text-color-text py-2 hover:bg-color-accent w-full"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </button>
       </div>
     </div>
   )

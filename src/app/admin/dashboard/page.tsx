@@ -1,9 +1,9 @@
-import { BE_Layout } from "@/components/admin-panel/BE_Layout"
+import { BELayout } from "@/components/admin-panel/BELayout"
 
 export default function AdminDashboardPage() {
   return (
-    <BE_Layout>
+    <BELayout>
       <div>AdminDashboardPage</div>
-    </BE_Layout>
+    </BELayout>
   )
 }

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { Navbar } from "./Navbar"
 import { Sidebar } from "./Sidebar"
 
-export function BE_Layout({ children }: { children: React.ReactNode }) {
+export function BELayout({ children }: { children: React.ReactNode }) {
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {

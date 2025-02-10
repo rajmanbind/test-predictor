@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getUserSession, updateSession } from "./lib/supabase"
 
 export async function middleware(request: NextRequest) {
-  let response = updateSession(request)
+  const response = updateSession(request)
   const user = await getUserSession()
 
   const { pathname } = request.nextUrl

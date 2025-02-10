@@ -1,8 +1,11 @@
+"use client"
+
 import { cn } from "@/utils/utils"
 import { Database, Home, PlusSquare, Users } from "lucide-react"
 import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
 
-const sidebarMenus = [
+export const sidebarMenus = [
   {
     icon: <Home />,
     title: "Dashboard",
@@ -25,11 +28,14 @@ const sidebarMenus = [
   },
 ]
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
+  const pathname = usePathname()
+
   return (
     <div
       className={cn(
         "fixed top-[64px] h-screen pc:h-[calc(100vh-3px)] overflow-y-auto overflow-x-hidden bg-color-form-background w-[240px]",
+        className,
       )}
     >
       <ul className="mt-6">
@@ -37,7 +43,10 @@ export function Sidebar() {
           <Link
             key={menu?.title}
             href={menu.link}
-            className="flex items-center gap-2 py-3 px-4 hover:bg-color-accent/30"
+            className={cn(
+              "flex items-center gap-2 py-3 px-4 hover:bg-color-accent hover:text-white",
+              pathname === menu.link && "bg-color-accent-dark text-white",
+            )}
           >
             <span>{menu.icon}</span>
             <span>{menu.title}</span>

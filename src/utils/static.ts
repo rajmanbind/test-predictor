@@ -70,98 +70,98 @@ export const instituteTypes = [
 export const quotas = [
   {
     id: 169,
-    name: "AIIMS - Foreign Nationals",
+    text: "AIIMS - Foreign Nationals",
   },
   {
     id: 149,
-    name: "AIIMS - Open",
+    text: "AIIMS - Open",
   },
   {
     id: 148,
-    name: "All India Quota",
+    text: "All India Quota",
   },
   {
     id: 150,
-    name: "AMU - Internal",
+    text: "AMU - Internal",
   },
   {
     id: 151,
-    name: "AMU - NRI",
+    text: "AMU - NRI",
   },
   {
     id: 152,
-    name: "AMU - Open",
+    text: "AMU - Open",
   },
   {
     id: 153,
-    name: "BHU - Open",
+    text: "BHU - Open",
   },
   {
     id: 154,
-    name: "CW of Armed Forces Personnel",
+    text: "CW of Armed Forces Personnel",
   },
   {
     id: 160,
-    name: "Deemed - Jain Minority",
+    text: "Deemed - Jain Minority",
   },
   {
     id: 165,
-    name: "Deemed - Muslim Minority",
+    text: "Deemed - Muslim Minority",
   },
   {
     id: 168,
-    name: "Deemed - NRI",
+    text: "Deemed - NRI",
   },
   {
     id: 166,
-    name: "Deemed - Paid Seats (PS)",
+    text: "Deemed - Paid Seats (PS)",
   },
   {
     id: 214,
-    name: "Delhi Univ - Delhi CW",
+    text: "Delhi Univ - Delhi CW",
   },
   {
     id: 155,
-    name: "Delhi Univ - DU Quota (State)",
+    text: "Delhi Univ - DU Quota (State)",
   },
   {
     id: 156,
-    name: "ESI - Insured Persons",
+    text: "ESI - Insured Persons",
   },
   {
     id: 215,
-    name: "IP Univ - Delhi CW",
+    text: "IP Univ - Delhi CW",
   },
   {
     id: 157,
-    name: "IP Univ - IP Quota (State)",
+    text: "IP Univ - IP Quota (State)",
   },
   {
     id: 159,
-    name: "Jamia - Internal",
+    text: "Jamia - Internal",
   },
   {
     id: 161,
-    name: "Jamia - Muslim",
+    text: "Jamia - Muslim",
   },
   {
     id: 167,
-    name: "Jamia - Muslim Women",
+    text: "Jamia - Muslim Women",
   },
   {
     id: 164,
-    name: "Jamia - Open",
+    text: "Jamia - Open",
   },
   {
     id: 163,
-    name: "JIPMER - NRI",
+    text: "JIPMER - NRI",
   },
   {
     id: 162,
-    name: "JIPMER - Open",
+    text: "JIPMER - Open",
   },
   {
     id: 158,
-    name: "JIPMER - Pondicherry Domicile",
+    text: "JIPMER - Pondicherry Domicile",
   },
 ]

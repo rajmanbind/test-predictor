@@ -3,7 +3,7 @@
 import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
-import { FE_Layout } from "@/components/frontend/FE_Layout"
+import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
 import { onTextFieldChange } from "@/utils/utils"
 import { useRouter } from "next/navigation"
@@ -48,7 +48,7 @@ export default function LoginForm() {
   }
 
   return (
-    <FE_Layout>
+    <FELayout>
       <div className={`flex justify-center items-center min-h-screen`}>
         <Card className="w-full max-w-[400px] p-7 tab:p-10">
           <div className=" mb-6 text-center">
@@ -100,6 +100,6 @@ export default function LoginForm() {
           </form>
         </Card>
       </div>
-    </FE_Layout>
+    </FELayout>
   )
 }

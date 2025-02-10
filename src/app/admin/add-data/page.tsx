@@ -1,6 +1,6 @@
 "use client"
 
-import { BE_Layout } from "@/components/admin-panel/BE_Layout"
+import { BELayout } from "@/components/admin-panel/BELayout"
 import { Heading } from "@/components/admin-panel/Heading"
 import { ResponsiveGrid } from "@/components/admin-panel/ResponsiveGrid"
 import { Card } from "@/components/common/Card"
@@ -25,7 +25,7 @@ export default function AddDataPage() {
   })
 
   return (
-    <BE_Layout>
+    <BELayout>
       <Heading>Add Data</Heading>
       <Card>
         <ResponsiveGrid className="p-2 py-3">
@@ -83,6 +83,6 @@ export default function AddDataPage() {
           />
         </ResponsiveGrid>
       </Card>
-    </BE_Layout>
+    </BELayout>
   )
 }

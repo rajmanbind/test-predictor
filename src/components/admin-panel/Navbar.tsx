@@ -1,5 +1,6 @@
 "use client"
 
+import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import useOutsideClick from "@/hooks/useOutsideClick"
 import { Menu } from "lucide-react"
@@ -15,6 +16,7 @@ export function Navbar() {
 
   useOutsideClick(ref, () => setPopOver(false))
   const { fetchData } = useFetch()
+  const { setAppState } = useAppState()
 
   const router = useRouter()
 
@@ -29,17 +31,23 @@ export function Navbar() {
   }
 
   return (
-    <div className="flex items-center justify-between bg-color-accent-dark px-8 py-3 fixed top-0 left-0 w-full">
-      <div>
-        <h2 className="text-[20px] text-white">
-          College Predictor | Admin Panel
+    <div className="flex items-center justify-between bg-color-accent-dark px-4 pc:px-8 py-3 fixed top-0 left-0 w-full z-[999]">
+      <div className="flex items-center gap-4">
+        <Menu
+          size={28}
+          className="text-white pc:hidden"
+          onClick={() => {
+            setAppState({
+              isSidebarOpen: true,
+            })
+          }}
+        />
+        <h2 className="hidden tab:block tab:text-[18px] pc:text-[20px] text-white">
+          College Predictor
         </h2>
       </div>
-
-      <div className="flex items-center gap-4">
-        <Menu size={28} className="text-color-text pc:hidden" />
-
-        <ThemeSwitcher />
+      <div className="flex items-center gap-4 shrink-0">
+        <ThemeSwitcher className="text-white" />
         <button
           ref={ref}
           className="relative block"

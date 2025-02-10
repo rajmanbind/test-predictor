@@ -7,7 +7,7 @@ import { useRef, useState } from "react"
 
 import { Portal } from "../common/Portal"
 
-export function ThemeSwitcher() {
+export function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
   const btnRef = useRef<HTMLButtonElement>(null)
   const [bubblePos, setBubblePos] = useState({ x: 0, y: 0 })
@@ -34,7 +34,12 @@ export function ThemeSwitcher() {
   return (
     <div className="relative">
       <button ref={btnRef} type="button" onClick={toggleThemeClicked}>
-        <div className="size-10 pc:hover:bg-white/20 transition-colors rounded-full grid place-items-center text-color-text pc:text-white">
+        <div
+          className={cn(
+            "size-10 pc:hover:bg-white/20 transition-colors rounded-full grid place-items-center text-color-text pc:text-white",
+            className,
+          )}
+        >
           {theme === "light" ? <Sun size={26} /> : <MoonStar size={26} />}
         </div>
       </button>

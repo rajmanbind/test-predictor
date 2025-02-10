@@ -3,9 +3,9 @@ import { Loader } from "@/components/common/Loader"
 
 export default function AdminLoginPage() {
   return (
-    <div>
+    <>
       <LoginForm />
       <Loader />
-    </div>
+    </>
   )
 }

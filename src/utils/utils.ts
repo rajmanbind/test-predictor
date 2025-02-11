@@ -78,3 +78,20 @@ export function autoComplete(
     ),
   )
 }
+
+export function shouldRenderComponent(
+  conditions: any[],
+  operator: "AND" | "OR",
+): boolean {
+  const evaluatedConditions = conditions.map((condition) =>
+    typeof condition === "boolean" ? condition : !isEmpty(condition),
+  )
+
+  if (operator === "AND") {
+    return evaluatedConditions.every(Boolean)
+  }
+  if (operator === "OR") {
+    return evaluatedConditions.some(Boolean)
+  }
+  return false
+}

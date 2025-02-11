@@ -1,9 +1,10 @@
+import { CoreLayout } from "@/components/common/CoreLayout"
+import { Loader } from "@/components/common/Loader"
 import { ToastProvider } from "@/components/common/ToastProvider"
 import { cn } from "@/utils/utils"
 import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
 import { Poppins } from "next/font/google"
-import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import "../styles/colors.css"
@@ -34,9 +35,8 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem={false}
         >
-          {children}
+          <CoreLayout>{children}</CoreLayout>
         </ThemeProvider>
-        <ToastProvider />
       </body>
     </html>
   )

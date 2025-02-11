@@ -2,12 +2,16 @@ import { create } from "zustand"
 
 export interface IAppState {
   isLoading: boolean
+  pageLoader: boolean
   isSidebarOpen: boolean
+  overFlowYHidden: boolean
 }
 
 const defaultAppState: IAppState = {
   isLoading: false,
+  pageLoader: false,
   isSidebarOpen: false,
+  overFlowYHidden: false,
 }
 
 export const useAppStateStore = create<{

@@ -1,9 +1,10 @@
 "use client"
 
 import { cn } from "@/utils/utils"
-import { Database, Home, PlusSquare, Users } from "lucide-react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { Database, Home, PlusSquare, Settings2, Users } from "lucide-react"
+import { usePathname } from "next/navigation"
+
+import Link from "../common/Link"
 
 export const sidebarMenus = [
   {
@@ -26,6 +27,11 @@ export const sidebarMenus = [
     title: "Manage Data",
     link: "/admin/manage-data",
   },
+  {
+    icon: <Settings2 />,
+    title: "Configure Dropdowns",
+    link: "/admin/configure",
+  },
 ]
 
 export function Sidebar({ className }: { className?: string }) {
@@ -38,13 +44,13 @@ export function Sidebar({ className }: { className?: string }) {
         className,
       )}
     >
-      <ul className="mt-6">
-        {sidebarMenus.map((menu, index) => (
+      <ul className="mt-6 flex flex-col gap-2">
+        {sidebarMenus.map((menu) => (
           <Link
             key={menu?.title}
             href={menu.link}
             className={cn(
-              "flex items-center gap-2 py-3 px-4 hover:bg-color-accent hover:text-white",
+              "flex items-center gap-2 py-3 px-4 hover:bg-color-accent hover:text-white text-sm",
               pathname === menu.link && "bg-color-accent-dark text-white",
             )}
           >

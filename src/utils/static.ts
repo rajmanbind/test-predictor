@@ -36,10 +36,13 @@ export const states = [
   { id: 34, text: "Lakshadweep" },
   { id: 35, text: "Puducherry" },
 ]
+
 export const courses = [
-  { id: 0, text: "MBBS" },
-  { id: 1, text: "BDS" },
-  { id: 2, text: "BSc Nursing" },
+  { id: 0, text: "MD" },
+  { id: 1, text: "MS" },
+  { id: 2, text: "MDS" },
+  { id: 3, text: "MBBS" },
+  { id: 4, text: "BDS" },
 ]
 
 export const categories = [
@@ -58,13 +61,9 @@ export const categories = [
 ]
 
 export const instituteTypes = [
-  { id: 0, text: "AFMS" },
-  { id: 1, text: "Deemed" },
-  { id: 2, text: "Government Institute" },
-  { id: 3, text: "INI (Institute of National Importance)" },
-  { id: 4, text: "Private Institute (State University)" },
-  { id: 5, text: "State Private University" },
-  { id: 6, text: "State Society/PPP (State University)" },
+  { id: 0, text: "Deemed (All India / MCC)" },
+  { id: 1, text: "Private (State University)" },
+  { id: 2, text: "State Deemed University" },
 ]
 
 export const quotas = [

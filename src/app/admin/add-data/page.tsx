@@ -27,6 +27,7 @@ interface IFormData {
   closing_rankR1?: string
   closing_rankR2?: number
   closing_rankR3?: number
+  closing_strayRound?: number
 }
 export default function AddDataPage() {
   const {
@@ -42,7 +43,7 @@ export default function AddDataPage() {
     console.log("payload: ", formData)
   }
   return (
-    <BELayout>
+    <BELayout className="mb-10 tab:mb-0">
       <Heading>Add Data</Heading>
 
       <Card className="mt-4 p-6">
@@ -142,15 +143,12 @@ export default function AddDataPage() {
               value={formData?.fees}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
-              rules={{
-                required: true,
-              }}
               errors={errors}
             />
             <Input
               name="closing_rankR1"
               label="Closing Rank (R1)"
-              type="text"
+              type="number"
               placeholder="Enter here"
               value={formData?.closing_rankR1}
               onChange={(e) => onTextFieldChange(e, setFormData)}
@@ -163,27 +161,31 @@ export default function AddDataPage() {
             <Input
               name="closing_rankR2"
               label="Closing Rank (R2)"
-              type="text"
+              type="number"
               placeholder="Enter here"
               value={formData?.closing_rankR2}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
-              rules={{
-                required: false,
-              }}
               errors={errors}
             />
             <Input
               name="closing_rankR3"
               label="Closing Rank (R3)"
-              type="text"
+              type="number"
               placeholder="Enter here"
               value={formData?.closing_rankR3}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
-              rules={{
-                required: false,
-              }}
+              errors={errors}
+            />
+            <Input
+              name="closing_stray_round"
+              label="Stray Round"
+              type="number"
+              placeholder="Enter here"
+              value={formData?.closing_strayRound}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
               errors={errors}
             />
           </ResponsiveGrid>

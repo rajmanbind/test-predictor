@@ -1,10 +1,10 @@
-import { cn } from "@/utils/utils"
-import React from "react"
+import { cn, isEmpty } from "@/utils/utils"
+import React, { useState } from "react"
 
 export interface TableColumn {
   title: string
   tableKey: string
-  maxWidth?: string
+  width?: string
   renderer?: (props: {
     rowData: any
     cellData: React.ReactNode
@@ -15,101 +15,117 @@ interface TableProps {
   columns: TableColumn[]
   data: any[]
   hideSLNo?: boolean
+  selectable?: boolean
+  onChange?: (selectedRows: any[]) => void
 }
 
 const headerTHClass =
   "border-b border-color-border px-4 py-3 text-left text-color-black_white font-medium text-sm"
 
-export function Table({ hideSLNo, columns, data }: TableProps) {
+export function Table({
+  selectable,
+  hideSLNo,
+  columns,
+  data,
+  onChange,
+}: TableProps) {
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
+
+  const handleSelectRow = (index: number) => {
+    const newSelectedRows = new Set(selectedRows)
+    if (newSelectedRows.has(index)) {
+      newSelectedRows.delete(index)
+    } else {
+      newSelectedRows.add(index)
+    }
+    setSelectedRows(newSelectedRows)
+    onChange?.(Array.from(newSelectedRows).map((i) => data[i]))
+  }
+
+  const handleSelectAll = () => {
+    if (selectedRows.size === data.length) {
+      setSelectedRows(new Set())
+      onChange?.([])
+    } else {
+      const allSelected = new Set(data.map((_, index) => index))
+      setSelectedRows(allSelected)
+      onChange?.(data)
+    }
+  }
+
   return (
     <div
-      className="overflow-x-auto border rounded-lg border-color-border"
-      style={{
-        overflowX: "auto",
-        WebkitOverflowScrolling: "touch",
-      }}
+      className={cn(
+        "overflow-x-auto border rounded-lg border-color-border relative",
+        isEmpty(data) && " h-52",
+      )}
     >
-      <table
-        className="min-w-full border-collapse table-fixed"
-        style={{
-          tableLayout: "fixed",
-          minWidth: "100%",
-        }}
-      >
+      {isEmpty(data) && (
+        <div className="flex justify-center items-center defaultTextStyles font-normal absolute top-[54%] left-1/2 -translate-x-1/2 ">
+          No Data Available...
+        </div>
+      )}
+
+      <table className="min-w-full border-collapse table-fixed">
         <thead>
           <tr className="bg-color-table-header">
-            {!hideSLNo && (
-              <th
-                className={cn(headerTHClass, "px-3")}
-                style={{
-                  whiteSpace: "normal",
-                  wordWrap: "break-word",
-                }}
-              >
-                #
+            {selectable && (
+              <th className={cn("border-b border-color-border p-3")}>
+                <input
+                  className="translate-y-[2px]"
+                  type="checkbox"
+                  checked={
+                    selectedRows?.size === data?.length && !isEmpty(data)
+                  }
+                  onChange={handleSelectAll}
+                />
               </th>
             )}
-
-            {columns.map((column, index) => (
+            {!hideSLNo && <th className={cn(headerTHClass, "px-3")}>#</th>}
+            {columns?.map((column, index) => (
               <th
                 key={index}
                 className={headerTHClass}
-                style={{
-                  maxWidth: column.maxWidth,
-                  width: column.maxWidth,
-                  whiteSpace: "normal",
-                  wordWrap: "break-word",
-                }}
+                style={{ minWidth: column?.width }}
               >
-                {column.title}
+                {column?.title}
               </th>
             ))}
           </tr>
         </thead>
+
         <tbody>
-          {data.map((row, rowIndex) => (
+          {data?.map((row, rowIndex) => (
             <tr
               key={rowIndex}
               className={cn(
-                "hover:bg-color-table-header transition-colors duration-200",
-                "border-b border-color-border",
-                rowIndex >= data?.length - 1 &&
-                  "border-b-none  border-transparent",
+                "hover:bg-color-table-header",
+                data?.length - 1 <= rowIndex
+                  ? ""
+                  : "border-b border-color-border",
               )}
             >
-              {!hideSLNo && (
-                <td
-                  className={cn("p-3 text-left text-xs font-normal")}
-                  style={{
-                    whiteSpace: "normal",
-                    width: "10px",
-                    maxWidth: "10px",
-                    wordWrap: "break-word",
-                    color: "var(--text-sub-color)",
-                  }}
-                >
-                  {rowIndex + 1}
+              {selectable && (
+                <td className={cn("p-3")}>
+                  <input
+                    className="translate-y-[2px]"
+                    type="checkbox"
+                    checked={selectedRows.has(rowIndex)}
+                    onChange={() => handleSelectRow(rowIndex)}
+                  />
                 </td>
               )}
-
-              {columns.map((column, colIndex) => (
-                <td
-                  key={colIndex}
-                  className={cn("px-4 py-3 text-left text-xs font-normal")}
-                  style={{
-                    maxWidth: column.maxWidth,
-                    width: column.maxWidth,
-                    whiteSpace: "normal",
-                    wordWrap: "break-word",
-                    color: "var(--text-sub-color)",
-                  }}
-                >
-                  {column.renderer
-                    ? column.renderer({
+              {!hideSLNo && (
+                <td className="p-3 text-left text-xs">{rowIndex + 1}</td>
+              )}
+              {columns?.map((column, colIndex) => (
+                <td key={colIndex} className="px-4 py-3 text-left text-xs">
+                  {column?.renderer
+                    ? column?.renderer({
                         rowData: row,
-                        cellData: row[column.tableKey],
+                        cellData: row[column?.tableKey],
                       })
-                    : row[column.tableKey] || "-"}
+                    : row[column?.tableKey] || "-"}
                 </td>
               ))}
             </tr>

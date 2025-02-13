@@ -57,9 +57,7 @@ export default function ResultPage() {
               currentPage={1}
               totalItems={100}
               wrapperClass="pb-[50px]"
-              onPageChange={(page: number) => {
-                console.log(page)
-              }}
+              onPageChange={(page: number) => {}}
             />
           </div>
         </div>

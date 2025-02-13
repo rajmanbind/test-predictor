@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/utils/utils"
 import {
   ChevronFirst,
@@ -19,7 +21,7 @@ interface PaginationProps {
 
 export function Pagination({
   currentPage = 1,
-  totalItems,
+  totalItems = 1,
   itemsCountPerPage = 10,
   onPageChange,
   wrapperClass,
@@ -32,10 +34,16 @@ export function Pagination({
 
   function handlePageChange(pageNumber: number) {
     setActivePage(pageNumber)
-    onPageChange(pageNumber - 1)
+    onPageChange(pageNumber)
   }
 
-  if (totalItems === 0 || !totalItems) return null
+  function calcShowing() {
+    if (activePage * itemsCountPerPage > totalItems) {
+      return totalItems
+    }
+
+    return activePage * itemsCountPerPage
+  }
 
   return (
     <div
@@ -47,7 +55,7 @@ export function Pagination({
       <ReactJsPagination
         activePage={activePage}
         onChange={handlePageChange}
-        totalItemsCount={totalItems || 0}
+        totalItemsCount={totalItems}
         pageRangeDisplayed={5}
         itemsCountPerPage={itemsCountPerPage}
         innerClass="flex"
@@ -86,7 +94,7 @@ export function Pagination({
         }
       />
 
-      <p className="text-xs text-color-subtext tab:pr-3 pl-2 tab:pl-0 pt-4">{`Showing ${activePage * itemsCountPerPage} of ${totalItems} results`}</p>
+      <p className="text-xs text-color-subtext tab:pr-3 pl-2 tab:pl-0 pt-4">{`Showing ${calcShowing()} of ${totalItems} results`}</p>
     </div>
   )
 }

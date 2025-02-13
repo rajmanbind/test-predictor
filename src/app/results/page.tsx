@@ -12,20 +12,17 @@ const columns: TableColumn[] = [
   {
     title: "Institute",
     tableKey: "institute",
-    maxWidth: "200px",
-    renderer: ({ cellData }: any) => cellData?.name,
+    width: "200px",
   },
   { title: "Institute Type", tableKey: "institute_type" },
   { title: "State", tableKey: "state" },
   {
     title: "Course",
     tableKey: "course",
-    renderer: ({ cellData }: any) => cellData?.name,
   },
   {
     title: "Quota",
     tableKey: "quota",
-    renderer: ({ cellData }: any) => cellData?.name,
   },
   { title: "Category", tableKey: "category" },
   { title: "Closing Rank 2023", tableKey: "closing_rank" },
@@ -57,9 +54,7 @@ export default function ResultPage() {
               currentPage={1}
               totalItems={100}
               wrapperClass="pb-[50px]"
-              onPageChange={(page: number) => {
-                console.log(page)
-              }}
+              onPageChange={(page: number) => {}}
             />
           </div>
         </div>

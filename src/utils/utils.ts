@@ -95,3 +95,81 @@ export function shouldRenderComponent(
   }
   return false
 }
+
+type ISetStateWithPrev = (
+  data: Record<string, any>, // An object with key-value pairs
+  setState: React.Dispatch<React.SetStateAction<any>>,
+) => void
+
+export const setStateWithPrev: ISetStateWithPrev = (data, setState) => {
+  setState((prevState: any) => {
+    const newState = { ...prevState }
+
+    Object.keys(data).forEach((key) => {
+      const value = data[key]
+
+      // Handle nested object structure using dot notation
+      if (key.includes(".")) {
+        const keys = key.split(".")
+        let nested = newState
+
+        for (let i = 0; i < keys.length - 1; i++) {
+          if (!nested[keys[i]]) nested[keys[i]] = {} // Ensure the nested object exists
+          nested = nested[keys[i]]
+        }
+
+        nested[keys[keys.length - 1]] = value // Set the value in the deepest object
+      } else {
+        newState[key] = value // Set the value directly for non-nested keys
+      }
+    })
+
+    return newState
+  })
+}
+
+export function createPayload(data: any) {
+  const payload: any = {}
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (!isEmpty(value)) {
+      payload[key] = String(value)
+    }
+  })
+
+  return payload
+}
+
+export function clearReactHookFormValueAndStates(
+  fields: string[],
+  setValue: any,
+  setState: React.Dispatch<React.SetStateAction<any>>,
+) {
+  const statePayload: any = {}
+
+  fields?.forEach((field) => {
+    setValue(field, "")
+    statePayload[field] = ""
+  })
+
+  setStateWithPrev(statePayload, setState)
+}
+
+export function onPageChange(
+  page: number,
+  url: string,
+  fetchData: any,
+  setState: any,
+  params?: any,
+) {
+  fetchData({
+    url,
+    params: {
+      page,
+      size: 10,
+      ...params,
+    },
+  }).then((data: any) => {
+    setState(data?.payload)
+  })
+}

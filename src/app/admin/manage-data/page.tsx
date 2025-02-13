@@ -65,7 +65,6 @@ export default function ManageDataPage() {
         <Pagination
           currentPage={tableData?.page}
           totalItems={tableData?.total}
-          itemsCountPerPage={2}
           wrapperClass="pb-[50px]"
           onPageChange={(page: number) => {
             onPageChange(page, "/api/admin/get_data", fetchData, setTableData)

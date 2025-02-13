@@ -5,8 +5,11 @@ import { Heading } from "@/components/admin-panel/Heading"
 import { Card } from "@/components/common/Card"
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
+import { TableDeleteButton } from "@/components/common/TableDeleteButton"
+import { showToast } from "@/components/common/ToastProvider"
+import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import useFetch from "@/hooks/useFetch"
-import { onPageChange } from "@/utils/utils"
+import { isEmpty, onPageChange } from "@/utils/utils"
 import React, { useEffect, useState } from "react"
 
 const columns: TableColumn[] = [
@@ -29,12 +32,16 @@ const columns: TableColumn[] = [
 
 export default function ManageDataPage() {
   const [tableData, setTableData] = useState<any>(null)
+  const [selectedRows, setSelectedRows] = useState<any>([])
+
+  const [popupOpen, setPopupOpen] = useState(false)
+  const [updateUI, setUpdateUI] = useState(false)
 
   const { fetchData } = useFetch()
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [updateUI])
 
   async function getData() {
     const res = await fetchData({
@@ -48,17 +55,40 @@ export default function ManageDataPage() {
     setTableData(res?.payload)
   }
 
+  async function deleteData() {
+    const res = await fetchData({
+      url: "/api/admin/delete_data",
+      method: "POST",
+      data: {
+        id: selectedRows?.map((row: any) => row.id),
+      },
+    })
+
+    if (res?.success) {
+      showToast("success", res?.payload?.msg)
+      setUpdateUI((prev) => !prev)
+    }
+  }
+
   return (
     <BELayout className="mb-10 tab:mb-0">
       <Heading>Manage Data</Heading>
 
       <Card className="mt-4 p-6">
+        <div className="flex justify-end mb-3">
+          <TableDeleteButton
+            title={`Delete ${selectedRows?.length} ${selectedRows?.length > 1 ? "rows" : "row"}`}
+            onClick={() => setPopupOpen(true)}
+            disabled={isEmpty(selectedRows)}
+          />
+        </div>
+
         <Table
           columns={columns}
           data={tableData?.data}
           selectable
-          onChange={(selectedRow: any[]) => {
-            console.log("selectedRow: ", selectedRow)
+          onChange={(rows: any[]) => {
+            setSelectedRows(rows)
           }}
         />
 
@@ -71,6 +101,14 @@ export default function ManageDataPage() {
           }}
         />
       </Card>
+
+      <ConfirmationPopup
+        isOpen={popupOpen}
+        title="Are You Sure You Want To Delete ?"
+        text="This action cannot be undone."
+        onClose={() => setPopupOpen(false)}
+        onConfirm={deleteData}
+      />
     </BELayout>
   )
 }

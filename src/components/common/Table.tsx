@@ -1,10 +1,11 @@
 import { cn, isEmpty } from "@/utils/utils"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 export interface TableColumn {
   title: string
   tableKey: string
   width?: string
+  overrideInternalClick?: boolean
   renderer?: (props: {
     rowData: any
     cellData: React.ReactNode
@@ -30,6 +31,11 @@ export function Table({
   onChange,
 }: TableProps) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
+
+  useEffect(() => {
+    setSelectedRows(new Set())
+    onChange?.([])
+  }, [data])
 
   const handleSelectRow = (index: number) => {
     const newSelectedRows = new Set(selectedRows)
@@ -57,11 +63,11 @@ export function Table({
     <div
       className={cn(
         "overflow-x-auto border rounded-lg border-color-border relative",
-        isEmpty(data) && " h-52",
+        isEmpty(data) && "h-52",
       )}
     >
       {isEmpty(data) && (
-        <div className="flex justify-center items-center defaultTextStyles font-normal absolute top-[54%] left-1/2 -translate-x-1/2 ">
+        <div className="flex justify-center items-center defaultTextStyles font-normal absolute top-[54%] left-1/2 -translate-x-1/2">
           No Data Available...
         </div>
       )}
@@ -70,7 +76,11 @@ export function Table({
         <thead>
           <tr className="bg-color-table-header">
             {selectable && (
-              <th className={cn("border-b border-color-border p-3")}>
+              <th
+                className={cn(
+                  "border-b border-color-border p-3 tableCheckboxStatic bg-color-table-header",
+                )}
+              >
                 <input
                   className="translate-y-[2px]"
                   type="checkbox"
@@ -99,19 +109,19 @@ export function Table({
             <tr
               key={rowIndex}
               className={cn(
-                "hover:bg-color-table-header",
+                "hover:bg-color-table-header cursor-pointer group",
                 data?.length - 1 <= rowIndex
                   ? ""
                   : "border-b border-color-border",
               )}
+              onClick={() => handleSelectRow(rowIndex)}
             >
               {selectable && (
-                <td className={cn("p-3")}>
+                <td className="p-3 bg-color-form-background tableCheckboxStatic group-hover:bg-color-table-header">
                   <input
                     className="translate-y-[2px]"
                     type="checkbox"
                     checked={selectedRows.has(rowIndex)}
-                    onChange={() => handleSelectRow(rowIndex)}
                   />
                 </td>
               )}
@@ -119,7 +129,13 @@ export function Table({
                 <td className="p-3 text-left text-xs">{rowIndex + 1}</td>
               )}
               {columns?.map((column, colIndex) => (
-                <td key={colIndex} className="px-4 py-3 text-left text-xs">
+                <td
+                  key={colIndex}
+                  className="px-4 py-3 text-left text-xs"
+                  onClick={(e) =>
+                    column?.overrideInternalClick ? e.stopPropagation() : null
+                  }
+                >
                   {column?.renderer
                     ? column?.renderer({
                         rowData: row,

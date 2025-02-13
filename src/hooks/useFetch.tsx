@@ -23,9 +23,6 @@ interface FetchParams extends AxiosRequestConfig {
 
 export interface IAPIBaseType<T = any> {
   success: boolean
-  msg: string
-  status: number
-  timestamp: string
   payload: T
 }
 

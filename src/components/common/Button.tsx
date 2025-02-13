@@ -5,14 +5,32 @@ export function Button({
   className,
   onClick,
   disabled,
+  variant,
   type = "button",
 }: {
   children: React.ReactNode
   className?: string
   onClick?: () => void
   type?: "button" | "submit" | "reset"
+  variant?: "primary" | "outline"
   disabled?: boolean
 }) {
+  if (variant === "outline") {
+    return (
+      <button
+        type={type}
+        disabled={disabled}
+        onClick={onClick}
+        className={cn(
+          "border border-color-accent-dark text-color-accent-dark hover:bg-color-accent/20 disabled:opacity-50 px-4 py-3 rounded",
+          className,
+        )}
+      >
+        {children}
+      </button>
+    )
+  }
+
   return (
     <button
       type={type}

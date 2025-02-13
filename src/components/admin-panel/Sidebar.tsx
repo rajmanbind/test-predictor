@@ -13,11 +13,6 @@ export const sidebarMenus = [
     link: "/admin/dashboard",
   },
   {
-    icon: <Users />,
-    title: "Users",
-    link: "/admin/users",
-  },
-  {
     icon: <PlusSquare />,
     title: "Add Data",
     link: "/admin/add-data",

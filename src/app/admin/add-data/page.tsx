@@ -7,10 +7,20 @@ import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
+import { showToast } from "@/components/common/ToastProvider"
+import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
-import { categories, courses, instituteTypes, quotas } from "@/utils/static"
+import {
+  categories,
+  courses,
+  instituteTypes,
+  quotas,
+  years,
+} from "@/utils/static"
 import {
   autoComplete,
+  clearReactHookFormValueAndStates,
+  createPayload,
   onOptionSelected,
   onTextFieldChange,
 } from "@/utils/utils"
@@ -24,24 +34,70 @@ interface IFormData {
   quotas?: IOption
   categories?: IOption
   fees?: number | string
-  closing_rankR1?: string
-  closing_rankR2?: number
-  closing_rankR3?: number
-  closing_strayRound?: number
+  closingRankR1?: string
+  closingRankR2?: number
+  closingRankR3?: number
+  strayRound?: number
+  year?: IOption
 }
 export default function AddDataPage() {
   const {
     handleSubmit,
     control,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     shouldFocusError: true,
   })
   const [formData, setFormData] = useState<IFormData>()
-  function onSubmit() {
-    console.log("payload: ", formData)
+
+  const { fetchData } = useFetch()
+
+  async function onSubmit() {
+    const payload = createPayload({
+      instituteName: formData?.instituteName,
+      instituteType: formData?.instituteType?.text,
+      course: formData?.courses?.text,
+      quota: formData?.quotas?.text,
+      category: formData?.categories?.text,
+      fees: formData?.fees,
+      closingRankR1: formData?.closingRankR1,
+      closingRankR2: formData?.closingRankR2,
+      closingRankR3: formData?.closingRankR3,
+      strayRound: formData?.strayRound,
+      year: formData?.year?.text,
+    })
+
+    const res = await fetchData({
+      url: "/api/admin/add_data",
+      method: "POST",
+      data: payload,
+    })
+
+    if (res?.success) {
+      showToast("success", res?.payload?.msg)
+
+      clearReactHookFormValueAndStates(
+        [
+          "instituteName",
+          "instituteType",
+          "courses",
+          "quotas",
+          "categories",
+          "fees",
+          "closingRankR1",
+          "closingRankR2",
+          "closingRankR3",
+          "strayRound",
+          "year",
+        ],
+        setValue,
+        setFormData,
+      )
+    }
   }
+
   return (
     <BELayout className="mb-10 tab:mb-0">
       <Heading>Add Data</Heading>
@@ -146,11 +202,11 @@ export default function AddDataPage() {
               errors={errors}
             />
             <Input
-              name="closing_rankR1"
+              name="closingRankR1"
               label="Closing Rank (R1)"
               type="number"
               placeholder="Enter here"
-              value={formData?.closing_rankR1}
+              value={formData?.closingRankR1}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               rules={{
@@ -159,33 +215,52 @@ export default function AddDataPage() {
               errors={errors}
             />
             <Input
-              name="closing_rankR2"
+              name="closingRankR2"
               label="Closing Rank (R2)"
               type="number"
               placeholder="Enter here"
-              value={formData?.closing_rankR2}
+              value={formData?.closingRankR2}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               errors={errors}
             />
             <Input
-              name="closing_rankR3"
+              name="closingRankR3"
               label="Closing Rank (R3)"
               type="number"
               placeholder="Enter here"
-              value={formData?.closing_rankR3}
+              value={formData?.closingRankR3}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               errors={errors}
             />
             <Input
-              name="closing_stray_round"
+              name="strayRound"
               label="Stray Round"
               type="number"
               placeholder="Enter here"
-              value={formData?.closing_strayRound}
+              value={formData?.strayRound}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
+              errors={errors}
+            />
+
+            <SearchAndSelect
+              name="year"
+              label="Year"
+              value={formData?.year}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+              }}
+              control={control}
+              required
+              setValue={setValue}
+              options={years()}
+              debounceDelay={0}
+              defaultOption={{ id: 0, text: String(new Date().getFullYear()) }}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, courses, setOptions)
+              }
               errors={errors}
             />
           </ResponsiveGrid>

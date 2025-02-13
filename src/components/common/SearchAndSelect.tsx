@@ -90,11 +90,20 @@ export const SearchAndSelect = ({
   }, [listOptions])
 
   useEffect(() => {
-    if (defaultOption?.text) {
+    if (defaultOption?.text && isEmpty(value?.text)) {
       setValue(name, defaultOption)
       setInput(defaultOption.text)
+      onChange({ name, selectedValue: defaultOption })
     }
   }, [defaultOption])
+
+  useEffect(() => {
+    if (isEmpty(value?.text) && isEmpty(defaultOption?.text)) {
+      setInput("")
+    } else if (isEmpty(value?.text) && !isEmpty(defaultOption?.text)) {
+      setInput(defaultOption?.text || "")
+    }
+  }, [value])
 
   function isRequired() {
     return (required && !props?.disabled) || props?.forceRequired ? "*" : ""
@@ -119,6 +128,7 @@ export const SearchAndSelect = ({
   function onOptionSelected(option: IOption, fieldOnChange: any) {
     onChange({ name, selectedValue: option })
     setSelectedValue(option)
+
     setInput(option.text)
     setOptionListOpen(false)
     fieldOnChange(option)

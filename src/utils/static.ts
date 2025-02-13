@@ -1,3 +1,5 @@
+import { IOption } from "@/types/GlobalTypes"
+
 export const states = [
   { id: 0, text: "Andhra Pradesh" },
   { id: 1, text: "Arunachal Pradesh" },
@@ -65,6 +67,19 @@ export const instituteTypes = [
   { id: 1, text: "Private (State University)" },
   { id: 2, text: "State Deemed University" },
 ]
+
+export function years(): IOption[] {
+  const yearsArr: IOption[] = []
+
+  for (let i = 0; i < 17; i++) {
+    yearsArr.push({
+      id: i,
+      text: String(2024 + i),
+    })
+  }
+
+  return yearsArr
+}
 
 export const quotas = [
   {

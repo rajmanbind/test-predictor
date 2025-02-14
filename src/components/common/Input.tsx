@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/utils/utils"
 import { Eye, EyeOff, Info } from "lucide-react"
 import * as React from "react"
@@ -17,6 +19,7 @@ export interface InputProps
   labelHint?: React.ReactNode
   labelTooltipIcon?: React.ReactNode
   value: string | number | undefined
+  setValue: any
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   errors: FieldErrors<FieldValues>
   control: Control<any>
@@ -49,9 +52,15 @@ export function Input({
   labelClass,
   boxWrapperClass,
   labelContainerClass,
+  value,
+  setValue,
   ...props
 }: InputProps) {
   const [passType, setPassType] = React.useState("password")
+
+  React.useEffect(() => {
+    setValue(name, value)
+  }, [value])
 
   function isRequired() {
     return (rules?.required && !props?.disabled) || props?.forceRequired
@@ -90,17 +99,17 @@ export function Input({
       control={control}
       rules={isRulesRequired()}
       render={({ field }) => {
-        if (!field?.value && field?.value !== "" && defaultValue) {
-          field.onChange(defaultValue)
-          const value = { target: { value: defaultValue }, name }
+        // if (!field?.value && field?.value !== "" && defaultValue) {
+        //   field.onChange(defaultValue)
+        //   const value = { target: { value: defaultValue }, name }
 
-          // @ts-ignore
-          onChange(value)
-        }
+        //   // @ts-ignore
+        //   onChange(value)
+        // }
 
-        if (props?.value === "EMPTY" && field?.value) {
-          field.onChange("")
-        }
+        // if (props?.value === "EMPTY" && field?.value) {
+        //   field.onChange("")
+        // }
 
         return (
           <div className={cn("text-color-text", wrapperClass)}>

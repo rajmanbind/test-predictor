@@ -4,13 +4,12 @@ import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
 import { FELayout } from "@/components/frontend/FELayout"
+import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { onTextFieldChange } from "@/utils/utils"
 import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
-
-import { showToast } from "../common/ToastProvider"
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
@@ -28,6 +27,7 @@ export default function LoginForm() {
   })
   const { fetchData } = useFetch()
   const router = useRouter()
+  const { showToast } = useAppState()
 
   async function onSubmit() {
     const res = await fetchData({
@@ -67,6 +67,7 @@ export default function LoginForm() {
               type="email"
               placeholder="Enter Rank"
               value={formData?.email}
+              setValue={setValue}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               rules={{
@@ -88,6 +89,7 @@ export default function LoginForm() {
               value={formData?.password}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
+              setValue={setValue}
               rules={{
                 required: true,
               }}

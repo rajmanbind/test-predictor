@@ -1,3 +1,4 @@
+import { ReactNode } from "react"
 import { create } from "zustand"
 
 export interface IAppState {
@@ -5,6 +6,11 @@ export interface IAppState {
   pageLoader: boolean
   isSidebarOpen: boolean
   overFlowYHidden: boolean
+  toast: {
+    showToast: boolean
+    toastType: "success" | "error"
+    toastMsg: ReactNode
+  }
 }
 
 const defaultAppState: IAppState = {
@@ -12,6 +18,11 @@ const defaultAppState: IAppState = {
   pageLoader: false,
   isSidebarOpen: false,
   overFlowYHidden: false,
+  toast: {
+    showToast: false,
+    toastType: "success",
+    toastMsg: "",
+  },
 }
 
 export const useAppStateStore = create<{

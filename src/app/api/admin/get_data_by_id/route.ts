@@ -6,17 +6,19 @@ export const dynamic = "force-dynamic"
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get("page") || "1", 10) - 1
-    const size = parseInt(searchParams.get("size") || "10", 10)
-    const from = page * size
-    const to = from + size - 1
+    const id = searchParams.get("id")
+
+    if (!id) {
+      return NextResponse.json({ msg: "ID is required" }, { status: 400 })
+    }
 
     const supabase = createSupabaseServerClient()
 
-    const { data, error, count } = await supabase
+    const { data, error } = await supabase
       .from("data_table")
-      .select("*", { count: "exact" })
-      .range(from, to)
+      .select("*")
+      .eq("id", id)
+      .single()
 
     if (error) {
       return NextResponse.json(
@@ -25,17 +27,11 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({
-      data,
-      page: page + 1,
-      size,
-      total: count,
-      totalPages: Math.ceil((count || 0) / size),
-    })
+    return NextResponse.json({ data })
   } catch (err) {
     console.error(err)
     return NextResponse.json(
-      { err, msg: "Something went wrong!" },
+      { msg: "Something went wrong!", err },
       { status: 400 },
     )
   }

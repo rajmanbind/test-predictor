@@ -72,6 +72,7 @@ export function SearchForm() {
         value={formData?.rank}
         onChange={(e) => onTextFieldChange(e, setFormData)}
         control={control}
+        setValue={setValue}
         rules={{
           required: false,
         }}

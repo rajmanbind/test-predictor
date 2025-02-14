@@ -3,32 +3,16 @@
 import { BELayout } from "@/components/admin-panel/BELayout"
 import { Heading } from "@/components/admin-panel/Heading"
 import { Card } from "@/components/common/Card"
+import Link from "@/components/common/Link"
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
 import { TableDeleteButton } from "@/components/common/TableDeleteButton"
-import { showToast } from "@/components/common/ToastProvider"
 import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
+import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { isEmpty, onPageChange } from "@/utils/utils"
+import { Pencil, Trash2 } from "lucide-react"
 import React, { useEffect, useState } from "react"
-
-const columns: TableColumn[] = [
-  {
-    title: "Institute Name",
-    tableKey: "instituteName",
-    width: "200px",
-  },
-  { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-  { title: "Course", tableKey: "course" },
-  { title: "Quota", tableKey: "quota", width: "150px" },
-  { title: "Category", tableKey: "category" },
-  { title: "Fees", tableKey: "fees", width: "100px" },
-  { title: "Closing Rank R1", tableKey: "closingRankR1", width: "150px" },
-  { title: "Closing Rank R2", tableKey: "closingRankR2", width: "150px" },
-  { title: "Closing Rank R3", tableKey: "closingRankR3", width: "150px" },
-  { title: "Stray Round", tableKey: "strayRound", width: "150px" },
-  { title: "Year", tableKey: "year" },
-]
 
 export default function ManageDataPage() {
   const [tableData, setTableData] = useState<any>(null)
@@ -36,12 +20,58 @@ export default function ManageDataPage() {
 
   const [popupOpen, setPopupOpen] = useState(false)
   const [updateUI, setUpdateUI] = useState(false)
+  const [singleDelete, setSingleDelete] = useState<any>([])
 
   const { fetchData } = useFetch()
+  const { showToast } = useAppState()
 
   useEffect(() => {
     getData()
   }, [updateUI])
+
+  const columns: TableColumn[] = [
+    {
+      title: "Institute Name",
+      tableKey: "instituteName",
+      width: "200px",
+    },
+    { title: "Institute Type", tableKey: "instituteType", width: "150px" },
+    { title: "Course", tableKey: "course" },
+    { title: "Quota", tableKey: "quota", width: "150px" },
+    { title: "Category", tableKey: "category" },
+    { title: "Fees", tableKey: "fees", width: "100px" },
+    { title: "Closing Rank R1", tableKey: "closingRankR1", width: "150px" },
+    { title: "Closing Rank R2", tableKey: "closingRankR2", width: "150px" },
+    { title: "Closing Rank R3", tableKey: "closingRankR3", width: "150px" },
+    { title: "Stray Round", tableKey: "strayRound", width: "150px" },
+    { title: "Year", tableKey: "year" },
+    {
+      title: "Action",
+      tableKey: "action",
+      overrideInternalClick: true,
+      width: "70px",
+      renderer: ({ rowData }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <Link href={`/admin/edit-data/${rowData?.id}`}>
+              <Pencil
+                size={20}
+                className="text-color-text hover:text-blue-600 cursor-pointer"
+              />
+            </Link>
+            <Trash2
+              size={20}
+              className="text-color-text hover:text-red-600 cursor-pointer"
+              onClick={() => {
+                setSingleDelete([rowData?.id])
+                setPopupOpen(true)
+              }}
+            />
+          </div>
+        )
+      },
+    },
+  ]
 
   async function getData() {
     const res = await fetchData({
@@ -56,13 +86,22 @@ export default function ManageDataPage() {
   }
 
   async function deleteData() {
+    let id: any = []
+    if (singleDelete?.length > 0) {
+      id = singleDelete
+    } else {
+      id = selectedRows?.map((row: any) => row.id)
+    }
+
     const res = await fetchData({
       url: "/api/admin/delete_data",
       method: "POST",
       data: {
-        id: selectedRows?.map((row: any) => row.id),
+        id,
       },
     })
+
+    setSingleDelete([])
 
     if (res?.success) {
       showToast("success", res?.payload?.msg)

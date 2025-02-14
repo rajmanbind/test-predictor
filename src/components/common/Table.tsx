@@ -131,7 +131,10 @@ export function Table({
               {columns?.map((column, colIndex) => (
                 <td
                   key={colIndex}
-                  className="px-4 py-3 text-left text-xs"
+                  className={cn(
+                    "px-4 py-3 text-left text-xs",
+                    column?.overrideInternalClick && "cursor-auto",
+                  )}
                   onClick={(e) =>
                     column?.overrideInternalClick ? e.stopPropagation() : null
                   }

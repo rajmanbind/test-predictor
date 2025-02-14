@@ -1,4 +1,3 @@
-import { showToast } from "@/components/common/ToastProvider"
 import axios, { AxiosRequestConfig } from "axios"
 import { useCallback, useRef, useState } from "react"
 
@@ -57,7 +56,7 @@ const useFetch = () => {
 
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  const { setAppState, appState } = useAppState()
+  const { setAppState, showToast } = useAppState()
 
   const fetchData = useCallback(
     async <T = any,>(params: FetchParams): Promise<IAPIBaseType<T> | null> => {

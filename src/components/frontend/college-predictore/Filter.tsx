@@ -73,6 +73,7 @@ export function Filter({ className }: { className?: string }) {
         label="Rank"
         type="number"
         placeholder="Enter Rank"
+        setValue={setValue}
         value={formData?.rank}
         onChange={(e) => onTextFieldChange(e, setFormData)}
         control={control}

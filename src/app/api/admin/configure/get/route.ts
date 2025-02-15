@@ -6,18 +6,20 @@ export const dynamic = "force-dynamic"
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get("page") || "1", 10) - 1
-    const size = parseInt(searchParams.get("size") || "10", 10)
-    const from = page * size
-    const to = from + size - 1
+    const type = searchParams.get("type") || "ALL"
 
     const supabase = createSupabaseServerClient()
 
-    const { data, error, count } = await supabase
-      .from("data_table")
-      .select("*", { count: "exact" })
+    let query = supabase
+      .from("dropdown_options")
+      .select("*")
       .order("created_at", { ascending: false })
-      .range(from, to)
+
+    if (type !== "ALL") {
+      query = query.eq("type", type)
+    }
+
+    const { data, error } = await query
 
     if (error) {
       return NextResponse.json(
@@ -26,13 +28,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({
-      data,
-      page: page + 1,
-      size,
-      total: count,
-      totalPages: Math.ceil((count || 0) / size),
-    })
+    return NextResponse.json({ data })
   } catch (err) {
     console.error(err)
     return NextResponse.json(

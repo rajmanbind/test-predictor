@@ -51,6 +51,9 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   })
   const [formData, setFormData] = useState<IFormData>()
   const [defaultValues, setDefaultValues] = useState<IFormData>()
+  const [quotasList, setQuotasList] = useState<IOption[]>([])
+  const [categoriesList, setCategoriesList] = useState<IOption[]>([])
+
   const params = useParams()
 
   const { showToast } = useAppState()
@@ -60,7 +63,22 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
 
   useEffect(() => {
     if (editMode) getDataById(params?.id)
+
+    getConfigData()
   }, [params?.id])
+
+  async function getConfigData() {
+    const [quotaData, categoryData] = await Promise.all([
+      fetchData({ url: "/api/admin/configure/get", params: { type: "QUOTA" } }),
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "CATEGORY" },
+      }),
+    ])
+
+    setQuotasList(quotaData?.payload?.data || [])
+    setCategoriesList(categoryData?.payload?.data || [])
+  }
 
   async function getDataById(id: any) {
     const res = await fetchData({
@@ -199,7 +217,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
             debounceDelay={0}
             defaultOption={defaultValues?.instituteType}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, courses, setOptions)
+              autoComplete(text, instituteTypes, setOptions)
             }
             errors={errors}
           />
@@ -233,11 +251,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
             control={control}
             required
             setValue={setValue}
-            options={quotas}
+            options={quotasList}
             debounceDelay={0}
             defaultOption={defaultValues?.quotas}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, courses, setOptions)
+              autoComplete(text, quotasList, setOptions)
             }
             errors={errors}
           />
@@ -252,11 +270,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
             control={control}
             required
             setValue={setValue}
-            options={categories}
+            options={categoriesList}
             debounceDelay={0}
             defaultOption={defaultValues?.categories}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, courses, setOptions)
+              autoComplete(text, categoriesList, setOptions)
             }
             errors={errors}
           />
@@ -342,8 +360,8 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
             errors={errors}
           />
         </ResponsiveGrid>
-        <Button className="mt-6 ml-auto w-28" type="submit">
-          {editMode ? "Update" : "Save"}
+        <Button className="mt-6 ml-auto px-6" type="submit">
+          {editMode ? "Update Data" : "Save Data"}
         </Button>
       </form>
     </Card>

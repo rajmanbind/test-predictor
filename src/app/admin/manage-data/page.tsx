@@ -114,7 +114,9 @@ export default function ManageDataPage() {
       <Heading>Manage Data</Heading>
 
       <Card className="mt-4 p-6">
-        <div className="flex justify-end mb-3">
+        <div className="flex justify-between mb-3">
+          <h2>Total Registered Institutes</h2>
+
           <TableDeleteButton
             title={`Delete ${selectedRows?.length} ${selectedRows?.length > 1 ? "rows" : "row"}`}
             onClick={() => setPopupOpen(true)}

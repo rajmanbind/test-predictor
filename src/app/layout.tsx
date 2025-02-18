@@ -3,6 +3,7 @@ import { cn } from "@/utils/utils"
 import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
 import { Poppins } from "next/font/google"
+import { Suspense } from "react"
 
 import "../styles/colors.css"
 import "../styles/reset.css"
@@ -32,7 +33,9 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem={false}
         >
-          <CoreLayout>{children}</CoreLayout>
+          <Suspense fallback={null}>
+            <CoreLayout>{children}</CoreLayout>
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

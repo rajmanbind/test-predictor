@@ -99,18 +99,6 @@ export function Input({
       control={control}
       rules={isRulesRequired()}
       render={({ field }) => {
-        // if (!field?.value && field?.value !== "" && defaultValue) {
-        //   field.onChange(defaultValue)
-        //   const value = { target: { value: defaultValue }, name }
-
-        //   // @ts-ignore
-        //   onChange(value)
-        // }
-
-        // if (props?.value === "EMPTY" && field?.value) {
-        //   field.onChange("")
-        // }
-
         return (
           <div className={cn("text-color-text", wrapperClass)}>
             {label && (

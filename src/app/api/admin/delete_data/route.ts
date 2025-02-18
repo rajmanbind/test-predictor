@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase"
+import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
@@ -7,11 +8,15 @@ export async function POST(request: NextRequest) {
 
     const supabase = createSupabaseServerClient()
 
-    const { error } = await supabase.from("data_table").delete().in("id", id)
+    const { error, data } = await supabase
+      .from("data_table")
+      .delete()
+      .in("id", id)
+      .single()
 
-    if (error) {
+    if (error || isEmpty(data)) {
       return NextResponse.json(
-        { msg: "Failed to delete data", error },
+        { msg: "Failed to delete data", error, data },
         { status: 400 },
       )
     }

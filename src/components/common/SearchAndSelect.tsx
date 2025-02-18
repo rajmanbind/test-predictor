@@ -92,6 +92,7 @@ export const SearchAndSelect = ({
   useEffect(() => {
     if (defaultOption?.text && isEmpty(value?.text)) {
       setValue(name, defaultOption)
+      setSelectedValue(defaultOption)
       setInput(defaultOption.text)
       onChange({ name, selectedValue: defaultOption })
     }
@@ -287,7 +288,7 @@ function ListOptions({
                 key={uuidv4()}
                 className={cn(
                   "cursor-pointer items-center gap-2 select-none text-color-text group hover:bg-color-accent hover:text-white w-full",
-                  option.id === selectedValue?.id && "text-color-accent",
+                  option?.text === selectedValue?.text && "text-color-accent",
                 )}
                 onClick={() => onOptionSelected(option, fieldOnChange)}
               >

@@ -27,7 +27,7 @@ export default function LoginForm() {
   })
   const { fetchData } = useFetch()
   const router = useRouter()
-  const { showToast } = useAppState()
+  const { showToast, setAppState } = useAppState()
 
   async function onSubmit() {
     const res = await fetchData({
@@ -41,6 +41,7 @@ export default function LoginForm() {
 
     if (res?.success) {
       if (res?.payload?.isAuthenticated) {
+        setAppState({ pageLoader: true })
         showToast("success", res?.payload?.msg)
         router.replace("/admin/dashboard")
       }

@@ -17,6 +17,7 @@ interface TableProps {
   data: any[]
   hideSLNo?: boolean
   selectable?: boolean
+  className?: string
   onChange?: (selectedRows: any[]) => void
 }
 
@@ -27,6 +28,7 @@ export function Table({
   selectable,
   hideSLNo,
   columns,
+  className,
   data,
   onChange,
 }: TableProps) {
@@ -60,97 +62,97 @@ export function Table({
   }
 
   return (
-    <div
-      className={cn(
-        "overflow-x-auto border rounded-lg border-color-border relative",
-        isEmpty(data) && "h-52",
-      )}
-    >
+    <div className={cn("relative", className)}>
       {isEmpty(data) && (
-        <div className="flex justify-center items-center defaultTextStyles font-normal absolute top-[54%] left-1/2 -translate-x-1/2">
+        <div className="defaultTextStyles font-normal absolute top-1/2 left-1/2 -translate-x-1/2">
           No Data Available...
         </div>
       )}
-
-      <table className="min-w-full border-collapse table-fixed">
-        <thead>
-          <tr className="bg-color-table-header">
-            {selectable && (
-              <th
-                className={cn(
-                  "border-b border-color-border p-3 tableCheckboxStatic bg-color-table-header",
-                )}
-              >
-                <input
-                  className="translate-y-[2px]"
-                  type="checkbox"
-                  checked={
-                    selectedRows?.size === data?.length && !isEmpty(data)
-                  }
-                  onChange={handleSelectAll}
-                />
-              </th>
-            )}
-            {!hideSLNo && <th className={cn(headerTHClass, "px-3")}>#</th>}
-            {columns?.map((column, index) => (
-              <th
-                key={index}
-                className={headerTHClass}
-                style={{ minWidth: column?.width }}
-              >
-                {column?.title}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {data?.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className={cn(
-                "hover:bg-color-table-header cursor-pointer group",
-                data?.length - 1 <= rowIndex
-                  ? ""
-                  : "border-b border-color-border",
-              )}
-              onClick={() => handleSelectRow(rowIndex)}
-            >
+      <div
+        className={cn(
+          "overflow-x-auto border rounded-lg border-color-border relative min-h-[600px]",
+        )}
+      >
+        <table className="min-w-full border-collapse table-fixed">
+          <thead>
+            <tr className="bg-color-table-header">
               {selectable && (
-                <td className="p-3 bg-color-form-background tableCheckboxStatic group-hover:bg-color-table-header">
+                <th
+                  className={cn(
+                    "border-b border-color-border p-3 tableCheckboxStatic bg-color-table-header",
+                  )}
+                >
                   <input
                     className="translate-y-[2px]"
                     type="checkbox"
-                    checked={selectedRows.has(rowIndex)}
+                    checked={
+                      selectedRows?.size === data?.length && !isEmpty(data)
+                    }
+                    onChange={handleSelectAll}
                   />
-                </td>
+                </th>
               )}
-              {!hideSLNo && (
-                <td className="p-3 text-left text-xs">{rowIndex + 1}</td>
-              )}
-              {columns?.map((column, colIndex) => (
-                <td
-                  key={colIndex}
-                  className={cn(
-                    "px-4 py-3 text-left text-xs",
-                    column?.overrideInternalClick && "cursor-auto",
-                  )}
-                  onClick={(e) =>
-                    column?.overrideInternalClick ? e.stopPropagation() : null
-                  }
+              {!hideSLNo && <th className={cn(headerTHClass, "px-3")}>#</th>}
+              {columns?.map((column, index) => (
+                <th
+                  key={index}
+                  className={headerTHClass}
+                  style={{ minWidth: column?.width }}
                 >
-                  {column?.renderer
-                    ? column?.renderer({
-                        rowData: row,
-                        cellData: row[column?.tableKey],
-                      })
-                    : row[column?.tableKey] || "-"}
-                </td>
+                  {column?.title}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {data?.map((row, rowIndex) => (
+              <tr
+                key={rowIndex}
+                className={cn(
+                  "hover:bg-color-table-header cursor-pointer group",
+                  data?.length - 1 <= rowIndex
+                    ? "border-b border-color-border"
+                    : "border-b border-color-border",
+                )}
+                onClick={() => handleSelectRow(rowIndex)}
+              >
+                {selectable && (
+                  <td className="p-3 bg-color-form-background tableCheckboxStatic group-hover:bg-color-table-header">
+                    <input
+                      className="translate-y-[2px]"
+                      type="checkbox"
+                      checked={selectedRows.has(rowIndex)}
+                    />
+                  </td>
+                )}
+                {!hideSLNo && (
+                  <td className="p-3 text-left text-xs">{rowIndex + 1}</td>
+                )}
+                {columns?.map((column, colIndex) => (
+                  <td
+                    key={colIndex}
+                    className={cn(
+                      "px-4 py-3 text-left text-xs",
+                      column?.overrideInternalClick && "cursor-auto",
+                    )}
+                    onClick={(e) =>
+                      column?.overrideInternalClick ? e.stopPropagation() : null
+                    }
+                  >
+                    {column?.renderer
+                      ? column?.renderer({
+                          rowData: row,
+                          cellData: row[column?.tableKey],
+                        })
+                      : row[column?.tableKey] || "-"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

@@ -1,17 +1,21 @@
 import { createSupabaseServerClient } from "@/lib/supabase"
+import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json()
+    const reqData = await request.json()
 
     const supabase = createSupabaseServerClient()
 
-    const { error } = await supabase.from("data_table").insert(data)
+    const { error, data } = await supabase
+      .from("data_table")
+      .insert(reqData)
+      .single()
 
-    if (error) {
+    if (error || isEmpty(data)) {
       return NextResponse.json(
-        { msg: "Failed to insert data", error },
+        { msg: "Failed to insert data", error, data },
         { status: 400 },
       )
     }

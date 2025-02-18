@@ -4,8 +4,10 @@ import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
+import { useAppState } from "@/hooks/useAppState"
+import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
-import { categories, courses, states } from "@/utils/static"
+import { courses, states } from "@/utils/static"
 import {
   autoComplete,
   isEmpty,
@@ -13,7 +15,7 @@ import {
   onTextFieldChange,
 } from "@/utils/utils"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IFormData {
@@ -37,9 +39,25 @@ export function CollegePredictorForm() {
     rank: "",
   })
 
+  const [categoriesList, setCategoriesList] = useState<IOption[]>([])
+  const { fetchData } = useFetch()
+
+  const { setAppState } = useAppState()
+
   const router = useRouter()
 
+  useEffect(() => {
+    fetchData({
+      url: "/api/admin/configure/get",
+      params: { type: "CATEGORY" },
+    }).then((res) => {
+      setCategoriesList(res?.payload?.data || [])
+    })
+  }, [])
+
   function onSubmit() {
+    setAppState({ pageLoader: true })
+
     const searchParams = new URLSearchParams()
 
     searchParams.set("rank", formData?.rank?.toString() || "")
@@ -124,10 +142,10 @@ export function CollegePredictorForm() {
           }}
           control={control}
           setValue={setValue}
-          options={categories}
+          options={categoriesList}
           debounceDelay={0}
           searchAPI={(text, setOptions) =>
-            autoComplete(text, categories, setOptions)
+            autoComplete(text, categoriesList, setOptions)
           }
           errors={errors}
         />

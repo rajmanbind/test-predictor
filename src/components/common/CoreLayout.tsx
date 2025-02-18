@@ -9,6 +9,7 @@ import { Toast } from "./Toast"
 
 export function CoreLayout({ children }: { children: React.ReactNode }) {
   const { appState } = useAppState()
+
   useLink()
 
   return (

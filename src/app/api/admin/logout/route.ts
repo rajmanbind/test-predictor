@@ -9,8 +9,10 @@ export async function GET() {
     const { error } = await supabase.auth.signOut()
 
     if (error) {
+      console.error(error?.cause)
+
       return NextResponse.json(
-        { msg: "Logout failed", isAuthenticated: true },
+        { msg: "Logout failed", isAuthenticated: true, error },
         { status: 400 },
       )
     }

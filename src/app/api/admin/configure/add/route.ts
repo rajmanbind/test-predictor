@@ -1,11 +1,12 @@
 import { createSupabaseServerClient } from "@/lib/supabase"
+import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json()
+    const reqData = await request.json()
 
-    if (!Array.isArray(data) || data.length === 0) {
+    if (!Array.isArray(reqData) || reqData?.length === 0) {
       return NextResponse.json(
         { msg: "Invalid input. Expected a non-empty array." },
         { status: 400 },
@@ -14,11 +15,14 @@ export async function POST(request: NextRequest) {
 
     const supabase = createSupabaseServerClient()
 
-    const { error } = await supabase.from("dropdown_options").insert(data)
+    const { error, data } = await supabase
+      .from("dropdown_options")
+      .insert(reqData)
+      .single()
 
-    if (error) {
+    if (error || isEmpty(data)) {
       return NextResponse.json(
-        { msg: "Failed to insert data", error },
+        { msg: "Failed to insert data", error, data },
         { status: 400 },
       )
     }

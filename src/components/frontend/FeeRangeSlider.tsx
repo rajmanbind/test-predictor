@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils/utils"
 import * as SliderPrimitive from "@radix-ui/react-slider"
-import { DollarSign } from "lucide-react"
+import { IndianRupee } from "lucide-react"
 import * as React from "react"
 
 interface FeeRangeSliderProps {
@@ -10,7 +10,7 @@ interface FeeRangeSliderProps {
 }
 
 export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
-  const [range, setRange] = React.useState<[number, number]>([0, 10000000])
+  const [range, setRange] = React.useState<[number, number]>([0, 10000000000])
 
   const handleSliderChange = (newValue: number[]) => {
     setRange([newValue[0], newValue[1]])
@@ -19,7 +19,7 @@ export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
   const handleInputChange =
     (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = Number(event.target.value)
-      if (!isNaN(newValue) && newValue >= 0 && newValue <= 10000000) {
+      if (!isNaN(newValue) && newValue >= 0 && newValue <= 10000000000) {
         const newRange: [number, number] = [...range] as [number, number]
         newRange[index] = newValue
 
@@ -46,56 +46,57 @@ export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          {/* <Label htmlFor="feeFrom">From</Label> */}
-          <div className="relative">
-            <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-            <input
-              id="feeFrom"
-              type="number"
-              min={0}
-              max={10000000}
-              value={range[0]}
-              onChange={handleInputChange(0)}
-              className="pl-10"
-            />
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {formatValue(range[0])}
-          </p>
+    <div className={cn(className)}>
+      <label className={cn("text-base pc:text-lg mb-[6px] block font-medium")}>
+        Fees
+      </label>
+
+      <div className="flex items-center gap-3 w-full">
+        <div className="relative w-full">
+          <IndianRupee className="absolute left-2 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <input
+            id="feeFrom"
+            type="number"
+            min={0}
+            max={10000000000}
+            value={range[0]}
+            onChange={handleInputChange(0)}
+            className="pl-8 text-xs py-4 border border-color-border bg-color-white_black rounded w-full"
+          />
         </div>
-        <div className="space-y-2">
-          {/* <Label htmlFor="feeTo">To</Label> */}
-          <div className="relative">
-            <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-            <input
-              id="feeTo"
-              type="number"
-              min={0}
-              max={10000000}
-              value={range[1]}
-              onChange={handleInputChange(1)}
-              className="pl-10"
-            />
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {formatValue(range[1])}
-          </p>
+
+        <div className="relative w-full">
+          <IndianRupee className="absolute left-2 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <input
+            id="feeTo"
+            type="number"
+            min={0}
+            max={10000000000}
+            value={range[1]}
+            onChange={handleInputChange(1)}
+            className="pl-8 text-xs py-4 border border-color-border bg-color-white_black rounded w-full"
+          />
         </div>
       </div>
-      <div className="space-y-2">
-        <Slider
-          min={0}
-          max={10000000}
-          step={1000}
-          value={range}
-          onValueChange={handleSliderChange}
-          className="py-6"
-        />
-        <p className="text-sm text-muted-foreground text-center">
-          Range: {formatValue(range[1] - range[0])}
+
+      <Slider
+        min={0}
+        max={10000000000}
+        step={1000}
+        value={range}
+        onValueChange={handleSliderChange}
+        className="py-6"
+      />
+      <div className="text-sm text-color-text flex justify-between px-2">
+        <p>
+          From:
+          <br />
+          {formatValue(range[0])}
+        </p>
+        <p>
+          To:
+          <br />
+          {formatValue(range[1])}
         </p>
       </div>
     </div>

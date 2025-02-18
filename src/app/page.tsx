@@ -1,11 +1,8 @@
 "use client"
 
-import { Card } from "@/components/common/Card"
-import { Pagination } from "@/components/common/Pagination"
-import { Table, TableColumn } from "@/components/common/Table"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
-import { CollegePredictorForm } from "@/components/frontend/college-predictore/CollegePredictorForm"
+import { CollegePredictorForm } from "@/components/frontend/college-predictor/CollegePredictorForm"
 
 export default function Home() {
   return (

@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase"
+import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function PUT(
@@ -18,19 +19,20 @@ export async function PUT(
 
     const supabase = createSupabaseServerClient()
 
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from("data_table")
       .update(updateData)
       .eq("id", id)
+      .single()
 
-    if (error) {
+    if (error || isEmpty(data)) {
       return NextResponse.json(
-        { msg: "Failed to update data", error, updateData },
+        { msg: "Failed to update data", error, data },
         { status: 400 },
       )
     }
 
-    return NextResponse.json({ msg: "Data updated successfully.", updateData })
+    return NextResponse.json({ msg: "Data updated successfully.", data })
   } catch (err) {
     console.error(err)
     return NextResponse.json(

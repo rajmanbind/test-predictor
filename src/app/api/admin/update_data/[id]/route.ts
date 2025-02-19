@@ -23,7 +23,7 @@ export async function PUT(
       .from("data_table")
       .update(updateData)
       .eq("id", id)
-      .single()
+      .select()
 
     if (error || isEmpty(data)) {
       return NextResponse.json(

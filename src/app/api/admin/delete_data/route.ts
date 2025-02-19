@@ -12,16 +12,16 @@ export async function POST(request: NextRequest) {
       .from("data_table")
       .delete()
       .in("id", id)
-      .single()
+      .select()
 
     if (error || isEmpty(data)) {
       return NextResponse.json(
-        { msg: "Failed to delete data", error, data },
+        { msg: "Failed to delete record", error, data },
         { status: 400 },
       )
     }
 
-    return NextResponse.json({ msg: "Data deleted successfully." })
+    return NextResponse.json({ msg: "Record deleted successfully." })
   } catch (err) {
     console.error(err)
     return NextResponse.json(

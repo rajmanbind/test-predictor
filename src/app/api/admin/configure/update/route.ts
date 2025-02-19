@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       .from("dropdown_options")
       .update({ text })
       .eq("id", id)
-      .single()
+      .select()
 
     if (error || isEmpty(data))
       return NextResponse.json(

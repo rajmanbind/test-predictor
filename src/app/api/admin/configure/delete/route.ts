@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       .from("dropdown_options")
       .delete()
       .eq("id", id)
-      .single()
+      .select()
 
     if (error || isEmpty(data))
       return NextResponse.json(
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       )
 
-    return NextResponse.json({ msg: "Deleted successfully" })
+    return NextResponse.json({ msg: "Configuration Deleted successfully" })
   } catch (err) {
     return NextResponse.json(
       { msg: "Something went wrong", err },

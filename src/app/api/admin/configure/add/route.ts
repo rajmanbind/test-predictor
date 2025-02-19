@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const { error, data } = await supabase
       .from("dropdown_options")
       .insert(reqData)
-      .single()
+      .select()
 
     if (error || isEmpty(data)) {
       return NextResponse.json(

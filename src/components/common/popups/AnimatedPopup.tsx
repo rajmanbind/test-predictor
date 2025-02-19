@@ -73,7 +73,7 @@ export default function AnimatedPopup({
               {typeof onClose === "function" && (
                 <X
                   className={cn(
-                    "cursor-pointer absolute top-5 right-5 z-10",
+                    "cursor-pointer absolute top-3 right-3 tab:top-5 tab:right-5 z-10",
                     closeIconClass,
                   )}
                   onClick={onClose}

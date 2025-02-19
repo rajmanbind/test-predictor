@@ -8,13 +8,7 @@ import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
-import {
-  categories,
-  courses,
-  instituteTypes,
-  quotas,
-  years,
-} from "@/utils/static"
+import { instituteTypes, years } from "@/utils/static"
 import {
   autoComplete,
   clearReactHookFormValueAndStates,
@@ -53,6 +47,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   const [defaultValues, setDefaultValues] = useState<IFormData>()
   const [quotasList, setQuotasList] = useState<IOption[]>([])
   const [categoriesList, setCategoriesList] = useState<IOption[]>([])
+  const [coursesList, setCoursesList] = useState<IOption[]>([])
 
   const params = useParams()
 
@@ -68,16 +63,21 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   }, [params?.id])
 
   async function getConfigData() {
-    const [quotaData, categoryData] = await Promise.all([
+    const [quotaData, categoryData, coursesData] = await Promise.all([
       fetchData({ url: "/api/admin/configure/get", params: { type: "QUOTA" } }),
       fetchData({
         url: "/api/admin/configure/get",
         params: { type: "CATEGORY" },
       }),
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "COURSES" },
+      }),
     ])
 
     setQuotasList(quotaData?.payload?.data || [])
     setCategoriesList(categoryData?.payload?.data || [])
+    setCoursesList(coursesData?.payload?.data || [])
   }
 
   async function getDataById(id: any) {
@@ -232,11 +232,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
             control={control}
             required
             setValue={setValue}
-            options={courses}
+            options={coursesList}
             debounceDelay={0}
             defaultOption={defaultValues?.courses}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, courses, setOptions)
+              autoComplete(text, coursesList, setOptions)
             }
             errors={errors}
           />
@@ -355,7 +355,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
                 : { id: 0, text: String(new Date().getFullYear()) }
             }
             searchAPI={(text, setOptions) =>
-              autoComplete(text, courses, setOptions)
+              autoComplete(text, years(), setOptions)
             }
             errors={errors}
           />

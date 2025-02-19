@@ -13,12 +13,15 @@ import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
 import {
   autoComplete,
+  cn,
+  isEmpty,
   onOptionSelected,
   shouldRenderComponent,
 } from "@/utils/utils"
 import { X } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { Tooltip } from "react-tooltip"
 
 const dropDownType: IOption[] = [
   { id: 0, text: "CATEGORY" },
@@ -41,6 +44,8 @@ export default function ConfigurePage() {
   } = useForm({ shouldFocusError: true })
   const { fetchData } = useFetch()
   const { showToast } = useAppState()
+
+  const [updateMode, setUpdateMode] = useState<string>("")
 
   useEffect(() => {
     if (selectedType) getData(selectedType.text)
@@ -161,7 +166,7 @@ export default function ConfigurePage() {
           />
         </div>
 
-        {shouldRenderComponent([selectedType, configList], "AND") && (
+        {shouldRenderComponent([selectedType], "AND") && (
           <form
             className="w-full max-w-[500px]"
             onSubmit={handleSubmit(onSubmit)}
@@ -171,8 +176,14 @@ export default function ConfigurePage() {
               <TableAddButton title="Add More" onClick={addNewRow} />
             </div>
 
+            {isEmpty(configList) && (
+              <div className="text-color-subtext text-center mt-10 mb-2 w-full border border-color-border py-10">
+                No options to show <br /> Please add some...
+              </div>
+            )}
+
             <ul className="flex flex-col gap-3 w-full max-w-[500px] max-h-[calc(100vh-500px)] overflow-y-auto">
-              {configList.map((item, index) => (
+              {configList?.map((item, index) => (
                 <li
                   key={index}
                   className="flex items-center justify-between gap-2 text-color-subtext py-2 mr-4 text-sm"
@@ -184,8 +195,10 @@ export default function ConfigurePage() {
                     setValue={setValue}
                     onChange={(e) => {
                       updateText(index, e.target.value)
-
+                    }}
+                    onFocus={(e) => {
                       if (item?.id) {
+                        setUpdateMode(e.target.name)
                         if (buttonText === "Update Changes") return
                         setButtonText("Update Changes")
                       } else {
@@ -193,24 +206,42 @@ export default function ConfigurePage() {
                         setButtonText("Save Changes")
                       }
                     }}
-                    onBlur={() => item?.id && updateData(item.id, item.text)}
+                    onBlur={() => {
+                      if (item?.id) {
+                        setUpdateMode("")
+                        if (item.text !== initialConfigList?.[index]?.text)
+                          updateData(item.id, item.text)
+                      }
+                    }}
                     control={control}
                     errors={errors}
-                    wrapperClass="w-full"
+                    wrapperClass={cn(
+                      "w-full",
+                      String(index) === updateMode && "z-[1001]",
+                    )}
                   />
 
                   {item.id ? (
                     <X
-                      className="text-color-subtext hover:text-red-600 cursor-pointer"
+                      className={cn(
+                        "text-color-subtext hover:text-red-600 cursor-pointer border-none outline-none",
+                        initialConfigList?.length === 1 && "opacity-50",
+                      )}
                       size={20}
+                      data-tooltip-id={
+                        initialConfigList?.length === 1 ? "tooltip" : ""
+                      }
+                      data-tooltip-content="You Can't Delete the Last Option"
                       onClick={() => {
+                        if (initialConfigList?.length === 1) return
+
                         setDeleteId(item.id)
                         setPopupOpen(true)
                       }}
                     />
                   ) : (
                     <X
-                      className="text-color-subtext hover:text-red-600 cursor-pointer"
+                      className="text-color-subtext hover:text-red-600 cursor-pointer border-none outline-none"
                       size={20}
                       onClick={() => removeNewRow(index)}
                     />
@@ -228,6 +259,10 @@ export default function ConfigurePage() {
         )}
       </Card>
 
+      {updateMode && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-[rgba(0,0,0,0.4)] z-[1000]"></div>
+      )}
+
       <ConfirmationPopup
         isOpen={popupOpen}
         title="Are You Sure You Want To Delete?"
@@ -235,6 +270,8 @@ export default function ConfigurePage() {
         onClose={() => setPopupOpen(false)}
         onConfirm={deleteData}
       />
+
+      <Tooltip id="tooltip" place="top" className="z-[1100]" />
     </BELayout>
   )
 }

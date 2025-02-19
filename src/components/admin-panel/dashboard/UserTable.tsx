@@ -93,7 +93,7 @@ const data = [
 function UserTable() {
   return (
     <Card className="mt-6 py-6 px-8">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+      <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-3">
         Total Registered Users
       </h2>
 

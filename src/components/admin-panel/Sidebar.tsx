@@ -1,7 +1,14 @@
 "use client"
 
 import { cn } from "@/utils/utils"
-import { Database, Home, PlusSquare, Settings2, Users } from "lucide-react"
+import {
+  Database,
+  Home,
+  PlusSquare,
+  Settings2,
+  Trash2,
+  Users,
+} from "lucide-react"
 import { usePathname } from "next/navigation"
 
 import Link from "../common/Link"
@@ -21,6 +28,11 @@ export const sidebarMenus = [
     icon: <Database />,
     title: "Manage Data",
     link: "/admin/manage-data",
+  },
+  {
+    icon: <Trash2 />,
+    title: "Delete Yearly Data",
+    link: "/admin/delete-yearly-data",
   },
   {
     icon: <Settings2 />,

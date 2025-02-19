@@ -7,7 +7,7 @@ import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
-import { courses, states } from "@/utils/static"
+import { states } from "@/utils/static"
 import {
   autoComplete,
   isEmpty,
@@ -40,6 +40,7 @@ export function CollegePredictorForm() {
   })
 
   const [categoriesList, setCategoriesList] = useState<IOption[]>([])
+  const [coursesList, setCoursesList] = useState<IOption[]>([])
   const { fetchData } = useFetch()
 
   const { setAppState } = useAppState()
@@ -47,13 +48,24 @@ export function CollegePredictorForm() {
   const router = useRouter()
 
   useEffect(() => {
-    fetchData({
-      url: "/api/admin/configure/get",
-      params: { type: "CATEGORY" },
-    }).then((res) => {
-      setCategoriesList(res?.payload?.data || [])
-    })
+    getConfigData()
   }, [])
+
+  async function getConfigData() {
+    const [coursesData, categoryData] = await Promise.all([
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "COURSES" },
+      }),
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "CATEGORY" },
+      }),
+    ])
+
+    setCoursesList(coursesData?.payload?.data || [])
+    setCategoriesList(categoryData?.payload?.data || [])
+  }
 
   function onSubmit() {
     setAppState({ pageLoader: true })
@@ -125,10 +137,10 @@ export function CollegePredictorForm() {
           }}
           control={control}
           setValue={setValue}
-          options={courses}
+          options={coursesList}
           debounceDelay={0}
           searchAPI={(text, setOptions) =>
-            autoComplete(text, courses, setOptions)
+            autoComplete(text, coursesList, setOptions)
           }
           errors={errors}
         />

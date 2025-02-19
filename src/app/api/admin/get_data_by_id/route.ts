@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       .from("data_table")
       .select("*")
       .eq("id", id)
-      .select()
+      .single()
 
     if (error) {
       return NextResponse.json(

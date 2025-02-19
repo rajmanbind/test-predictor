@@ -2,6 +2,7 @@
 
 import { useLink } from "@/hooks/useLink"
 import { cn } from "@/utils/utils"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import React from "react"
 
 export default function Link({
@@ -20,6 +21,14 @@ export default function Link({
   onClick?: () => void
 }) {
   const navigation = useLink()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  let currentURL = pathname
+
+  if (searchParams.size > 0) {
+    currentURL += `?${searchParams.toString()}`
+  }
 
   return (
     <button
@@ -27,6 +36,13 @@ export default function Link({
       className={cn("block", className)}
       onClick={() => {
         onClick?.()
+
+        const queryString = params ? `?${new URLSearchParams(params)}` : ""
+
+        const targetURL = href + queryString
+
+        if (currentURL === targetURL) return
+
         navigation(href, params, options)
       }}
     >

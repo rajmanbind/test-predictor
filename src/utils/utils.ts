@@ -173,3 +173,55 @@ export function onPageChange(
     setState(data?.payload)
   })
 }
+
+export function mergeCollegeRecords(records: any) {
+  const mergedMap = new Map<any, any>()
+  const currentYear = new Date().getFullYear()
+  const allowedYears = new Set([currentYear, currentYear - 1])
+
+  for (const record of records) {
+    const key = `${record.instituteName}-${record.instituteType}-${record.course}-${record.quota}-${record.category}`
+    const year = parseInt(record.year)
+
+    if (!allowedYears.has(year)) continue
+
+    if (!mergedMap.has(key)) {
+      mergedMap.set(key, {
+        instituteName: record.instituteName,
+        instituteType: record.instituteType,
+        course: record.course,
+        quota: record.quota,
+        category: record.category,
+        fees: record.fees,
+        current_year_id: null,
+        previous_year_id: null,
+      })
+    }
+
+    const mergedRecord = mergedMap.get(key)!
+
+    if (year === currentYear) {
+      mergedRecord.current_year_id = record.id
+    } else if (year === currentYear - 1) {
+      mergedRecord.previous_year_id = record.id
+    }
+
+    if (!mergedRecord.year || year > parseInt(mergedRecord.year)) {
+      mergedRecord.fees = record.fees
+      mergedRecord.year = year
+    }
+
+    const yearKey = "_" + year
+
+    mergedRecord[`closingRankR1${yearKey}`] =
+      record.closingRankR1 ?? mergedRecord[`closingRankR1${yearKey}`]
+    mergedRecord[`closingRankR2${yearKey}`] =
+      record.closingRankR2 ?? mergedRecord[`closingRankR2${yearKey}`]
+    mergedRecord[`closingRankR3${yearKey}`] =
+      record.closingRankR3 ?? mergedRecord[`closingRankR3${yearKey}`]
+    mergedRecord[`strayRound${yearKey}`] =
+      record.strayRound ?? mergedRecord[`strayRound${yearKey}`]
+  }
+
+  return Array.from(mergedMap.values())
+}

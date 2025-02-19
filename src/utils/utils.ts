@@ -133,7 +133,7 @@ export function createPayload(data: any) {
 
   Object.entries(data).forEach(([key, value]) => {
     if (!isEmpty(value)) {
-      payload[key] = String(value)
+      payload[key] = String(value).trim()
     }
   })
 

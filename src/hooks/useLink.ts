@@ -7,7 +7,7 @@ import { useAppState } from "./useAppState"
 
 export function useLink(noLoading?: boolean) {
   const router = useRouter()
-  const { setAppState } = useAppState()
+  const { appState, setAppState } = useAppState()
 
   const pathname = usePathname()
   const searchParams = useSearchParams()

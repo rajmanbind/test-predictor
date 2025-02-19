@@ -30,7 +30,7 @@ export function BELayout({
 
       <main
         className={cn(
-          "w-full p-4 tab:px-8 max-w-[1040px] mt-[80px] pc:ml-[240px] min-h-[calc(100vh-80px)]",
+          "w-full p-4 tab:px-8 max-w-[1290px] mt-[80px] pc:ml-[240px] min-h-[calc(100vh-80px)]",
           className,
         )}
       >

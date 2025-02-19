@@ -24,8 +24,9 @@ import { useForm } from "react-hook-form"
 import { Tooltip } from "react-tooltip"
 
 const dropDownType: IOption[] = [
-  { id: 0, text: "CATEGORY" },
-  { id: 1, text: "QUOTA" },
+  { id: 0, text: "COURSES" },
+  { id: 1, text: "CATEGORY" },
+  { id: 2, text: "QUOTA" },
 ]
 
 export default function ConfigurePage() {

@@ -85,7 +85,7 @@ export default function ConfigurePage() {
       method: "POST",
       data: newEntries.map((item) => ({
         type: selectedType.text,
-        text: item.text,
+        text: item.text.trim(),
       })),
     })
 
@@ -103,7 +103,7 @@ export default function ConfigurePage() {
     const res = await fetchData({
       url: "/api/admin/configure/update",
       method: "POST",
-      data: { id, text: newText },
+      data: { id, text: newText.trim() },
     })
 
     if (res?.success) {

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from("dropdown_options")
       .select("*")
-      .order("created_at", { ascending: false })
+      .order("text", { ascending: true })
 
     if (type !== "ALL") {
       query = query.eq("type", type)

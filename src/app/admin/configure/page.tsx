@@ -19,7 +19,7 @@ import {
   shouldRenderComponent,
 } from "@/utils/utils"
 import { X } from "lucide-react"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Tooltip } from "react-tooltip"
 
@@ -29,7 +29,7 @@ const dropDownType: IOption[] = [
   { id: 2, text: "QUOTA" },
 ]
 
-export default function ConfigurePage() {
+export default function ConfigureDropdownPage() {
   const [configList, setConfigList] = useState<any[]>([])
   const [initialConfigList, setInitialConfigList] = useState<any[]>([])
   const [popupOpen, setPopupOpen] = useState(false)
@@ -47,6 +47,8 @@ export default function ConfigurePage() {
   const { showToast } = useAppState()
 
   const [updateMode, setUpdateMode] = useState<string>("")
+  const { appState } = useAppState()
+  const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
     if (selectedType) getData(selectedType.text)
@@ -65,6 +67,7 @@ export default function ConfigurePage() {
 
   function addNewRow() {
     setConfigList((prev) => [{ id: null, text: "" }, ...prev])
+    listRef.current?.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   function updateText(index: number, text: string) {
@@ -177,13 +180,19 @@ export default function ConfigurePage() {
               <TableAddButton title="Add More" onClick={addNewRow} />
             </div>
 
-            {isEmpty(configList) && (
+            {shouldRenderComponent(
+              [isEmpty(configList), !appState.isLoading],
+              "AND",
+            ) && (
               <div className="text-color-subtext text-center mt-10 mb-2 w-full border border-color-border py-10">
                 No options to show <br /> Please add some...
               </div>
             )}
 
-            <ul className="flex flex-col gap-3 w-full max-w-[500px] max-h-[calc(100vh-500px)] overflow-y-auto">
+            <ul
+              ref={listRef}
+              className="flex flex-col gap-3 w-full max-w-[500px] max-h-[calc(100vh-500px)] overflow-y-auto"
+            >
               {configList?.map((item, index) => (
                 <li
                   key={index}

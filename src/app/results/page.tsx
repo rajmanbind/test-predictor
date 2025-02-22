@@ -7,7 +7,8 @@ import { FELayout } from "@/components/frontend/FELayout"
 import { Filter } from "@/components/frontend/college-predictor/Filter"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
-import { mergeCollegeRecords, onPageChange } from "@/utils/utils"
+import { onPageChange } from "@/utils/utils"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const currentYear = new Date().getFullYear()
@@ -69,28 +70,43 @@ const columns: TableColumn[] = [
 export default function ResultPage() {
   const [tableData, setTableData] = useState<any>(null)
   const [updateUI, setUpdateUI] = useState(false)
+  const [configYear, setConfigYear] = useState<any>([])
 
   const { fetchData } = useFetch()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     getData()
   }, [updateUI])
 
   async function getData() {
-    const res = await fetchData({
-      url: "/api/admin/get_data",
-      params: {
-        page: 1,
-        size: 10,
-      },
-    })
+    const page = Number(searchParams.get("page") || 1)
 
-    const resData = res?.payload
-    resData.data = mergeCollegeRecords(res?.payload?.data)
+    const [dataRes, configRes] = await Promise.all([
+      fetchData({
+        url: "/api/admin/get_data",
+        params: {
+          page,
+          size: 10,
+        },
+      }),
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "CONFIG_YEAR" },
+      }),
+    ])
 
-    setTableData(resData)
+    if (dataRes?.success) {
+      setTableData(dataRes?.payload)
+    }
 
-    setTableData(res?.payload)
+    if (configRes?.success) {
+      setConfigYear(
+        configRes?.payload?.data?.[0]?.text
+          ?.split("-")
+          .map((item: string) => item.trim()),
+      )
+    }
   }
 
   return (

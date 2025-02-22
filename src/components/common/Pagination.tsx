@@ -1,12 +1,13 @@
 "use client"
 
-import { cn } from "@/utils/utils"
+import { cn, updateQueryParams } from "@/utils/utils"
 import {
   ChevronFirst,
   ChevronLast,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import React, { useEffect } from "react"
 import ReactJsPagination from "react-js-pagination"
 
@@ -27,12 +28,14 @@ export function Pagination({
   wrapperClass,
 }: PaginationProps) {
   const [activePage, setActivePage] = React.useState(currentPage)
+  const router = useRouter()
 
   useEffect(() => {
     setActivePage(currentPage)
   }, [currentPage])
 
   function handlePageChange(pageNumber: number) {
+    updateQueryParams(router, { page: pageNumber })
     setActivePage(pageNumber)
     onPageChange(pageNumber)
   }

@@ -1,7 +1,14 @@
 "use client"
 
 import { cn } from "@/utils/utils"
-import { Database, Home, PlusSquare, Settings2, Trash2 } from "lucide-react"
+import {
+  CalendarCog,
+  Database,
+  Home,
+  PlusSquare,
+  Settings2,
+  Trash2,
+} from "lucide-react"
 import { usePathname } from "next/navigation"
 
 import Link from "../common/Link"
@@ -26,6 +33,11 @@ export const sidebarMenus = [
     icon: <Trash2 />,
     title: "Delete Yearly Data",
     link: "/admin/delete-yearly-data",
+  },
+  {
+    icon: <CalendarCog />,
+    title: "Configure Current Year",
+    link: "/admin/configure/years",
   },
   {
     icon: <Settings2 />,

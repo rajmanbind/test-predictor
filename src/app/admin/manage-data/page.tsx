@@ -11,8 +11,9 @@ import { ConfirmEditYearPopup } from "@/components/common/popups/ConfirmEditYear
 import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
-import { isEmpty, mergeCollegeRecords, onPageChange } from "@/utils/utils"
+import { isEmpty, onPageChange } from "@/utils/utils"
 import { Pencil, Trash2 } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
 export default function ManageDataPage() {
@@ -22,19 +23,26 @@ export default function ManageDataPage() {
   const [popupOpen, setPopupOpen] = useState(false)
   const [updateUI, setUpdateUI] = useState(false)
   const [singleDelete, setSingleDelete] = useState<any>([])
+  const [configYear, setConfigYear] = useState<any>([])
 
   const [yearsId, setYearsId] = useState<any>([])
 
   const { fetchData } = useFetch()
   const { showToast } = useAppState()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     getData()
   }, [updateUI])
 
   function generateCols() {
-    const currentYear = new Date().getFullYear()
-    const previousYear = currentYear - 1
+    let currentYear = new Date().getFullYear()
+    let previousYear = currentYear - 1
+
+    if (!isEmpty(configYear)) {
+      previousYear = configYear[0]
+      currentYear = configYear[1]
+    }
 
     const columns: TableColumn[] = [
       {
@@ -47,43 +55,43 @@ export default function ManageDataPage() {
       { title: "Quota", tableKey: "quota", width: "150px" },
       { title: "Category", tableKey: "category" },
       {
-        title: `CR ${previousYear} 1`,
-        tableKey: `closingRankR1_${previousYear}`,
-        width: "110px",
+        title: `CR ${previousYear} [R1]`,
+        tableKey: `closingRankR1_old`,
+        width: "130px",
       },
       {
-        title: `CR ${previousYear} 2`,
-        tableKey: `closingRankR2_${previousYear}`,
-        width: "110px",
+        title: `CR ${previousYear} [R2]`,
+        tableKey: `closingRankR2_old`,
+        width: "130px",
       },
       {
-        title: `CR ${previousYear} 3`,
-        tableKey: `closingRankR3_${previousYear}`,
-        width: "110px",
+        title: `CR ${previousYear} [R3]`,
+        tableKey: `closingRankR3_old`,
+        width: "130px",
       },
       {
         title: `SR ${previousYear}`,
-        tableKey: `strayRound_${previousYear}`,
+        tableKey: `strayRound_old`,
         width: "110px",
       },
       {
-        title: `CR ${currentYear} 1`,
-        tableKey: `closingRankR1_${currentYear}`,
-        width: "110px",
+        title: `CR ${currentYear} [R1]`,
+        tableKey: `closingRankR1_new`,
+        width: "130px",
       },
       {
-        title: `CR ${currentYear} 2`,
-        tableKey: `closingRankR2_${currentYear}`,
-        width: "110px",
+        title: `CR ${currentYear} [R2]`,
+        tableKey: `closingRankR2_new`,
+        width: "130px",
       },
       {
-        title: `CR ${currentYear} 3`,
-        tableKey: `closingRankR3_${currentYear}`,
-        width: "110px",
+        title: `CR ${currentYear} [R3]`,
+        tableKey: `closingRankR3_new`,
+        width: "130px",
       },
       {
         title: `SR ${currentYear}`,
-        tableKey: `strayRound_${currentYear}`,
+        tableKey: `strayRound_new`,
         width: "110px",
       },
       { title: "Fees", tableKey: "fees", width: "100px" },
@@ -93,17 +101,14 @@ export default function ManageDataPage() {
         overrideInternalClick: true,
         width: "70px",
         renderer: ({ rowData }) => {
-          if (rowData?.current_year_id && rowData?.previous_year_id) {
+          if (rowData?.new_id && rowData?.prev_id) {
             return (
               <div className="flex items-center gap-2">
                 <Pencil
                   size={20}
                   className="text-color-text hover:text-blue-600 cursor-pointer"
                   onClick={() => {
-                    setYearsId([
-                      rowData.current_year_id,
-                      rowData.previous_year_id,
-                    ])
+                    setYearsId([rowData.new_id, rowData.prev_id])
                   }}
                 />
 
@@ -111,7 +116,7 @@ export default function ManageDataPage() {
                   size={20}
                   className="text-color-text hover:text-red-600 cursor-pointer"
                   onClick={() => {
-                    setSingleDelete([rowData?.id])
+                    setSingleDelete([rowData?.new_id, rowData?.prev_id])
                     setPopupOpen(true)
                   }}
                 />
@@ -119,7 +124,7 @@ export default function ManageDataPage() {
             )
           }
 
-          const id = rowData?.current_year_id || rowData?.previous_year_id
+          const id = rowData?.new_id || rowData?.prev_id
 
           return (
             <div className="flex items-center gap-2">
@@ -133,7 +138,7 @@ export default function ManageDataPage() {
                 size={20}
                 className="text-color-text hover:text-red-600 cursor-pointer"
                 onClick={() => {
-                  setSingleDelete([rowData?.id])
+                  setSingleDelete([id])
                   setPopupOpen(true)
                 }}
               />
@@ -148,10 +153,11 @@ export default function ManageDataPage() {
 
   async function deleteData() {
     let id: any = []
+
     if (singleDelete?.length > 0) {
       id = singleDelete
     } else {
-      id = selectedRows?.map((row: any) => row.id)
+      id = selectedRows?.map((row: any) => row.new_id || row.prev_id)
     }
 
     const res = await fetchData({
@@ -171,18 +177,33 @@ export default function ManageDataPage() {
   }
 
   async function getData() {
-    const res = await fetchData({
-      url: "/api/admin/get_data",
-      params: {
-        page: 1,
-        size: 10,
-      },
-    })
+    const page = Number(searchParams.get("page") || 1)
 
-    const resData = res?.payload
-    resData.data = mergeCollegeRecords(res?.payload?.data)
+    const [dataRes, configRes] = await Promise.all([
+      fetchData({
+        url: "/api/admin/get_data",
+        params: {
+          page,
+          size: 10,
+        },
+      }),
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "CONFIG_YEAR" },
+      }),
+    ])
 
-    setTableData(resData)
+    if (dataRes?.success) {
+      setTableData(dataRes?.payload)
+    }
+
+    if (configRes?.success) {
+      setConfigYear(
+        configRes?.payload?.data?.[0]?.text
+          ?.split("-")
+          .map((item: string) => item.trim()),
+      )
+    }
   }
 
   return (
@@ -210,8 +231,8 @@ export default function ManageDataPage() {
         />
 
         <Pagination
-          currentPage={tableData?.page}
-          totalItems={tableData?.total}
+          currentPage={tableData?.currentPage}
+          totalItems={tableData?.totalItems}
           wrapperClass="pb-[50px]"
           onPageChange={(page: number) => {
             onPageChange(page, "/api/admin/get_data", fetchData, setTableData)

@@ -1,4 +1,5 @@
 import { cn, isEmpty } from "@/utils/utils"
+import { useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
 export interface TableColumn {
@@ -33,6 +34,7 @@ export function Table({
   onChange,
 }: TableProps) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     setSelectedRows(new Set())
@@ -70,7 +72,7 @@ export function Table({
       )}
       <div
         className={cn(
-          "overflow-x-auto border rounded-lg border-color-border relative min-h-[600px]",
+          "overflow-x-auto border rounded-lg border-color-border relative min-h-[543px]",
         )}
       >
         <table className="min-w-full border-collapse table-fixed">
@@ -106,50 +108,61 @@ export function Table({
           </thead>
 
           <tbody>
-            {data?.map((row, rowIndex) => (
-              <tr
-                key={rowIndex}
-                className={cn(
-                  "hover:bg-color-table-header cursor-pointer group",
-                  data?.length - 1 <= rowIndex
-                    ? "border-b border-color-border"
-                    : "border-b border-color-border",
-                )}
-                onClick={() => handleSelectRow(rowIndex)}
-              >
-                {selectable && (
-                  <td className="p-3 bg-color-form-background tableCheckboxStatic group-hover:bg-color-table-header">
-                    <input
-                      className="translate-y-[2px]"
-                      type="checkbox"
-                      checked={selectedRows.has(rowIndex)}
-                    />
-                  </td>
-                )}
-                {!hideSLNo && (
-                  <td className="p-3 text-left text-xs">{rowIndex + 1}</td>
-                )}
-                {columns?.map((column, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className={cn(
-                      "px-4 py-3 text-left text-xs",
-                      column?.overrideInternalClick && "cursor-auto",
-                    )}
-                    onClick={(e) =>
-                      column?.overrideInternalClick ? e.stopPropagation() : null
-                    }
-                  >
-                    {column?.renderer
-                      ? column?.renderer({
-                          rowData: row,
-                          cellData: row[column?.tableKey],
-                        })
-                      : row[column?.tableKey] || "-"}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {data?.map((row, rowIndex) => {
+              return (
+                <tr
+                  key={rowIndex}
+                  className={cn(
+                    "hover:bg-color-table-header cursor-pointer group",
+                    data?.length === 10 && rowIndex === 9
+                      ? ""
+                      : "border-b border-color-border",
+                  )}
+                  onClick={() => handleSelectRow(rowIndex)}
+                >
+                  {selectable && (
+                    <td className="p-3 bg-color-form-background tableCheckboxStatic group-hover:bg-color-table-header">
+                      <input
+                        className="translate-y-[2px]"
+                        type="checkbox"
+                        checked={selectedRows.has(rowIndex)}
+                      />
+                    </td>
+                  )}
+                  {!hideSLNo && (
+                    <td className="p-3 text-left text-xs">
+                      <div className="translate-y-[3px]">
+                        {(parseInt(searchParams.get("page") || "1") - 1) * 10 +
+                          (rowIndex + 1)}
+                      </div>
+                    </td>
+                  )}
+                  {columns?.map((column, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className={cn(
+                        "px-4 py-3 text-left text-xs",
+                        column?.overrideInternalClick && "cursor-auto",
+                      )}
+                      onClick={(e) =>
+                        column?.overrideInternalClick
+                          ? e.stopPropagation()
+                          : null
+                      }
+                    >
+                      <div className="translate-y-[3px]">
+                        {column?.renderer
+                          ? column?.renderer({
+                              rowData: row,
+                              cellData: row[column?.tableKey],
+                            })
+                          : row[column?.tableKey] || "-"}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>

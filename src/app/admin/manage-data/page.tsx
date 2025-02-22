@@ -177,7 +177,6 @@ export default function ManageDataPage() {
   }
 
   async function getData() {
-    const cursor = searchParams.get("cursor")
     const page = Number(searchParams.get("page") || 1)
 
     const [dataRes, configRes] = await Promise.all([
@@ -186,7 +185,6 @@ export default function ManageDataPage() {
         params: {
           page,
           size: 10,
-          ...(page !== 1 ? { cursor } : null),
         },
       }),
       fetchData({

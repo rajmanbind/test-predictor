@@ -89,8 +89,6 @@ export default function ResultPage() {
     resData.data = mergeCollegeRecords(res?.payload?.data)
 
     setTableData(resData)
-
-    setTableData(res?.payload)
   }
 
   return (
@@ -127,6 +125,8 @@ export default function ResultPage() {
                   "/api/admin/get_data",
                   fetchData,
                   setTableData,
+                  "",
+                  null,
                 )
               }}
             />

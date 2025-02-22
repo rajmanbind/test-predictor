@@ -71,10 +71,23 @@ export const instituteTypes = [
 export function years(): IOption[] {
   const yearsArr: IOption[] = []
 
-  for (let i = 0; i < 17; i++) {
+  for (let i = 0; i < 28; i++) {
     yearsArr.push({
       id: i,
-      text: String(2024 + i),
+      text: String(2023 + i),
+    })
+  }
+
+  return yearsArr
+}
+
+export function configYearOptions(): IOption[] {
+  const yearsArr: IOption[] = []
+
+  for (let i = 0; i < 27; i++) {
+    yearsArr.push({
+      id: i,
+      text: `${String(2023 + i)} - ${String(2024 + i)}`,
     })
   }
 

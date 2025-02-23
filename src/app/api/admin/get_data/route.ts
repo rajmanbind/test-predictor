@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
   // Step 2: Fetch data for merging
   const { data, error } = await supabase
-    .from("data_table")
+    .from("college_table")
     .select("*")
     .in("year", latestYears)
     .order("created_at", { ascending: false })
@@ -61,6 +61,8 @@ export async function GET(request: NextRequest) {
     }
   })
 
+  console.log(recordMap)
+
   recordMap.forEach((value, key) => {
     const { old, new: latest } = value
 
@@ -70,6 +72,7 @@ export async function GET(request: NextRequest) {
       created_at: latest?.created_at ?? old?.created_at,
       instituteName: latest?.instituteName ?? old?.instituteName, // Ensure name is always present
       instituteType: latest?.instituteType ?? old?.instituteType,
+      state: latest?.state ?? old?.state,
       course: latest?.course ?? old?.course,
       quota: latest?.quota ?? old?.quota,
       category: latest?.category ?? old?.category,

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const supabase = createSupabaseServerClient()
 
     const { data, error } = await supabase
-      .from("data_table")
+      .from("college_table")
       .select("*")
       .eq("id", id)
       .single()

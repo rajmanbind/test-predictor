@@ -51,6 +51,7 @@ export default function ManageDataPage() {
         width: "200px",
       },
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
+      { title: "State", tableKey: "state", width: "150px" },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
       { title: "Category", tableKey: "category" },

@@ -8,7 +8,7 @@ import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
-import { instituteTypes, years } from "@/utils/static"
+import { instituteTypes, states, years } from "@/utils/static"
 import {
   autoComplete,
   clearReactHookFormValueAndStates,
@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form"
 interface IFormData {
   instituteName?: string
   instituteType?: IOption
+  state?: IOption
   courses?: IOption
   quotas?: IOption
   categories?: IOption
@@ -95,6 +96,10 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
         text: data?.instituteType,
         id: data?.instituteType,
       },
+      state: {
+        text: data?.state,
+        id: data?.state,
+      },
       courses: {
         text: data?.course,
         id: data?.course,
@@ -130,6 +135,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     const payload = createPayload({
       instituteName: formData?.instituteName,
       instituteType: formData?.instituteType?.text,
+      state: formData?.state?.text,
       course: formData?.courses?.text,
       quota: formData?.quotas?.text,
       category: formData?.categories?.text,
@@ -166,6 +172,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
           [
             "instituteName",
             "instituteType",
+            "state",
             "courses",
             "quotas",
             "categories",
@@ -218,6 +225,25 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
             defaultOption={defaultValues?.instituteType}
             searchAPI={(text, setOptions) =>
               autoComplete(text, instituteTypes, setOptions)
+            }
+            errors={errors}
+          />
+          <SearchAndSelect
+            name="state"
+            label="State"
+            placeholder="Search and Select"
+            value={formData?.state}
+            onChange={({ name, selectedValue }) => {
+              onOptionSelected(name, selectedValue, setFormData)
+            }}
+            control={control}
+            setValue={setValue}
+            required
+            options={states}
+            debounceDelay={0}
+            defaultOption={defaultValues?.state}
+            searchAPI={(text, setOptions) =>
+              autoComplete(text, states, setOptions)
             }
             errors={errors}
           />

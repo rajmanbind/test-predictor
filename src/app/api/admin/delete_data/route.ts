@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const supabase = createSupabaseServerClient()
 
     const { error, data } = await supabase
-      .from("data_table")
+      .from("college_table")
       .delete()
       .in("id", id)
       .select()

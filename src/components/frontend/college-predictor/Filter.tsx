@@ -1,18 +1,11 @@
 "use client"
 
 import { Button } from "@/components/common/Button"
-import { Input } from "@/components/common/Input"
 import MultiSelect from "@/components/common/MultiSelect"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { IOption } from "@/types/GlobalTypes"
-import { categories, courses, states } from "@/utils/static"
-import {
-  autoComplete,
-  cn,
-  isEmpty,
-  onOptionSelected,
-  onTextFieldChange,
-} from "@/utils/utils"
+import { categories, instituteTypes, states } from "@/utils/static"
+import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -22,8 +15,9 @@ import { FeeRangeSlider } from "../FeeRangeSlider"
 interface IFormData {
   rank?: number | string
   state: IOption[]
-  courses?: IOption
+  instituteType: IOption[]
   category?: IOption
+  quota?: IOption[]
 }
 
 export function Filter({ className }: { className?: string }) {
@@ -39,6 +33,7 @@ export function Filter({ className }: { className?: string }) {
   const [formData, setFormData] = useState<IFormData>({
     rank: "",
     state: [],
+    instituteType: [],
   })
 
   const router = useRouter()
@@ -68,18 +63,21 @@ export function Filter({ className }: { className?: string }) {
       className={cn("flex flex-col gap-4", className)}
       // onSubmit={handleSubmit(onSubmit)}
     >
-      <Input
-        name="rank"
-        label="Rank"
-        type="number"
-        placeholder="Enter Rank"
-        setValue={setValue}
-        value={formData?.rank}
-        onChange={(e) => onTextFieldChange(e, setFormData)}
-        control={control}
-        rules={{
-          required: false,
+      <MultiSelect
+        name="instituteType"
+        label="Institute Type"
+        placeholder="Select Institute Type"
+        value={formData?.instituteType}
+        onChange={({ name, selectedOptions }) => {
+          onOptionSelected(name, selectedOptions, setFormData)
         }}
+        control={control}
+        setValue={setValue}
+        options={instituteTypes}
+        debounceDelay={0}
+        searchAPI={(text, setOptions) =>
+          autoComplete(text, instituteTypes, setOptions)
+        }
         errors={errors}
       />
 
@@ -100,23 +98,6 @@ export function Filter({ className }: { className?: string }) {
       />
 
       <SearchAndSelect
-        name="courses"
-        label="Course"
-        placeholder="Select Course"
-        value={formData?.courses}
-        onChange={({ name, selectedValue }) => {
-          onOptionSelected(name, selectedValue, setFormData)
-        }}
-        control={control}
-        setValue={setValue}
-        options={courses}
-        debounceDelay={0}
-        searchAPI={(text, setOptions) =>
-          autoComplete(text, courses, setOptions)
-        }
-        errors={errors}
-      />
-      <SearchAndSelect
         name="category"
         label="Category"
         placeholder="Select Category"
@@ -130,6 +111,24 @@ export function Filter({ className }: { className?: string }) {
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
           autoComplete(text, categories, setOptions)
+        }
+        errors={errors}
+      />
+
+      <MultiSelect
+        name="quota"
+        label="Quota"
+        placeholder="Select Quota"
+        value={formData?.quota}
+        onChange={({ name, selectedOptions }) => {
+          onOptionSelected(name, selectedOptions, setFormData)
+        }}
+        control={control}
+        setValue={setValue}
+        options={instituteTypes}
+        debounceDelay={0}
+        searchAPI={(text, setOptions) =>
+          autoComplete(text, instituteTypes, setOptions)
         }
         errors={errors}
       />

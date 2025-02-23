@@ -7,17 +7,18 @@ import { FELayout } from "@/components/frontend/FELayout"
 import { Filter } from "@/components/frontend/college-predictor/Filter"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
+import { IOption } from "@/types/GlobalTypes"
 import { isEmpty, onPageChange } from "@/utils/utils"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
-
-const currentYear = new Date().getFullYear()
-const previousYear = currentYear - 1
 
 export default function ResultPage() {
   const [tableData, setTableData] = useState<any>(null)
   const [updateUI, setUpdateUI] = useState(false)
   const [configYear, setConfigYear] = useState<any>([])
+  const [categoriesList, setCategoriesList] = useState<IOption[]>([])
+  const [coursesList, setCoursesList] = useState<IOption[]>([])
+  const [quotasList, setQuotasList] = useState<IOption[]>([])
 
   const { fetchData } = useFetch()
   const searchParams = useSearchParams()
@@ -25,6 +26,28 @@ export default function ResultPage() {
   useEffect(() => {
     getData()
   }, [updateUI])
+
+  useEffect(() => {
+    getConfigs()
+  }, [])
+
+  async function getConfigs() {
+    const [quotaData, categoryData, coursesData] = await Promise.all([
+      fetchData({ url: "/api/admin/configure/get", params: { type: "QUOTA" } }),
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "CATEGORY" },
+      }),
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "COURSES" },
+      }),
+    ])
+
+    setQuotasList(quotaData?.payload?.data || [])
+    setCategoriesList(categoryData?.payload?.data || [])
+    setCoursesList(coursesData?.payload?.data || [])
+  }
 
   function generateCols() {
     let currentYear = new Date().getFullYear()
@@ -42,6 +65,7 @@ export default function ResultPage() {
         width: "200px",
       },
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
+      { title: "State", tableKey: "state", width: "150px" },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
       { title: "Category", tableKey: "category" },
@@ -128,7 +152,7 @@ export default function ResultPage() {
           NEET Collage Predictor
         </h2>
 
-        <SearchForm />
+        <SearchForm categoriesList={categoriesList} coursesList={coursesList} />
 
         <div className="mt-10 bg-color-form-background flex items-start py-4 rounded-lg pr-3">
           <Filter className="p-3 flex-shrink-0 w-[300px] pr-2 border-r border-color-border" />

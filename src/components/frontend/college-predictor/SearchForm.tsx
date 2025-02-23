@@ -1,11 +1,11 @@
 "use client"
 
 import { Button } from "@/components/common/Button"
-import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
+import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { categories, courses, states } from "@/utils/static"
+import { states } from "@/utils/static"
 import {
   autoComplete,
   isEmpty,
@@ -19,11 +19,17 @@ import { useForm } from "react-hook-form"
 interface IFormData {
   rank?: number | string
   state?: IOption
-  courses?: IOption
+  course?: IOption
   category?: IOption
 }
 
-export function SearchForm() {
+export function SearchForm({
+  categoriesList,
+  coursesList,
+}: {
+  categoriesList: IOption[]
+  coursesList: IOption[]
+}) {
   const {
     handleSubmit,
     control,
@@ -37,24 +43,24 @@ export function SearchForm() {
     rank: "",
   })
 
+  const { getSearchParams, setSearchParams } = useInternalSearchParams()
+
   const router = useRouter()
 
   function onSubmit() {
-    const searchParams = new URLSearchParams()
+    setSearchParams("rank", formData?.rank?.toString() || "")
+    setSearchParams("state", formData?.state?.text || "")
+    setSearchParams("courses", formData?.course?.text || "")
+    setSearchParams("category", formData?.category?.text || "")
 
-    searchParams.set("rank", formData?.rank?.toString() || "")
-    searchParams.set("state", formData?.state?.text || "")
-    searchParams.set("courses", formData?.courses?.text || "")
-    searchParams.set("category", formData?.category?.text || "")
-
-    router.push(`/results?${searchParams.toString()}`)
+    router.push(`/results?${getSearchParams.toString()}`)
   }
 
   function disableCheck() {
     return (
       isEmpty(formData?.rank) ||
       isEmpty(formData?.state?.text) ||
-      isEmpty(formData?.courses?.text) ||
+      isEmpty(formData?.course?.text) ||
       isEmpty(formData?.category?.text)
     )
   }
@@ -69,7 +75,7 @@ export function SearchForm() {
         label="Rank"
         type="number"
         placeholder="Enter Rank"
-        value={formData?.rank}
+        value={formData?.rank || getSearchParams("rank") || ""}
         onChange={(e) => onTextFieldChange(e, setFormData)}
         control={control}
         setValue={setValue}
@@ -84,6 +90,11 @@ export function SearchForm() {
         label="State"
         placeholder="Select State"
         value={formData?.state}
+        defaultOption={
+          getSearchParams("state")
+            ? { id: 0, text: getSearchParams("state") }
+            : undefined
+        }
         onChange={({ name, selectedValue }) => {
           onOptionSelected(name, selectedValue, setFormData)
         }}
@@ -96,19 +107,24 @@ export function SearchForm() {
       />
 
       <SearchAndSelect
-        name="courses"
+        name="course"
         label="Course"
         placeholder="Select Course"
-        value={formData?.courses}
+        value={formData?.course}
+        defaultOption={
+          getSearchParams("course")
+            ? { id: 0, text: getSearchParams("course") }
+            : undefined
+        }
         onChange={({ name, selectedValue }) => {
           onOptionSelected(name, selectedValue, setFormData)
         }}
         control={control}
         setValue={setValue}
-        options={courses}
+        options={coursesList}
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
-          autoComplete(text, courses, setOptions)
+          autoComplete(text, coursesList, setOptions)
         }
         errors={errors}
       />
@@ -117,15 +133,20 @@ export function SearchForm() {
         label="Category"
         placeholder="Select Category"
         value={formData?.category}
+        defaultOption={
+          getSearchParams("category")
+            ? { id: 0, text: getSearchParams("category") }
+            : undefined
+        }
         onChange={({ name, selectedValue }) => {
           onOptionSelected(name, selectedValue, setFormData)
         }}
         control={control}
         setValue={setValue}
-        options={categories}
+        options={categoriesList}
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
-          autoComplete(text, categories, setOptions)
+          autoComplete(text, categoriesList, setOptions)
         }
         errors={errors}
       />

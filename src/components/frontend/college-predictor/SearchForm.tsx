@@ -67,7 +67,7 @@ export function SearchForm({
 
   return (
     <form
-      className="grid grid-cols-[repeat(auto-fill,minmax(0,1fr))] tab:grid-cols-[repeat(3,minmax(0,1fr))] pc:grid-cols-[repeat(4,minmax(0,1fr))_160px] gap-4 tab:gap-6"
+      className="grid grid-cols-[repeat(1,minmax(0,1fr))] tab:grid-cols-[repeat(3,minmax(0,1fr))] pc:grid-cols-[repeat(4,minmax(0,1fr))_160px] gap-4 tab:gap-6"
       onSubmit={handleSubmit(onSubmit)}
     >
       <Input
@@ -151,7 +151,7 @@ export function SearchForm({
         errors={errors}
       />
       <Button
-        className="h-[50px] tab:mt-auto"
+        className="h-[50px] mt-3 tab:mt-auto"
         onClick={onSubmit}
         disabled={disableCheck()}
       >

@@ -25,7 +25,7 @@ export default function ManageDataPage() {
   const [singleDelete, setSingleDelete] = useState<any>([])
   const [configYear, setConfigYear] = useState<any>([])
 
-  const [yearsId, setYearsId] = useState<any>([])
+  const [rowData, setRowData] = useState<any>([])
 
   const { fetchData } = useFetch()
   const { showToast } = useAppState()
@@ -109,7 +109,7 @@ export default function ManageDataPage() {
                   size={20}
                   className="text-color-text hover:text-blue-600 cursor-pointer"
                   onClick={() => {
-                    setYearsId([rowData.new_id, rowData.prev_id])
+                    setRowData(rowData)
                   }}
                 />
 
@@ -242,10 +242,9 @@ export default function ManageDataPage() {
       </Card>
 
       <ConfirmEditYearPopup
-        isOpen={!isEmpty(yearsId)}
-        onClose={() => setYearsId(null)}
-        currentYearId={yearsId?.[0]}
-        previousYearId={yearsId?.[1]}
+        isOpen={!isEmpty(rowData)}
+        onClose={() => setRowData(null)}
+        rowData={rowData}
       />
 
       <ConfirmationPopup

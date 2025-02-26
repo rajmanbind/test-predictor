@@ -29,7 +29,7 @@ export function Toast() {
         {appState.toast.showToast && (
           <motion.div
             className={cn(
-              `fixed right-11 z-[1200] border rounded-sm bg-white min-w-[316px] max-w-[350px] min-h-[76px] shadow-lg ${window.screen.width < 768 ? "right-5 left-5 bottom-[25px]" : "top-[90px]"}`,
+              `fixed right-11 z-[1200] border rounded-sm bg-white min-w-[316px] max-w-[350px] min-h-[76px] shadow-lg top-[90px] left-4 tab:left-auto`,
               toastType === "success" ? "border-[#13CE66]" : "border-[#FF0016]",
             )}
             initial={{ opacity: 0, x: 300 }}

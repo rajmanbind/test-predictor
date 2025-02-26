@@ -173,7 +173,7 @@ export default function ResultPage() {
           <Filter className="p-3 flex-shrink-0 w-[300px] hidden pc:block" />
 
           <Button
-            className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm"
+            className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm pc:hidden"
             onClick={() => setFilterPopup(true)}
           >
             <div className="bg-red-600 size-5 rounded-full text-sm grid place-items-center absolute right-[-5px] top-[-7px]">

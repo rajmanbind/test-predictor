@@ -73,6 +73,7 @@ export function Table({
       <div
         className={cn(
           "overflow-x-auto border rounded-lg border-color-border relative min-h-[543px]",
+          data?.length === 10 && "min-h-0",
         )}
       >
         <table className="min-w-full border-collapse table-fixed">
@@ -114,9 +115,7 @@ export function Table({
                   key={rowIndex}
                   className={cn(
                     "hover:bg-color-table-header cursor-pointer group",
-                    data?.length === 10 && rowIndex === 9
-                      ? ""
-                      : "border-b border-color-border",
+                    "border-b border-color-border",
                   )}
                   onClick={() => handleSelectRow(rowIndex)}
                 >
@@ -131,7 +130,7 @@ export function Table({
                   )}
                   {!hideSLNo && (
                     <td className="p-3 text-left text-xs">
-                      <div className="translate-y-[3px]">
+                      <div>
                         {(parseInt(searchParams.get("page") || "1") - 1) * 10 +
                           (rowIndex + 1)}
                       </div>
@@ -150,7 +149,7 @@ export function Table({
                           : null
                       }
                     >
-                      <div className="translate-y-[3px]">
+                      <div className="min-h-8 flex items-center">
                         {column?.renderer
                           ? column?.renderer({
                               rowData: row,

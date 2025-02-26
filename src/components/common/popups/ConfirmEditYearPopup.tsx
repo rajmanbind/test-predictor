@@ -10,8 +10,7 @@ import AnimatedPopup from "./AnimatedPopup"
 interface IConfirmEditYearPopup {
   isOpen: boolean
 
-  currentYearId: string
-  previousYearId: string
+  rowData: any
 
   onCancel?: () => void
   onClose: () => void
@@ -19,12 +18,13 @@ interface IConfirmEditYearPopup {
 
 export function ConfirmEditYearPopup({
   isOpen,
-  currentYearId,
-  previousYearId,
+  rowData,
   onClose,
 }: IConfirmEditYearPopup) {
-  const currentYear = new Date().getFullYear()
-  const previousYear = currentYear - 1
+  const years = rowData?.year?.split("-")?.map((item: string) => item.trim())
+
+  const previousYear = years?.[0]
+  const currentYear = years?.[1]
 
   return (
     <AnimatedPopup
@@ -45,24 +45,7 @@ export function ConfirmEditYearPopup({
 
           <div className="flex justify-center gap-6 mt-12">
             <Link
-              href={`/admin/edit-data/${currentYearId}`}
-              onClick={onClose}
-              className="w-full max-w-[220px]"
-            >
-              <Button
-                variant="outline"
-                className="py-2 flex items-center justify-center w-full"
-              >
-                <div className="flex items-center gap-4">
-                  <CalendarDays />
-
-                  <p className="text-xl">{currentYear}</p>
-                </div>
-              </Button>
-            </Link>
-
-            <Link
-              href={`/admin/edit-data/${previousYearId}`}
+              href={`/admin/edit-data/${rowData?.prev_id}`}
               onClick={onClose}
               className="w-full max-w-[220px]"
             >
@@ -74,6 +57,23 @@ export function ConfirmEditYearPopup({
                   <CalendarDays />
 
                   <p className="text-xl">{previousYear}</p>
+                </div>
+              </Button>
+            </Link>
+
+            <Link
+              href={`/admin/edit-data/${rowData?.new_id}`}
+              onClick={onClose}
+              className="w-full max-w-[220px]"
+            >
+              <Button
+                variant="outline"
+                className="py-2 flex items-center justify-center w-full"
+              >
+                <div className="flex items-center gap-4">
+                  <CalendarDays />
+
+                  <p className="text-xl">{currentYear}</p>
                 </div>
               </Button>
             </Link>

@@ -22,7 +22,7 @@ interface PaginationProps {
 
 export function Pagination({
   currentPage = 1,
-  totalItems = 1,
+  totalItems = 0,
   itemsCountPerPage = 10,
   onPageChange,
   wrapperClass,
@@ -58,7 +58,7 @@ export function Pagination({
       <ReactJsPagination
         activePage={activePage}
         onChange={handlePageChange}
-        totalItemsCount={totalItems}
+        totalItemsCount={totalItems || 1}
         pageRangeDisplayed={5}
         itemsCountPerPage={itemsCountPerPage}
         innerClass="flex"

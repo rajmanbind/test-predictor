@@ -61,8 +61,6 @@ export async function GET(request: NextRequest) {
     }
   })
 
-  console.log(recordMap)
-
   recordMap.forEach((value, key) => {
     const { old, new: latest } = value
 

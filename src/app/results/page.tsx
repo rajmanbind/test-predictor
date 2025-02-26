@@ -1,14 +1,17 @@
 "use client"
 
+import { Button } from "@/components/common/Button"
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import { Filter } from "@/components/frontend/college-predictor/Filter"
+import { FilterPopup } from "@/components/frontend/college-predictor/FilterPopup"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
 import { isEmpty, onPageChange } from "@/utils/utils"
+import { Info, Settings2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -19,6 +22,8 @@ export default function ResultPage() {
   const [categoriesList, setCategoriesList] = useState<IOption[]>([])
   const [coursesList, setCoursesList] = useState<IOption[]>([])
   const [quotasList, setQuotasList] = useState<IOption[]>([])
+
+  const [filterPopup, setFilterPopup] = useState(false)
 
   const { fetchData } = useFetch()
   const searchParams = useSearchParams()
@@ -147,15 +152,38 @@ export default function ResultPage() {
 
   return (
     <FELayout>
-      <Container className="py-10">
-        <h2 className="text-color-text text-3xl pb-6">
-          NEET Collage Predictor
-        </h2>
+      <Container className="pb-10 pt-1 pc:pt-10">
+        <div className="flex items-end pc:items-start justify-between flex-col pc:flex-row">
+          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 order-2 pc:order-1 pt-4">
+            NEET Collage Predictor
+          </h2>
+
+          <div className="flex items-center gap-3 mr-2 order-1 pc:order-2 flex-shrink-0">
+            <div className="text-xs pc:text-sm text-color-subtext">
+              <p>CR - Closing Ranks</p>
+              <p>SR - Stray Ranks</p>
+            </div>
+            <Info className="text-blue-600" size={24} />
+          </div>
+        </div>
 
         <SearchForm categoriesList={categoriesList} coursesList={coursesList} />
 
-        <div className="mt-10 bg-color-form-background flex items-start py-4 rounded-lg pr-3">
-          <Filter className="p-3 flex-shrink-0 w-[300px] pr-2 border-r border-color-border" />
+        <div className="mt-10 bg-color-form-background block pc:flex items-start py-4 rounded-lg pr-3 relative">
+          <Filter className="p-3 flex-shrink-0 w-[300px] hidden pc:block" />
+
+          <Button
+            className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm"
+            onClick={() => setFilterPopup(true)}
+          >
+            <div className="bg-red-600 size-5 rounded-full text-sm grid place-items-center absolute right-[-5px] top-[-7px]">
+              3
+            </div>
+            <Settings2 size={18} />
+            Filter
+          </Button>
+
+          <div className="bg-color-border h-[calc(100%-160px)] w-[1px] absolute left-[298px] top-0 my-10 hidden pc:block"></div>
 
           <div
             className="flex-1 border-color-border pl-2"
@@ -170,8 +198,8 @@ export default function ResultPage() {
             />
 
             <Pagination
-              currentPage={tableData?.page}
-              totalItems={tableData?.total}
+              currentPage={tableData?.currentPage}
+              totalItems={tableData?.totalItems}
               wrapperClass="pb-[50px]"
               onPageChange={(page: number) => {
                 onPageChange(
@@ -184,6 +212,12 @@ export default function ResultPage() {
             />
           </div>
         </div>
+
+        <FilterPopup
+          isOpen={filterPopup}
+          onClose={() => setFilterPopup(false)}
+          onConfirm={() => {}}
+        />
       </Container>
     </FELayout>
   )

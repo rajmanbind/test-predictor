@@ -6,6 +6,7 @@ import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { IOption } from "@/types/GlobalTypes"
 import { categories, instituteTypes, states } from "@/utils/static"
 import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
+import { Settings2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -136,9 +137,10 @@ export function Filter({ className }: { className?: string }) {
       <FeeRangeSlider />
 
       <Button
-        className="mt-2"
+        className="mt-6 w-full flex items-center gap-2 justify-center"
         // onClick={onSubmit} disabled={disableCheck()}
       >
+        <Settings2 />
         Apply Filters
       </Button>
     </form>

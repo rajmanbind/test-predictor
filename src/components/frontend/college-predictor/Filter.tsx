@@ -2,26 +2,33 @@
 
 import { Button } from "@/components/common/Button"
 import MultiSelect from "@/components/common/MultiSelect"
-import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { IOption } from "@/types/GlobalTypes"
-import { categories, instituteTypes, states } from "@/utils/static"
+import { instituteTypes, states } from "@/utils/static"
 import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
 import { Settings2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { FeeRangeSlider } from "../FeeRangeSlider"
+import { FeeRangeSlider, MAX_FEE } from "../FeeRangeSlider"
 
 interface IFormData {
   rank?: number | string
   state: IOption[]
   instituteType: IOption[]
-  category?: IOption
+  category?: IOption[]
   quota?: IOption[]
 }
 
-export function Filter({ className }: { className?: string }) {
+export function Filter({
+  className,
+  categoryList,
+  quotasList,
+}: {
+  className?: string
+  categoryList: IOption[]
+  quotasList: IOption[]
+}) {
   const {
     handleSubmit,
     control,
@@ -35,29 +42,12 @@ export function Filter({ className }: { className?: string }) {
     rank: "",
     state: [],
     instituteType: [],
+    category: [],
   })
 
+  const [range, setRange] = useState<[number, number]>([0, MAX_FEE])
+
   const router = useRouter()
-
-  // function onSubmit() {
-  //   const searchParams = new URLSearchParams()
-
-  //   searchParams.set("rank", formData?.rank?.toString() || "")
-  //   searchParams.set("state", formData?.state?.text || "")
-  //   searchParams.set("courses", formData?.courses?.text || "")
-  //   searchParams.set("category", formData?.category?.text || "")
-
-  //   router.push(`/results?${searchParams.toString()}`)
-  // }
-
-  // function disableCheck() {
-  //   return (
-  //     isEmpty(formData?.rank) ||
-  //     isEmpty(formData?.state?.text) ||
-  //     isEmpty(formData?.courses?.text) ||
-  //     isEmpty(formData?.category?.text)
-  //   )
-  // }
 
   return (
     <form
@@ -98,20 +88,20 @@ export function Filter({ className }: { className?: string }) {
         errors={errors}
       />
 
-      <SearchAndSelect
+      <MultiSelect
         name="category"
         label="Category"
         placeholder="Select Category"
         value={formData?.category}
-        onChange={({ name, selectedValue }) => {
-          onOptionSelected(name, selectedValue, setFormData)
+        onChange={({ name, selectedOptions }) => {
+          onOptionSelected(name, selectedOptions, setFormData)
         }}
         control={control}
         setValue={setValue}
-        options={categories}
+        options={categoryList}
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
-          autoComplete(text, categories, setOptions)
+          autoComplete(text, categoryList, setOptions)
         }
         errors={errors}
       />
@@ -126,18 +116,18 @@ export function Filter({ className }: { className?: string }) {
         }}
         control={control}
         setValue={setValue}
-        options={instituteTypes}
+        options={quotasList}
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
-          autoComplete(text, instituteTypes, setOptions)
+          autoComplete(text, quotasList, setOptions)
         }
         errors={errors}
       />
 
-      <FeeRangeSlider />
+      <FeeRangeSlider range={range} setRange={setRange} />
 
       <Button
-        className="mt-6 w-full flex items-center gap-2 justify-center"
+        className="mt-4 w-full flex items-center gap-2 justify-center"
         // onClick={onSubmit} disabled={disableCheck()}
       >
         <Settings2 />

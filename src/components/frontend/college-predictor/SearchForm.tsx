@@ -48,21 +48,14 @@ export function SearchForm({
   const router = useRouter()
 
   function onSubmit() {
-    setSearchParams("rank", formData?.rank?.toString() || "")
-    setSearchParams("state", formData?.state?.text || "")
-    setSearchParams("courses", formData?.course?.text || "")
-    setSearchParams("category", formData?.category?.text || "")
+    const searchParams = new URLSearchParams()
 
-    router.push(`/results?${getSearchParams.toString()}`)
-  }
+    searchParams.set("rank", formData?.rank?.toString() || "")
+    searchParams.set("state", formData?.state?.text || "")
+    searchParams.set("course", formData?.course?.text || "")
+    searchParams.set("category", formData?.category?.text || "")
 
-  function disableCheck() {
-    return (
-      isEmpty(formData?.rank) ||
-      isEmpty(formData?.state?.text) ||
-      isEmpty(formData?.course?.text) ||
-      isEmpty(formData?.category?.text)
-    )
+    router.push(`/results?${searchParams.toString()}`)
   }
 
   return (
@@ -150,11 +143,7 @@ export function SearchForm({
         }
         errors={errors}
       />
-      <Button
-        className="h-[50px] mt-3 tab:mt-auto"
-        onClick={onSubmit}
-        disabled={disableCheck()}
-      >
+      <Button className="h-[50px] mt-3 tab:mt-auto" onClick={onSubmit}>
         Search
       </Button>
     </form>

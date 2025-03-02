@@ -9,8 +9,9 @@ import { Filter } from "@/components/frontend/college-predictor/Filter"
 import { FilterPopup } from "@/components/frontend/college-predictor/FilterPopup"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
+import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { isEmpty, onPageChange } from "@/utils/utils"
+import { isEmpty } from "@/utils/utils"
 import { Info, Settings2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -26,11 +27,12 @@ export default function ResultPage() {
   const [filterPopup, setFilterPopup] = useState(false)
 
   const { fetchData } = useFetch()
+  const { getSearchParams } = useInternalSearchParams()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     getData()
-  }, [updateUI])
+  }, [updateUI, searchParams.toString()])
 
   useEffect(() => {
     getConfigs()
@@ -121,15 +123,28 @@ export default function ResultPage() {
   }
 
   async function getData() {
-    const page = Number(searchParams.get("page") || 1)
+    const page = Number(getSearchParams("page") || 1)
+    const rank = getSearchParams("rank")
+    const state = getSearchParams("state")
+    const course = getSearchParams("course")
+    const category = getSearchParams("category")
+
+    const params: Record<string, any> = {
+      page,
+      size: 10,
+      rank,
+      course,
+      category,
+    }
+
+    if (state !== "All") {
+      params.state = state
+    }
 
     const [dataRes, configRes] = await Promise.all([
       fetchData({
-        url: "/api/admin/get_data",
-        params: {
-          page,
-          size: 10,
-        },
+        url: "/api/predict_college",
+        params,
       }),
       fetchData({
         url: "/api/admin/configure/get",
@@ -170,7 +185,11 @@ export default function ResultPage() {
         <SearchForm categoriesList={categoriesList} coursesList={coursesList} />
 
         <div className="mt-10 bg-color-form-background block pc:flex items-start py-4 rounded-lg pr-3 relative">
-          <Filter className="p-3 flex-shrink-0 w-[300px] hidden pc:block" />
+          <Filter
+            className="p-3 flex-shrink-0 w-[300px] hidden pc:flex"
+            quotasList={quotasList}
+            categoryList={categoriesList}
+          />
 
           <Button
             className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm pc:hidden"
@@ -202,12 +221,16 @@ export default function ResultPage() {
               totalItems={tableData?.totalItems}
               wrapperClass="pb-[50px]"
               onPageChange={(page: number) => {
-                onPageChange(
-                  page,
-                  "/api/admin/get_data",
-                  fetchData,
-                  setTableData,
-                )
+                fetchData({
+                  url: "/api/predict_college",
+                  params: {
+                    page,
+                    size: 10,
+                    rank: getSearchParams("rank"),
+                  },
+                }).then((data: any) => {
+                  setTableData(data?.payload)
+                })
               }}
             />
           </div>

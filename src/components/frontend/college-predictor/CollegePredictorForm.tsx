@@ -74,7 +74,7 @@ export function CollegePredictorForm() {
 
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("state", formData?.state?.text || "")
-    searchParams.set("courses", formData?.courses?.text || "")
+    searchParams.set("course", formData?.courses?.text || "")
     searchParams.set("category", formData?.category?.text || "")
 
     router.push(`/results?${searchParams.toString()}`)

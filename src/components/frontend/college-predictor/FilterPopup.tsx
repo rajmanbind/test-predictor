@@ -10,7 +10,7 @@ import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { FeeRangeSlider } from "../FeeRangeSlider"
+import { FeeRangeSlider, MAX_FEE } from "../FeeRangeSlider"
 
 interface IFilterPopupProps {
   isOpen: boolean
@@ -48,6 +48,8 @@ export function FilterPopup({
     state: [],
     instituteType: [],
   })
+
+  const [range, setRange] = useState<[number, number]>([0, MAX_FEE])
 
   return (
     <AnimatedPopup
@@ -133,7 +135,7 @@ export function FilterPopup({
             errors={errors}
           />
 
-          <FeeRangeSlider />
+          <FeeRangeSlider range={range} setRange={setRange} />
 
           <Button
             className="mt-2"

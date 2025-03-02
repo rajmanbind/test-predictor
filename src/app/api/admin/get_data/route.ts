@@ -6,8 +6,8 @@ export const dynamic = "force-dynamic"
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
 
-  const page = parseInt(searchParams.get("page") || "1") // Default to page 1
-  const pageSize = parseInt(searchParams.get("pageSize") || "10") // Default to 10 items per page
+  const page = parseInt(searchParams.get("page") || "1")
+  const pageSize = parseInt(searchParams.get("pageSize") || "10")
 
   const supabase = createSupabaseServerClient()
 
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
       prev_id: old?.id,
       new_id: latest?.id,
       created_at: latest?.created_at ?? old?.created_at,
-      instituteName: latest?.instituteName ?? old?.instituteName, // Ensure name is always present
+      instituteName: latest?.instituteName ?? old?.instituteName,
       instituteType: latest?.instituteType ?? old?.instituteType,
       state: latest?.state ?? old?.state,
       course: latest?.course ?? old?.course,
@@ -79,14 +79,14 @@ export async function GET(request: NextRequest) {
       closingRankR2_old: old?.closingRankR2,
       closingRankR3_old: old?.closingRankR3,
       strayRound_old: old?.strayRound,
-      closingRankR1_new: latest?.closingRankR1, // Optional chaining for new entry
+      closingRankR1_new: latest?.closingRankR1,
       closingRankR2_new: latest?.closingRankR2,
       closingRankR3_new: latest?.closingRankR3,
       strayRound_new: latest?.strayRound,
       year:
         old?.year && latest?.year
           ? `${old.year} - ${latest.year}`
-          : (old?.year ?? latest?.year), // Ensure year always has a value
+          : (old?.year ?? latest?.year),
     })
   })
 

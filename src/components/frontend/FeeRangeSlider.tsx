@@ -7,11 +7,17 @@ import * as React from "react"
 
 interface FeeRangeSliderProps {
   className?: string
+  range: [number, number]
+  setRange: React.Dispatch<React.SetStateAction<[number, number]>>
 }
 
-export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
-  const [range, setRange] = React.useState<[number, number]>([0, 10000000000])
+export const MAX_FEE = 100_000_000
 
+export function FeeRangeSlider({
+  className,
+  range,
+  setRange,
+}: FeeRangeSliderProps) {
   const handleSliderChange = (newValue: number[]) => {
     setRange([newValue[0], newValue[1]])
   }
@@ -19,7 +25,7 @@ export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
   const handleInputChange =
     (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = Number(event.target.value)
-      if (!isNaN(newValue) && newValue >= 0 && newValue <= 10000000000) {
+      if (!isNaN(newValue) && newValue >= 0 && newValue <= MAX_FEE) {
         const newRange: [number, number] = [...range] as [number, number]
         newRange[index] = newValue
 
@@ -58,7 +64,7 @@ export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
             id="feeFrom"
             type="number"
             min={0}
-            max={10000000000}
+            max={MAX_FEE}
             value={range[0]}
             onChange={handleInputChange(0)}
             className="pl-8 text-xs py-4 border border-color-border bg-color-white_black rounded w-full"
@@ -71,7 +77,7 @@ export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
             id="feeTo"
             type="number"
             min={0}
-            max={10000000000}
+            max={MAX_FEE}
             value={range[1]}
             onChange={handleInputChange(1)}
             className="pl-8 text-xs py-4 border border-color-border bg-color-white_black rounded w-full"
@@ -81,7 +87,7 @@ export function FeeRangeSlider({ className }: FeeRangeSliderProps) {
 
       <Slider
         min={0}
-        max={10000000000}
+        max={MAX_FEE}
         step={1000}
         value={range}
         onValueChange={handleSliderChange}

@@ -18,21 +18,21 @@ import { useEffect, useState } from "react"
 
 export default function ResultPage() {
   const [tableData, setTableData] = useState<any>(null)
-  const [updateUI, setUpdateUI] = useState(false)
   const [configYear, setConfigYear] = useState<any>([])
   const [categoriesList, setCategoriesList] = useState<IOption[]>([])
   const [coursesList, setCoursesList] = useState<IOption[]>([])
   const [quotasList, setQuotasList] = useState<IOption[]>([])
 
   const [filterPopup, setFilterPopup] = useState(false)
+  const [filterParams, setFilterParams] = useState<any>(null)
+  const [updateUI, setUpdateUI] = useState(false)
 
   const { fetchData } = useFetch()
   const { getSearchParams } = useInternalSearchParams()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     getData()
-  }, [updateUI, searchParams.toString()])
+  }, [filterParams, updateUI])
 
   useEffect(() => {
     getConfigs()
@@ -133,12 +133,23 @@ export default function ResultPage() {
       page,
       size: 10,
       rank,
+      states: state,
       course,
       category,
     }
 
     if (state !== "All") {
-      params.state = state
+      params.states = state
+    } else {
+      delete params.states
+    }
+
+    if (!isEmpty(filterParams)) {
+      Object.entries(filterParams).forEach(([key, value]: any) => {
+        if (!isEmpty(value)) {
+          params[key] = value
+        }
+      })
     }
 
     const [dataRes, configRes] = await Promise.all([
@@ -173,22 +184,30 @@ export default function ResultPage() {
             NEET Collage Predictor
           </h2>
 
-          <div className="flex items-center gap-3 mr-2 order-1 pc:order-2 flex-shrink-0">
+          <div className="flex items-start gap-3 mr-2 order-1 pc:order-2 flex-shrink-0">
             <div className="text-xs pc:text-sm text-color-subtext">
-              <p>CR - Closing Ranks</p>
-              <p>SR - Stray Ranks</p>
+              <p>Click on the record for detailed information and factors.</p>
+              <p>
+                (*) Indicates additional remarks available in Details & Factors.
+              </p>
+              <p>Click on Rank to view the allotment list.</p>
             </div>
             <Info className="text-blue-600" size={24} />
           </div>
         </div>
 
-        <SearchForm categoriesList={categoriesList} coursesList={coursesList} />
+        <SearchForm
+          categoriesList={categoriesList}
+          coursesList={coursesList}
+          setUpdateUI={setUpdateUI}
+        />
 
         <div className="mt-10 bg-color-form-background block pc:flex items-start py-4 rounded-lg pr-3 relative">
           <Filter
             className="p-3 flex-shrink-0 w-[300px] hidden pc:flex"
             quotasList={quotasList}
             categoryList={categoriesList}
+            setFilterParams={setFilterParams}
           />
 
           <Button

@@ -45,7 +45,7 @@ export function FeeRangeSlider({
   const formatValue = (value: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value)
@@ -65,7 +65,8 @@ export function FeeRangeSlider({
             type="number"
             min={0}
             max={MAX_FEE}
-            value={range[0]}
+            value={range[0] === 0 ? "" : range[0]}
+            placeholder="0"
             onChange={handleInputChange(0)}
             className="pl-8 text-xs py-4 border border-color-border bg-color-white_black rounded w-full"
           />
@@ -78,7 +79,7 @@ export function FeeRangeSlider({
             type="number"
             min={0}
             max={MAX_FEE}
-            value={range[1]}
+            value={range[1] === 0 ? "" : range[1]}
             onChange={handleInputChange(1)}
             className="pl-8 text-xs py-4 border border-color-border bg-color-white_black rounded w-full"
           />

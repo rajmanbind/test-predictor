@@ -1,5 +1,5 @@
 :root {
-  --font-poppins: "Poppins", sans-serif;
+  --font-roboto: "Roboto", sans-serif;
 }
 
 /* Reset User Agent Styles */
@@ -12,18 +12,18 @@
   font-variation-settings: "wdth" 100;
   box-sizing: border-box;
 
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-roboto), sans-serif;
 }
 
 /*CSS Reset & Inherit Font Family */
 input,
 textarea,
 button {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-roboto), sans-serif;
 }
 
 ::placeholder {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-roboto), sans-serif;
 }
 /* -------------------------------- */
 

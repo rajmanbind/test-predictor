@@ -13,7 +13,7 @@ import {
   onTextFieldChange,
 } from "@/utils/utils"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IFormData {
@@ -26,9 +26,11 @@ interface IFormData {
 export function SearchForm({
   categoriesList,
   coursesList,
+  setUpdateUI,
 }: {
   categoriesList: IOption[]
   coursesList: IOption[]
+  setUpdateUI: React.Dispatch<SetStateAction<boolean>>
 }) {
   const {
     handleSubmit,
@@ -48,21 +50,16 @@ export function SearchForm({
   const router = useRouter()
 
   function onSubmit() {
-    setSearchParams("rank", formData?.rank?.toString() || "")
-    setSearchParams("state", formData?.state?.text || "")
-    setSearchParams("courses", formData?.course?.text || "")
-    setSearchParams("category", formData?.category?.text || "")
+    const searchParams = new URLSearchParams()
 
-    router.push(`/results?${getSearchParams.toString()}`)
-  }
+    searchParams.set("rank", formData?.rank?.toString() || "")
+    searchParams.set("state", formData?.state?.text || "")
+    searchParams.set("course", formData?.course?.text || "")
+    searchParams.set("category", formData?.category?.text || "")
 
-  function disableCheck() {
-    return (
-      isEmpty(formData?.rank) ||
-      isEmpty(formData?.state?.text) ||
-      isEmpty(formData?.course?.text) ||
-      isEmpty(formData?.category?.text)
-    )
+    router.push(`/results?${searchParams.toString()}`)
+
+    setUpdateUI((prev) => !prev)
   }
 
   return (
@@ -150,11 +147,7 @@ export function SearchForm({
         }
         errors={errors}
       />
-      <Button
-        className="h-[50px] mt-3 tab:mt-auto"
-        onClick={onSubmit}
-        disabled={disableCheck()}
-      >
+      <Button className="h-[50px] mt-3 tab:mt-auto" onClick={onSubmit}>
         Search
       </Button>
     </form>

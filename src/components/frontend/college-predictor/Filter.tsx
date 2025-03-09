@@ -2,26 +2,44 @@
 
 import { Button } from "@/components/common/Button"
 import MultiSelect from "@/components/common/MultiSelect"
-import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { IOption } from "@/types/GlobalTypes"
-import { categories, instituteTypes, states } from "@/utils/static"
+import { instituteTypes, states } from "@/utils/static"
 import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
 import { Settings2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { FeeRangeSlider } from "../FeeRangeSlider"
+import { FeeRangeSlider, MAX_FEE } from "../FeeRangeSlider"
+
+const filterStates = states.slice(1)
 
 interface IFormData {
-  rank?: number | string
   state: IOption[]
   instituteType: IOption[]
-  category?: IOption
-  quota?: IOption[]
+  category: IOption[]
+  quota: IOption[]
 }
 
-export function Filter({ className }: { className?: string }) {
+interface IParams {
+  feeFrom: number
+  feeTo: number
+  states?: any
+  category?: any
+  instituteType?: any
+  quota?: any
+}
+
+export function Filter({
+  className,
+  categoryList,
+  quotasList,
+  setFilterParams,
+}: {
+  className?: string
+  categoryList: IOption[]
+  quotasList: IOption[]
+  setFilterParams: React.Dispatch<SetStateAction<any>>
+}) {
   const {
     handleSubmit,
     control,
@@ -32,37 +50,42 @@ export function Filter({ className }: { className?: string }) {
   })
 
   const [formData, setFormData] = useState<IFormData>({
-    rank: "",
     state: [],
     instituteType: [],
+    category: [],
+    quota: [],
   })
 
-  const router = useRouter()
+  const [range, setRange] = useState<[number, number]>([0, MAX_FEE])
 
-  // function onSubmit() {
-  //   const searchParams = new URLSearchParams()
+  async function onSubmit() {
+    const params: IParams = {
+      feeFrom: range[0],
+      feeTo: range[1],
+    }
 
-  //   searchParams.set("rank", formData?.rank?.toString() || "")
-  //   searchParams.set("state", formData?.state?.text || "")
-  //   searchParams.set("courses", formData?.courses?.text || "")
-  //   searchParams.set("category", formData?.category?.text || "")
+    includeInParams(formData?.state, "states", params)
+    includeInParams(formData?.instituteType, "instituteType", params)
+    includeInParams(formData?.category, "category", params)
+    includeInParams(formData?.quota, "quota", params)
 
-  //   router.push(`/results?${searchParams.toString()}`)
-  // }
+    setFilterParams(params)
+  }
 
-  // function disableCheck() {
-  //   return (
-  //     isEmpty(formData?.rank) ||
-  //     isEmpty(formData?.state?.text) ||
-  //     isEmpty(formData?.courses?.text) ||
-  //     isEmpty(formData?.category?.text)
-  //   )
-  // }
+  function includeInParams(
+    array: IOption[],
+    key: "states" | "category" | "instituteType" | "quota",
+    params: IParams,
+  ) {
+    if (array?.length > 0) {
+      params[key] = array.map((item) => item.text).join(",")
+    }
+  }
 
   return (
     <form
       className={cn("flex flex-col gap-4", className)}
-      // onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <MultiSelect
         name="instituteType"
@@ -92,26 +115,28 @@ export function Filter({ className }: { className?: string }) {
         }}
         control={control}
         setValue={setValue}
-        options={states}
+        options={filterStates}
         debounceDelay={0}
-        searchAPI={(text, setOptions) => autoComplete(text, states, setOptions)}
+        searchAPI={(text, setOptions) =>
+          autoComplete(text, filterStates, setOptions)
+        }
         errors={errors}
       />
 
-      <SearchAndSelect
+      <MultiSelect
         name="category"
         label="Category"
         placeholder="Select Category"
         value={formData?.category}
-        onChange={({ name, selectedValue }) => {
-          onOptionSelected(name, selectedValue, setFormData)
+        onChange={({ name, selectedOptions }) => {
+          onOptionSelected(name, selectedOptions, setFormData)
         }}
         control={control}
         setValue={setValue}
-        options={categories}
+        options={categoryList}
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
-          autoComplete(text, categories, setOptions)
+          autoComplete(text, categoryList, setOptions)
         }
         errors={errors}
       />
@@ -126,18 +151,19 @@ export function Filter({ className }: { className?: string }) {
         }}
         control={control}
         setValue={setValue}
-        options={instituteTypes}
+        options={quotasList}
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
-          autoComplete(text, instituteTypes, setOptions)
+          autoComplete(text, quotasList, setOptions)
         }
         errors={errors}
       />
 
-      <FeeRangeSlider />
+      <FeeRangeSlider range={range} setRange={setRange} />
 
       <Button
-        className="mt-6 w-full flex items-center gap-2 justify-center"
+        type="submit"
+        className="mt-4 w-full flex items-center gap-2 justify-center"
         // onClick={onSubmit} disabled={disableCheck()}
       >
         <Settings2 />

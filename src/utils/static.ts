@@ -1,6 +1,7 @@
 import { IOption } from "@/types/GlobalTypes"
 
 export const states = [
+  { id: 36, text: "All" },
   { id: 0, text: "Andhra Pradesh" },
   { id: 1, text: "Arunachal Pradesh" },
   { id: 2, text: "Assam" },

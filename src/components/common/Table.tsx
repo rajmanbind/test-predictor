@@ -64,7 +64,7 @@ export function Table({
   }
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative")}>
       {isEmpty(data) && (
         <div className="defaultTextStyles font-normal absolute top-1/2 left-1/2 -translate-x-1/2">
           No Data Available...
@@ -74,6 +74,7 @@ export function Table({
         className={cn(
           "overflow-x-auto border rounded-lg border-color-border relative min-h-[543px]",
           data?.length === 10 && "min-h-0",
+          className,
         )}
       >
         <table className="min-w-full border-collapse table-fixed">

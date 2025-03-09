@@ -13,7 +13,7 @@ import {
   onTextFieldChange,
 } from "@/utils/utils"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IFormData {
@@ -26,9 +26,11 @@ interface IFormData {
 export function SearchForm({
   categoriesList,
   coursesList,
+  setUpdateUI,
 }: {
   categoriesList: IOption[]
   coursesList: IOption[]
+  setUpdateUI: React.Dispatch<SetStateAction<boolean>>
 }) {
   const {
     handleSubmit,
@@ -56,6 +58,8 @@ export function SearchForm({
     searchParams.set("category", formData?.category?.text || "")
 
     router.push(`/results?${searchParams.toString()}`)
+
+    setUpdateUI((prev) => !prev)
   }
 
   return (

@@ -37,10 +37,10 @@ export async function GET(request: NextRequest) {
   // Search and filter parameters
   const rank = parseInt(searchParams.get("rank") || "0")
   const states = searchParams.get("states")?.split(",") || []
-  const course = searchParams.get("course")
-  const category = searchParams.get("category")
-  const instituteType = searchParams.get("instituteType")
-  const quota = searchParams.get("quota")
+  const courses = searchParams.get("course")?.split(",") || []
+  const categories = searchParams.get("category")?.split(",") || []
+  const instituteTypes = searchParams.get("instituteType")?.split(",") || []
+  const quotas = searchParams.get("quota")?.split(",") || []
   const feeFrom = parseInt(searchParams.get("feeFrom") || "0")
   const feeTo = parseInt(searchParams.get("feeTo") || "Infinity")
 
@@ -77,10 +77,11 @@ export async function GET(request: NextRequest) {
 
   // Apply optional filters
   if (states.length > 0) query = query.in("state", states)
-  if (course) query = query.eq("course", course)
-  if (category) query = query.eq("category", category)
-  if (instituteType) query = query.eq("instituteType", instituteType)
-  if (quota) query = query.eq("quota", quota)
+  if (courses.length > 0) query = query.in("course", courses)
+  if (categories.length > 0) query = query.in("category", categories)
+  if (instituteTypes.length > 0)
+    query = query.in("instituteType", instituteTypes)
+  if (quotas.length > 0) query = query.in("quota", quotas)
   if (feeFrom || feeTo !== Infinity) {
     query = query.gte("fees", feeFrom).lte("fees", feeTo)
   }
@@ -92,7 +93,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Merge and filter records based on rank
-  const mergedData: MergedRecord[] = [] // Use the defined type here
+  const mergedData: MergedRecord[] = []
   const recordMap = new Map()
 
   data.forEach((record) => {
@@ -121,8 +122,8 @@ export async function GET(request: NextRequest) {
           (latest?.closingRankR1 && rank <= latest.closingRankR1) ||
           (!latest && old?.strayRound && rank <= old.strayRound) ||
           (!latest && old?.closingRankR3 && rank <= old.closingRankR3) ||
-          (!latest && old?.closingRankR2 && rank <= old?.closingRankR2) ||
-          (!latest && old?.closingRankR1 && rank <= old?.closingRankR1)
+          (!latest && old?.closingRankR2 && rank <= old.closingRankR2) ||
+          (!latest && old?.closingRankR1 && rank <= old.closingRankR1)
         : true
 
     if (shouldInclude) {

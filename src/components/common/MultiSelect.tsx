@@ -170,6 +170,7 @@ export const MultiSelect = ({
                   )}
                   onClick={() => {
                     if (props?.disabled) return
+                    onChange({ name, selectedOptions: [] })
                     setSelectedOptions([])
                     field.onChange([])
                   }}

@@ -52,7 +52,7 @@ export function Sidebar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed top-[64px] h-screen pc:h-[calc(100vh-3px)] overflow-y-auto overflow-x-hidden bg-color-form-background w-[240px]",
+        "fixed top-[64px] h-screen pc:h-[calc(100vh-3px)] overflow-y-auto overflow-x-hidden bg-color-form-background w-[210px]",
         className,
       )}
     >

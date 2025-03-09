@@ -12,7 +12,7 @@ import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { isEmpty, onPageChange } from "@/utils/utils"
-import { Pencil, Trash2 } from "lucide-react"
+import { Info, Pencil, Trash2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
@@ -208,11 +208,25 @@ export default function ManageDataPage() {
   }
 
   return (
-    <BELayout className="mb-10 tab:mb-0">
-      <Heading>Manage Data</Heading>
+    <BELayout className="mb-10 tab:mb-0 max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
+      <div className="flex justify-between px-4">
+        <Heading>Manage Data</Heading>
 
-      <Card className="mt-4 p-6">
-        <div className="flex justify-between mb-3">
+        <div>
+          <div className="bg-color-accent py-2 px-4 text-white text-sm rounded-md flex items-center gap-2 w-fit self-end mb-2 ml-auto">
+            Closing Rank Guide <Info size={24} />
+          </div>
+
+          <p>Click on the record for detailed information and factors.</p>
+          <p>
+            (*) Indicates additional remarks available in Details & Factors.
+          </p>
+          <p>Click on Rank to view the allotment list.</p>
+        </div>
+      </div>
+
+      <Card className="mt-4 py-6 px-0">
+        <div className="flex justify-between mb-3 px-4">
           <h2 className="text-sm pc:text-base">Total Registered Institutes</h2>
 
           <TableDeleteButton

@@ -34,7 +34,7 @@ function PaymentCard() {
         </div>
 
         <div className="mb-6 space-y-2">
-          <h3 className="font-medium">What you'll get:</h3>
+          <h3 className="font-medium">{`What you'll get:`}</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center">
               <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>

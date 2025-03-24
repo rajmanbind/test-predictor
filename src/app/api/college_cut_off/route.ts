@@ -8,6 +8,18 @@ export async function GET(request: NextRequest) {
 
   const page = parseInt(searchParams.get("page") || "1")
   const pageSize = parseInt(searchParams.get("pageSize") || "10")
+  const instituteName = searchParams.get("instituteName")?.trim()
+  const dataCheckMode = searchParams.get("dataCheckMode")
+
+  // Check if instituteName is provided
+  if (!instituteName) {
+    return NextResponse.json(
+      {
+        error: "instituteName parameter is required",
+      },
+      { status: 400 },
+    )
+  }
 
   const supabase = createSupabaseServerClient()
 
@@ -32,23 +44,32 @@ export async function GET(request: NextRequest) {
     ?.split("-")
     .map((item: string) => item.trim())
 
+  // Step 2: Fetch data for merging with required instituteName filter
   const { data, error } = await supabase
     .from("college_table")
     .select("*")
     .in("year", latestYears)
+    .ilike("instituteName", `%${instituteName}%`)
     .order("created_at", { ascending: false })
 
   if (error) {
     return new Response(JSON.stringify({ error }), { status: 400 })
   }
 
-  // Step 3: Merge records with updated key
+  if (dataCheckMode) {
+    const hasData = data?.length > 0
+
+    return NextResponse.json({
+      hasData,
+    })
+  }
+
+  // Step 3: Merge records
   const mergedData: any[] = []
   const recordMap = new Map()
 
   data.forEach((record) => {
-    // Updated key to include all required fields
-    const key = `${record.instituteName}-${record.instituteType}-${record.state}-${record.course}-${record.category}-${record.quota}`
+    const key = `${record.instituteName}-${record.instituteType}-${record.course}-${record.category}`
 
     if (!recordMap.has(key)) {
       recordMap.set(key, { old: null, new: null })
@@ -64,33 +85,30 @@ export async function GET(request: NextRequest) {
   recordMap.forEach((value, key) => {
     const { old, new: latest } = value
 
-    // If either old or latest exists, create a merged record
-    if (old || latest) {
-      mergedData.push({
-        prev_id: old?.id,
-        new_id: latest?.id,
-        created_at: latest?.created_at ?? old?.created_at,
-        instituteName: latest?.instituteName ?? old?.instituteName,
-        instituteType: latest?.instituteType ?? old?.instituteType,
-        state: latest?.state ?? old?.state,
-        course: latest?.course ?? old?.course,
-        quota: latest?.quota ?? old?.quota,
-        category: latest?.category ?? old?.category,
-        fees: latest?.fees ?? old?.fees,
-        closingRankR1_old: old?.closingRankR1,
-        closingRankR2_old: old?.closingRankR2,
-        closingRankR3_old: old?.closingRankR3,
-        strayRound_old: old?.strayRound,
-        closingRankR1_new: latest?.closingRankR1,
-        closingRankR2_new: latest?.closingRankR2,
-        closingRankR3_new: latest?.closingRankR3,
-        strayRound_new: latest?.strayRound,
-        year:
-          old?.year && latest?.year
-            ? `${old.year} - ${latest.year}`
-            : (old?.year ?? latest?.year),
-      })
-    }
+    mergedData.push({
+      prev_id: old?.id,
+      new_id: latest?.id,
+      created_at: latest?.created_at ?? old?.created_at,
+      instituteName: latest?.instituteName ?? old?.instituteName,
+      instituteType: latest?.instituteType ?? old?.instituteType,
+      state: latest?.state ?? old?.state,
+      course: latest?.course ?? old?.course,
+      quota: latest?.quota ?? old?.quota,
+      category: latest?.category ?? old?.category,
+      fees: latest?.fees ?? old?.fees,
+      closingRankR1_old: old?.closingRankR1,
+      closingRankR2_old: old?.closingRankR2,
+      closingRankR3_old: old?.closingRankR3,
+      strayRound_old: old?.strayRound,
+      closingRankR1_new: latest?.closingRankR1,
+      closingRankR2_new: latest?.closingRankR2,
+      closingRankR3_new: latest?.closingRankR3,
+      strayRound_new: latest?.strayRound,
+      year:
+        old?.year && latest?.year
+          ? `${old.year} - ${latest.year}`
+          : (old?.year ?? latest?.year),
+    })
   })
 
   // Step 4: Pagination

@@ -16,29 +16,50 @@ import PaymentCard from "./PaymentCard"
 export default function CutOffPage() {
   const [tableData, setTableData] = useState<any>(null)
   const [configYear, setConfigYear] = useState<any>([])
-  const [paymentStatus, setPaymentStatus] = useState<any>(null)
 
   const [updateUI, setUpdateUI] = useState(false)
 
   const { fetchData } = useFetch()
   const { getSearchParams } = useInternalSearchParams()
 
+  const [rendererStatus, setRendererStatus] = useState<any>(null)
+
   useEffect(() => {
     checkDataMode()
   }, [updateUI])
 
-  function checkPaymentStatus() {
+  async function checkPaymentStatus() {
     let college = getSearchParams("college")
 
     if (college) {
       college = college.toLowerCase().trim().split(" ").join("-")
       const paymentStatus = getLocalStorageItem<any>(`payment-${college}`)
 
-      console.log("paymentStatus -> ", paymentStatus)
-
-      setPaymentStatus(paymentStatus)
+      if (paymentStatus) {
+        await showCutoff()
+      } else {
+        setRendererStatus("NOT_PAID")
+      }
     } else {
-      setPaymentStatus(null)
+      setRendererStatus("NOT_PAID")
+    }
+  }
+
+  async function showCutoff() {
+    setRendererStatus("PAID")
+    const instituteName = getSearchParams("college")?.trim()
+
+    const params: Record<string, any> = {
+      instituteName,
+    }
+
+    const res = await fetchData({
+      url: "/api/college_cut_off",
+      params,
+    })
+
+    if (res?.success) {
+      setTableData(res?.payload)
     }
   }
 
@@ -109,12 +130,9 @@ export default function CutOffPage() {
   }
 
   async function checkDataMode() {
-    const page = Number(getSearchParams("page") || 1)
     const instituteName = getSearchParams("college")?.trim()
 
     const params: Record<string, any> = {
-      page,
-      size: 10,
       instituteName,
       dataCheckMode: true,
     }
@@ -132,6 +150,8 @@ export default function CutOffPage() {
 
     if (dataRes?.payload?.hasData) {
       checkPaymentStatus()
+    } else {
+      setRendererStatus("NOT_FOUND")
     }
 
     if (configRes?.success) {
@@ -163,65 +183,88 @@ export default function CutOffPage() {
           </div>
         </div>
 
-        <>
-          {paymentStatus ? (
-            <>
-              <div className="mt-10 bg-color-form-background block pc:flex items-start py-4 rounded-lg pr-3 relative">
-                {tableData?.data?.length > 0 ? (
-                  <div
-                    className="flex-1 border-color-border pl-2"
-                    style={{
-                      overflowX: "auto",
-                    }}
-                  >
-                    <Table
-                      columns={generateCols()}
-                      data={tableData?.data}
-                      className="mt-6 min-h-[600px]"
-                    />
-                  </div>
-                ) : (
-                  <div className="grid place-items-center min-h-[240px] w-full px-4">
-                    <div>
-                      <div className="tab:hidden">
-                        <p className="text-xl tab:text-2xl pc:text-3xl">
-                          No Data found.
-                        </p>
-                        <p className="text-xl tab:text-2xl pc:text-3xl">
-                          for: {getSearchParams("college")}
-                        </p>
-                      </div>
-                      <div className="hidden tab:block">
-                        <p className="text-xl tab:text-2xl pc:text-3xl">
-                          No Data found. for: {getSearchParams("college")}
-                        </p>
-
-                        <Link href="/" className="w-full mt-6 block">
-                          <Button className="w-full text-lg">
-                            Predict More College Based On Your Rank
-                          </Button>
-                        </Link>
-                      </div>
-
-                      <Link href="/" className="w-full mt-6 block tab:hidden">
-                        <Button className="w-full">
-                          Predict More College
-                          <br />
-                          Based On Your Rank
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="grid place-items-center min-h-[240px] w-full px-4 mt-12 mb-4">
-              <PaymentCard />
-            </div>
-          )}
-        </>
+        <Renderer
+          rendererStatus={rendererStatus}
+          generateCols={generateCols}
+          tableData={tableData}
+          showCutoff={showCutoff}
+        />
       </Container>
     </FELayout>
   )
+}
+
+function Renderer({
+  rendererStatus,
+  generateCols,
+  tableData,
+  showCutoff,
+}: {
+  rendererStatus: string
+  generateCols: () => TableColumn[]
+  tableData: any
+  showCutoff: () => void
+}) {
+  const { getSearchParams } = useInternalSearchParams()
+
+  if (rendererStatus === "NOT_FOUND") {
+    return (
+      <div className="grid place-items-center min-h-[240px] w-full px-4">
+        <div>
+          <div className="tab:hidden">
+            <p className="text-xl tab:text-2xl pc:text-3xl">No Data found.</p>
+            <p className="text-xl tab:text-2xl pc:text-3xl">
+              for: {getSearchParams("college")}
+            </p>
+          </div>
+          <div className="hidden tab:block">
+            <p className="text-xl tab:text-2xl pc:text-3xl">
+              No Data found. for: {getSearchParams("college")}
+            </p>
+
+            <Link href="/" className="w-full mt-6 block">
+              <Button className="w-full text-lg">
+                Predict More College Based On Your Rank
+              </Button>
+            </Link>
+          </div>
+
+          <Link href="/" className="w-full mt-6 block tab:hidden">
+            <Button className="w-full">
+              Predict More College
+              <br />
+              Based On Your Rank
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  } else if (rendererStatus === "PAID") {
+    return (
+      <div
+        className="flex-1 border-color-border pl-2"
+        style={{
+          overflowX: "auto",
+        }}
+      >
+        <Table
+          columns={generateCols()}
+          data={tableData?.data}
+          className="mt-6 min-h-[600px]"
+        />
+      </div>
+    )
+  } else if (rendererStatus === "NOT_PAID") {
+    return (
+      <div className="grid place-items-center min-h-[240px] w-full mt-12 mb-4">
+        <PaymentCard showCutoff={showCutoff} />
+      </div>
+    )
+  } else {
+    return (
+      <div className="grid place-items-center min-h-[240px] w-full px-4">
+        Loading College Details Please Wait...
+      </div>
+    )
+  }
 }

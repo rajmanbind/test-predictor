@@ -1,16 +1,16 @@
-import { Button } from "@/components/common/Button"
+import PaymentButton from "@/components/frontend/PaymentButton"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
-import { ArrowRight, Shield } from "lucide-react"
+import { Shield } from "lucide-react"
 import React from "react"
 
-function PaymentCard() {
+function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
   const { getSearchParams } = useInternalSearchParams()
 
   return (
     <div className="w-full max-w-md overflow-hidden rounded-xl bg-[#fff] dark:bg-[#000] shadow-xl">
       {/* Header with gradient background */}
-      <div className="bg-[#b3b3b3]/40 p-6 text-white">
-        <h1 className="text-center text-xl font-bold leading-tight text-color-text">
+      <div className="bg-color-accent p-6 text-white">
+        <h1 className="text-center text-xl font-bold leading-tight text-white">
           Please make payment to view Cut-Off of:
           <br />
           {getSearchParams("college")}
@@ -51,10 +51,7 @@ function PaymentCard() {
           </ul>
         </div>
 
-        <Button className="w-full  text-lg font-medium flex items-center justify-center">
-          <span className="mr-2">₹800 Pay Now</span>
-          <ArrowRight className="h-5 w-5" />
-        </Button>
+        <PaymentButton amount={1} showCutoff={showCutoff} />
 
         <p className="mt-4 text-center text-xs text-muted-foreground">
           Secured by <span className="font-bold">Razorpay</span>

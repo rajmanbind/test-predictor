@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
   const recordMap = new Map()
 
   data.forEach((record) => {
-    const key = `${record.instituteName}-${record.instituteType}-${record.course}-${record.category}`
+    const key = `${record.instituteName}-${record.instituteType}-${record.state}-${record.course}-${record.category}-${record.quota}`
 
     if (!recordMap.has(key)) {
       recordMap.set(key, { old: null, new: null })

@@ -102,7 +102,7 @@ export function Table({
               {columns?.map((column, index) => (
                 <th
                   key={index}
-                  className={headerTHClass}
+                  className={cn(headerTHClass, "uppercase")}
                   style={{ minWidth: column?.width }}
                 >
                   {column?.title}
@@ -132,7 +132,7 @@ export function Table({
                     </td>
                   )}
                   {!hideSLNo && (
-                    <td className="p-3 text-left text-xs">
+                    <td className="p-3 text-left text-sm">
                       <div>
                         {(parseInt(searchParams.get("page") || "1") - 1) * 10 +
                           (rowIndex + 1)}
@@ -143,7 +143,7 @@ export function Table({
                     <td
                       key={colIndex}
                       className={cn(
-                        "px-4 py-3 text-left text-xs",
+                        "px-4 py-3 text-left text-sm",
                         column?.overrideInternalClick && "cursor-auto",
                       )}
                       onClick={(e) =>
@@ -152,7 +152,7 @@ export function Table({
                           : null
                       }
                     >
-                      <div className="min-h-8 flex items-center">
+                      <div className="min-h-8 flex items-center text-sm">
                         {column?.renderer
                           ? column?.renderer({
                               rowData: row,

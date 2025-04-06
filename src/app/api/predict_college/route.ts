@@ -42,7 +42,9 @@ export async function GET(request: NextRequest) {
   const instituteTypes = searchParams.get("instituteType")?.split(",") || []
   const quotas = searchParams.get("quota")?.split(",") || []
   const feeFrom = parseInt(searchParams.get("feeFrom") || "0")
-  const feeTo = parseInt(searchParams.get("feeTo") || "Infinity")
+
+  const feeToRaw = searchParams.get("feeTo")
+  const feeTo = feeToRaw === null ? Infinity : parseInt(feeToRaw)
 
   const supabase = createSupabaseServerClient()
 
@@ -82,6 +84,7 @@ export async function GET(request: NextRequest) {
   if (instituteTypes.length > 0)
     query = query.in("instituteType", instituteTypes)
   if (quotas.length > 0) query = query.in("quota", quotas)
+
   if (feeFrom || feeTo !== Infinity) {
     query = query.gte("fees", feeFrom).lte("fees", feeTo)
   }
@@ -97,7 +100,7 @@ export async function GET(request: NextRequest) {
   const recordMap = new Map()
 
   data.forEach((record) => {
-    const key = `${record.instituteName}-${record.instituteType}-${record.course}-${record.category}`
+    const key = `${record.instituteName}-${record.instituteType}-${record.state}-${record.course}-${record.category}-${record.quota}`
 
     if (!recordMap.has(key)) {
       recordMap.set(key, { old: null, new: null })

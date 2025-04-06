@@ -16,8 +16,8 @@ function TableSignup({ totalRecords }: TableSignupProps) {
           </h2>
 
           <p className="text-lg">
-            Get access to over 30 states' counseling dates, colleges, courses,
-            fees, cut-offs, and much more.
+            {`Get access to over 30 states' counseling dates, colleges, courses,
+            fees, cut-offs, and much more.`}
           </p>
 
           <button className="flex items-center gap-2 bg-black px-3 pl-5 py-3 mt-4 hover:bg-black/90 hover:border-white border-[2px] border-transparent box-border transition-all">

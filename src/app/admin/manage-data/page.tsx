@@ -15,6 +15,7 @@ import { isEmpty, onPageChange } from "@/utils/utils"
 import { Info, Pencil, Trash2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
+import { Tooltip } from "react-tooltip"
 
 export default function ManageDataPage() {
   const [tableData, setTableData] = useState<any>(null)
@@ -54,44 +55,109 @@ export default function ManageDataPage() {
       { title: "State", tableKey: "state", width: "150px" },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
-      { title: "Category", tableKey: "category" },
       {
-        title: `CR ${currentYear} [R1]`,
+        title: (
+          <div>
+            Allotted
+            <br />
+            Category
+          </div>
+        ),
+        tableKey: "category",
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${currentYear} Round 1`}
+          >
+            CR {currentYear} [R1]
+          </div>
+        ),
         tableKey: `closingRankR1_new`,
         width: "130px",
       },
       {
-        title: `CR ${currentYear} [R2]`,
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+          >
+            CR {currentYear} [R2]
+          </div>
+        ),
         tableKey: `closingRankR2_new`,
         width: "130px",
       },
       {
-        title: `CR ${currentYear} [R3]`,
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+          >
+            CR {currentYear} [R3]
+          </div>
+        ),
         tableKey: `closingRankR3_new`,
         width: "130px",
       },
       {
-        title: `SR ${currentYear}`,
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round ${currentYear}`}
+          >
+            SR {currentYear}
+          </div>
+        ),
         tableKey: `strayRound_new`,
         width: "110px",
       },
       {
-        title: `CR ${previousYear} [R1]`,
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${previousYear} Round 1`}
+          >
+            CR {previousYear} [R1]
+          </div>
+        ),
         tableKey: `closingRankR1_old`,
         width: "130px",
       },
       {
-        title: `CR ${previousYear} [R2]`,
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${previousYear} Round 2`}
+          >
+            CR {previousYear} [R2]
+          </div>
+        ),
         tableKey: `closingRankR2_old`,
         width: "130px",
       },
       {
-        title: `CR ${previousYear} [R3]`,
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${previousYear} Round 3`}
+          >
+            CR {previousYear} [R3]
+          </div>
+        ),
         tableKey: `closingRankR3_old`,
         width: "130px",
       },
       {
-        title: `SR ${previousYear}`,
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round ${previousYear}`}
+          >
+            SR {previousYear}
+          </div>
+        ),
         tableKey: `strayRound_old`,
         width: "110px",
       },
@@ -269,6 +335,8 @@ export default function ManageDataPage() {
         onClose={() => setPopupOpen(false)}
         onConfirm={deleteData}
       />
+
+      <Tooltip id="tooltip" place="top" className="z-[1100]" />
     </BELayout>
   )
 }

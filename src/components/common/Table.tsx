@@ -1,9 +1,9 @@
 import { cn, isEmpty } from "@/utils/utils"
 import { useSearchParams } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import React, { ReactNode, useEffect, useState } from "react"
 
 export interface TableColumn {
-  title: string
+  title: ReactNode
   tableKey: string
   width?: string
   overrideInternalClick?: boolean

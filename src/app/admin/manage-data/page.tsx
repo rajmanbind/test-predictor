@@ -56,26 +56,6 @@ export default function ManageDataPage() {
       { title: "Quota", tableKey: "quota", width: "150px" },
       { title: "Category", tableKey: "category" },
       {
-        title: `CR ${previousYear} [R1]`,
-        tableKey: `closingRankR1_old`,
-        width: "130px",
-      },
-      {
-        title: `CR ${previousYear} [R2]`,
-        tableKey: `closingRankR2_old`,
-        width: "130px",
-      },
-      {
-        title: `CR ${previousYear} [R3]`,
-        tableKey: `closingRankR3_old`,
-        width: "130px",
-      },
-      {
-        title: `SR ${previousYear}`,
-        tableKey: `strayRound_old`,
-        width: "110px",
-      },
-      {
         title: `CR ${currentYear} [R1]`,
         tableKey: `closingRankR1_new`,
         width: "130px",
@@ -93,6 +73,26 @@ export default function ManageDataPage() {
       {
         title: `SR ${currentYear}`,
         tableKey: `strayRound_new`,
+        width: "110px",
+      },
+      {
+        title: `CR ${previousYear} [R1]`,
+        tableKey: `closingRankR1_old`,
+        width: "130px",
+      },
+      {
+        title: `CR ${previousYear} [R2]`,
+        tableKey: `closingRankR2_old`,
+        width: "130px",
+      },
+      {
+        title: `CR ${previousYear} [R3]`,
+        tableKey: `closingRankR3_old`,
+        width: "130px",
+      },
+      {
+        title: `SR ${previousYear}`,
+        tableKey: `strayRound_old`,
         width: "110px",
       },
       { title: "Fees", tableKey: "fees", width: "100px" },

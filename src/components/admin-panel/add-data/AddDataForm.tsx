@@ -191,205 +191,208 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   }
 
   return (
-    <Card className="mt-4 p-6">
-      <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        <ResponsiveGrid className="py-3">
-          <Input
-            name="instituteName"
-            label="Institute Name"
-            type="text"
-            placeholder="Enter here"
-            value={formData?.instituteName}
-            onChange={(e) => onTextFieldChange(e, setFormData)}
-            control={control}
-            setValue={setValue}
-            rules={{
-              required: true,
-            }}
-            errors={errors}
-          />
+    <div>
+      <SearchAndSelect
+        name="year"
+        label="Year"
+        value={formData?.year}
+        onChange={({ name, selectedValue }) => {
+          onOptionSelected(name, selectedValue, setFormData)
+        }}
+        control={control}
+        required
+        setValue={setValue}
+        options={years()}
+        debounceDelay={0}
+        defaultOption={
+          editMode
+            ? defaultValues?.year
+            : { id: 0, text: String(new Date().getFullYear() - 1) }
+        }
+        searchAPI={(text, setOptions) =>
+          autoComplete(text, years(), setOptions)
+        }
+        wrapperClass="max-w-[395px]"
+        errors={errors}
+      />
 
-          <SearchAndSelect
-            name="instituteType"
-            label="Institute Type"
-            placeholder="Search and Select"
-            value={formData?.instituteType}
-            onChange={({ name, selectedValue }) => {
-              onOptionSelected(name, selectedValue, setFormData)
-            }}
-            control={control}
-            setValue={setValue}
-            required
-            options={instituteTypes}
-            debounceDelay={0}
-            defaultOption={defaultValues?.instituteType}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, instituteTypes, setOptions)
-            }
-            errors={errors}
-          />
-          <SearchAndSelect
-            name="state"
-            label="State"
-            placeholder="Search and Select"
-            value={formData?.state}
-            onChange={({ name, selectedValue }) => {
-              onOptionSelected(name, selectedValue, setFormData)
-            }}
-            control={control}
-            setValue={setValue}
-            required
-            options={states}
-            debounceDelay={0}
-            defaultOption={defaultValues?.state}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, states, setOptions)
-            }
-            errors={errors}
-          />
-          <SearchAndSelect
-            name="courses"
-            label="Course"
-            placeholder="Search and Select"
-            value={formData?.courses}
-            onChange={({ name, selectedValue }) => {
-              onOptionSelected(name, selectedValue, setFormData)
-            }}
-            control={control}
-            required
-            setValue={setValue}
-            options={coursesList}
-            debounceDelay={0}
-            defaultOption={defaultValues?.courses}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, coursesList, setOptions)
-            }
-            errors={errors}
-          />
-          <SearchAndSelect
-            name="quotas"
-            label="Quota"
-            placeholder="Search and Select"
-            value={formData?.quotas}
-            onChange={({ name, selectedValue }) => {
-              onOptionSelected(name, selectedValue, setFormData)
-            }}
-            control={control}
-            required
-            setValue={setValue}
-            options={quotasList}
-            debounceDelay={0}
-            defaultOption={defaultValues?.quotas}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, quotasList, setOptions)
-            }
-            errors={errors}
-          />
-          <SearchAndSelect
-            name="categories"
-            label="Category"
-            placeholder="Search and Select"
-            value={formData?.categories}
-            onChange={({ name, selectedValue }) => {
-              onOptionSelected(name, selectedValue, setFormData)
-            }}
-            control={control}
-            required
-            setValue={setValue}
-            options={categoriesList}
-            debounceDelay={0}
-            defaultOption={defaultValues?.categories}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, categoriesList, setOptions)
-            }
-            errors={errors}
-          />
-          <Input
-            name="fees"
-            label="Fees"
-            type="number"
-            setValue={setValue}
-            placeholder="Enter here"
-            value={formData?.fees}
-            onChange={(e) => onTextFieldChange(e, setFormData)}
-            control={control}
-            errors={errors}
-          />
-          <Input
-            name="closingRankR1"
-            label="Closing Rank (R1)"
-            type="number"
-            setValue={setValue}
-            placeholder="Enter here"
-            value={formData?.closingRankR1}
-            onChange={(e) => onTextFieldChange(e, setFormData)}
-            control={control}
-            rules={{
-              required: true,
-            }}
-            errors={errors}
-          />
-          <Input
-            name="closingRankR2"
-            label="Closing Rank (R2)"
-            type="number"
-            setValue={setValue}
-            placeholder="Enter here"
-            value={formData?.closingRankR2}
-            onChange={(e) => onTextFieldChange(e, setFormData)}
-            control={control}
-            errors={errors}
-          />
-          <Input
-            name="closingRankR3"
-            label="Closing Rank (R3)"
-            type="number"
-            placeholder="Enter here"
-            value={formData?.closingRankR3}
-            setValue={setValue}
-            onChange={(e) => onTextFieldChange(e, setFormData)}
-            control={control}
-            errors={errors}
-          />
-          <Input
-            name="strayRound"
-            label="Stray Round"
-            type="number"
-            placeholder="Enter here"
-            value={formData?.strayRound}
-            setValue={setValue}
-            onChange={(e) => onTextFieldChange(e, setFormData)}
-            control={control}
-            errors={errors}
-          />
+      <Card className="mt-4 p-6">
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+          <ResponsiveGrid className="py-3">
+            <Input
+              name="instituteName"
+              label="Institute Name"
+              type="text"
+              placeholder="Enter here"
+              value={formData?.instituteName}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              setValue={setValue}
+              rules={{
+                required: true,
+              }}
+              errors={errors}
+            />
 
-          <SearchAndSelect
-            name="year"
-            label="Year"
-            value={formData?.year}
-            onChange={({ name, selectedValue }) => {
-              onOptionSelected(name, selectedValue, setFormData)
-            }}
-            control={control}
-            required
-            setValue={setValue}
-            options={years()}
-            debounceDelay={0}
-            defaultOption={
-              editMode
-                ? defaultValues?.year
-                : { id: 0, text: String(new Date().getFullYear()) }
-            }
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, years(), setOptions)
-            }
-            errors={errors}
-          />
-        </ResponsiveGrid>
-        <Button className="mt-6 ml-auto px-6" type="submit">
-          {editMode ? "Update Data" : "Save Data"}
-        </Button>
-      </form>
-    </Card>
+            <SearchAndSelect
+              name="instituteType"
+              label="Institute Type"
+              placeholder="Search and Select"
+              value={formData?.instituteType}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+              }}
+              control={control}
+              setValue={setValue}
+              required
+              options={instituteTypes}
+              debounceDelay={0}
+              defaultOption={defaultValues?.instituteType}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, instituteTypes, setOptions)
+              }
+              errors={errors}
+            />
+            <SearchAndSelect
+              name="state"
+              label="State"
+              placeholder="Search and Select"
+              value={formData?.state}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+              }}
+              control={control}
+              setValue={setValue}
+              required
+              options={states}
+              debounceDelay={0}
+              defaultOption={defaultValues?.state}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, states, setOptions)
+              }
+              errors={errors}
+            />
+            <SearchAndSelect
+              name="courses"
+              label="Course"
+              placeholder="Search and Select"
+              value={formData?.courses}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+              }}
+              control={control}
+              required
+              setValue={setValue}
+              options={coursesList}
+              debounceDelay={0}
+              defaultOption={defaultValues?.courses}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, coursesList, setOptions)
+              }
+              errors={errors}
+            />
+            <SearchAndSelect
+              name="quotas"
+              label="Quota"
+              placeholder="Search and Select"
+              value={formData?.quotas}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+              }}
+              control={control}
+              required
+              setValue={setValue}
+              options={quotasList}
+              debounceDelay={0}
+              defaultOption={defaultValues?.quotas}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, quotasList, setOptions)
+              }
+              errors={errors}
+            />
+            <SearchAndSelect
+              name="categories"
+              label="Category"
+              placeholder="Search and Select"
+              value={formData?.categories}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+              }}
+              control={control}
+              required
+              setValue={setValue}
+              options={categoriesList}
+              debounceDelay={0}
+              defaultOption={defaultValues?.categories}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, categoriesList, setOptions)
+              }
+              errors={errors}
+            />
+            <Input
+              name="fees"
+              label="Fees"
+              type="text"
+              setValue={setValue}
+              placeholder="Enter here"
+              value={formData?.fees}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              errors={errors}
+            />
+            <Input
+              name="closingRankR1"
+              label="Closing Rank (R1)"
+              type="text"
+              setValue={setValue}
+              placeholder="Enter here"
+              value={formData?.closingRankR1}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              rules={{
+                required: true,
+              }}
+              errors={errors}
+            />
+            <Input
+              name="closingRankR2"
+              label="Closing Rank (R2)"
+              type="text"
+              setValue={setValue}
+              placeholder="Enter here"
+              value={formData?.closingRankR2}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              errors={errors}
+            />
+            <Input
+              name="closingRankR3"
+              label="Closing Rank (R3)"
+              type="text"
+              placeholder="Enter here"
+              value={formData?.closingRankR3}
+              setValue={setValue}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              errors={errors}
+            />
+            <Input
+              name="strayRound"
+              label="Stray Round"
+              type="text"
+              placeholder="Enter here"
+              value={formData?.strayRound}
+              setValue={setValue}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              errors={errors}
+            />
+          </ResponsiveGrid>
+          <Button className="mt-6 ml-auto px-6" type="submit">
+            {editMode ? "Update Data" : "Save Data"}
+          </Button>
+        </form>
+      </Card>
+    </div>
   )
 }

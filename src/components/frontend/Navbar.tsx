@@ -13,15 +13,11 @@ import { ThemeSwitcher } from "./ThemeSwitcher"
 
 export const navbarMenus = [
   {
-    title: "Home",
+    title: "College Predictor",
     href: "/",
   },
   {
-    title: "Courses",
-    href: "/",
-  },
-  {
-    title: "Paid Counselling",
+    title: "College Cut-Off",
     href: "/",
   },
 ]

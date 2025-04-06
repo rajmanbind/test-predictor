@@ -20,6 +20,7 @@ interface TableProps {
   selectable?: boolean
   className?: string
   onChange?: (selectedRows: any[]) => void
+  renderBelowTable?: React.ReactNode
 }
 
 const headerTHClass =
@@ -32,6 +33,7 @@ export function Table({
   className,
   data,
   onChange,
+  renderBelowTable,
 }: TableProps) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
   const searchParams = useSearchParams()
@@ -165,6 +167,8 @@ export function Table({
             })}
           </tbody>
         </table>
+
+        {renderBelowTable}
       </div>
     </div>
   )

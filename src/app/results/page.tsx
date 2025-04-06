@@ -16,6 +16,8 @@ import { Info, Settings2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Tooltip } from "react-tooltip"
 
+import TableSignup from "./TableSignup"
+
 export default function ResultPage() {
   const [tableData, setTableData] = useState<any>(null)
   const [configYear, setConfigYear] = useState<any>([])
@@ -29,6 +31,8 @@ export default function ResultPage() {
 
   const { fetchData } = useFetch()
   const { getSearchParams } = useInternalSearchParams()
+
+  const [totalRecords, setTotalRecords] = useState(0)
 
   useEffect(() => {
     getData()
@@ -298,6 +302,11 @@ export default function ResultPage() {
               columns={generateCols()}
               data={tableData?.data}
               className="mt-6 min-h-[600px]"
+              renderBelowTable={
+                isEmpty(tableData?.data) ? null : (
+                  <TableSignup totalRecords={tableData?.totalItems} />
+                )
+              }
             />
 
             <Pagination

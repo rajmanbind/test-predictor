@@ -1,5 +1,6 @@
 "use client"
 
+import { useAppState } from "@/hooks/useAppState"
 import { cn } from "@/utils/utils"
 import {
   CalendarCog,
@@ -9,9 +10,8 @@ import {
   Settings2,
   Trash2,
 } from "lucide-react"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
-
-import Link from "../common/Link"
 
 export const sidebarMenus = [
   {
@@ -49,6 +49,8 @@ export const sidebarMenus = [
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname()
 
+  const { setAppState } = useAppState()
+
   return (
     <div
       className={cn(
@@ -65,6 +67,7 @@ export function Sidebar({ className }: { className?: string }) {
               "flex items-center gap-2 py-3 px-4 hover:bg-color-accent hover:text-white text-sm",
               pathname === menu.link && "bg-color-accent-dark text-white",
             )}
+            onClick={() => setAppState({ pageLoader: true })}
           >
             <span>{menu.icon}</span>
             <span>{menu.title}</span>

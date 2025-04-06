@@ -2,7 +2,7 @@
 
 import { useLink } from "@/hooks/useLink"
 import { cn } from "@/utils/utils"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import React from "react"
 
 export default function Link({

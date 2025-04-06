@@ -274,7 +274,7 @@ export default function ManageDataPage() {
   }
 
   return (
-    <BELayout className="mb-10 tab:mb-0 max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
+    <BELayout className="mb-10 tab:mb-0 pc:max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
       <div className="flex justify-between px-4">
         <Heading>Manage Data</Heading>
 

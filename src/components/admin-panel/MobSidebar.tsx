@@ -3,9 +3,9 @@
 import { useAppState } from "@/hooks/useAppState"
 import { useDisablePageScroll } from "@/hooks/useDisablePageScroll"
 import { cn } from "@/utils/utils"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import Link from "../common/Link"
 import { sidebarMenus } from "./Sidebar"
 
 export function MobSidebar({ className }: { className?: string }) {
@@ -38,7 +38,9 @@ export function MobSidebar({ className }: { className?: string }) {
             <Link
               key={menu?.title}
               href={menu.link}
-              onClick={() => setAppState({ isSidebarOpen: false })}
+              onClick={() =>
+                setAppState({ isSidebarOpen: false, pageLoader: true })
+              }
               className={cn(
                 "flex items-center gap-2 py-3 px-4 hover:bg-color-accent hover:text-white text-sm",
                 pathname === menu.link && "bg-color-accent-dark text-white",

@@ -5,17 +5,18 @@ import { Heading } from "@/components/admin-panel/Heading"
 import { Card } from "@/components/common/Card"
 import { Input } from "@/components/common/Input"
 import Link from "@/components/common/Link"
-import { Pagination } from "@/components/common/Pagination"
+import { Pagination, PaginationHandle } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
 import { TableDeleteButton } from "@/components/common/TableDeleteButton"
 import { ConfirmEditYearPopup } from "@/components/common/popups/ConfirmEditYearPopup"
 import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
-import { isEmpty, onPageChange, onTextFieldChange } from "@/utils/utils"
+import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
+import { cn, isEmpty, onPageChange, onTextFieldChange } from "@/utils/utils"
 import { Info, Pencil, Trash2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Tooltip } from "react-tooltip"
 
@@ -28,6 +29,8 @@ export default function ManageDataPage() {
   const [singleDelete, setSingleDelete] = useState<any>([])
   const [configYear, setConfigYear] = useState<any>([])
 
+  const { setSearchParams } = useInternalSearchParams()
+
   const [rowData, setRowData] = useState<any>([])
 
   const [searchInput, setSearchInput] = useState("")
@@ -35,6 +38,8 @@ export default function ManageDataPage() {
   const { fetchData } = useFetch()
   const { showToast } = useAppState()
   const searchParams = useSearchParams()
+
+  const paginationRef = useRef<PaginationHandle>(null)
 
   const {
     handleSubmit,
@@ -287,9 +292,14 @@ export default function ManageDataPage() {
   }
 
   async function onSubmit() {
+    setSearchParams("page", "1")
+    if (paginationRef.current) {
+      paginationRef.current.setActivePage(1)
+    }
+
     const res = await fetchData({
-      url: `/api/admin/search_data`,
-      params: { instituteName: searchInput },
+      url: `/api/admin/get_data`,
+      params: { instituteName: searchInput, page: 1, size: 20 },
     })
 
     setTableData(res?.payload)
@@ -326,7 +336,13 @@ export default function ManageDataPage() {
               value={searchInput}
               onChange={(e) => {
                 if (e.target.value === "") {
-                  getData()
+                  setSearchParams("page", "1")
+                  if (paginationRef.current) {
+                    paginationRef.current.setActivePage(1)
+                  }
+                  setTimeout(() => {
+                    getData()
+                  }, 50)
                 }
 
                 setSearchInput(e.target.value)
@@ -334,7 +350,7 @@ export default function ManageDataPage() {
               control={control}
               setValue={setValue}
               rules={{
-                required: true,
+                required: false,
               }}
               errors={errors}
               dummyLabel="Search"
@@ -343,7 +359,13 @@ export default function ManageDataPage() {
               boxWrapperClass="py-1"
             />
 
-            <button className="bg-color-accent-dark hover:bg-color-accent text-white text-sm py-[6px] px-4 rounded-md w-full tab:w-auto">
+            <button
+              className={cn(
+                "bg-color-accent hover:bg-color-accent-dark text-white text-sm py-[6px] px-4 rounded-md w-full tab:w-auto",
+                !searchInput && " opacity-50",
+              )}
+              disabled={!searchInput}
+            >
               Search
             </button>
           </form>
@@ -367,6 +389,7 @@ export default function ManageDataPage() {
         />
 
         <Pagination
+          ref={paginationRef}
           currentPage={tableData?.currentPage}
           totalItems={tableData?.totalItems}
           itemsCountPerPage={tableData?.pageSize}
@@ -374,6 +397,7 @@ export default function ManageDataPage() {
           onPageChange={(page: number) => {
             onPageChange(page, "/api/admin/get_data", fetchData, setTableData, {
               size: 20,
+              ...(searchInput && { instituteName: searchInput }),
             })
           }}
         />

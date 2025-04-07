@@ -159,7 +159,6 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
 
       if (res?.success) {
         showToast("success", res?.payload?.msg)
-        router.replace("/admin/manage-data")
       }
     } else {
       const res = await fetchData({

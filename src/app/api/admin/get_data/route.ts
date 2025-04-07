@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
 
   const page = parseInt(searchParams.get("page") || "1")
   const pageSize = parseInt(searchParams.get("size") || "10")
+  const instituteName = searchParams.get("instituteName") // Get optional instituteName param
 
   const supabase = createSupabaseServerClient()
 
@@ -32,11 +33,18 @@ export async function GET(request: NextRequest) {
     ?.split("-")
     .map((item: string) => item.trim())
 
-  const { data, error } = await supabase
+  // Modify the query to include instituteName filter if provided
+  let query = supabase
     .from("college_table")
     .select("*")
     .in("year", latestYears)
     .order("created_at", { ascending: false })
+
+  if (instituteName) {
+    query = query.ilike("instituteName", `%${instituteName}%`) // Case-insensitive partial match
+  }
+
+  const { data, error } = await query
 
   if (error) {
     return new Response(JSON.stringify({ error }), { status: 400 })
@@ -47,7 +55,6 @@ export async function GET(request: NextRequest) {
   const recordMap = new Map()
 
   data.forEach((record) => {
-    // Updated key to include all required fields
     const key = `${record.instituteName}-${record.instituteType}-${record.state}-${record.course}-${record.category}-${record.quota}`
 
     if (!recordMap.has(key)) {
@@ -64,7 +71,6 @@ export async function GET(request: NextRequest) {
   recordMap.forEach((value, key) => {
     const { old, new: latest } = value
 
-    // If either old or latest exists, create a merged record
     if (old || latest) {
       mergedData.push({
         prev_id: old?.id,

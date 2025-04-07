@@ -251,7 +251,7 @@ export default function ManageDataPage() {
         url: "/api/admin/get_data",
         params: {
           page,
-          size: 10,
+          size: 20,
         },
       }),
       fetchData({
@@ -306,6 +306,7 @@ export default function ManageDataPage() {
         <Table
           columns={generateCols()}
           data={tableData?.data}
+          itemsCountPerPage={tableData?.pageSize}
           selectable
           onChange={(rows: any[]) => {
             setSelectedRows(rows)
@@ -315,9 +316,12 @@ export default function ManageDataPage() {
         <Pagination
           currentPage={tableData?.currentPage}
           totalItems={tableData?.totalItems}
+          itemsCountPerPage={tableData?.pageSize}
           wrapperClass="pb-[50px]"
           onPageChange={(page: number) => {
-            onPageChange(page, "/api/admin/get_data", fetchData, setTableData)
+            onPageChange(page, "/api/admin/get_data", fetchData, setTableData, {
+              size: 20,
+            })
           }}
         />
       </Card>

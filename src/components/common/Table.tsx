@@ -2,6 +2,17 @@ import { cn, isEmpty } from "@/utils/utils"
 import { useSearchParams } from "next/navigation"
 import React, { ReactNode, useEffect, useState } from "react"
 
+interface TableProps {
+  columns: TableColumn[]
+  data: any[]
+  hideSLNo?: boolean
+  selectable?: boolean
+  itemsCountPerPage?: number
+  className?: string
+  onChange?: (selectedRows: any[]) => void
+  renderBelowTable?: React.ReactNode
+}
+
 export interface TableColumn {
   title: ReactNode
   tableKey: string
@@ -11,16 +22,6 @@ export interface TableColumn {
     rowData: any
     cellData: React.ReactNode
   }) => React.ReactNode
-}
-
-interface TableProps {
-  columns: TableColumn[]
-  data: any[]
-  hideSLNo?: boolean
-  selectable?: boolean
-  className?: string
-  onChange?: (selectedRows: any[]) => void
-  renderBelowTable?: React.ReactNode
 }
 
 const headerTHClass =
@@ -33,6 +34,7 @@ export function Table({
   className,
   data,
   onChange,
+  itemsCountPerPage,
   renderBelowTable,
 }: TableProps) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
@@ -63,6 +65,18 @@ export function Table({
       setSelectedRows(allSelected)
       onChange?.(data)
     }
+  }
+
+  function getRowSLNumber(rowIndex: number) {
+    let pageSize = 10
+    if (itemsCountPerPage) {
+      pageSize = itemsCountPerPage
+    }
+
+    return (
+      (parseInt(searchParams.get("page") || "1") - 1) * pageSize +
+      (rowIndex + 1)
+    )
   }
 
   return (
@@ -138,10 +152,7 @@ export function Table({
                   )}
                   {!hideSLNo && (
                     <td className="p-3 text-left text-sm">
-                      <div>
-                        {(parseInt(searchParams.get("page") || "1") - 1) * 10 +
-                          (rowIndex + 1)}
-                      </div>
+                      <div>{getRowSLNumber(rowIndex)}</div>
                     </td>
                   )}
                   {columns?.map((column, colIndex) => (

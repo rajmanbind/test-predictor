@@ -117,3 +117,5 @@ export const Pagination = forwardRef<PaginationHandle, PaginationProps>(
     )
   },
 )
+
+Pagination.displayName = "Pagination"

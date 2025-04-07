@@ -8,12 +8,11 @@ import { IOption } from "@/types/GlobalTypes"
 import { states } from "@/utils/static"
 import {
   autoComplete,
-  isEmpty,
   onOptionSelected,
   onTextFieldChange,
 } from "@/utils/utils"
 import { useRouter } from "next/navigation"
-import { SetStateAction, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IFormData {
@@ -36,6 +35,8 @@ export function SearchForm({
     handleSubmit,
     control,
     setValue,
+    setError,
+    trigger,
     formState: { errors },
   } = useForm({
     shouldFocusError: true,
@@ -45,12 +46,23 @@ export function SearchForm({
     rank: "",
   })
 
-  const { getSearchParams, setSearchParams } = useInternalSearchParams()
+  const { getSearchParams } = useInternalSearchParams()
 
   const router = useRouter()
 
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, rank: getSearchParams("rank") || "" }))
+  }, [])
+
   function onSubmit() {
     const searchParams = new URLSearchParams()
+
+    if (!formData?.rank) {
+      setError("rank", {
+        message: "Rank is required",
+      })
+      return
+    }
 
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("state", formData?.state?.text || "")
@@ -72,13 +84,19 @@ export function SearchForm({
         label="Rank"
         type="number"
         placeholder="Enter Rank"
-        value={formData?.rank || getSearchParams("rank") || ""}
-        onChange={(e) => onTextFieldChange(e, setFormData)}
+        value={formData?.rank}
+        onChange={(e) => {
+          onTextFieldChange(e, setFormData)
+          setValue("rank", e.target.value)
+          trigger("rank")
+        }}
         control={control}
         setValue={setValue}
+        required
         rules={{
-          required: false,
+          required: true,
         }}
+        errorClass="absolute"
         errors={errors}
       />
 
@@ -97,6 +115,7 @@ export function SearchForm({
         }}
         control={control}
         setValue={setValue}
+        required
         options={states}
         debounceDelay={0}
         searchAPI={(text, setOptions) => autoComplete(text, states, setOptions)}
@@ -119,6 +138,7 @@ export function SearchForm({
         control={control}
         setValue={setValue}
         options={coursesList}
+        required
         debounceDelay={0}
         searchAPI={(text, setOptions) =>
           autoComplete(text, coursesList, setOptions)
@@ -130,6 +150,7 @@ export function SearchForm({
         label="Category"
         placeholder="Select Category"
         value={formData?.category}
+        required
         defaultOption={
           getSearchParams("category")
             ? { id: 0, text: getSearchParams("category") }

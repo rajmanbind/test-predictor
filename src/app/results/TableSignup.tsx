@@ -5,8 +5,6 @@ interface TableSignupProps {
 }
 
 function TableSignup({ totalRecords }: TableSignupProps) {
-  console.log("totalRecords", totalRecords)
-
   return (
     <div className="h-52 bg-[#ecbc00] sticky left-0">
       <div className="h-full w-full grid place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">

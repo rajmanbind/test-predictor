@@ -170,7 +170,7 @@ export default function ManageDataPage() {
         renderer: ({ rowData }) => {
           if (rowData?.new_id && rowData?.prev_id) {
             return (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 bg-color-form-background px-4 py-5 group-hover:bg-color-table-header">
                 <Pencil
                   size={20}
                   className="text-color-text hover:text-blue-600 cursor-pointer"
@@ -194,7 +194,7 @@ export default function ManageDataPage() {
           const id = rowData?.new_id || rowData?.prev_id
 
           return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-color-form-background px-4 py-5 group-hover:bg-color-table-header">
               <Link href={`/admin/edit-data/${id}`}>
                 <Pencil
                   size={20}

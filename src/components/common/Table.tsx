@@ -102,7 +102,12 @@ export function Table({
               {columns?.map((column, index) => (
                 <th
                   key={index}
-                  className={cn(headerTHClass, "uppercase")}
+                  className={cn(
+                    headerTHClass,
+                    "uppercase",
+                    column?.tableKey === "action" &&
+                      "tableActionStatic bg-color-table-header",
+                  )}
                   style={{ minWidth: column?.width }}
                 >
                   {column?.title}
@@ -145,6 +150,8 @@ export function Table({
                       className={cn(
                         "px-4 py-3 text-left text-sm",
                         column?.overrideInternalClick && "cursor-auto",
+                        column?.tableKey === "action" &&
+                          "tableActionStatic px-0 py-0",
                       )}
                       onClick={(e) =>
                         column?.overrideInternalClick

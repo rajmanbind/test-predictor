@@ -67,7 +67,9 @@ export function Sidebar({ className }: { className?: string }) {
               "flex items-center gap-2 py-3 px-4 hover:bg-color-accent hover:text-white text-sm",
               pathname === menu.link && "bg-color-accent-dark text-white",
             )}
-            onClick={() => setAppState({ pageLoader: true })}
+            onClick={() => {
+              if (pathname !== menu?.link) setAppState({ pageLoader: true })
+            }}
           >
             <span>{menu.icon}</span>
             <span>{menu.title}</span>

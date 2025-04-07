@@ -324,7 +324,13 @@ export default function ManageDataPage() {
               type="text"
               placeholder="Search by Institute Name..."
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value === "") {
+                  getData()
+                }
+
+                setSearchInput(e.target.value)
+              }}
               control={control}
               setValue={setValue}
               rules={{

@@ -16,10 +16,13 @@ import {
   onOptionSelected,
   onTextFieldChange,
 } from "@/utils/utils"
+import { Delete, Save } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+
+const filteredStates = states.slice(1)
 
 interface IFormData {
   instituteName?: string
@@ -167,27 +170,29 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
 
       if (res?.success) {
         showToast("success", res?.payload?.msg)
-
-        clearReactHookFormValueAndStates(
-          [
-            "instituteName",
-            "instituteType",
-            "state",
-            "courses",
-            "quotas",
-            "categories",
-            "fees",
-            "closingRankR1",
-            "closingRankR2",
-            "closingRankR3",
-            "strayRound",
-            "year",
-          ],
-          setValue,
-          setFormData,
-        )
       }
     }
+  }
+
+  function clearAll() {
+    clearReactHookFormValueAndStates(
+      [
+        "instituteName",
+        "instituteType",
+        "state",
+        "courses",
+        "quotas",
+        "categories",
+        "fees",
+        "closingRankR1",
+        "closingRankR2",
+        "closingRankR3",
+        "strayRound",
+        "year",
+      ],
+      setValue,
+      setFormData,
+    )
   }
 
   return (
@@ -264,11 +269,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               control={control}
               setValue={setValue}
               required
-              options={states}
+              options={filteredStates}
               debounceDelay={0}
               defaultOption={defaultValues?.state}
               searchAPI={(text, setOptions) =>
-                autoComplete(text, states, setOptions)
+                autoComplete(text, filteredStates, setOptions)
               }
               errors={errors}
             />
@@ -388,9 +393,22 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               errors={errors}
             />
           </ResponsiveGrid>
-          <Button className="mt-6 ml-auto px-6" type="submit">
-            {editMode ? "Update Data" : "Save Data"}
-          </Button>
+
+          <div className="mt-6 ml-auto flex items-center gap-6">
+            <Button
+              className="px-4 bg-transparent border bg-red-500 flex items-center gap-2 hover:bg-red-600"
+              type="button"
+              onClick={clearAll}
+            >
+              <Delete size={22} />
+              Clear Form
+            </Button>
+
+            <Button className="flex items-center gap-2 px-6" type="submit">
+              {editMode ? "Update Data" : "Save Data"}
+              <Save size={22} />
+            </Button>
+          </div>
         </form>
       </Card>
     </div>

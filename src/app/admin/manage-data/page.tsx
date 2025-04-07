@@ -3,6 +3,7 @@
 import { BELayout } from "@/components/admin-panel/BELayout"
 import { Heading } from "@/components/admin-panel/Heading"
 import { Card } from "@/components/common/Card"
+import { Input } from "@/components/common/Input"
 import Link from "@/components/common/Link"
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table"
@@ -11,10 +12,11 @@ import { ConfirmEditYearPopup } from "@/components/common/popups/ConfirmEditYear
 import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
-import { isEmpty, onPageChange } from "@/utils/utils"
+import { isEmpty, onPageChange, onTextFieldChange } from "@/utils/utils"
 import { Info, Pencil, Trash2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
 import { Tooltip } from "react-tooltip"
 
 export default function ManageDataPage() {
@@ -28,9 +30,20 @@ export default function ManageDataPage() {
 
   const [rowData, setRowData] = useState<any>([])
 
+  const [searchInput, setSearchInput] = useState("")
+
   const { fetchData } = useFetch()
   const { showToast } = useAppState()
   const searchParams = useSearchParams()
+
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    shouldFocusError: true,
+  })
 
   useEffect(() => {
     getData()
@@ -273,6 +286,15 @@ export default function ManageDataPage() {
     }
   }
 
+  async function onSubmit() {
+    const res = await fetchData({
+      url: `/api/admin/search_data`,
+      params: { instituteName: searchInput },
+    })
+
+    setTableData(res?.payload)
+  }
+
   return (
     <BELayout className="mb-10 tab:mb-0 pc:max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
       <div className="flex justify-between px-4">
@@ -292,11 +314,36 @@ export default function ManageDataPage() {
       </div>
 
       <Card className="mt-4 py-6 px-0">
-        <div className="flex justify-between mb-3 px-4">
-          <h2 className="text-sm pc:text-base">Total Registered Institutes</h2>
+        <div className="flex flex-col tab:flex-row gap-4 tab:gap-0 justify-between mb-7 px-2">
+          <form
+            className="flex items-center gap-2 w-full"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Input
+              name="searchInput"
+              type="text"
+              placeholder="Search by Institute Name..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              control={control}
+              setValue={setValue}
+              rules={{
+                required: true,
+              }}
+              errors={errors}
+              dummyLabel="Search"
+              errorClass="absolute"
+              wrapperClass="w-full max-w-[230px] shrink-0"
+              boxWrapperClass="py-1"
+            />
+
+            <button className="bg-color-accent-dark hover:bg-color-accent text-white text-sm py-[6px] px-4 rounded-md w-full tab:w-auto">
+              Search
+            </button>
+          </form>
 
           <TableDeleteButton
-            className="flex-shrink-0"
+            className="flex-shrink-0 w-fit self-end"
             title={`Delete ${selectedRows?.length} ${selectedRows?.length > 1 ? "rows" : "row"}`}
             onClick={() => setPopupOpen(true)}
             disabled={isEmpty(selectedRows)}

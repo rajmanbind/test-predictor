@@ -5,9 +5,54 @@ import { NextRequest, NextResponse } from "next/server"
 export async function POST(request: NextRequest) {
   try {
     const reqData = await request.json()
-
     const supabase = createSupabaseServerClient()
 
+    const {
+      instituteName,
+      instituteType,
+      state,
+      course,
+      quota,
+      category,
+      year,
+    } = reqData
+
+    // Check existing data without .single() to debug
+    const { data: checkData, error: checkError } = await supabase
+      .from("college_table")
+      .select("*")
+      .eq("instituteName", instituteName)
+      .eq("instituteType", instituteType)
+      .eq("state", state)
+      .eq("course", course)
+      .eq("quota", quota)
+      .eq("category", category)
+      .eq("year", Number(year)) // Ensure year is a number if stored as such
+
+    if (checkError) {
+      console.error("Check query error:", checkError)
+      return NextResponse.json(
+        { msg: "Error checking data", error: checkError },
+        { status: 400 },
+      )
+    }
+
+    if (checkData?.length > 0) {
+      return NextResponse.json(
+        { msg: "The Data Already Exists!" },
+        { status: 400 },
+      )
+    }
+
+    // If data already exists, you might want to handle it differently
+    if (checkData && checkData.length > 0) {
+      return NextResponse.json(
+        { msg: "Data already exists", data: checkData },
+        { status: 200 },
+      )
+    }
+
+    // Insert new data
     const { error, data } = await supabase
       .from("college_table")
       .insert(reqData)
@@ -22,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ data, msg: "Data inserted successfully." })
   } catch (err) {
-    console.error(err)
+    console.error("Unexpected error:", err)
     return NextResponse.json(
       { err, msg: "Something went wrong!" },
       { status: 400 },

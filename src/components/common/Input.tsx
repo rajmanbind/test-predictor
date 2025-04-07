@@ -31,6 +31,7 @@ export interface InputProps
   boxWrapperClass?: string
   errorClass?: string
   labelClass?: string
+  dummyLabel?: string
   labelContainerClass?: string
 }
 
@@ -54,6 +55,7 @@ export function Input({
   labelContainerClass,
   value,
   setValue,
+  dummyLabel,
   ...props
 }: InputProps) {
   const [passType, setPassType] = React.useState("password")
@@ -74,10 +76,12 @@ export function Input({
     const error = errors?.[name] as FieldError | undefined
     errorMsg = error?.message ? error?.message : "Validation failed!"
 
+    const finalLabel = label ? label : dummyLabel
+
     if (error?.type === "required") {
-      errorMsg = error?.message ? error?.message : `${label} is required!`
+      errorMsg = error?.message ? error?.message : `${finalLabel} is required!`
     } else if (error?.type === "pattern") {
-      errorMsg = error?.message ? error?.message : `${label} is not valid!`
+      errorMsg = error?.message ? error?.message : `${finalLabel} is not valid!`
     }
 
     return { error, errorMsg }

@@ -317,19 +317,23 @@ export default function ManageDataPage() {
 
           <div>
             <p>
-              {`->`} Closing Rank refers to the rank of the Last Candidate who
-              secured a seat in a particular medical college under a specific
-              quota.
+              {`->`} <b>CR</b> refer to Closing Rank "the rank of the Last
+              Candidate who secured a seat in a particular medical college under
+              a specific quota"
             </p>
             <p>
-              {`->`} Allotted category refers to the category under which a
-              candidate is offered a seat during Counselling.
+              {`->`} <b>Allotted Category</b> refers to the category under which
+              a candidate is offered a seat during Counselling.
             </p>
             <p>
               {" "}
-              {`->`} NA refer to No Allotment or No Seat Left For that Round.
+              {`->`} <b>NA</b> refer to No Allotment or No Seat Left For that
+              Round.
             </p>
-            <p> {`->`} SR refer to Stray Round.</p>
+            <p>
+              {" "}
+              {`->`} <b>SR</b> refer to Stray Round.
+            </p>
           </div>
         </div>
       </div>

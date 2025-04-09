@@ -14,7 +14,7 @@ export default function ClosingRanks() {
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 gap-y-8">
           {closingRanksStates?.map((state) => (
-            <div>
+            <div key={state?.text}>
               <h2 className="text-color-accent font-medium text-base mb-1">
                 {state?.text}
               </h2>

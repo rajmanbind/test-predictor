@@ -316,24 +316,33 @@ export default function ManageDataPage() {
           </div>
 
           <div>
-            <p>
-              {`->`} <b>CR</b> refer to Closing Rank "the rank of the Last
-              Candidate who secured a seat in a particular medical college under
-              a specific quota"
-            </p>
-            <p>
-              {`->`} <b>Allotted Category</b> refers to the category under which
-              a candidate is offered a seat during Counselling.
-            </p>
-            <p>
-              {" "}
-              {`->`} <b>NA</b> refer to No Allotment or No Seat Left For that
-              Round.
-            </p>
-            <p>
-              {" "}
-              {`->`} <b>SR</b> refer to Stray Round.
-            </p>
+            <li className="flex items-start gap-2">
+              <span className="text-gray-700">•</span>
+              <span>
+                <b>CR</b> refers to Closing Rank — "the rank of the last
+                candidate who secured a seat in a particular medical college
+                under a specific quota".
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-gray-700">•</span>
+              <span>
+                <b>Allotted Category</b> refers to the category under which a
+                candidate is offered a seat during counselling.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-gray-700">•</span>
+              <span>
+                <b>NA</b> refers to No Allotment or No Seat Left for that round.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-gray-700">•</span>
+              <span>
+                <b>SR</b> refers to Stray Round.
+              </span>
+            </li>
           </div>
         </div>
       </div>

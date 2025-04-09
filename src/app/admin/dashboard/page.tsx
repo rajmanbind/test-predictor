@@ -17,7 +17,7 @@ export default function AdminDashboardPage() {
             </div>
             <div className="flex items-center">
               <IndianRupee size={16} strokeWidth={3} />{" "}
-              <span className="font-semibold">50,000</span>
+              <span className="font-semibold">0</span>
             </div>
           </div>
           <div className="flex items-center justify-between">
@@ -28,7 +28,7 @@ export default function AdminDashboardPage() {
 
             <div className="flex items-center">
               <IndianRupee size={16} strokeWidth={3} />{" "}
-              <span className="font-semibold">150,000</span>
+              <span className="font-semibold">0</span>
             </div>
           </div>
         </Card>
@@ -38,7 +38,7 @@ export default function AdminDashboardPage() {
             <div className="block tab:hidden">
               Monthly Reg. <br /> User:
             </div>
-            <p className="font-semibold">5,000</p>
+            <p className="font-semibold">0</p>
           </div>
           <div className="flex items-center justify-between">
             <div className="hidden tab:block">Total Reg. User:</div>
@@ -46,7 +46,7 @@ export default function AdminDashboardPage() {
               Total Reg. <br /> User:
             </div>
 
-            <p className="font-semibold">17,000</p>
+            <p className="font-semibold">0</p>
           </div>
         </Card>
       </div>

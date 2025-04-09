@@ -315,11 +315,22 @@ export default function ManageDataPage() {
             Closing Rank Guide <Info size={24} />
           </div>
 
-          <p>Click on the record for detailed information and factors.</p>
-          <p>
-            (*) Indicates additional remarks available in Details & Factors.
-          </p>
-          <p>Click on Rank to view the allotment list.</p>
+          <div>
+            <p>
+              {`->`} Closing Rank refers to the rank of the Last Candidate who
+              secured a seat in a particular medical college under a specific
+              quota.
+            </p>
+            <p>
+              {`->`} Allotted category refers to the category under which a
+              candidate is offered a seat during Counselling.
+            </p>
+            <p>
+              {" "}
+              {`->`} NA refer to No Allotment or No Seat Left For that Round.
+            </p>
+            <p> {`->`} SR refer to Stray Round.</p>
+          </div>
         </div>
       </div>
 

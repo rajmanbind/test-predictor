@@ -40,6 +40,11 @@ export const states = [
   { id: 36, text: "West Bengal" },
 ]
 
+export const closingRanksStates = [
+  { id: 37, text: "Central" },
+  ...states?.slice(1),
+]
+
 export const courses = [
   { id: 0, text: "MD" },
   { id: 1, text: "MS" },

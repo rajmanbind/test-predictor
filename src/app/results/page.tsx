@@ -248,20 +248,49 @@ export default function ResultPage() {
   return (
     <FELayout>
       <Container className="pb-10 pt-1 pc:pt-10">
-        <div className="flex items-end pc:items-start justify-between flex-col pc:flex-row">
+        <div className="flex items-end pc:items-start justify-between flex-col pc:flex-row pb-4 pc:pb-8">
           <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 order-2 pc:order-1 pt-4">
             NEET Collage Predictor
           </h2>
 
           <div className="flex items-start gap-3 mr-2 order-1 pc:order-2 flex-shrink-0">
-            <div className="text-xs pc:text-sm text-color-subtext">
-              <p>Click on the record for detailed information and factors.</p>
-              <p>
-                (*) Indicates additional remarks available in Details & Factors.
-              </p>
-              <p>Click on Rank to view the allotment list.</p>
+            <div>
+              <div className="bg-color-accent py-2 px-4 text-white text-xs tab:text-sm rounded-md flex items-center gap-2 w-fit self-end mb-2 ml-auto">
+                Closing Rank Guide <Info size={24} />
+              </div>
+
+              <div className="text-xs tab:text-sm pc:text-base space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-gray-700">•</span>
+                  <span>
+                    <b>CR</b>{" "}
+                    {`refers to Closing Rank — "the rank of the last
+                           candidate who secured a seat in a particular medical college
+                           under a specific quota".`}
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-gray-700">•</span>
+                  <span>
+                    <b>Allotted Category</b> refers to the category under which
+                    a candidate is offered a seat during counselling.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-gray-700">•</span>
+                  <span>
+                    <b>NA</b> refers to No Allotment or No Seat Left for that
+                    round.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-gray-700">•</span>
+                  <span>
+                    <b>SR</b> refers to Stray Round.
+                  </span>
+                </li>
+              </div>
             </div>
-            <Info className="text-blue-600" size={24} />
           </div>
         </div>
 

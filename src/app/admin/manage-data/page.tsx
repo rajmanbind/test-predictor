@@ -308,14 +308,14 @@ export default function ManageDataPage() {
   return (
     <BELayout className="mb-10 tab:mb-0 pc:max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
       <div className="flex justify-between px-4">
-        <Heading>Manage Data</Heading>
+        <Heading className="flex-shrink-0">Manage Data</Heading>
 
         <div>
-          <div className="bg-color-accent py-2 px-4 text-white text-sm rounded-md flex items-center gap-2 w-fit self-end mb-2 ml-auto">
+          <div className="bg-color-accent py-2 px-4 text-white text-xs tab:text-sm rounded-md flex items-center gap-2 w-fit self-end mb-2 ml-auto">
             Closing Rank Guide <Info size={24} />
           </div>
 
-          <div>
+          <div className="text-xs tab:text-sm pc:text-base space-y-2">
             <li className="flex items-start gap-2">
               <span className="text-gray-700">•</span>
               <span>

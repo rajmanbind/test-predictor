@@ -17,8 +17,6 @@ export default function CutOffPage() {
   const [tableData, setTableData] = useState<any>(null)
   const [configYear, setConfigYear] = useState<any>([])
 
-  const [updateUI, setUpdateUI] = useState(false)
-
   const { fetchData } = useFetch()
   const { getSearchParams } = useInternalSearchParams()
 
@@ -26,7 +24,7 @@ export default function CutOffPage() {
 
   useEffect(() => {
     checkDataMode()
-  }, [updateUI])
+  }, [])
 
   async function checkPaymentStatus() {
     let college = getSearchParams("college")

@@ -17,8 +17,8 @@ export const navbarMenus = [
     href: "/",
   },
   {
-    title: "College Cut-Off",
-    href: "/",
+    title: "Closing Ranks",
+    href: "/closing-ranks",
   },
 ]
 

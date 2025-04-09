@@ -319,9 +319,10 @@ export default function ManageDataPage() {
             <li className="flex items-start gap-2">
               <span className="text-gray-700">•</span>
               <span>
-                <b>CR</b> refers to Closing Rank — "the rank of the last
+                <b>CR</b>{" "}
+                {`refers to Closing Rank — "the rank of the last
                 candidate who secured a seat in a particular medical college
-                under a specific quota".
+                under a specific quota".`}
               </span>
             </li>
             <li className="flex items-start gap-2">

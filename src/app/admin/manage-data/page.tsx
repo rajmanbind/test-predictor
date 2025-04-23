@@ -3,6 +3,7 @@
 import { BELayout } from "@/components/admin-panel/BELayout"
 import { Heading } from "@/components/admin-panel/Heading"
 import { Card } from "@/components/common/Card"
+import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import { Input } from "@/components/common/Input"
 import Link from "@/components/common/Link"
 import { Pagination, PaginationHandle } from "@/components/common/Pagination"
@@ -307,45 +308,10 @@ export default function ManageDataPage() {
 
   return (
     <BELayout className="mb-10 tab:mb-0 pc:max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
-      <div className="flex justify-between px-4">
+      <div className="px-3">
         <Heading className="flex-shrink-0">Manage Data</Heading>
 
-        <div>
-          <div className="bg-color-accent py-2 px-4 text-white text-xs tab:text-sm rounded-md flex items-center gap-2 w-fit self-end mb-2 ml-auto">
-            Closing Rank Guide <Info size={24} />
-          </div>
-
-          <div className="text-xs tab:text-sm pc:text-base space-y-2">
-            <li className="flex items-start gap-2">
-              <span className="text-gray-700">•</span>
-              <span>
-                <b>CR</b>{" "}
-                {`refers to Closing Rank — "the rank of the last
-                candidate who secured a seat in a particular medical college
-                under a specific quota".`}
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-gray-700">•</span>
-              <span>
-                <b>Allotted Category</b> refers to the category under which a
-                candidate is offered a seat during counselling.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-gray-700">•</span>
-              <span>
-                <b>NA</b> refers to No Allotment or No Seat Left for that round.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-gray-700">•</span>
-              <span>
-                <b>SR</b> refers to Stray Round.
-              </span>
-            </li>
-          </div>
-        </div>
+        <ClosingRankGuide />
       </div>
 
       <Card className="mt-4 py-6 px-0">

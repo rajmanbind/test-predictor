@@ -3,6 +3,8 @@ import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { Shield } from "lucide-react"
 import React from "react"
 
+const PRICE = 49
+
 function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
   const { getSearchParams } = useInternalSearchParams()
 
@@ -25,7 +27,7 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
               <p className="text-sm font-medium text-muted-foreground">
                 Amount to pay
               </p>
-              <p className="text-3xl font-bold text-primary">₹800</p>
+              <p className="text-3xl font-bold text-primary">₹{PRICE}</p>
             </div>
             <div className="rounded-full bg-primary/10 p-3">
               <Shield className="h-6 w-6 text-primary" />
@@ -51,7 +53,7 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
           </ul>
         </div>
 
-        <PaymentButton amount={1} showCutoff={showCutoff} />
+        <PaymentButton amount={PRICE} showCutoff={showCutoff} />
 
         <p className="mt-4 text-center text-xs text-muted-foreground">
           Secured by <span className="font-bold">Razorpay</span>

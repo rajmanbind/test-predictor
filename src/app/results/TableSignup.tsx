@@ -18,7 +18,7 @@ function TableSignup({ totalRecords }: TableSignupProps) {
             fees, cut-offs, and much more.`}
           </p>
 
-          <button className="flex items-center gap-2 bg-black px-3 pl-5 py-3 mt-4 hover:bg-black/90 hover:border-white border-[2px] border-transparent box-border transition-all">
+          <button className="flex items-center gap-2 bg-black px-3 pl-5 py-3 mt-4 hover:bg-black/90 hover:border-white border-[2px] border-transparent box-border transition-all rounded-md">
             Sign Up Now <ChevronRight />
           </button>
         </div>

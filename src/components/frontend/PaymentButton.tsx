@@ -4,6 +4,7 @@ import { useAppState } from "@/hooks/useAppState"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { saveToLocalStorage } from "@/utils/utils"
 import { ArrowRight } from "lucide-react"
+import { useParams } from "next/navigation"
 import Script from "next/script"
 import { useState } from "react"
 
@@ -21,6 +22,8 @@ const PaymentButton = ({
   const { showToast } = useAppState()
 
   const { getSearchParams } = useInternalSearchParams()
+
+  const params = useParams()
 
   const createOrder = async () => {
     const response = await fetch("/api/order", {
@@ -72,7 +75,7 @@ const PaymentButton = ({
 
               if (college) {
                 college = college.toLowerCase().trim().split(" ").join("-")
-                saveToLocalStorage(`payment-${college}`, true)
+                saveToLocalStorage(`payment-${params?.id}-${college}`, true)
               }
 
               showCutoff()

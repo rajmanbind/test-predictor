@@ -84,7 +84,10 @@ export function Filter({
 
   return (
     <form
-      className={cn("flex flex-col gap-4", className)}
+      className={cn(
+        "flex flex-col gap-4 border border-color-border p-4 rounded-md",
+        className,
+      )}
       onSubmit={handleSubmit(onSubmit)}
     >
       <MultiSelect

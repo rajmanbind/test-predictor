@@ -18,6 +18,7 @@ interface PaginationProps {
   itemsCountPerPage?: number
   onPageChange: (page: number) => void
   wrapperClass?: string
+  showOnlyOnePage?: boolean
 }
 
 // Define the ref type for the imperative handle
@@ -33,6 +34,7 @@ export const Pagination = forwardRef<PaginationHandle, PaginationProps>(
       itemsCountPerPage = 10,
       onPageChange,
       wrapperClass,
+      showOnlyOnePage,
     },
     ref,
   ) => {
@@ -73,7 +75,7 @@ export const Pagination = forwardRef<PaginationHandle, PaginationProps>(
         <ReactJsPagination
           activePage={activePage}
           onChange={handlePageChange}
-          totalItemsCount={totalItems || 1}
+          totalItemsCount={showOnlyOnePage ? 1 : totalItems || 1}
           pageRangeDisplayed={5}
           itemsCountPerPage={itemsCountPerPage}
           innerClass="flex"

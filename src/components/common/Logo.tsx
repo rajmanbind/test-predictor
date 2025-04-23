@@ -23,7 +23,7 @@ export function Logo({
       />
       <div
         className={cn(
-          "text-white tracking-wide leading-4 text-[20px]",
+          "text-white tracking-wide leading-4 text-[18px]",
           textStyle,
         )}
       >

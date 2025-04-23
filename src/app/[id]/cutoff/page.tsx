@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/common/Button"
+import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import Link from "@/components/common/Link"
 import { Table, TableColumn } from "@/components/common/Table"
 import { Container } from "@/components/frontend/Container"
@@ -8,7 +9,7 @@ import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { getLocalStorageItem, isEmpty, saveToLocalStorage } from "@/utils/utils"
-import { Info } from "lucide-react"
+import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 import PaymentCard from "./PaymentCard"
@@ -19,6 +20,8 @@ export default function CutOffPage() {
 
   const { fetchData } = useFetch()
   const { getSearchParams } = useInternalSearchParams()
+
+  const params = useParams()
 
   const [rendererStatus, setRendererStatus] = useState<any>(null)
 
@@ -31,7 +34,9 @@ export default function CutOffPage() {
 
     if (college) {
       college = college.toLowerCase().trim().split(" ").join("-")
-      const paymentStatus = getLocalStorageItem<any>(`payment-${college}`)
+      const paymentStatus = getLocalStorageItem<any>(
+        `payment-${params?.id}-${college}`,
+      )
 
       if (paymentStatus) {
         await showCutoff()
@@ -47,13 +52,17 @@ export default function CutOffPage() {
     setRendererStatus("PAID")
     const instituteName = getSearchParams("college")?.trim()
 
-    const params: Record<string, any> = {
+    const payload: any = {
       instituteName,
+    }
+
+    if (params?.id.toString().toLowerCase() === "ug") {
+      payload.course = "MBBS"
     }
 
     const res = await fetchData({
       url: "/api/college_cut_off",
-      params,
+      params: payload,
     })
 
     if (res?.success) {
@@ -130,15 +139,19 @@ export default function CutOffPage() {
   async function checkDataMode() {
     const instituteName = getSearchParams("college")?.trim()
 
-    const params: Record<string, any> = {
+    const payload: Record<string, any> = {
       instituteName,
       dataCheckMode: true,
+    }
+
+    if (params?.id.toString().toLowerCase() === "ug") {
+      payload.course = "MBBS"
     }
 
     const [dataRes, configRes] = await Promise.all([
       fetchData({
         url: "/api/college_cut_off",
-        params,
+        params: payload,
       }),
       fetchData({
         url: "/api/admin/configure/get",
@@ -164,21 +177,12 @@ export default function CutOffPage() {
   return (
     <FELayout>
       <Container className="pb-10 pt-1 pc:pt-10">
-        <div className="flex items-end pc:items-start justify-between flex-col pc:flex-row">
+        <div className=" pb-4 pc:pb-8">
           <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 order-2 pc:order-1 pt-4">
-            NEET Collage Cut-off
+            NEET Collage Cutoff
           </h2>
 
-          <div className="flex items-start gap-3 mr-2 order-1 pc:order-2 flex-shrink-0">
-            <div className="text-xs pc:text-sm text-color-subtext">
-              <p>Click on the record for detailed information and factors.</p>
-              <p>
-                (*) Indicates additional remarks available in Details & Factors.
-              </p>
-              <p>Click on Rank to view the allotment list.</p>
-            </div>
-            <Info className="text-blue-600" size={24} />
-          </div>
+          <ClosingRankGuide />
         </div>
 
         <Renderer

@@ -3,6 +3,7 @@
 import { Button } from "@/components/common/Button"
 import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
+import { useAppState } from "@/hooks/useAppState"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { states } from "@/utils/static"
@@ -11,6 +12,7 @@ import {
   onOptionSelected,
   onTextFieldChange,
 } from "@/utils/utils"
+import { Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { SetStateAction, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -48,6 +50,8 @@ export function SearchForm({
 
   const { getSearchParams } = useInternalSearchParams()
 
+  const { setAppState } = useAppState()
+
   const router = useRouter()
 
   useEffect(() => {
@@ -69,14 +73,18 @@ export function SearchForm({
     searchParams.set("course", formData?.course?.text || "")
     searchParams.set("category", formData?.category?.text || "")
 
+    setAppState({ isLoading: true })
+
     router.push(`/results?${searchParams.toString()}`)
 
-    setUpdateUI((prev) => !prev)
+    setTimeout(() => {
+      setUpdateUI((prev) => !prev)
+    }, 800)
   }
 
   return (
     <form
-      className="grid grid-cols-[repeat(1,minmax(0,1fr))] tab:grid-cols-[repeat(3,minmax(0,1fr))] pc:grid-cols-[repeat(4,minmax(0,1fr))_160px] gap-4 tab:gap-6"
+      className="grid grid-cols-[repeat(1,minmax(0,1fr))] tab:grid-cols-[repeat(3,minmax(0,1fr))] pc:grid-cols-[repeat(4,minmax(0,1fr))_60px] gap-4 tab:gap-6 border border-color-border rounded-md p-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       <Input
@@ -168,7 +176,16 @@ export function SearchForm({
         }
         errors={errors}
       />
-      <Button className="h-[50px] mt-3 tab:mt-auto" onClick={onSubmit}>
+      <Button
+        className="h-[50px] mt-3 tab:mt-auto place-items-center hidden pc:grid"
+        onClick={onSubmit}
+      >
+        <Search />
+      </Button>
+      <Button
+        className="h-[50px] mt-3 tab:mt-auto place-items-center pc:hidden"
+        onClick={onSubmit}
+      >
         Search
       </Button>
     </form>

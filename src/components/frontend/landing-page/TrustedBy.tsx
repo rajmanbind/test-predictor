@@ -42,8 +42,8 @@ export default function TrustedBy() {
 
         <div className="mt-16 text-center">
           <p className="text-sm text-gray-500 italic">
-            "CareerEdwise has been instrumental in helping our students make
-            informed decisions about their medical education journey."
+            {`"CareerEdwise has been instrumental in helping our students make
+            informed decisions about their medical education journey."`}
           </p>
           <p className="text-sm font-medium text-gray-700 mt-2">
             — Dr. Rajesh Kumar, Medical Education Advisor

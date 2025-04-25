@@ -48,9 +48,9 @@ export default function CtaSection() {
                   Start Your Medical College Journey With Confidence
                 </h2>
                 <p className="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg">
-                  Join thousands of successful medical students who found their
+                  {`Join thousands of successful medical students who found their
                   perfect college match with CareerEdwise's premium tools and
-                  expert guidance.
+                  expert guidance.`}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
@@ -221,9 +221,9 @@ export default function CtaSection() {
             viewport={{ once: true, margin: "-100px" }}
           >
             <p className="text-gray-600 italic text-sm sm:text-base max-w-2xl mx-auto px-4">
-              "CareerEdwise helped me secure admission to my dream medical
+              {`"CareerEdwise helped me secure admission to my dream medical
               college. Their predictions were spot on, and the counselling
-              support was invaluable throughout my journey."
+              support was invaluable throughout my journey."`}
             </p>
             <div className="mt-3 sm:mt-4 flex items-center justify-center">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center mr-2 sm:mr-3">

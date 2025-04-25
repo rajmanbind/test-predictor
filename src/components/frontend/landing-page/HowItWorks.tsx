@@ -59,7 +59,7 @@ export default function HowItWorks() {
                   <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
                     <h4 className="font-medium text-yellow-800 mb-2 flex items-center">
                       <GraduationCap className="h-4 w-4 mr-2" />
-                      What you'll need:
+                      {`What you'll need:`}
                     </h4>
                     <ul className="text-sm text-gray-700 space-y-2">
                       <li className="flex items-start">
@@ -114,12 +114,12 @@ export default function HowItWorks() {
                   <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
                     <h4 className="font-medium text-emerald-800 mb-2 flex items-center">
                       <Building className="h-4 w-4 mr-2" />
-                      What you'll receive:
+                      {`What you'll receive:`}
                     </h4>
                     <ul className="text-sm text-gray-700 space-y-2">
                       <li className="flex items-start">
                         <ArrowRight className="h-4 w-4 text-emerald-500 mt-0.5 mr-2 flex-shrink-0" />
-                        <span>List of colleges you're likely to get</span>
+                        <span>{`List of colleges you're likely to get`}</span>
                       </li>
                       <li className="flex items-start">
                         <ArrowRight className="h-4 w-4 text-emerald-500 mt-0.5 mr-2 flex-shrink-0" />
@@ -221,7 +221,7 @@ export default function HowItWorks() {
                 </p>
                 <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
                   <h4 className="font-medium text-yellow-800 mb-1 text-sm">
-                    What you'll need:
+                    {`What you'll need:`}
                   </h4>
                   <p className="text-xs text-gray-700">
                     NEET rank, state, category, and course preferences
@@ -256,7 +256,7 @@ export default function HowItWorks() {
                 </p>
                 <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
                   <h4 className="font-medium text-emerald-800 mb-1 text-sm">
-                    What you'll receive:
+                    {`What you'll receive:`}
                   </h4>
                   <p className="text-xs text-gray-700">
                     College list, admission probabilities, and cutoff trends

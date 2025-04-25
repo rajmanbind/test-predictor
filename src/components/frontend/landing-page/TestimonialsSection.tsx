@@ -72,13 +72,13 @@ export default function TestimonialsSection() {
                 </div>
                 <div className="relative">
                   <div className="absolute -top-2 -left-2 text-4xl text-yellow-200 font-serif">
-                    "
+                    {`"`}
                   </div>
                   <p className="text-gray-600 italic relative z-10 pl-4">
                     {testimonial.testimonial}
                   </p>
                   <div className="absolute -bottom-4 -right-2 text-4xl text-yellow-200 font-serif">
-                    "
+                    {`"`}
                   </div>
                 </div>
               </div>

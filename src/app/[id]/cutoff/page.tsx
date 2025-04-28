@@ -83,7 +83,7 @@ export default function CutOffPage() {
       {
         title: "Institute Name",
         tableKey: "instituteName",
-        width: "200px",
+        width: "150px",
       },
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
       { title: "State", tableKey: "state", width: "150px" },

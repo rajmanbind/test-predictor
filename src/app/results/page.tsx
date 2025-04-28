@@ -72,7 +72,7 @@ export default function ResultPage() {
       {
         title: "Institute Name",
         tableKey: "instituteName",
-        width: "200px",
+        width: "150px",
       },
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
       { title: "State", tableKey: "state", width: "150px" },
@@ -265,18 +265,15 @@ export default function ResultPage() {
           />
 
           <Button
-            className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm pc:hidden"
+            className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm pc:hidden mb-3"
             onClick={() => setFilterPopup(true)}
           >
-            <div className="bg-red-600 size-5 rounded-full text-sm grid place-items-center absolute right-[-5px] top-[-7px]">
-              3
-            </div>
             <Settings2 size={18} />
             Filter
           </Button>
 
           <div
-            className="flex-1 border-color-border pl-2"
+            className="flex-1 border-color-border"
             style={{
               overflowX: "auto",
             }}

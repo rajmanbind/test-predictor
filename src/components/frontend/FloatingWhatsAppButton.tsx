@@ -6,7 +6,7 @@ import React from "react"
 function FloatingWhatsAppButton() {
   return (
     <Link
-      href="https://wa.me/919522235235"
+      href="https://wa.me/919028009835"
       className="fixed z-[999] right-0 bottom-0 m-8 cursor-pointer"
     >
       <WhatsappIcon className="drop-shadow-lg hover:scale-125 transition-all duration-200 size-12" />

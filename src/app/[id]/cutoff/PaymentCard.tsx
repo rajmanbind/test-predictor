@@ -10,7 +10,6 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
 
   return (
     <div className="w-full max-w-md overflow-hidden rounded-xl bg-[#fff] dark:bg-[#000] shadow-xl">
-      {/* Header with gradient background */}
       <div className="bg-color-accent p-6 text-white">
         <h1 className="text-center text-xl font-bold leading-tight text-white">
           Please make payment to view Cut-Off of:
@@ -19,7 +18,6 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
         </h1>
       </div>
 
-      {/* Main content */}
       <div className="p-6">
         <div className="mb-8 rounded-lg bg-[#b3b3b3]/40 p-4">
           <div className="flex items-center justify-between">
@@ -40,15 +38,12 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center">
               <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
-              Complete cut-off details for your selected college
+              Complete Category and Quota Wise Cut-off Details of your Selected
+              College
             </li>
             <li className="flex items-center">
               <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
               Instant access after payment
-            </li>
-            <li className="flex items-center">
-              <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
-              Lifetime access
             </li>
           </ul>
         </div>

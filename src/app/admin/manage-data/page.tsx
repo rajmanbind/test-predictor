@@ -132,54 +132,54 @@ export default function ManageDataPage() {
         tableKey: `strayRound_new`,
         width: "110px",
       },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-          >
-            CR {previousYear} [R1]
-          </div>
-        ),
-        tableKey: `closingRankR1_old`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-          >
-            CR {previousYear} [R2]
-          </div>
-        ),
-        tableKey: `closingRankR2_old`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-          >
-            CR {previousYear} [R3]
-          </div>
-        ),
-        tableKey: `closingRankR3_old`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${previousYear}`}
-          >
-            SR {previousYear}
-          </div>
-        ),
-        tableKey: `strayRound_old`,
-        width: "110px",
-      },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
+      //     >
+      //       CR {previousYear} [R1]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR1_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
+      //     >
+      //       CR {previousYear} [R2]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR2_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
+      //     >
+      //       CR {previousYear} [R3]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR3_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Stray Round ${previousYear}`}
+      //     >
+      //       SR {previousYear}
+      //     </div>
+      //   ),
+      //   tableKey: `strayRound_old`,
+      //   width: "110px",
+      // },
       { title: "Fees", tableKey: "fees", width: "100px" },
       {
         title: "Action",

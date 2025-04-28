@@ -1,6 +1,7 @@
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import CtaSection from "@/components/frontend/landing-page/CtaSection"
+import FAQSection from "@/components/frontend/landing-page/FAQSection"
 import { Hero } from "@/components/frontend/landing-page/Hero"
 import HowItWorks from "@/components/frontend/landing-page/HowItWorks"
 import { StatsSection } from "@/components/frontend/landing-page/StatsSection"
@@ -16,31 +17,33 @@ export default function Home() {
         </Container>
       </div>
 
-      <Container className="max-w-[1600px]">
+      {/* <Container className="max-w-[1600px]">
         <TrustedBy />
-      </Container>
-
-      <div className="py-16 pc:py-20 relative bg-gradient-to-b from-white via-yellow-50 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
-        <Container className="max-w-[1600px]">
-          <StatsSection />
-        </Container>
-      </div>
+      </Container> */}
 
       <Container className="max-w-[1600px]">
-        <HowItWorks />
+        <StatsSection />
       </Container>
 
       <div className="py-16 pc:py-20 relative bg-gradient-to-b from-white via-yellow-50 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
         <Container className="max-w-[1600px]">
-          <TestimonialsSection />
+          <HowItWorks />
         </Container>
       </div>
+
+      {/* <Container className="max-w-[1600px]">
+        <TestimonialsSection />
+      </Container>
 
       <div className="py-16 pc:py-20 relative bg-gradient-to-b from-white via-yellow-50 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
         <Container className="max-w-[1600px]">
           <CtaSection />
         </Container>
-      </div>
+      </div> */}
+
+      <Container className="max-w-[1600px]">
+        <FAQSection />
+      </Container>
     </FELayout>
   )
 }

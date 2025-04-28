@@ -90,26 +90,7 @@ export default function CutOffPage() {
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
       { title: "Category", tableKey: "category" },
-      {
-        title: `CR ${previousYear} [R1]`,
-        tableKey: `closingRankR1_old`,
-        width: "130px",
-      },
-      {
-        title: `CR ${previousYear} [R2]`,
-        tableKey: `closingRankR2_old`,
-        width: "130px",
-      },
-      {
-        title: `CR ${previousYear} [R3]`,
-        tableKey: `closingRankR3_old`,
-        width: "130px",
-      },
-      {
-        title: `SR ${previousYear}`,
-        tableKey: `strayRound_old`,
-        width: "110px",
-      },
+
       {
         title: `CR ${currentYear} [R1]`,
         tableKey: `closingRankR1_new`,
@@ -130,6 +111,26 @@ export default function CutOffPage() {
         tableKey: `strayRound_new`,
         width: "110px",
       },
+      // {
+      //   title: `CR ${previousYear} [R1]`,
+      //   tableKey: `closingRankR1_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: `CR ${previousYear} [R2]`,
+      //   tableKey: `closingRankR2_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: `CR ${previousYear} [R3]`,
+      //   tableKey: `closingRankR3_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: `SR ${previousYear}`,
+      //   tableKey: `strayRound_old`,
+      //   width: "110px",
+      // },
       { title: "Fees", tableKey: "fees", width: "100px" },
     ]
 
@@ -177,8 +178,8 @@ export default function CutOffPage() {
   return (
     <FELayout>
       <Container className="pb-10 pt-1 pc:pt-10">
-        <div className=" pb-4 pc:pb-8">
-          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 order-2 pc:order-1 pt-4">
+        <div className=" pb-4 pc:pb-8 grid tab:grid-cols-3">
+          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 col-span-2 pt-4">
             NEET Collage Cutoff
           </h2>
 

@@ -27,8 +27,8 @@ export function Logo({
           textStyle,
         )}
       >
-        <p>Career</p>
-        <p className="pl-3">Edwise</p>
+        <p>College</p>
+        <p className="pl-3">CutOff</p>
       </div>
     </Link>
   )

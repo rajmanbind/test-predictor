@@ -184,7 +184,7 @@ export function Footer() {
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                <span className="text-gray-400">support@careeredwise.com</span>
+                <span className="text-gray-400">support@CollegeCutOff.com</span>
               </li>
               <li className="flex items-start gap-2">
                 <svg
@@ -231,7 +231,7 @@ export function Footer() {
         </div>
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
           <p className="text-xs text-gray-400">
-            © 2025 CareerEdwise. All rights reserved.
+            © 2025 CollegeCutOff. All rights reserved.
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link

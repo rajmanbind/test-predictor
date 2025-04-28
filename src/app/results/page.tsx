@@ -78,7 +78,7 @@ export default function ResultPage() {
       { title: "State", tableKey: "state", width: "150px" },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
-      { title: "Fees", tableKey: "fees", width: "100px" },
+
       {
         title: (
           <div>
@@ -137,54 +137,55 @@ export default function ResultPage() {
         tableKey: `strayRound_new`,
         width: "110px",
       },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-          >
-            CR {previousYear} [R1]
-          </div>
-        ),
-        tableKey: `closingRankR1_old`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-          >
-            CR {previousYear} [R2]
-          </div>
-        ),
-        tableKey: `closingRankR2_old`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-          >
-            CR {previousYear} [R3]
-          </div>
-        ),
-        tableKey: `closingRankR3_old`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${previousYear}`}
-          >
-            SR {previousYear}
-          </div>
-        ),
-        tableKey: `strayRound_old`,
-        width: "110px",
-      },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
+      //     >
+      //       CR {previousYear} [R1]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR1_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
+      //     >
+      //       CR {previousYear} [R2]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR2_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
+      //     >
+      //       CR {previousYear} [R3]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR3_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Stray Round ${previousYear}`}
+      //     >
+      //       SR {previousYear}
+      //     </div>
+      //   ),
+      //   tableKey: `strayRound_old`,
+      //   width: "110px",
+      // },
+      { title: "Fees", tableKey: "fees", width: "100px" },
     ]
 
     return columns
@@ -247,8 +248,8 @@ export default function ResultPage() {
   return (
     <FELayout>
       <Container className="pb-10 pt-1 pc:pt-10">
-        <div className=" pb-4 pc:pb-8">
-          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 order-2 pc:order-1 pt-4">
+        <div className="pb-4 pc:pb-8 grid tab:grid-cols-3">
+          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4 col-span-2">
             NEET Collage Predictor
           </h2>
 

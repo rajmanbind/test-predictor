@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 
+import FloatingWhatsAppButton from "./FloatingWhatsAppButton"
 import { Footer } from "./Footer"
 import { Navbar } from "./Navbar"
 
@@ -20,6 +21,9 @@ export function FELayout({ children }: { children: React.ReactNode }) {
     <main>
       <Navbar />
       {children}
+
+      <FloatingWhatsAppButton />
+
       <Footer />
     </main>
   )

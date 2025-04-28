@@ -49,7 +49,7 @@ export default function CtaSection() {
                 </h2>
                 <p className="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg">
                   {`Join thousands of successful medical students who found their
-                  perfect college match with CareerEdwise's premium tools and
+                  perfect college match with College CutOff's premium tools and
                   expert guidance.`}
                 </p>
 
@@ -221,7 +221,7 @@ export default function CtaSection() {
             viewport={{ once: true, margin: "-100px" }}
           >
             <p className="text-gray-600 italic text-sm sm:text-base max-w-2xl mx-auto px-4">
-              {`"CareerEdwise helped me secure admission to my dream medical
+              {`"College CutOff helped me secure admission to my dream medical
               college. Their predictions were spot on, and the counselling
               support was invaluable throughout my journey."`}
             </p>

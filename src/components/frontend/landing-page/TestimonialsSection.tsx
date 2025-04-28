@@ -7,7 +7,7 @@ export default function TestimonialsSection() {
       institution: "AIIMS Delhi, Batch of 2023",
       rating: 5,
       testimonial:
-        "CareerEdwise's college predictor was spot on! I got into my dream college thanks to their accurate predictions and counselling support. The detailed college information helped me make an informed decision.",
+        "College CutOff's college predictor was spot on! I got into my dream college thanks to their accurate predictions and counselling support. The detailed college information helped me make an informed decision.",
       gradient: "from-white to-yellow-50",
     },
     {
@@ -23,7 +23,7 @@ export default function TestimonialsSection() {
       institution: "GMC Nagpur, Batch of 2023",
       rating: 5,
       testimonial:
-        "As a first-generation doctor in my family, I had no guidance. CareerEdwise became my mentor throughout the NEET counselling process. Their resources and predictions were invaluable for my success.",
+        "As a first-generation doctor in my family, I had no guidance. College CutOff became my mentor throughout the NEET counselling process. Their resources and predictions were invaluable for my success.",
       gradient: "from-white to-yellow-50",
     },
   ]
@@ -38,7 +38,7 @@ export default function TestimonialsSection() {
           <h2 className="text-3xl font-bold">What Our Students Say</h2>
           <p className="text-gray-500 mt-2 max-w-2xl mx-auto">
             Hear from students who achieved their medical college dreams with
-            CareerEdwise
+            College CutOff
           </p>
         </div>
 

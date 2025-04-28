@@ -130,10 +130,14 @@ input[type="number"]::-webkit-outer-spin-button {
   z-index: 50;
 }
 
-@media screen and (min-width: 768px) {
-  .tableActionStatic {
-    position: sticky;
-    right: -4px;
-    z-index: 50;
-  }
+.tableActionStatic {
+  position: sticky;
+  right: -4px;
+  z-index: 50;
+}
+
+.tableStaticLeft {
+  position: sticky;
+  left: 0px;
+  z-index: 50;
 }

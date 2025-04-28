@@ -302,85 +302,92 @@ export default function HowItWorks() {
           </motion.div>
         </div>
 
-        {/* Benefits Section */}
-        <motion.div
-          className="mt-24 grid md:grid-cols-3 gap-6"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, staggerChildren: 0.1 }}
-          viewport={{ once: true, margin: "-50px" }}
-        >
+        <div>
+          <h2 className="text-3xl font-bold text-center py-20">
+            Why Choose Us
+          </h2>
+
+          {/* Benefits Section */}
           <motion.div
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+            className="grid md:grid-cols-3 gap-6"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.5, staggerChildren: 0.1 }}
+            viewport={{ once: true, margin: "-50px" }}
           >
-            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
-              <Lightbulb className="h-7 w-7 text-yellow-600" />
-            </div>
-            <h3 className="font-bold mb-2">Data-Driven Insights</h3>
-            <p className="text-gray-600 text-sm">
-              Our predictions are based on historical data and current trends
-              for maximum accuracy
-            </p>
+            <motion.div
+              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
+                <Lightbulb className="h-7 w-7 text-yellow-600" />
+              </div>
+              <h3 className="font-bold mb-2">Data-Driven Insights</h3>
+              <p className="text-gray-600 text-sm">
+                Our predictions are based on historical data and current trends
+                for maximum accuracy
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
+                <Users className="h-7 w-7 text-emerald-600" />
+              </div>
+              <h3 className="font-bold mb-2">Expert Support</h3>
+              <p className="text-gray-600 text-sm">
+                Get guidance from experienced counselors who understand the
+                medical admission process
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
+                <Award className="h-7 w-7 text-yellow-600" />
+              </div>
+              <h3 className="font-bold mb-2">Proven Results</h3>
+              <p className="text-gray-600 text-sm">
+                Thousands of students have successfully found their ideal
+                medical college with our help
+              </p>
+            </motion.div>
           </motion.div>
 
+          {/* CTA */}
           <motion.div
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+            className="mt-16 text-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true, margin: "-50px" }}
           >
-            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
-              <Users className="h-7 w-7 text-emerald-600" />
-            </div>
-            <h3 className="font-bold mb-2">Expert Support</h3>
-            <p className="text-gray-600 text-sm">
-              Get guidance from experienced counselors who understand the
-              medical admission process
+            <a
+              href="#"
+              className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-emerald-500 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
+              Try Our College Predictor Now
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </a>
+            <p className="text-gray-500 mt-4">
+              Join 30,000+ students who found their perfect medical college
+              match
             </p>
           </motion.div>
-
-          <motion.div
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
-              <Award className="h-7 w-7 text-yellow-600" />
-            </div>
-            <h3 className="font-bold mb-2">Proven Results</h3>
-            <p className="text-gray-600 text-sm">
-              Thousands of students have successfully found their ideal medical
-              college with our help
-            </p>
-          </motion.div>
-        </motion.div>
-
-        {/* CTA */}
-        <motion.div
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          <a
-            href="#"
-            className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-emerald-500 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-          >
-            Try Our College Predictor Now
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </a>
-          <p className="text-gray-500 mt-4">
-            Join 30,000+ students who found their perfect medical college match
-          </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

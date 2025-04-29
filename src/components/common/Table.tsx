@@ -139,13 +139,13 @@ export function Table({
                 <tr
                   key={rowIndex}
                   className={cn(
-                    "hover:bg-color-table-header cursor-pointer group",
+                    "cursor-pointer group",
                     "border-b border-color-border",
                   )}
                   onClick={() => handleSelectRow(rowIndex)}
                 >
                   {selectable && (
-                    <td className="p-3 bg-color-form-background tableCheckboxStatic group-hover:bg-color-table-header">
+                    <td className="p-3 bg-color-form-background tableCheckboxStatic">
                       <input
                         className="translate-y-[2px]"
                         type="checkbox"

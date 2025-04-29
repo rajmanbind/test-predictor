@@ -2,34 +2,35 @@
 
 import { Button } from "@/components/common/Button"
 import MultiSelect from "@/components/common/MultiSelect"
-import SearchAndSelect from "@/components/common/SearchAndSelect"
 import AnimatedPopup from "@/components/common/popups/AnimatedPopup"
 import { IOption } from "@/types/GlobalTypes"
-import { categories, instituteTypes, states } from "@/utils/static"
+import { instituteTypes, states } from "@/utils/static"
 import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
-import React, { useState } from "react"
+import React, { SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { FeeRangeSlider, MAX_FEE } from "../FeeRangeSlider"
+import { IFormData, IParams } from "./Filter"
+
+const filterStates = states.slice(1)
 
 interface IFilterPopupProps {
   isOpen: boolean
+
+  setFilterParams: React.Dispatch<SetStateAction<any>>
+  categoryList: IOption[]
+  quotasList: IOption[]
 
   onConfirm: () => void
   onCancel?: () => void
   onClose: () => void
 }
 
-interface IFormData {
-  rank?: number | string
-  state: IOption[]
-  instituteType: IOption[]
-  category?: IOption
-  quota?: IOption[]
-}
-
 export function FilterPopup({
   isOpen,
+  categoryList,
+  quotasList,
+  setFilterParams,
   onConfirm,
   onCancel,
   onClose,
@@ -38,18 +39,49 @@ export function FilterPopup({
     handleSubmit,
     control,
     setValue,
+
     formState: { errors },
   } = useForm({
     shouldFocusError: true,
   })
 
   const [formData, setFormData] = useState<IFormData>({
-    rank: "",
     state: [],
     instituteType: [],
+    category: [],
+    quota: [],
   })
 
   const [range, setRange] = useState<[number, number]>([0, MAX_FEE])
+  const [includeFeeRange, setIncludeFeeRange] = useState(false)
+
+  async function onSubmit() {
+    let params: IParams = {}
+
+    if (includeFeeRange) {
+      params = {
+        feeFrom: range[0],
+        feeTo: range[1],
+      }
+    }
+
+    includeInParams(formData?.state, "states", params)
+    includeInParams(formData?.instituteType, "instituteType", params)
+    includeInParams(formData?.category, "category", params)
+    includeInParams(formData?.quota, "quota", params)
+
+    setFilterParams(params)
+  }
+
+  function includeInParams(
+    array: IOption[],
+    key: "states" | "category" | "instituteType" | "quota",
+    params: IParams,
+  ) {
+    if (array?.length > 0) {
+      params[key] = array.map((item) => item.text).join(",")
+    }
+  }
 
   return (
     <AnimatedPopup
@@ -61,7 +93,7 @@ export function FilterPopup({
       <div className="bg-color-form-background py-12 grid place-items-center">
         <form
           className={cn("flex flex-col gap-4")}
-          // onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <MultiSelect
             name="instituteType"
@@ -91,28 +123,28 @@ export function FilterPopup({
             }}
             control={control}
             setValue={setValue}
-            options={states}
+            options={filterStates}
             debounceDelay={0}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, states, setOptions)
+              autoComplete(text, filterStates, setOptions)
             }
             errors={errors}
           />
 
-          <SearchAndSelect
+          <MultiSelect
             name="category"
             label="Category"
             placeholder="Select Category"
             value={formData?.category}
-            onChange={({ name, selectedValue }) => {
-              onOptionSelected(name, selectedValue, setFormData)
+            onChange={({ name, selectedOptions }) => {
+              onOptionSelected(name, selectedOptions, setFormData)
             }}
             control={control}
             setValue={setValue}
-            options={categories}
+            options={categoryList}
             debounceDelay={0}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, categories, setOptions)
+              autoComplete(text, categoryList, setOptions)
             }
             errors={errors}
           />
@@ -127,15 +159,20 @@ export function FilterPopup({
             }}
             control={control}
             setValue={setValue}
-            options={instituteTypes}
+            options={quotasList}
             debounceDelay={0}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, instituteTypes, setOptions)
+              autoComplete(text, quotasList, setOptions)
             }
             errors={errors}
           />
 
-          <FeeRangeSlider range={range} setRange={setRange} />
+          <FeeRangeSlider
+            range={range}
+            setRange={setRange}
+            includeFeeRange={includeFeeRange}
+            setIncludeFeeRange={setIncludeFeeRange}
+          />
 
           <Button
             className="mt-2"
@@ -143,7 +180,6 @@ export function FilterPopup({
               onConfirm()
               onClose()
             }}
-            // onClick={onSubmit} disabled={disableCheck()}
           >
             Apply Filters
           </Button>

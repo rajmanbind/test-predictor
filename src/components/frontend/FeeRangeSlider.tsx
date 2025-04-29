@@ -9,6 +9,8 @@ interface FeeRangeSliderProps {
   className?: string
   range: [number, number]
   setRange: React.Dispatch<React.SetStateAction<[number, number]>>
+  includeFeeRange: boolean
+  setIncludeFeeRange: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const MAX_FEE = 100_000_000
@@ -17,9 +19,14 @@ export function FeeRangeSlider({
   className,
   range,
   setRange,
+  includeFeeRange,
+  setIncludeFeeRange,
 }: FeeRangeSliderProps) {
   const handleSliderChange = (newValue: number[]) => {
     setRange([newValue[0], newValue[1]])
+    if (!includeFeeRange) {
+      setIncludeFeeRange(true)
+    }
   }
 
   const handleInputChange =
@@ -39,6 +46,10 @@ export function FeeRangeSlider({
         }
 
         setRange(newRange)
+
+        if (!includeFeeRange) {
+          setIncludeFeeRange(true)
+        }
       }
     }
 

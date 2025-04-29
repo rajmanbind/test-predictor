@@ -189,10 +189,10 @@ export default function ManageDataPage() {
         renderer: ({ rowData }) => {
           if (rowData?.new_id && rowData?.prev_id) {
             return (
-              <div className="flex items-center gap-2 bg-color-form-background px-4 py-5 group-hover:bg-color-table-header">
+              <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
                 <Pencil
                   size={20}
-                  className="text-color-text hover:text-blue-600 cursor-pointer"
+                  className="text-color-text cursor-pointer"
                   onClick={() => {
                     setRowData(rowData)
                   }}
@@ -200,7 +200,7 @@ export default function ManageDataPage() {
 
                 <Trash2
                   size={20}
-                  className="text-color-text hover:text-red-600 cursor-pointer"
+                  className="text-color-text cursor-pointer"
                   onClick={() => {
                     setSingleDelete([rowData?.new_id, rowData?.prev_id])
                     setPopupOpen(true)
@@ -213,7 +213,7 @@ export default function ManageDataPage() {
           const id = rowData?.new_id || rowData?.prev_id
 
           return (
-            <div className="flex items-center gap-2 bg-color-form-background px-4 py-5 group-hover:bg-color-table-header">
+            <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
               <Link href={`/admin/edit-data/${id}`}>
                 <Pencil
                   size={20}
@@ -308,10 +308,12 @@ export default function ManageDataPage() {
 
   return (
     <BELayout className="mb-10 tab:mb-0 pc:max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
-      <div className="px-3">
-        <Heading className="flex-shrink-0">Manage Data</Heading>
+      <div className="pb-4 pc:pb-8 flex justify-between px-5">
+        <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">
+          Manage Data
+        </h2>
 
-        <ClosingRankGuide />
+        <ClosingRankGuide className="max-w-[900px] flex-shrink-0" />
       </div>
 
       <Card className="mt-4 py-6 px-0">

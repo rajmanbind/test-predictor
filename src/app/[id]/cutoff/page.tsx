@@ -8,7 +8,7 @@ import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
-import { getLocalStorageItem, isEmpty, saveToLocalStorage } from "@/utils/utils"
+import { getLocalStorageItem, isEmpty } from "@/utils/utils"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -96,21 +96,21 @@ export default function CutOffPage() {
         tableKey: `closingRankR1_new`,
         width: "130px",
       },
-      {
-        title: `CR ${currentYear} [R2]`,
-        tableKey: `closingRankR2_new`,
-        width: "130px",
-      },
-      {
-        title: `CR ${currentYear} [R3]`,
-        tableKey: `closingRankR3_new`,
-        width: "130px",
-      },
-      {
-        title: `SR ${currentYear}`,
-        tableKey: `strayRound_new`,
-        width: "110px",
-      },
+      // {
+      //   title: `CR ${currentYear} [R2]`,
+      //   tableKey: `closingRankR2_new`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: `CR ${currentYear} [R3]`,
+      //   tableKey: `closingRankR3_new`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: `SR ${currentYear}`,
+      //   tableKey: `strayRound_new`,
+      //   width: "110px",
+      // },
       // {
       //   title: `CR ${previousYear} [R1]`,
       //   tableKey: `closingRankR1_old`,
@@ -178,12 +178,12 @@ export default function CutOffPage() {
   return (
     <FELayout>
       <Container className="pb-10 pt-1 pc:pt-10">
-        <div className=" pb-4 pc:pb-8 grid tab:grid-cols-3">
-          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 col-span-2 pt-4">
+        <div className="pb-4 pc:pb-8 flex justify-between">
+          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">
             NEET Collage Cutoff
           </h2>
 
-          <ClosingRankGuide />
+          <ClosingRankGuide className="max-w-[900px] flex-shrink-0" />
         </div>
 
         <Renderer

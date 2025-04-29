@@ -101,42 +101,42 @@ export default function ResultPage() {
         tableKey: `closingRankR1_new`,
         width: "130px",
       },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 2`}
-          >
-            CR {currentYear} [R2]
-          </div>
-        ),
-        tableKey: `closingRankR2_new`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 3`}
-          >
-            CR {currentYear} [R3]
-          </div>
-        ),
-        tableKey: `closingRankR3_new`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${currentYear}`}
-          >
-            SR {currentYear}
-          </div>
-        ),
-        tableKey: `strayRound_new`,
-        width: "110px",
-      },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+      //     >
+      //       CR {currentYear} [R2]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR2_new`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+      //     >
+      //       CR {currentYear} [R3]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR3_new`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Stray Round ${currentYear}`}
+      //     >
+      //       SR {currentYear}
+      //     </div>
+      //   ),
+      //   tableKey: `strayRound_new`,
+      //   width: "110px",
+      // },
       // {
       //   title: (
       //     <div
@@ -248,12 +248,12 @@ export default function ResultPage() {
   return (
     <FELayout>
       <Container className="pb-10 pt-1 pc:pt-10">
-        <div className="pb-4 pc:pb-8 grid tab:grid-cols-3">
-          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4 col-span-2">
+        <div className="pb-4 pc:pb-8 flex justify-between">
+          <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">
             NEET Collage Predictor
           </h2>
 
-          <ClosingRankGuide />
+          <ClosingRankGuide className="max-w-[900px] flex-shrink-0" />
         </div>
 
         <div className="mt-10 block pc:flex items-start rounded-lg relative">
@@ -318,6 +318,9 @@ export default function ResultPage() {
 
         <FilterPopup
           isOpen={filterPopup}
+          quotasList={quotasList}
+          categoryList={categoriesList}
+          setFilterParams={setFilterParams}
           onClose={() => setFilterPopup(false)}
           onConfirm={() => {}}
         />

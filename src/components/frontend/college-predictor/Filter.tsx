@@ -13,16 +13,16 @@ import { FeeRangeSlider, MAX_FEE } from "../FeeRangeSlider"
 
 const filterStates = states.slice(1)
 
-interface IFormData {
+export interface IFormData {
   state: IOption[]
   instituteType: IOption[]
   category: IOption[]
   quota: IOption[]
 }
 
-interface IParams {
-  feeFrom: number
-  feeTo: number
+export interface IParams {
+  feeFrom?: number
+  feeTo?: number
   states?: any
   category?: any
   instituteType?: any
@@ -57,11 +57,16 @@ export function Filter({
   })
 
   const [range, setRange] = useState<[number, number]>([0, MAX_FEE])
+  const [includeFeeRange, setIncludeFeeRange] = useState(false)
 
   async function onSubmit() {
-    const params: IParams = {
-      feeFrom: range[0],
-      feeTo: range[1],
+    let params: IParams = {}
+
+    if (includeFeeRange) {
+      params = {
+        feeFrom: range[0],
+        feeTo: range[1],
+      }
     }
 
     includeInParams(formData?.state, "states", params)
@@ -162,12 +167,16 @@ export function Filter({
         errors={errors}
       />
 
-      <FeeRangeSlider range={range} setRange={setRange} />
+      <FeeRangeSlider
+        range={range}
+        setRange={setRange}
+        includeFeeRange={includeFeeRange}
+        setIncludeFeeRange={setIncludeFeeRange}
+      />
 
       <Button
         type="submit"
         className="mt-4 w-full flex items-center gap-2 justify-center"
-        // onClick={onSubmit} disabled={disableCheck()}
       >
         <Settings2 />
         Apply Filters

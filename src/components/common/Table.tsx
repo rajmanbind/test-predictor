@@ -122,8 +122,7 @@ export function Table({
                     column?.tableKey === "action" &&
                       "tableActionStatic bg-color-table-header",
 
-                    column?.tableKey === "instituteName" &&
-                      "tableStaticLeft bg-color-table-header",
+                    column?.tableKey === "instituteName" && "tableStaticLeft",
                   )}
                   style={{ minWidth: column?.width }}
                 >
@@ -168,7 +167,7 @@ export function Table({
                           "tableActionStatic px-0 py-0",
 
                         column?.tableKey === "instituteName" &&
-                          "tableStaticLeft bg-color-form-background",
+                          "tableStaticLeft bg-color-form-background dark:bg-transparent",
                       )}
                       onClick={(e) =>
                         column?.overrideInternalClick

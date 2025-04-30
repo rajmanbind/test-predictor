@@ -157,10 +157,11 @@ export function ClosingRanksPage() {
             <Info className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-blue-800 text-sm">
-                <strong>Note:</strong> Closing ranks are based on the previous
+                <strong>Note:</strong>
+                {`Closing ranks are based on the previous
                 year's NEET counselling data. Actual cutoffs may vary for the
                 current year. We recommend using this information as a reference
-                only.
+                only.`}
               </p>
             </div>
           </div>

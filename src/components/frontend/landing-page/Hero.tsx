@@ -38,17 +38,17 @@ export function Hero() {
 
           <div className="flex flex-wrap gap-3 items-center">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-color-accent" />
+              <CheckCircle className="h-5 w-5 text-green-500" />
               <span className="text-base font-medium">
                 Accurate Predictions
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-color-accent" />
+              <CheckCircle className="h-5 w-5 text-green-500" />
               <span className="text-base font-medium">3,000+ Colleges</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-color-accent" />
+              <CheckCircle className="h-5 w-5 text-green-500" />
               <span className="text-base font-medium">Expert Guidance</span>
             </div>
           </div>

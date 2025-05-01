@@ -325,10 +325,13 @@ export default function HowItWorks() {
               <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
                 <Lightbulb className="h-7 w-7 text-yellow-600" />
               </div>
-              <h3 className="font-bold mb-2">Data-Driven Insights</h3>
+              <h3 className="font-bold mb-2">
+                Focused on Private and Deemed Medical Colleges
+              </h3>
               <p className="text-gray-600 text-sm">
-                Our predictions are based on historical data and current trends
-                for maximum accuracy
+                We specialize in providing accurate information exclusively for
+                private and deemed medical colleges across India, helping you
+                make informed decisions for both MBBS and MD/MS admissions.
               </p>
             </motion.div>
 
@@ -342,10 +345,12 @@ export default function HowItWorks() {
               <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
                 <Users className="h-7 w-7 text-emerald-600" />
               </div>
-              <h3 className="font-bold mb-2">Expert Support</h3>
+              <h3 className="font-bold mb-2">
+                Comprehensive Cutoff Data for MBBS and MD/MS
+              </h3>
               <p className="text-gray-600 text-sm">
-                Get guidance from experienced counselors who understand the
-                medical admission process
+                {`Access last year's detailed cutoff information — college-wise and category-wise — for MBBS and across all MD/MS specializations.
+                This gives you complete clarity to plan your medical admission journey with confidence.`}
               </p>
             </motion.div>
 
@@ -359,10 +364,65 @@ export default function HowItWorks() {
               <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
                 <Award className="h-7 w-7 text-yellow-600" />
               </div>
-              <h3 className="font-bold mb-2">Proven Results</h3>
+              <h3 className="font-bold mb-2">
+                Authentic Information Sourced from Official Authorities
+              </h3>
               <p className="text-gray-600 text-sm">
-                Thousands of students have successfully found their ideal
-                medical college with our help
+                {`All our data is directly sourced from official counseling
+                authority websites, ensuring it's genuine, verified, and
+                completely up-to-date — no manipulation, no guesswork.`}
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
+                <Users className="h-7 w-7 text-emerald-600" />
+              </div>
+              <h3 className="font-bold mb-2">
+                Personalized Counseling for Management and NRI Quota
+              </h3>
+              <p className="text-gray-600 text-sm">
+                {`Private medical education is a significant investment, and a single mistake can cost a valuable seat.
+                We offer paid personalized counseling (via phone, WhatsApp, and in-person) specifically for Management and NRI quota admissions — expert guidance that goes beyond what the portal alone can offer.`}
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
+                <Award className="h-7 w-7 text-yellow-600" />
+              </div>
+              <h3 className="font-bold mb-2">Simple, Transparent Process</h3>
+              <p className="text-gray-600 text-sm">
+                {`Our platform is clean and easy to use — check cutoff details instantly and reach out when you need one-on-one support.
+                No confusing dashboards. No hidden steps.`}
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
+                <Users className="h-7 w-7 text-emerald-600" />
+              </div>
+              <h3 className="font-bold mb-2">Trusted by Medical Aspirants</h3>
+              <p className="text-gray-600 text-sm">
+                {`Every year, hundreds of MBBS and MD/MS aspirants rely on CollegeCutoff.net for accurate information and genuine support throughout their admission process.`}
               </p>
             </motion.div>
           </motion.div>

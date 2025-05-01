@@ -3,7 +3,8 @@
 import { Button } from "@/components/common/Button"
 import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import Link from "@/components/common/Link"
-import { Table, TableColumn } from "@/components/common/Table"
+import { generateColsPublic } from "@/components/common/Table/Cols"
+import { Table, TableColumn } from "@/components/common/Table/Table"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
@@ -70,73 +71,6 @@ export default function CutOffPage() {
     }
   }
 
-  function generateCols() {
-    let currentYear = new Date().getFullYear()
-    let previousYear = currentYear - 1
-
-    if (!isEmpty(configYear)) {
-      previousYear = configYear[0]
-      currentYear = configYear[1]
-    }
-
-    const columns: TableColumn[] = [
-      {
-        title: "Institute Name",
-        tableKey: "instituteName",
-        width: "150px",
-      },
-      { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
-      { title: "Course", tableKey: "course" },
-      { title: "Quota", tableKey: "quota", width: "150px" },
-      { title: "Category", tableKey: "category" },
-
-      {
-        title: `CR ${currentYear} [R1]`,
-        tableKey: `closingRankR1_new`,
-        width: "130px",
-      },
-      // {
-      //   title: `CR ${currentYear} [R2]`,
-      //   tableKey: `closingRankR2_new`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: `CR ${currentYear} [R3]`,
-      //   tableKey: `closingRankR3_new`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: `SR ${currentYear}`,
-      //   tableKey: `strayRound_new`,
-      //   width: "110px",
-      // },
-      // {
-      //   title: `CR ${previousYear} [R1]`,
-      //   tableKey: `closingRankR1_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: `CR ${previousYear} [R2]`,
-      //   tableKey: `closingRankR2_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: `CR ${previousYear} [R3]`,
-      //   tableKey: `closingRankR3_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: `SR ${previousYear}`,
-      //   tableKey: `strayRound_old`,
-      //   width: "110px",
-      // },
-      { title: "Fees", tableKey: "fees", width: "100px" },
-    ]
-
-    return columns
-  }
-
   async function checkDataMode() {
     const instituteName = getSearchParams("college")?.trim()
 
@@ -188,7 +122,7 @@ export default function CutOffPage() {
 
         <Renderer
           rendererStatus={rendererStatus}
-          generateCols={generateCols}
+          generateCols={generateColsPublic(configYear) as any}
           tableData={tableData}
           showCutoff={showCutoff}
         />
@@ -204,7 +138,7 @@ function Renderer({
   showCutoff,
 }: {
   rendererStatus: string
-  generateCols: () => TableColumn[]
+  generateCols: TableColumn[]
   tableData: any
   showCutoff: () => void
 }) {
@@ -251,7 +185,7 @@ function Renderer({
         }}
       >
         <Table
-          columns={generateCols()}
+          columns={generateCols}
           data={tableData?.data}
           className="mt-6 min-h-[600px]"
         />

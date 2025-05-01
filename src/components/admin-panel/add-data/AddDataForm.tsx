@@ -36,6 +36,7 @@ interface IFormData {
   closingRankR2?: number
   closingRankR3?: number
   strayRound?: number
+  finalStrayRound?: number
   year?: IOption
 }
 export default function AddDataForm({ editMode }: { editMode?: boolean }) {
@@ -58,10 +59,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   const { showToast } = useAppState()
 
   const { fetchData } = useFetch()
-  const router = useRouter()
 
   useEffect(() => {
-    if (editMode) getDataById(params?.id)
+    if (editMode) {
+      getDataById(params?.id)
+    }
 
     getConfigData()
   }, [params?.id])
@@ -129,6 +131,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       closingRankR2: data?.closingRankR2,
       closingRankR3: data?.closingRankR3,
       strayRound: data?.strayRound,
+      finalStrayRound: data?.finalStrayRound,
     })
 
     setDefaultValues(formatData)
@@ -147,6 +150,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       closingRankR2: formData?.closingRankR2,
       closingRankR3: formData?.closingRankR3,
       strayRound: formData?.strayRound,
+      finalStrayRound: formData?.finalStrayRound,
       year: formData?.year?.text,
     })
 
@@ -386,6 +390,17 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               type="text"
               placeholder="Enter here"
               value={formData?.strayRound}
+              setValue={setValue}
+              onChange={(e) => onTextFieldChange(e, setFormData)}
+              control={control}
+              errors={errors}
+            />
+            <Input
+              name="finalStrayRound"
+              label="Final Stray Round"
+              type="text"
+              placeholder="Enter here"
+              value={formData?.finalStrayRound}
               setValue={setValue}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}

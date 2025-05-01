@@ -1,7 +1,7 @@
 "use client"
 
 import { Pagination } from "@/components/common/Pagination"
-import { Table, TableColumn } from "@/components/common/Table"
+import { Table, TableColumn } from "@/components/common/Table/Table"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"

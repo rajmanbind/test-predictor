@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/common/Card"
 import { Pagination } from "@/components/common/Pagination"
-import { Table, TableColumn } from "@/components/common/Table"
+import { Table, TableColumn } from "@/components/common/Table/Table"
 import React from "react"
 
 const columns: TableColumn[] = [

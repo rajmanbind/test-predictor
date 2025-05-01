@@ -7,8 +7,9 @@ import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import { Input } from "@/components/common/Input"
 import Link from "@/components/common/Link"
 import { Pagination, PaginationHandle } from "@/components/common/Pagination"
-import { Table, TableColumn } from "@/components/common/Table"
-import { TableDeleteButton } from "@/components/common/TableDeleteButton"
+import { generateCols } from "@/components/common/Table/Cols"
+import { Table, TableColumn } from "@/components/common/Table/Table"
+import { TableDeleteButton } from "@/components/common/Table/TableDeleteButton"
 import { ConfirmEditYearPopup } from "@/components/common/popups/ConfirmEditYearPopup"
 import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import { useAppState } from "@/hooks/useAppState"
@@ -54,188 +55,6 @@ export default function ManageDataPage() {
   useEffect(() => {
     getData()
   }, [updateUI])
-
-  function generateCols() {
-    let currentYear = new Date().getFullYear()
-    let previousYear = currentYear - 1
-
-    if (!isEmpty(configYear)) {
-      previousYear = configYear[0]
-      currentYear = configYear[1]
-    }
-
-    const columns: TableColumn[] = [
-      {
-        title: "Institute Name",
-        tableKey: "instituteName",
-        width: "150px",
-      },
-      { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
-      { title: "Course", tableKey: "course" },
-      { title: "Quota", tableKey: "quota", width: "150px" },
-      {
-        title: (
-          <div>
-            Allotted
-            <br />
-            Category
-          </div>
-        ),
-        tableKey: "category",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 1`}
-          >
-            CR {currentYear} [R1]
-          </div>
-        ),
-        tableKey: `closingRankR1_new`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 2`}
-          >
-            CR {currentYear} [R2]
-          </div>
-        ),
-        tableKey: `closingRankR2_new`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 3`}
-          >
-            CR {currentYear} [R3]
-          </div>
-        ),
-        tableKey: `closingRankR3_new`,
-        width: "130px",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${currentYear}`}
-          >
-            SR {currentYear}
-          </div>
-        ),
-        tableKey: `strayRound_new`,
-        width: "110px",
-      },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-      //     >
-      //       CR {previousYear} [R1]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR1_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-      //     >
-      //       CR {previousYear} [R2]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR2_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-      //     >
-      //       CR {previousYear} [R3]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR3_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Stray Round ${previousYear}`}
-      //     >
-      //       SR {previousYear}
-      //     </div>
-      //   ),
-      //   tableKey: `strayRound_old`,
-      //   width: "110px",
-      // },
-      { title: "Fees", tableKey: "fees", width: "100px" },
-      {
-        title: "Action",
-        tableKey: "action",
-        overrideInternalClick: true,
-        width: "70px",
-        renderer: ({ rowData }) => {
-          if (rowData?.new_id && rowData?.prev_id) {
-            return (
-              <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
-                <Pencil
-                  size={20}
-                  className="text-color-text cursor-pointer"
-                  onClick={() => {
-                    setRowData(rowData)
-                  }}
-                />
-
-                <Trash2
-                  size={20}
-                  className="text-color-text cursor-pointer"
-                  onClick={() => {
-                    setSingleDelete([rowData?.new_id, rowData?.prev_id])
-                    setPopupOpen(true)
-                  }}
-                />
-              </div>
-            )
-          }
-
-          const id = rowData?.new_id || rowData?.prev_id
-
-          return (
-            <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
-              <Link href={`/admin/edit-data/${id}`}>
-                <Pencil
-                  size={20}
-                  className="text-color-text hover:text-blue-600 cursor-pointer"
-                />
-              </Link>
-              <Trash2
-                size={20}
-                className="text-color-text hover:text-red-600 cursor-pointer"
-                onClick={() => {
-                  setSingleDelete([id])
-                  setPopupOpen(true)
-                }}
-              />
-            </div>
-          )
-        },
-      },
-    ]
-
-    return columns
-  }
 
   async function deleteData() {
     let id: any = []
@@ -372,7 +191,12 @@ export default function ManageDataPage() {
         </div>
 
         <Table
-          columns={generateCols()}
+          columns={generateCols(configYear, {
+            isAdmin: true,
+            setRowData,
+            setPopupOpen,
+            setSingleDelete,
+          })}
           data={tableData?.data}
           itemsCountPerPage={tableData?.pageSize}
           selectable

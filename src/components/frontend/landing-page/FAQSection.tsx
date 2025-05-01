@@ -66,34 +66,16 @@ export default function FAQSection() {
 
   const faqs = [
     {
-      question: "How accurate is the college predictor?",
-      answer:
-        "Our college predictor is highly accurate with a 95% success rate. It uses historical data from previous years' counseling rounds, current trends, and sophisticated algorithms to provide the most accurate predictions possible. We update our database regularly to ensure you get the most reliable information.",
+      question: "What is a closing rank in NEET counselling?",
+      answer: `The closing rank is the last rank at which admission was granted to a particular course in a specific college during the previous year’s counselling. If your rank is better than the closing rank, your chances of getting that seat are high.`,
     },
     {
-      question: "What information do I need to use the college predictor?",
-      answer:
-        "To use our college predictor, you'll need your NEET rank, state of domicile, category (General/OBC/SC/ST/EWS), and preferred course. The more information you provide, the more accurate our predictions will be. You can also specify preferences like location or specific colleges to refine your results.",
+      question: "How does the college predictor tool work?",
+      answer: `The tool uses your NEET rank, category, state, and course preferences to compare with past admission data. Based on this, it predicts a list of colleges where you’re likely to get a seat.`,
     },
     {
-      question: "How does the counselling process work?",
-      answer:
-        "The NEET counselling process typically involves registration, fee payment, choice filling, seat allotment, and reporting to the allotted college. Our experts guide you through each step, help you with strategic choice filling based on your rank and preferences, and provide support until you secure admission.",
-    },
-    {
-      question: "What is included in the premium plan?",
-      answer:
-        "Our premium plan includes full access to our college database with detailed insights, personalized one-on-one counselling sessions with medical education experts, mock counselling sessions to practice your strategy, and comprehensive career planning tools. Premium members also get priority support and exclusive webinars with admission experts.",
-    },
-    {
-      question: "Can I get a refund if I'm not satisfied?",
-      answer:
-        "Yes, we offer a 7-day money-back guarantee if you're not satisfied with our premium services. If you feel our services didn't meet your expectations, you can request a refund within 7 days of purchase. Please contact our support team to process your refund.",
-    },
-    {
-      question: "How do I contact support if I have questions?",
-      answer:
-        "You can reach our support team via email at support@CollegeCutOff.com, through the live chat on our website, or by calling our helpline at +91 9876543210. Our support team is available 24/7 to assist you with any queries or concerns you may have.",
+      question: "Is the college predictor accurate?",
+      answer: `College predictors are based on previous years' data, so they give a realistic estimate, not a guarantee. Seat availability, competition, and counseling rounds can affect actual results.`,
     },
   ]
 

@@ -17,6 +17,7 @@ export interface TableColumn {
   title: ReactNode
   tableKey: string
   width?: string
+  hidden?: boolean
   overrideInternalClick?: boolean
   renderer?: (props: {
     rowData: any

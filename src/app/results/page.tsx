@@ -3,7 +3,8 @@
 import { Button } from "@/components/common/Button"
 import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import { Pagination } from "@/components/common/Pagination"
-import { Table, TableColumn } from "@/components/common/Table"
+import { generateColsPublic } from "@/components/common/Table/Cols"
+import { Table, TableColumn } from "@/components/common/Table/Table"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import { Filter } from "@/components/frontend/college-predictor/Filter"
@@ -57,138 +58,6 @@ export default function ResultPage() {
     setQuotasList(quotaData?.payload?.data || [])
     setCategoriesList(categoryData?.payload?.data || [])
     setCoursesList(coursesData?.payload?.data || [])
-  }
-
-  function generateCols() {
-    let currentYear = new Date().getFullYear()
-    let previousYear = currentYear - 1
-
-    if (!isEmpty(configYear)) {
-      previousYear = configYear[0]
-      currentYear = configYear[1]
-    }
-
-    const columns: TableColumn[] = [
-      {
-        title: "Institute Name",
-        tableKey: "instituteName",
-        width: "150px",
-      },
-      { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
-      { title: "Course", tableKey: "course" },
-      { title: "Quota", tableKey: "quota", width: "150px" },
-
-      {
-        title: (
-          <div>
-            Allotted
-            <br />
-            Category
-          </div>
-        ),
-        tableKey: "category",
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 1`}
-          >
-            CR {currentYear} [R1]
-          </div>
-        ),
-        tableKey: `closingRankR1_new`,
-        width: "130px",
-      },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${currentYear} Round 2`}
-      //     >
-      //       CR {currentYear} [R2]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR2_new`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${currentYear} Round 3`}
-      //     >
-      //       CR {currentYear} [R3]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR3_new`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Stray Round ${currentYear}`}
-      //     >
-      //       SR {currentYear}
-      //     </div>
-      //   ),
-      //   tableKey: `strayRound_new`,
-      //   width: "110px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-      //     >
-      //       CR {previousYear} [R1]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR1_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-      //     >
-      //       CR {previousYear} [R2]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR2_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-      //     >
-      //       CR {previousYear} [R3]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR3_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Stray Round ${previousYear}`}
-      //     >
-      //       SR {previousYear}
-      //     </div>
-      //   ),
-      //   tableKey: `strayRound_old`,
-      //   width: "110px",
-      // },
-      { title: "Fees", tableKey: "fees", width: "100px" },
-    ]
-
-    return columns
   }
 
   async function getData() {
@@ -285,7 +154,7 @@ export default function ResultPage() {
             />
 
             <Table
-              columns={generateCols()}
+              columns={generateColsPublic(configYear)}
               data={tableData?.data}
               className="mt-6 min-h-[600px]"
               renderBelowTable={

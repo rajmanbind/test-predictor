@@ -87,10 +87,12 @@ export async function GET(request: NextRequest) {
         closingRankR2_old: old?.closingRankR2,
         closingRankR3_old: old?.closingRankR3,
         strayRound_old: old?.strayRound,
+        finalStrayRound_old: old?.finalStrayRound,
         closingRankR1_new: latest?.closingRankR1,
         closingRankR2_new: latest?.closingRankR2,
         closingRankR3_new: latest?.closingRankR3,
         strayRound_new: latest?.strayRound,
+        finalStrayRound_new: latest?.finalStrayRound,
         year:
           old?.year && latest?.year
             ? `${old.year} - ${latest.year}`

@@ -418,7 +418,10 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               Clear Form
             </Button>
 
-            <Button className="flex items-center gap-2 px-6" type="submit">
+            <Button
+              className="flex items-center gap-2 px-6 bg-green-500 hover:bg-green-600"
+              type="submit"
+            >
               {editMode ? "Update Data" : "Save Data"}
               <Save size={22} />
             </Button>

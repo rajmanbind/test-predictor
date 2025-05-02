@@ -7,7 +7,7 @@
 /* Reusable Global Styles */
 @layer components {
   .componentsBox {
-    @apply w-full border border-color-border bg-color-white_black rounded px-4 py-3;
+    @apply w-full border border-color-border focus-within:border-color-accent bg-color-white_black rounded px-4 py-3;
   }
 
   .defaultTextStyles {

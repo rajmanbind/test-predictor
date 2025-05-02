@@ -205,7 +205,7 @@ export const MultiSelect = ({
 
               <ChevronDown
                 className={cn(
-                  "flex-shrink-0 text-color-text transition-transform duration-300",
+                  "flex-shrink-0 text-color-text transition-transform duration-300 focus-within:border-color-accent",
                   optionListOpen ? "rotate-180" : "",
                 )}
                 onClick={() => {

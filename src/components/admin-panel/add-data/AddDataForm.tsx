@@ -36,7 +36,7 @@ interface IFormData {
   closingRankR2?: number
   closingRankR3?: number
   strayRound?: number
-  finalStrayRound?: number
+  lastStrayRound?: number
   year?: IOption
 }
 export default function AddDataForm({ editMode }: { editMode?: boolean }) {
@@ -131,7 +131,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       closingRankR2: data?.closingRankR2,
       closingRankR3: data?.closingRankR3,
       strayRound: data?.strayRound,
-      finalStrayRound: data?.finalStrayRound,
+      lastStrayRound: data?.lastStrayRound,
     })
 
     setDefaultValues(formatData)
@@ -150,7 +150,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       closingRankR2: formData?.closingRankR2,
       closingRankR3: formData?.closingRankR3,
       strayRound: formData?.strayRound,
-      finalStrayRound: formData?.finalStrayRound,
+      lastStrayRound: formData?.lastStrayRound,
       year: formData?.year?.text,
     })
 
@@ -396,11 +396,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               errors={errors}
             />
             <Input
-              name="finalStrayRound"
-              label="Final Stray Round"
+              name="lastStrayRound"
+              label="Last Stray Round"
               type="text"
               placeholder="Enter here"
-              value={formData?.finalStrayRound}
+              value={formData?.lastStrayRound}
               setValue={setValue}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}

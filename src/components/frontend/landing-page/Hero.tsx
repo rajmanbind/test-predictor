@@ -15,7 +15,7 @@ export function Hero() {
 
           <h1 className="text-3xl font-bold tab:text-4xl pc:text-5xl">
             {`CollegeCutoff.net — Your First Step Towards`}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-color-accent to-color-accent-dark">
               {` Private Medical Admissions`}
             </span>
           </h1>

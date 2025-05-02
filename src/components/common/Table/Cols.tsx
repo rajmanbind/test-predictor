@@ -1,6 +1,6 @@
-import Link from "@/components/common/Link"
 import { TableColumn } from "@/components/common/Table/Table"
 import { Pencil, Trash2 } from "lucide-react"
+import Link from "next/link"
 
 import { isEmpty } from "../../../utils/utils"
 
@@ -92,13 +92,13 @@ export function generateCols(configYear: any[], adminMode?: adminMode) {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Final Stray Round ${currentYear}`}
+          data-tooltip-content={`Last Stray Round ${currentYear}`}
         >
-          Final <br />
+          Last <br />
           SR {currentYear}
         </div>
       ),
-      tableKey: `finalStrayRound_new`,
+      tableKey: `lastStrayRound_new`,
       width: "110px",
     },
     // {
@@ -154,13 +154,13 @@ export function generateCols(configYear: any[], adminMode?: adminMode) {
     //   title: (
     //     <div
     //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Final Stray Round ${previousYear}`}
+    //       data-tooltip-content={`Last Stray Round ${previousYear}`}
     //     >
-    //          Final <br />
+    //          Last <br />
     //         SR {previousYear}
     //     </div>
     //   ),
-    //   tableKey: `finalStrayRound_old`,
+    //   tableKey: `lastStrayRound_old`,
     //   width: "110px",
     // },
 
@@ -203,7 +203,7 @@ export function generateCols(configYear: any[], adminMode?: adminMode) {
 
         return (
           <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
-            <Link href={`/admin/edit-data/${id}`}>
+            <Link href={`/admin/edit-data/${id}`} target="_blank">
               <Pencil
                 size={20}
                 className="text-color-text hover:text-blue-600 cursor-pointer"
@@ -309,13 +309,13 @@ export function generateColsPublic(configYear: any[]) {
     //   title: (
     //     <div
     //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Final Stray Round ${currentYear}`}
+    //       data-tooltip-content={`Last Stray Round ${currentYear}`}
     //     >
-    //       Final <br />
+    //       Last <br />
     //       SR {currentYear}
     //     </div>
     //   ),
-    //   tableKey: `finalStrayRound_new`,
+    //   tableKey: `lastStrayRound_new`,
     //   width: "110px",
     // },
     // {
@@ -371,13 +371,13 @@ export function generateColsPublic(configYear: any[]) {
     //   title: (
     //     <div
     //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Final Stray Round ${previousYear}`}
+    //       data-tooltip-content={`Last Stray Round ${previousYear}`}
     //     >
-    //          Final <br />
+    //          Last <br />
     //         SR {previousYear}
     //     </div>
     //   ),
-    //   tableKey: `finalStrayRound_old`,
+    //   tableKey: `lastStrayRound_old`,
     //   width: "110px",
     // },
 

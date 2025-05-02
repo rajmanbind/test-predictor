@@ -245,11 +245,12 @@ export default function StateClosingRanksPage() {
               onPageChange={(page: number) => {
                 onPageChange(
                   page,
-                  "/api/admin/get_data",
+                  "/api/closing_ranks",
                   fetchData,
                   setTableData,
                   {
                     size: 20,
+                    state,
                   },
                 )
               }}

@@ -122,7 +122,7 @@ export default function CutOffPage() {
 
         <Renderer
           rendererStatus={rendererStatus}
-          generateCols={generateColsPublic(configYear) as any}
+          generateCols={generateColsPublic(configYear, true) as any}
           tableData={tableData}
           showCutoff={showCutoff}
         />

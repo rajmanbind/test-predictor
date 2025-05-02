@@ -228,7 +228,7 @@ export function generateCols(configYear: any[], adminMode?: adminMode) {
   return columns
 }
 
-export function generateColsPublic(configYear: any[]) {
+export function generateColsPublic(configYear: any[], paid = false) {
   let currentYear = new Date().getFullYear()
   let previousYear = currentYear - 1
 
@@ -381,8 +381,64 @@ export function generateColsPublic(configYear: any[]) {
     //   width: "110px",
     // },
 
-    { title: "Fees", tableKey: "fees", width: "100px" },
+    // { title: "Fees", tableKey: "fees", width: "100px" },
   ]
+
+  if (paid) {
+    columns.push(
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+          >
+            CR {currentYear} [R2]
+          </div>
+        ),
+        tableKey: `closingRankR2_new`,
+        width: "130px",
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+          >
+            CR {currentYear} [R3]
+          </div>
+        ),
+        tableKey: `closingRankR3_new`,
+        width: "130px",
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round ${currentYear}`}
+          >
+            SR {currentYear}
+          </div>
+        ),
+        tableKey: `strayRound_new`,
+        width: "110px",
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Last Stray Round ${currentYear}`}
+          >
+            Last <br />
+            SR {currentYear}
+          </div>
+        ),
+        tableKey: `lastStrayRound_new`,
+        width: "110px",
+      },
+    )
+
+    columns.push({ title: "Fees", tableKey: "fees", width: "100px" })
+  }
 
   return columns
 }

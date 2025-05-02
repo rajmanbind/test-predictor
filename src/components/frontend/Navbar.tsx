@@ -1,5 +1,6 @@
 "use client"
 
+import { useAppState } from "@/hooks/useAppState"
 import { cn } from "@/utils/utils"
 import { Menu } from "lucide-react"
 import { useTheme } from "next-themes"
@@ -43,6 +44,8 @@ export function Navbar() {
 
   const pathname = usePathname()
 
+  const { setAppState } = useAppState()
+
   return (
     <Container>
       <div className="flex items-center justify-between h-[70px]">
@@ -71,7 +74,14 @@ export function Navbar() {
           <div>
             <ThemeSwitcher />
           </div>
-          <Button className="text-[10px] tab:text-sm pc:text-base py-2">
+          <Button
+            className="text-[10px] tab:text-sm pc:text-base py-2"
+            onClick={() => {
+              if (!pathname?.includes("admin")) {
+                setAppState({ signInModalOpen: true })
+              }
+            }}
+          >
             {pathname?.includes("admin") ? "Admin Panel" : "Sign in / Sign up"}
           </Button>
         </div>

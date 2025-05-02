@@ -351,7 +351,7 @@ export function SignInPopup() {
                 </div>
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                We'll send a verification code to this WhatsApp number
+                {`We'll send a verification code to this WhatsApp number`}
               </p>
             </div>
 

@@ -5,22 +5,22 @@ import React, { ReactNode } from "react"
 const data = [
   {
     term: "CR",
-    description: `refers to Closing Rank — "the rank of the last
+    description: `Refers to Closing Rank — "the rank of the last
                              candidate who secured a seat in a particular medical college
                              under a specific quota".`,
   },
   {
     term: "SR",
-    description: `refers to Stray Round.`,
+    description: `Refers to Stray Round.`,
   },
   {
     term: "Allotted Category",
     description:
-      "refers to the category under which a candidate is offered a seat during counselling.",
+      "Refers to the category under which a candidate is offered a seat during counselling.",
   },
   {
     term: "NA",
-    description: `refers to No Allotment or No Seat Left for that round.`,
+    description: `Refers to No Allotment or No Seat Left for that round.`,
   },
 ]
 

@@ -123,12 +123,11 @@ export default function CutOffPage() {
 
         <div
           className={cn(
-            "bg-sky-50 border border-sky-200 p-4 rounded-md text-color-text flex gap-2 pc:hidden",
+            "bg-sky-50 border border-sky-200 p-4 rounded-md text-color-text flex gap-2 pc:hidden overflow-hidden",
           )}
         >
-          <p className="animated-new">New</p>
-          <p className="text-sm text-black">
-            Rotate your phone to landscape mode for better visibility.
+          <p className="animated-new">
+            Rotate your Phone to Landscape or Horizontal For Batter VIEW.
           </p>
         </div>
 

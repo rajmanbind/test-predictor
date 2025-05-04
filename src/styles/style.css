@@ -156,10 +156,10 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-background-clip: text;
   color: transparent;
   display: inline-block;
-  animation: pulseScale 1.5s ease-in-out infinite;
+  animation: glowShrink 1.2s;
 }
 
-@keyframes pulseScale {
+@keyframes glowShrink {
   0%,
   100% {
     transform: scale(1);

@@ -19,6 +19,10 @@ const data = [
       "Refers to the category under which a candidate is offered a seat during counselling.",
   },
   {
+    term: "Rank",
+    description: `Ranks Indicate All India Ranks.`,
+  },
+  {
     term: "NA",
     description: `Refers to No Allotment or No Seat Left for that round.`,
   },
@@ -40,7 +44,7 @@ export function ClosingRankGuide({ className }: { className?: string }) {
       <div className="flex flex-col gap-3 text-sm text-color-text">
         {data.map((item) => (
           <div key={item.term} className="flex gap-2">
-            <AlertCircle className="size-4 text-sky-600 translate-y-[3px]" />
+            <AlertCircle className="size-4 text-sky-600 translate-y-[3px] shrink-0" />
 
             <div className="space-y-[2px]">
               <Badge>{item.term}</Badge>

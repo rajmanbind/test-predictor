@@ -156,7 +156,7 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-background-clip: text;
   color: transparent;
   display: inline-block;
-  animation: glowShrink 1.2s;
+  animation: glowShrink;
 }
 
 @keyframes glowShrink {

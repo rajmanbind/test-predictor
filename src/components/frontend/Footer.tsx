@@ -10,10 +10,10 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1 space-y-4">
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-yellow-400 to-yellow-600 font-bold text-black shadow-md">
-                CE
+                Cc
               </div>
               <span className="text-xl font-bold text-white">
-                Career<span className="text-yellow-500">Edwise</span>
+                College<span className="text-yellow-500">Cutoff</span>
               </span>
             </div>
             <p className="text-sm text-gray-400">

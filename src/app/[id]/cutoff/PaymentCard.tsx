@@ -38,8 +38,8 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center font-poppins">
               <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
-              Complete Category and Quota Wise MBBS Cut-off Rank Details (NEET
-              UG 2024) of your Selected College.
+              All Rounds Complete Category and Quota Wise MBBS Cut-off Rank
+              Details (NEET UG 2024) of your Selected College.
             </li>
             <li className="flex items-center font-poppins">
               <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>

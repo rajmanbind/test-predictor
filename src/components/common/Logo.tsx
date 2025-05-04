@@ -14,7 +14,7 @@ export function Logo({
   return (
     <Link href="/" className={cn("flex items-center gap-3", className)}>
       <Image
-        src="/logo.png"
+        src="/Logo.png"
         width={62}
         height={62}
         alt="a black background image with written text is CE in yellow color"

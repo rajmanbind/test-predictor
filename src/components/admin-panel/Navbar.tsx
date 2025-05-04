@@ -55,7 +55,7 @@ export function Navbar() {
         >
           <Image
             className="rounded-full size-[40px]"
-            src={"/logo.png"}
+            src={"/Logo.png"}
             width={60}
             height={60}
             alt="admin-dp"

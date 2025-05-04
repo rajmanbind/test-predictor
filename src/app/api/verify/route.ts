@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     // Generate the HMAC SHA256 signature
     const generatedSignature = crypto
-      .createHmac("sha256", webhookSecret)
+      .createHmac("sha256", webhookSecret!)
       .update(body)
       .digest("hex")
 

@@ -78,8 +78,8 @@ export function Navbar() {
   return (
     <Container>
       <div className="flex items-center justify-between h-[70px]">
-        <div className="flex items-center tab:gap-16 gap-2">
-          <Menu size={28} className="text-color-text pc:hidden" />
+        <div className="flex items-center tab:gap-16 gap-2 px-4">
+          {/* <Menu size={28} className="text-color-text pc:hidden" /> */}
 
           <Logo
             className="gap-2 tab:gap-3"
@@ -93,7 +93,11 @@ export function Navbar() {
           </nav>
         </div>
 
-        <div className="pc:w-[400px] tab:w-[200px] w-[160px] h-[70px] flex items-center justify-between relative pc:px-8">
+        <div
+          // className="pc:w-[400px] tab:w-[200px] w-[160px] h-[70px] flex items-center justify-between relative pc:px-8"
+
+          className="pc:w-[400px] h-[70px] flex items-center justify-between relative px-2 pc:px-8"
+        >
           <div
             className={cn(
               "absolute top-0 left-0 w-full h-full bg-gradient-to-t from-slate-950 to-slate-800 skew-x-[-10deg] -z-10 hidden pc:block",

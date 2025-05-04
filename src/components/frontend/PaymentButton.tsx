@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react"
 import { useParams } from "next/navigation"
 import Script from "next/script"
 import { useState } from "react"
+import { isMobile, isTablet } from "react-device-detect"
 
 import { Button } from "../common/Button"
 
@@ -91,8 +92,7 @@ const PaymentButton = ({
           color: "#3399cc",
         },
         method: {
-          upi_intent: false,
-          upi: false,
+          upi: isMobile || isTablet ? true : false,
           card: true,
           netbanking: true,
           wallet: true,

@@ -30,7 +30,7 @@ export default function HowItWorks() {
 
         {/* Desktop Timeline */}
         <div className="hidden lg:block relative mb-20">
-          <div className="grid grid-cols-3 gap-8 gap-y-24">
+          <div className="grid grid-cols-3 gap-8 gap-y-24 text-black">
             {/* Step 1 */}
             <div className="relative">
               <motion.div
@@ -355,7 +355,7 @@ export default function HowItWorks() {
 
           {/* Benefits Section */}
           <motion.div
-            className="grid md:grid-cols-3 gap-6"
+            className="grid md:grid-cols-3 gap-6 text-black"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, staggerChildren: 0.1 }}

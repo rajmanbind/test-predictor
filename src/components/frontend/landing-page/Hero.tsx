@@ -6,7 +6,7 @@ import { CollegePredictorForm } from "../college-predictor/CollegePredictorForm"
 
 export function Hero() {
   return (
-    <div className="grid pc:grid-cols-[45%_55%] gap-6">
+    <div className="grid pc:grid-cols-[45%_55%] gap-6 px-3">
       <div className="flex h-full items-center">
         <div className="space-y-4">
           <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200">

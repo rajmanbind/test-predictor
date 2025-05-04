@@ -93,7 +93,7 @@ export async function getAdminSession(request: NextRequest) {
 
 // === UPDATE USER SESSION ===
 export function updateUserSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  const supabaseResponse = NextResponse.next({ request })
 
   createServerClient(
     process.env.SUPABASE_URL!,
@@ -121,7 +121,7 @@ export function updateUserSession(request: NextRequest) {
 
 // === UPDATE ADMIN SESSION ===
 export function updateAdminSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  const supabaseResponse = NextResponse.next({ request })
 
   createServerClient(
     process.env.SUPABASE_URL!,

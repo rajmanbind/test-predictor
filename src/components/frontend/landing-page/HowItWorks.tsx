@@ -122,8 +122,8 @@ export default function HowItWorks() {
                     Choose the Course
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    Select whether you're applying for MBBS, MD, or MS. The
-                    predictor adapts based on your course choice.
+                    {`Select whether you're applying for MBBS, MD, or MS. The
+                    predictor adapts based on your course choice.`}
                   </p>
                 </div>
               </motion.div>
@@ -192,9 +192,9 @@ export default function HowItWorks() {
                     {`Click “Predict My College”`}
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    Hit the button and instantly view a list of colleges where
+                    {`Hit the button and instantly view a list of colleges where
                     you are most likely to get admission, based on last year's
-                    closing ranks.
+                    closing ranks.`}
                   </p>
                 </div>
               </motion.div>

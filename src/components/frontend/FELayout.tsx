@@ -18,6 +18,7 @@ export function FELayout({ children }: { children: React.ReactNode }) {
   async function getCurrentUser() {
     const res = await fetchData({
       url: "/api/user",
+      noToast: true,
     })
 
     if (res?.success) {

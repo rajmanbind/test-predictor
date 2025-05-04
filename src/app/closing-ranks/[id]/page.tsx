@@ -39,11 +39,6 @@ export default function StateClosingRanksPage() {
   async function getData() {
     const page = Number(getSearchParams("page") || 1)
 
-    const user = await fetchData({
-      url: "/api/user",
-      method: "GET",
-    })
-
     const [dataRes, configRes] = await Promise.all([
       fetchData({
         url: "/api/closing_ranks",

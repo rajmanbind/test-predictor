@@ -1,3 +1,4 @@
+import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { ClosingRanksPage } from "@/components/frontend/ClosingRanksPage"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
@@ -9,6 +10,7 @@ export default function ClosingRanks() {
   return (
     <FELayout>
       <ClosingRanksPage />
+      <SignInPopup />
     </FELayout>
   )
 }

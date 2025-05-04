@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ msg: "ID is required" }, { status: 400 })
     }
 
-    const supabase = createSupabaseServerClient()
+    const supabase = createAdminSupabaseClient()
 
     const { data, error } = await supabase
       .from("college_table")

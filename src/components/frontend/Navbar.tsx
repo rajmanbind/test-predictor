@@ -1,11 +1,14 @@
 "use client"
 
 import { useAppState } from "@/hooks/useAppState"
+import useFetch from "@/hooks/useFetch"
+import useOutsideClick from "@/hooks/useOutsideClick"
 import { cn } from "@/utils/utils"
-import { Menu } from "lucide-react"
+import { Menu, UserRound } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { useRef, useState } from "react"
 
 import { Button } from "../common/Button"
 import { Logo } from "../common/Logo"
@@ -44,7 +47,26 @@ export function Navbar() {
 
   const pathname = usePathname()
 
-  const { setAppState } = useAppState()
+  const { appState, setAppState, showToast } = useAppState()
+
+  const [popOver, setPopOver] = useState(false)
+  const ref = useRef(null)
+
+  useOutsideClick(ref, () => setPopOver(false))
+  const { fetchData } = useFetch()
+
+  const router = useRouter()
+
+  async function handleLogout() {
+    const res = await fetchData({
+      url: "/api/admin/logout",
+    })
+
+    if (res?.success) {
+      showToast("success", "Logged out successfully")
+      router.replace("/")
+    }
+  }
 
   return (
     <Container>
@@ -74,16 +96,40 @@ export function Navbar() {
           <div>
             <ThemeSwitcher />
           </div>
-          <Button
-            className="text-[10px] tab:text-sm pc:text-base py-2"
-            onClick={() => {
-              if (!pathname?.includes("admin")) {
-                setAppState({ signInModalOpen: true })
-              }
-            }}
-          >
-            {pathname?.includes("admin") ? "Admin Panel" : "Sign in / Sign up"}
-          </Button>
+
+          {appState?.user ? (
+            <div
+              className="bg-color-accent size-10 grid place-items-center rounded-full relative cursor-pointer"
+              ref={ref}
+              onClick={() => setPopOver((prev) => !prev)}
+            >
+              <UserRound className="text-white" />
+
+              {popOver && (
+                <div className="bg-color-form-background absolute top-0 right-0 w-[100px] mt-12 rounded-[4px] shadow-lg z-10 overflow-hidden">
+                  <button
+                    className="text-color-text py-2 hover:bg-color-accent w-full"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Button
+              className="text-[10px] tab:text-sm pc:text-base py-2"
+              onClick={() => {
+                if (!pathname?.includes("admin")) {
+                  setAppState({ signInModalOpen: true })
+                }
+              }}
+            >
+              {pathname?.includes("admin")
+                ? "Admin Panel"
+                : "Sign in / Sign up"}
+            </Button>
+          )}
         </div>
       </div>
     </Container>

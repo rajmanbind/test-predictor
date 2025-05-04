@@ -1,31 +1,32 @@
-import { createAdminSupabaseClient } from "@/lib/supabase"
+import { createUserSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, password } = body
+    const { phone, token } = body
 
-    const supabase = createAdminSupabaseClient()
+    const supabase = createUserSupabaseClient()
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone,
+      token,
+      type: "sms",
     })
 
     if (error) {
       return NextResponse.json(
         {
-          msg: "Username or Password is wrong",
-          isAuthenticated: false,
+          msg: "Failed to verify OTP",
+          error,
         },
         { status: 400 },
       )
     }
 
     return NextResponse.json({
-      msg: "Login successful",
-      isAuthenticated: true,
+      msg: "OTP verification successful",
+      data,
     })
   } catch (err) {
     console.error(err)

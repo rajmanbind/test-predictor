@@ -123,7 +123,8 @@ export function Table({
                     column?.tableKey === "action" &&
                       "tableActionStatic bg-color-table-header",
 
-                    column?.tableKey === "instituteName" && "tableStaticLeft",
+                    column?.tableKey === "instituteName" &&
+                      "tableStaticLeft bg-color-table-header",
                   )}
                   style={{ minWidth: column?.width }}
                 >

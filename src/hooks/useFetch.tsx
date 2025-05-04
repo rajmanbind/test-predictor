@@ -15,6 +15,7 @@ interface FetchParams extends AxiosRequestConfig {
   data?: any
   headers?: Record<string, string>
   noLoading?: boolean
+  noToast?: boolean
   notSetLoadingState?: boolean
   onError?: (error: any) => void
   onInternalError500?: (error: any) => void
@@ -30,22 +31,6 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 })
-
-// Adding request interceptor to inject token if available
-// axiosInstance.interceptors.request.use(
-//   (config) => {
-//     const token = getToken()
-
-//     if (token) {
-//       config.headers["Authorization"] = `Bearer ${token}`
-//       config.headers["ngrok-skip-browser-warning"] = `true`
-//     }
-//     return config
-//   },
-//   (error) => {
-//     return Promise.reject(error)
-//   },
-// )
 
 const useFetch = () => {
   const [state, setState] = useState<FetchState<any>>({
@@ -67,6 +52,7 @@ const useFetch = () => {
         headers,
         noLoading,
         notSetLoadingState,
+        noToast,
         onError,
         onInternalError500,
       } = params
@@ -89,7 +75,9 @@ const useFetch = () => {
 
         if (response.status !== 200) {
           const errorMsg = response?.data?.msg || "An error occurred"
-          showToast("error", errorMsg)
+          if (!noToast) {
+            showToast("error", errorMsg)
+          }
           setState({
             data: null,
             error: errorMsg,
@@ -117,8 +105,11 @@ const useFetch = () => {
           const statusCode = error.response?.status
           if (statusCode === 500) {
             const errorMsg = "Internal Server Error (500)"
-            if (typeof onInternalError500 !== "function")
-              showToast("error", String(noLoading))
+            if (typeof onInternalError500 !== "function") {
+              if (!noToast) {
+                showToast("error", String(noLoading))
+              }
+            }
             setState({
               data: null,
               error: errorMsg,
@@ -129,7 +120,9 @@ const useFetch = () => {
           } else if (error.code !== "ERR_CANCELED") {
             const errorMsg = error.response?.data?.msg || error.message
 
-            showToast("error", errorMsg)
+            if (!noToast) {
+              showToast("error", errorMsg)
+            }
             console.error(errorMsg)
             setState({
               data: null,
@@ -140,7 +133,9 @@ const useFetch = () => {
           }
         } else {
           const errorMsg = "An unexpected error occurred"
-          showToast("error", errorMsg)
+          if (!noToast) {
+            showToast("error", errorMsg)
+          }
           console.error("Internal Server Error: ", errorMsg)
           setState({
             data: null,

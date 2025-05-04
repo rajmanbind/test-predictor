@@ -1,11 +1,11 @@
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 
 export async function GET() {
   try {
-    const supabase = createSupabaseServerClient()
+    const supabase = createAdminSupabaseClient()
     const { error } = await supabase.auth.signOut()
 
     if (error) {

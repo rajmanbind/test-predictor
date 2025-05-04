@@ -1,10 +1,10 @@
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
     const { text } = await request.json()
-    const supabase = createSupabaseServerClient()
+    const supabase = createAdminSupabaseClient()
 
     // Check if CONFIG_YEAR exists
     const { data: existingData, error: fetchError } = await supabase

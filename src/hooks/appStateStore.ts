@@ -7,6 +7,7 @@ export interface IAppState {
   isSidebarOpen: boolean
   overFlowYHidden: boolean
   signInModalOpen?: boolean
+  user?: any
   toast: {
     showToast: boolean
     toastType: "success" | "error"

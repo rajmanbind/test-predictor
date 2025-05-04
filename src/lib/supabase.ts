@@ -1,66 +1,123 @@
 import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
+import { cookies as nextCookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
 
-export function createSupabaseServerClient() {
-  const cookieStore = cookies()
+// === USER CLIENT ===
+export function createUserSupabaseClient() {
+  const cookieStore = nextCookies()
 
   return createServerClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_ANON_KEY!,
     {
+      cookieOptions: {
+        name: "sb-user-auth-token",
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll()
         },
         setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
-            )
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          )
         },
       },
     },
   )
 }
 
+// === ADMIN CLIENT ===
+export function createAdminSupabaseClient() {
+  const cookieStore = nextCookies()
+
+  return createServerClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!,
+    {
+      cookieOptions: {
+        name: "sb-admin-auth-token",
+      },
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          )
+        },
+      },
+    },
+  )
+}
+
+// === GET USER SESSION ===
 export async function getUserSession() {
-  const supabase = createSupabaseServerClient()
+  const supabase = createUserSupabaseClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
   return user
 }
 
-export function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
+// === GET ADMIN SESSION ===
+export async function getAdminSession() {
+  const supabase = createAdminSupabaseClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  return user
+}
+
+// === UPDATE USER SESSION ===
+export function updateUserSession(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request })
 
   createServerClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_ANON_KEY!,
     {
+      cookieOptions: {
+        name: "sb-user-auth-token",
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            request.cookies.set(name, value),
-          )
-          supabaseResponse = NextResponse.next({
-            request,
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value)
+            supabaseResponse.cookies.set(name, value, options)
           })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options),
-          )
+        },
+      },
+    },
+  )
+
+  return supabaseResponse
+}
+
+// === UPDATE ADMIN SESSION ===
+export function updateAdminSession(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request })
+
+  createServerClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!,
+    {
+      cookieOptions: {
+        name: "sb-admin-auth-token",
+      },
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value)
+            supabaseResponse.cookies.set(name, value, options)
+          })
         },
       },
     },

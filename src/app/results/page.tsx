@@ -5,6 +5,7 @@ import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import { Pagination } from "@/components/common/Pagination"
 import { generateColsPublic } from "@/components/common/Table/Cols"
 import { Table, TableColumn } from "@/components/common/Table/Table"
+import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import { Filter } from "@/components/frontend/college-predictor/Filter"
@@ -196,6 +197,7 @@ export default function ResultPage() {
       </Container>
 
       <Tooltip id="tooltip" place="top" className="z-[1100]" />
+      <SignInPopup />
     </FELayout>
   )
 }

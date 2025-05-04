@@ -5,6 +5,7 @@ import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import Link from "@/components/common/Link"
 import { generateColsPublic } from "@/components/common/Table/Cols"
 import { Table, TableColumn } from "@/components/common/Table/Table"
+import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
@@ -127,6 +128,7 @@ export default function CutOffPage() {
           showCutoff={showCutoff}
         />
       </Container>
+      <SignInPopup />
     </FELayout>
   )
 }

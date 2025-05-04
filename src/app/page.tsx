@@ -1,3 +1,4 @@
+import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import CtaSection from "@/components/frontend/landing-page/CtaSection"
@@ -44,6 +45,8 @@ export default function Home() {
       <Container className="max-w-[1600px]">
         <FAQSection />
       </Container>
+
+      <SignInPopup />
     </FELayout>
   )
 }

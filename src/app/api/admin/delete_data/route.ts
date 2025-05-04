@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const { id } = await request.json()
 
-    const supabase = createSupabaseServerClient()
+    const supabase = createAdminSupabaseClient()
 
     const { error, data } = await supabase
       .from("college_table")

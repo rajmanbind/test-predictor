@@ -1,6 +1,7 @@
 "use client"
 
 import { useAppState } from "@/hooks/useAppState"
+import useFetch from "@/hooks/useFetch"
 import {
   ArrowRight,
   Check,
@@ -10,6 +11,7 @@ import {
   Smartphone,
   X,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 
@@ -22,7 +24,13 @@ type CountryCode = {
   flag: string
 }
 
-export function SignInPopup() {
+export function SignInPopup({
+  successCallback,
+  errorCallback,
+}: {
+  successCallback?: any
+  errorCallback?: any
+}) {
   const { appState, setAppState } = useAppState()
 
   const [step, setStep] = useState<"phone" | "otp">("phone")
@@ -41,6 +49,12 @@ export function SignInPopup() {
   })
 
   const countrySelectorRef = useRef<HTMLDivElement>(null)
+
+  const router = useRouter()
+
+  const { showToast } = useAppState()
+
+  const { fetchData } = useFetch()
 
   // List of country codes (abbreviated for brevity)
   const countryCodes: CountryCode[] = [
@@ -109,28 +123,36 @@ export function SignInPopup() {
     }
   }
 
-  // Handle phone number submission
-  const handlePhoneSubmit = (e: React.FormEvent) => {
+  // Handle Phone Number submission
+  async function handlePhoneSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
 
-    if (!phoneNumber || phoneNumber.length < 6) {
-      setError("Please enter a valid phone number")
+    if (!phoneNumber || phoneNumber.length < 10) {
+      setError("Please enter a valid Phone Number")
       return
     }
 
     setIsSubmitting(true)
 
-    // Simulate API call to send OTP
-    setTimeout(() => {
-      setIsSubmitting(false)
+    const res = await fetchData({
+      url: "/api/user/login/send_otp",
+      method: "POST",
+      data: {
+        phone: `${selectedCountry?.dial_code}${phoneNumber}`,
+      },
+      noLoading: true,
+    })
+
+    setIsSubmitting(false)
+    if (res?.success) {
       setStep("otp")
-      setCountdown(30)
-    }, 1500)
+      setCountdown(60)
+    }
   }
 
   // Handle OTP verification
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  async function handleOtpSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
 
@@ -142,15 +164,32 @@ export function SignInPopup() {
 
     setIsSubmitting(true)
 
-    // Simulate API call to verify OTP
-    setTimeout(() => {
-      setIsSubmitting(false)
+    const res = await fetchData({
+      url: "/api/user/login/verify_otp",
+      method: "POST",
+      data: {
+        phone: `${selectedCountry?.dial_code}${phoneNumber}`,
+        token: otpValue,
+      },
+      noLoading: true,
+    })
+
+    setIsSubmitting(false)
+
+    if (res?.success) {
       // Successful login - close modal and reset state
       setAppState({ signInModalOpen: false })
+
       setStep("phone")
       setPhoneNumber("")
       setOtp(["", "", "", "", "", ""])
-    }, 1500)
+
+      if (typeof successCallback === "function") {
+        successCallback?.()
+      } else {
+        router.replace("/closing-ranks")
+      }
+    }
   }
 
   // Handle resend OTP
@@ -158,7 +197,7 @@ export function SignInPopup() {
     if (countdown > 0) return
 
     // Simulate API call to resend OTP
-    setCountdown(30)
+    setCountdown(60)
   }
 
   // Countdown timer for resend OTP
@@ -210,7 +249,7 @@ export function SignInPopup() {
     }
   }, [appState?.signInModalOpen])
 
-  // Format phone number for display
+  // Format Phone Number for display
   const formatPhoneForDisplay = () => {
     if (phoneNumber.length <= 4) {
       return phoneNumber
@@ -249,8 +288,8 @@ export function SignInPopup() {
           </h2>
           <p className="text-gray-600">
             {step === "phone"
-              ? "Enter your phone number to continue"
-              : "Enter the 6-digit code sent to your WhatsApp"}
+              ? "Enter your Phone Number to continue"
+              : "Enter the 6-digit code sent to your Phone Number."}
           </p>
         </div>
 
@@ -339,7 +378,7 @@ export function SignInPopup() {
                     type="tel"
                     id="phone"
                     className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                    placeholder="Enter your WhatsApp number"
+                    placeholder="Enter your Phone Number"
                     value={phoneNumber}
                     maxLength={12}
                     onChange={(e) => {
@@ -351,18 +390,18 @@ export function SignInPopup() {
                 </div>
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                {`We'll send a verification code to this WhatsApp number`}
+                {`We'll send a verification code to this Phone Number`}
               </p>
             </div>
 
             <Button
               type="submit"
-              className="w-full py-3 h-auto bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium shadow-md flex items-center justify-center gap-2"
+              className="w-full py-3 h-auto bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 disabled:text-black/80 text-black font-medium shadow-md flex items-center justify-center gap-2"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <>
-                  <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                  <div className="h-4 w-4 border-2   border-black border-t-transparent rounded-full animate-spin"></div>
                   Sending Code...
                 </>
               ) : (
@@ -425,7 +464,7 @@ export function SignInPopup() {
 
             <Button
               type="submit"
-              className="w-full py-3 h-auto bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium shadow-md flex items-center justify-center gap-2"
+              className="w-full py-3 h-auto bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 disabled:text-black/80 text-black font-medium shadow-md flex items-center justify-center gap-2"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

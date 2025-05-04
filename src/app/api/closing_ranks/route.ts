@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const pageSize = parseInt(searchParams.get("size") || "10")
   const state = searchParams.get("state")
 
-  const supabase = createSupabaseServerClient()
+  const supabase = createAdminSupabaseClient()
 
   const { data: selectedYear, error: yearsError } = await supabase
     .from("dropdown_options")
@@ -82,15 +82,17 @@ export async function GET(request: NextRequest) {
         course: latest?.course ?? old?.course,
         quota: latest?.quota ?? old?.quota,
         category: latest?.category ?? old?.category,
-        fees: latest?.fees ?? old?.fees,
-        closingRankR1_old: old?.closingRankR1,
-        closingRankR2_old: old?.closingRankR2,
-        closingRankR3_old: old?.closingRankR3,
-        strayRound_old: old?.strayRound,
-        closingRankR1_new: latest?.closingRankR1,
-        closingRankR2_new: latest?.closingRankR2,
-        closingRankR3_new: latest?.closingRankR3,
-        strayRound_new: latest?.strayRound,
+        fees: "xxx",
+        closingRankR1_old: "xxx",
+        closingRankR2_old: "xxx",
+        closingRankR3_old: "xxx",
+        strayRound_old: "xxx",
+        lastStrayRound_old: "xxx",
+        closingRankR1_new: "xxx",
+        closingRankR2_new: "xxx",
+        closingRankR3_new: "xxx",
+        strayRound_new: "xxx",
+        lastStrayRound_new: "xxx",
         year:
           old?.year && latest?.year
             ? `${old.year} - ${latest.year}`

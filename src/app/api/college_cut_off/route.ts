@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const course = searchParams.get("course")?.trim()
   const dataCheckMode = searchParams.get("dataCheckMode")
 
-  const supabase = createSupabaseServerClient()
+  const supabase = createAdminSupabaseClient()
 
   const { data: selectedYear, error: yearsError } = await supabase
     .from("dropdown_options")

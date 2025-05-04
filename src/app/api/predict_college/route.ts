@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
   const feeToRaw = searchParams.get("feeTo")
   const feeTo = feeToRaw === null ? Infinity : parseInt(feeToRaw)
 
-  const supabase = createSupabaseServerClient()
+  const supabase = createAdminSupabaseClient()
 
   // Get configured years
   const { data: selectedYear, error: yearsError } = await supabase

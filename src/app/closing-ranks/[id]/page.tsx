@@ -1,20 +1,28 @@
 "use client"
 
+import { Button } from "@/components/common/Button"
 import { Pagination } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table/Table"
+import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
+import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { isEmpty, onPageChange } from "@/utils/utils"
 import { ChevronLeft, Info, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import Script from "next/script"
 import { useEffect, useState } from "react"
 
 export default function StateClosingRanksPage() {
   const [configYear, setConfigYear] = useState<any>([])
   const [tableData, setTableData] = useState<any>(null)
+
+  const [currentAmount, setCurrentAmount] = useState(0)
+  const [currentRow, setCurrentRow] = useState<any>(null)
+  const [updateUI, setUpdateUI] = useState(false)
 
   const params = useParams()
   const state = decodeURIComponent(params.id as any)
@@ -22,12 +30,21 @@ export default function StateClosingRanksPage() {
 
   const { fetchData } = useFetch()
 
+  const { showToast, appState, setAppState } = useAppState()
+
   useEffect(() => {
     getData()
-  }, [])
+  }, [updateUI])
 
   async function getData() {
     const page = Number(getSearchParams("page") || 1)
+
+    const user = await fetchData({
+      url: "/api/user",
+      method: "GET",
+    })
+
+    console.log("user", user)
 
     const [dataRes, configRes] = await Promise.all([
       fetchData({
@@ -134,6 +151,19 @@ export default function StateClosingRanksPage() {
         tableKey: `strayRound_new`,
         width: "110px",
       },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Last Stray Round ${currentYear}`}
+          >
+            Last <br />
+            SR {currentYear}
+          </div>
+        ),
+        tableKey: `lastStrayRound_new`,
+        width: "110px",
+      },
       // {
       //   title: (
       //     <div
@@ -180,16 +210,187 @@ export default function StateClosingRanksPage() {
       //     </div>
       //   ),
       //   tableKey: `strayRound_old`,
+      //   wid
+      // th: "110px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Last Stray Round ${previousYear}`}
+      //     >
+      //       Last <br />
+      //       SR {previousYear}
+      //     </div>
+      //   ),
+      //   tableKey: `lastStrayRound_old`,
       //   width: "110px",
       // },
       { title: "Fees", tableKey: "fees", width: "100px" },
+      {
+        title: "Buy Now",
+        tableKey: "action",
+        width: "100px",
+        renderer({ rowData }) {
+          return (
+            <div className="flex justify-center w-full">
+              <Button
+                className="py-2 px-2 text-[14px] w-fit"
+                variant="primary"
+                onClick={() => handleBuyNow(rowData, 49)}
+              >
+                Unlock ₹49
+              </Button>
+            </div>
+          )
+        },
+      },
     ]
 
     return columns
   }
 
+  async function handleBuyNow(rowData: any, amount: number) {
+    setCurrentRow(rowData)
+    setCurrentAmount(amount)
+
+    console.log("row", rowData)
+
+    const user = await fetchData({
+      url: "/api/user",
+      method: "GET",
+      noToast: true,
+    })
+
+    if (user?.success) {
+      processPayment(rowData, amount)
+    } else {
+      setAppState({ signInModalOpen: true })
+    }
+  }
+
+  const createOrder = async (amount: number) => {
+    const response = await fetch("/api/order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount }),
+    })
+    const data = await response.json()
+    if (!response.ok) throw new Error("Failed to create order")
+    return data.orderId
+  }
+
+  const processPayment = async (rowData?: any, amount?: number) => {
+    try {
+      const orderId = await createOrder(amount || currentAmount)
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: currentAmount * 100, // Amount in paise
+        currency: "INR",
+        name: "Career Edwise",
+        description: "Test Transaction",
+        order_id: orderId,
+        handler: async function (response: any) {
+          try {
+            const verifyResponse = await fetch("/api/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+              }),
+            })
+            const verifyData = await verifyResponse.json()
+
+            if (verifyData.isOk) {
+              showToast(
+                "success",
+                <p>
+                  Payment Successful
+                  <br />
+                  Thank You for purchasing!
+                </p>,
+              )
+
+              const phone_no = "+91-7903924731"
+
+              const value = []
+              const new_id = rowData?.new_id || currentRow?.new_id
+              const prev_id = rowData?.prev_id || currentRow?.prev_id
+
+              if (new_id) {
+                value.push(new_id)
+              }
+
+              if (prev_id) {
+                value.push(prev_id)
+              }
+
+              const payload = {
+                phone_no,
+                value,
+                type: "college",
+              }
+
+              console.log("payload", payload)
+
+              const res = await fetchData({
+                url: "/api/purchase/plans_or_colleges",
+                method: "POST",
+                data: payload,
+              })
+
+              if (res?.success) {
+                console.log("res", res)
+
+                setUpdateUI((prev) => !prev)
+              }
+            } else {
+              showToast("error", "Payment verification failed!")
+            }
+          } catch (error) {
+            console.error("Verification error:", error)
+            showToast("error", "Payment verification failed!")
+          }
+        },
+        theme: {
+          color: "#3399cc",
+        },
+        method: {
+          upi: true,
+          card: true,
+          netbanking: true,
+          wallet: true,
+        },
+        // Add callback for failed payments
+        "payment.failed": function (response: any) {
+          console.error("Payment failed:", response)
+          showToast("error", `Payment failed: ${response.error.description}`)
+        },
+      }
+
+      const paymentObject = new (window as any).Razorpay(options)
+      paymentObject.on("payment.failed", (response: any) => {
+        showToast("error", `Payment failed: ${response.error.description}`)
+      })
+      paymentObject.open()
+    } catch (error) {
+      console.error("Payment error:", error)
+      showToast(
+        "error",
+        <p>
+          Internal Server Error <br /> Please try again.
+        </p>,
+      )
+    }
+  }
+
   return (
     <FELayout>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+
       <div>
         <section className="w-full py-12 md:py-16 bg-gradient-to-r from-yellow-50 to-emerald-50 relative overflow-hidden">
           <Container className="container px-4 md:px-6">
@@ -282,6 +483,7 @@ export default function StateClosingRanksPage() {
           </Container>
         </section>
       </div>
+      <SignInPopup successCallback={processPayment} />
     </FELayout>
   )
 }

@@ -3,7 +3,7 @@ import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { Shield } from "lucide-react"
 import React from "react"
 
-const PRICE = 1
+const PRICE = 49
 
 function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
   const { getSearchParams } = useInternalSearchParams()

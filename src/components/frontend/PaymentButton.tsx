@@ -91,7 +91,8 @@ const PaymentButton = ({
           color: "#3399cc",
         },
         method: {
-          upi_intent: true,
+          upi_intent: false,
+          upi: false,
           card: true,
           netbanking: true,
           wallet: true,

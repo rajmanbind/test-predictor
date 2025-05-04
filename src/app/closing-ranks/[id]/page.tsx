@@ -44,8 +44,6 @@ export default function StateClosingRanksPage() {
       method: "GET",
     })
 
-    console.log("user", user)
-
     const [dataRes, configRes] = await Promise.all([
       fetchData({
         url: "/api/closing_ranks",
@@ -254,8 +252,6 @@ export default function StateClosingRanksPage() {
     setCurrentRow(rowData)
     setCurrentAmount(amount)
 
-    console.log("row", rowData)
-
     const user = await fetchData({
       url: "/api/user",
       method: "GET",
@@ -334,8 +330,6 @@ export default function StateClosingRanksPage() {
                 type: "college",
               }
 
-              console.log("payload", payload)
-
               const res = await fetchData({
                 url: "/api/purchase/plans_or_colleges",
                 method: "POST",
@@ -343,8 +337,6 @@ export default function StateClosingRanksPage() {
               })
 
               if (res?.success) {
-                console.log("res", res)
-
                 setUpdateUI((prev) => !prev)
               }
             } else {

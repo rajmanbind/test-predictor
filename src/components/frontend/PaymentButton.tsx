@@ -87,11 +87,6 @@ const PaymentButton = ({
             showToast("error", "Payment verification failed!")
           }
         },
-        prefill: {
-          name: "Test User",
-          email: "test@example.com",
-          contact: "9999999999",
-        },
         theme: {
           color: "#3399cc",
         },

@@ -26,7 +26,7 @@ export interface TableColumn {
 }
 
 const headerTHClass =
-  "border-b border-color-border px-4 py-3 text-left text-color-black_white font-medium text-sm"
+  "border-b border-color-border px-4 py-3 text-left text-white font-medium text-sm"
 
 export function Table({
   selectable,
@@ -155,7 +155,7 @@ export function Table({
                     </td>
                   )}
                   {!hideSLNo && (
-                    <td className="p-3 text-left text-sm">
+                    <td className="p-3 text-left text-[13px] bg-color-white_black">
                       <div>{getRowSLNumber(rowIndex)}</div>
                     </td>
                   )}
@@ -163,13 +163,13 @@ export function Table({
                     <td
                       key={colIndex}
                       className={cn(
-                        "px-4 py-3 text-left text-sm",
+                        "px-4 py-3 text-left text-[13px] bg-color-white_black",
                         column?.overrideInternalClick && "cursor-auto",
                         column?.tableKey === "action" &&
                           "tableActionStatic px-0 py-0",
 
                         column?.tableKey === "instituteName" &&
-                          "tableStaticLeft bg-color-form-background dark:bg-transparent",
+                          "tableStaticLeft bg-color-white_black",
                       )}
                       onClick={(e) =>
                         column?.overrideInternalClick
@@ -177,7 +177,7 @@ export function Table({
                           : null
                       }
                     >
-                      <div className="min-h-8 flex items-center text-sm">
+                      <div className="min-h-8 flex items-center text-[13px]">
                         {column?.renderer
                           ? column?.renderer({
                               rowData: row,

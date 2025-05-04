@@ -2,7 +2,7 @@ import { CoreLayout } from "@/components/common/CoreLayout"
 import { cn } from "@/utils/utils"
 import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
-import { Roboto } from "next/font/google"
+import { Poppins, Roboto } from "next/font/google"
 import { Suspense } from "react"
 
 import "../styles/colors.css"
@@ -13,6 +13,12 @@ const roboto = Roboto({
   subsets: ["latin"],
   weight: ["100", "300", "400", "500", "700", "900"],
   variable: "--font-roboto",
+})
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
 })
 
 export const metadata: Metadata = {
@@ -27,7 +33,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={cn(roboto.variable, "antialiased bg-color-background")}>
+      <body
+        className={cn(
+          roboto.variable,
+          poppins.variable,
+          "antialiased bg-color-background",
+        )}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
         {
           msg: "Username or Password is wrong",
           isAuthenticated: false,
+          error,
         },
         { status: 400 },
       )

@@ -37,20 +37,11 @@ export async function POST(request: NextRequest) {
     // Prepare data: ensure value is always an array
     const valueArray = Array.isArray(value) ? value : [value]
 
-    // Log the data being sent to Supabase
-    console.log("Calling RPC:", fn, {
-      phone: phone_no,
-      [arg]: valueArray,
-    })
-
     // Call the Supabase function (RPC)
     const { error, data } = await supabase.rpc(fn, {
       phone: phone_no,
       [arg]: valueArray,
     })
-
-    // Log the response from Supabase
-    console.log("Supabase Response:", error, data)
 
     // Handle error if Supabase returns one
     if (error) {

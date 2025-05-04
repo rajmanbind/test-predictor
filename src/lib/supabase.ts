@@ -1,5 +1,5 @@
 import { createServerClient } from "@supabase/ssr"
-import { cookies as nextCookies } from "next/headers"
+import { cookies, cookies as nextCookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
 
 // === USER CLIENT ===
@@ -28,8 +28,29 @@ export function createUserSupabaseClient() {
 }
 
 // === ADMIN CLIENT ===
+export function createAdminSupabaseClientMiddleware(request: NextRequest) {
+  return createServerClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!,
+    {
+      cookieOptions: {
+        name: "sb-admin-auth-token",
+      },
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll() {
+          // Do nothing in middleware — cannot set cookies here
+        },
+      },
+    },
+  )
+}
+
+// === ADMIN CLIENT ===
 export function createAdminSupabaseClient() {
-  const cookieStore = nextCookies()
+  const cookieStore = cookies() // from `next/headers`
 
   return createServerClient(
     process.env.SUPABASE_URL!,
@@ -43,9 +64,9 @@ export function createAdminSupabaseClient() {
           return cookieStore.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          )
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options)
+          })
         },
       },
     },
@@ -62,8 +83,8 @@ export async function getUserSession() {
 }
 
 // === GET ADMIN SESSION ===
-export async function getAdminSession() {
-  const supabase = createAdminSupabaseClient()
+export async function getAdminSession(request: NextRequest) {
+  const supabase = createAdminSupabaseClientMiddleware(request)
   const {
     data: { user },
   } = await supabase.auth.getUser()

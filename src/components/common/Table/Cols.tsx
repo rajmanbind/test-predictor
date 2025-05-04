@@ -1,5 +1,5 @@
 import { TableColumn } from "@/components/common/Table/Table"
-import { Pencil, Trash2 } from "lucide-react"
+import { Copy, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
 
 import { isEmpty } from "../../../utils/utils"
@@ -11,7 +11,11 @@ interface adminMode {
   setSingleDelete: React.Dispatch<React.SetStateAction<any[]>>
 }
 
-export function generateCols(configYear: any[], adminMode?: adminMode) {
+export function generateCols(
+  configYear: any[],
+  adminMode?: adminMode,
+  showToast?: any,
+) {
   let currentYear = new Date().getFullYear()
   let previousYear = currentYear - 1
 
@@ -179,6 +183,13 @@ export function generateCols(configYear: any[], adminMode?: adminMode) {
         if (rowData?.new_id && rowData?.prev_id) {
           return (
             <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
+              <Copy
+                size={20}
+                className="text-color-text cursor-pointer"
+                onClick={() => {
+                  setRowData(rowData)
+                }}
+              />
               <Pencil
                 size={20}
                 className="text-color-text cursor-pointer"
@@ -203,6 +214,21 @@ export function generateCols(configYear: any[], adminMode?: adminMode) {
 
         return (
           <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
+            <Copy
+              size={20}
+              className="text-color-text cursor-pointer"
+              onClick={() => {
+                let link = ""
+                if (rowData?.course === "MBBS") {
+                  link = `https://www.collegecutoff.net/ug/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}`
+                } else {
+                  link = `https://www.collegecutoff.net/pg/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}`
+                }
+                copyToClipboard(link)
+                showToast?.("success", "Copied to clipboard")
+              }}
+            />
+
             <Link href={`/admin/edit-data/${id}`} target="_blank">
               <Pencil
                 size={20}
@@ -226,6 +252,38 @@ export function generateCols(configYear: any[], adminMode?: adminMode) {
   }
 
   return columns
+}
+
+function copyToClipboard(text: string) {
+  if (navigator.clipboard && window.isSecureContext) {
+    // Modern clipboard API
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log("Copied to clipboard!")
+      })
+      .catch((err) => {
+        console.error("Clipboard copy failed:", err)
+      })
+  } else {
+    // Fallback for older browsers
+    const textArea = document.createElement("textarea")
+    textArea.value = text
+    textArea.style.position = "fixed" // Prevent scrolling to bottom
+    textArea.style.top = "-1000px"
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+
+    try {
+      const successful = document.execCommand("copy")
+      console.log(successful ? "Copied to clipboard!" : "Copy failed")
+    } catch (err) {
+      console.error("Fallback copy failed:", err)
+    }
+
+    document.body.removeChild(textArea)
+  }
 }
 
 export function generateColsPublic(configYear: any[], paid = false) {

@@ -11,7 +11,7 @@ export function Heading({
   return (
     <h2
       className={cn(
-        "text-[18px] text-color-text font-semibold pc:text-[24px] pb-2",
+        "text-[18px] text-color-text font-semibold pc:text-[24px] pb-2 title",
         className,
       )}
     >

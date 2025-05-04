@@ -10,9 +10,9 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
 
   return (
     <div className="w-full max-w-md overflow-hidden rounded-xl bg-[#fff] dark:bg-[#000] shadow-xl">
-      <div className="bg-color-accent p-6 text-white">
+      <div className="bg-[#0054A4] p-6 text-white">
         <h1 className="text-center text-xl font-bold leading-tight text-white">
-          Please make payment to view Cut-Off of:
+          Please Make Payment To View Cut-Off of:
           <br />
           {getSearchParams("college")}
         </h1>

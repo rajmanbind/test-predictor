@@ -10,7 +10,7 @@ import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
-import { getLocalStorageItem, isEmpty } from "@/utils/utils"
+import { cn, getLocalStorageItem, isEmpty } from "@/utils/utils"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -112,13 +112,24 @@ export default function CutOffPage() {
 
   return (
     <FELayout>
-      <Container className="pb-10 pt-1 pc:pt-10">
-        <div className="pb-4 pc:pb-8 flex justify-between">
+      <Container className="pb-10 pt-1 pc:pt-10 bg-color-background">
+        <div className="pb-4 pc:pb-8 flex justify-between flex-col pc:flex-row">
           <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">
-            NEET Collage Cutoff
+            {getSearchParams("college")?.trim()}
           </h2>
 
           <ClosingRankGuide className="max-w-[900px] flex-shrink-0" />
+        </div>
+
+        <div
+          className={cn(
+            "bg-sky-50 border border-sky-200 p-4 rounded-md text-color-text flex gap-2 pc:hidden",
+          )}
+        >
+          <p className="animated-new">New</p>
+          <p className="text-sm text-black">
+            Rotate your phone to landscape mode for better visibility.
+          </p>
         </div>
 
         <Renderer
@@ -181,7 +192,7 @@ function Renderer({
   } else if (rendererStatus === "PAID") {
     return (
       <div
-        className="flex-1 border-color-border pl-2"
+        className="flex-1 border-color-border"
         style={{
           overflowX: "auto",
         }}

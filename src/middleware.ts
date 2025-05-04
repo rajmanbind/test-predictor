@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getAdminSession } from "./lib/supabase"
 
 export async function middleware(request: NextRequest) {
-  const admin = await getAdminSession() // ✅ Only read cookies
+  const admin = await getAdminSession(request)
 
   const { pathname } = request.nextUrl
 

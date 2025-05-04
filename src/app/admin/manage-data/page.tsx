@@ -127,7 +127,7 @@ export default function ManageDataPage() {
 
   return (
     <BELayout className="mb-10 tab:mb-0 pc:max-w-[calc(100vw-213px)] p-0 ml-0 !px-0">
-      <div className="pb-4 pc:pb-8 flex justify-between px-5">
+      <div className="pb-4 pc:pb-8 flex justify-between flex-col pc:flex-row">
         <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">
           Manage Data
         </h2>
@@ -191,12 +191,16 @@ export default function ManageDataPage() {
         </div>
 
         <Table
-          columns={generateCols(configYear, {
-            isAdmin: true,
-            setRowData,
-            setPopupOpen,
-            setSingleDelete,
-          })}
+          columns={generateCols(
+            configYear,
+            {
+              isAdmin: true,
+              setRowData,
+              setPopupOpen,
+              setSingleDelete,
+            },
+            showToast,
+          )}
           data={tableData?.data}
           itemsCountPerPage={tableData?.pageSize}
           selectable

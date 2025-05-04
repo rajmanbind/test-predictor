@@ -7,6 +7,7 @@ export function Button({
   disabled,
   variant,
   type = "button",
+  ...props
 }: {
   children: React.ReactNode
   className?: string
@@ -21,6 +22,7 @@ export function Button({
         type={type}
         disabled={disabled}
         onClick={onClick}
+        {...props}
         className={cn(
           "border border-color-accent-dark text-color-accent-dark hover:bg-color-accent/20 disabled:opacity-50 px-4 py-3 rounded",
           className,
@@ -36,6 +38,7 @@ export function Button({
       type={type}
       disabled={disabled}
       onClick={onClick}
+      {...props}
       className={cn(
         "bg-color-accent hover:bg-color-accent-dark disabled:bg-color-disabled-bg disabled:text-color-disabled-text px-4 py-3 rounded text-white",
         className,

@@ -132,7 +132,7 @@ const PaymentButton = ({
         disabled={loading}
       >
         <span className="mr-2">
-          {loading ? "Processing..." : `Pay ₹${amount} Now`}
+          {loading ? "Processing..." : `Unlock Cut-Off Now @ ₹${amount}`}
         </span>
         <ArrowRight className="h-5 w-5" />
       </Button>

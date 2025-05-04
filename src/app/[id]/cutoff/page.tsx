@@ -126,8 +126,8 @@ export default function CutOffPage() {
             "bg-sky-50 border border-sky-200 p-4 rounded-md text-color-text flex gap-2 pc:hidden overflow-hidden",
           )}
         >
-          <p className="animated-new">
-            Rotate your Phone to Landscape or Horizontal For Batter VIEW.
+          <p className="animated-new text-center">
+            Rotate your Phone to Landscape or Horizontal For Better view.
           </p>
         </div>
 
@@ -156,6 +156,8 @@ function Renderer({
 }) {
   const { getSearchParams } = useInternalSearchParams()
 
+  const params = useParams()
+
   if (rendererStatus === "NOT_FOUND") {
     return (
       <div className="grid place-items-center min-h-[240px] w-full px-4">
@@ -168,7 +170,8 @@ function Renderer({
           </div>
           <div className="hidden tab:block">
             <p className="text-xl tab:text-2xl pc:text-3xl">
-              No Data found. for: {getSearchParams("college")}
+              No Data found. for: {getSearchParams("college")}{" "}
+              {params?.id?.toString()?.toUpperCase()}
             </p>
 
             <Link href="/" className="w-full mt-6 block">

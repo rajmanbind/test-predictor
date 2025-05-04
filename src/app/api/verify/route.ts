@@ -3,23 +3,14 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    // Get Razorpay signature from the request headers
-    const razorpaySignature = request.headers.get("X-Razorpay-Signature")
+    const { orderId, paymentId, signature } = await request.json()
 
-    // Get payload from the request
-    const body = await request.text()
-
-    // The secret key from Razorpay Webhook settings
-    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET // Use your actual Razorpay secret key here
-
-    // Generate the HMAC SHA256 signature
     const generatedSignature = crypto
-      .createHmac("sha256", webhookSecret!)
-      .update(body)
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+      .update(`${orderId}|${paymentId}`)
       .digest("hex")
 
-    // Compare the generated signature with the one from Razorpay
-    if (generatedSignature === razorpaySignature) {
+    if (generatedSignature === signature) {
       return NextResponse.json(
         { message: "Payment verified successfully", isOk: true },
         { status: 200 },

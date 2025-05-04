@@ -42,6 +42,8 @@ export async function GET(request: NextRequest) {
 
   if (course) {
     query = query.eq("course", course)
+  } else {
+    query = query.neq("course", "MBBS")
   }
 
   const { data, error } = await query.order("created_at", { ascending: false })

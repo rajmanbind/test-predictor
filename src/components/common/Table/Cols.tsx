@@ -30,8 +30,6 @@ export function generateCols(
       tableKey: "instituteName",
       width: "150px",
     },
-    { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-    { title: "State", tableKey: "state", width: "150px" },
     { title: "Course", tableKey: "course" },
     { title: "Quota", tableKey: "quota", width: "150px" },
     {
@@ -48,62 +46,61 @@ export function generateCols(
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Round ${currentYear} Round 1`}
+          data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 1`}
         >
-          CR {currentYear} [R1]
+          Closing Rank/Marks {currentYear} [R1]
         </div>
       ),
       tableKey: `closingRankR1_new`,
-      width: "130px",
+      width: "185px",
     },
     {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+          data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 2`}
         >
-          CR {currentYear} [R2]
+          Closing Rank/Marks {currentYear} [R2]
         </div>
       ),
       tableKey: `closingRankR2_new`,
-      width: "130px",
+      width: "185px",
     },
     {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+          data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 3`}
         >
-          CR {currentYear} [R3]
+          Closing Rank/Marks {currentYear} [R3]
         </div>
       ),
       tableKey: `closingRankR3_new`,
-      width: "130px",
+      width: "185px",
     },
     {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Stray Round ${currentYear}`}
+          data-tooltip-content={`Stray Round Rank/Marks ${currentYear}`}
         >
-          SR {currentYear}
+          Stray Round Rank/Marks {currentYear}
         </div>
       ),
       tableKey: `strayRound_new`,
-      width: "110px",
+      width: "185px",
     },
     {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Last Stray Round ${currentYear}`}
+          data-tooltip-content={`Last Stray Round Rank/Marks ${currentYear}`}
         >
-          Last <br />
-          SR {currentYear}
+          Last Stray Round Rank/Marks {currentYear}
         </div>
       ),
       tableKey: `lastStrayRound_new`,
-      width: "110px",
+      width: "185px",
     },
     // {
     //   title: (
@@ -167,7 +164,8 @@ export function generateCols(
     //   tableKey: `lastStrayRound_old`,
     //   width: "110px",
     // },
-
+    { title: "Institute Type", tableKey: "instituteType", width: "150px" },
+    { title: "State", tableKey: "state", width: "150px" },
     { title: "Fees", tableKey: "fees", width: "100px" },
   ]
 
@@ -301,8 +299,6 @@ export function generateColsPublic(configYear: any[], paid = false) {
       tableKey: "instituteName",
       width: "150px",
     },
-    { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-    { title: "State", tableKey: "state", width: "150px" },
     { title: "Course", tableKey: "course" },
     { title: "Quota", tableKey: "quota", width: "150px" },
     {
@@ -319,13 +315,13 @@ export function generateColsPublic(configYear: any[], paid = false) {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Round ${currentYear} Round 1`}
+          data-tooltip-content={`Closing Round Rank/Marks ${currentYear} Round 1`}
         >
-          CR {currentYear} [R1]
+          Closing Round Rank/Marks {currentYear} [R1]
         </div>
       ),
       tableKey: `closingRankR1_new`,
-      width: "130px",
+      width: "190px",
     },
     // {
     //   title: (
@@ -448,54 +444,57 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+            data-tooltip-content={`Closing Round Rank/Marks ${currentYear} Round 2`}
           >
-            CR {currentYear} [R2]
+            Closing Round Rank/Marks {currentYear} [R2]
           </div>
         ),
         tableKey: `closingRankR2_new`,
-        width: "130px",
+        width: "190px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+            data-tooltip-content={`Closing Round Rank/Marks ${currentYear} Round 3`}
           >
-            CR {currentYear} [R3]
+            Closing Round Rank/Marks {currentYear} [R3]
           </div>
         ),
         tableKey: `closingRankR3_new`,
-        width: "130px",
+        width: "190px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${currentYear}`}
+            data-tooltip-content={`Stray Round Rank/Marks ${currentYear}`}
           >
-            SR {currentYear}
+            Stray Round Rank/Marks {currentYear}
           </div>
         ),
         tableKey: `strayRound_new`,
-        width: "110px",
+        width: "190px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round ${currentYear}`}
+            data-tooltip-content={`Last Stray Round Rank/Marks ${currentYear}`}
           >
-            Last <br />
-            SR {currentYear}
+            Last Stray Round Rank/Marks {currentYear}
           </div>
         ),
         tableKey: `lastStrayRound_new`,
-        width: "110px",
+        width: "190px",
       },
     )
 
-    columns.push({ title: "Fees", tableKey: "fees", width: "100px" })
+    columns.push(
+      { title: "Institute Type", tableKey: "instituteType", width: "150px" },
+      { title: "State", tableKey: "state", width: "150px" },
+      { title: "Fees", tableKey: "fees", width: "100px" },
+    )
   }
 
   return columns

@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { Logo } from "../common/Logo"
 import { Container } from "./Container"
 
 export function Footer() {
@@ -9,12 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           <div className="col-span-2 md:col-span-1 space-y-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-yellow-400 to-yellow-600 font-bold text-black shadow-md">
-                Cc
-              </div>
-              <span className="text-xl font-bold text-white">
-                College<span className="text-yellow-500">Cutoff</span>
-              </span>
+              <Logo />
             </div>
             <p className="text-sm text-gray-400">
               Making medical education choices simpler and smarter for NEET

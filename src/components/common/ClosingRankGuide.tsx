@@ -4,14 +4,14 @@ import React, { ReactNode } from "react"
 
 const data = [
   {
-    term: "CR",
-    description: `Refers to Closing Rank — "the rank of the last
+    term: "Closing Rank/ Marks",
+    description: `Closing Rank Refer to — "the rank of the last
                              candidate who secured a seat in a particular medical college
                              under a specific quota".`,
   },
   {
-    term: "SR",
-    description: `Refers to Stray Round.`,
+    term: "SRR/Marks",
+    description: `Refers to Stray Round Rank/Marks.`,
   },
   {
     term: "Allotted Category",

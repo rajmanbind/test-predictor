@@ -118,7 +118,9 @@ export default function CutOffPage() {
             {getSearchParams("college")?.trim()}
           </h2>
 
-          <ClosingRankGuide className="max-w-[900px] flex-shrink-0" />
+          {rendererStatus === "PAID" && (
+            <ClosingRankGuide className="max-w-[900px] flex-shrink-0" />
+          )}
         </div>
 
         <div
@@ -208,7 +210,7 @@ function Renderer({
     )
   } else if (rendererStatus === "NOT_PAID") {
     return (
-      <div className="grid place-items-center min-h-[240px] w-full mt-12 mb-4">
+      <div className="grid place-items-center min-h-[240px] w-full mt-12 mb-4 translate-y-[-120px]">
         <PaymentCard showCutoff={showCutoff} />
       </div>
     )

@@ -9,7 +9,7 @@ function PaymentCard({ showCutoff }: { showCutoff: () => void }) {
   const { getSearchParams } = useInternalSearchParams()
 
   return (
-    <div className="w-full max-w-md overflow-hidden rounded-xl bg-[#fff] dark:bg-[#000] shadow-xl">
+    <div className="w-full pc:max-w-[380px] max-w-[350px] overflow-hidden rounded-xl bg-[#fff] dark:bg-[#000] shadow-xl">
       <div className="bg-[#0054A4] p-6 text-white">
         <h1 className="text-center text-xl font-bold leading-tight text-white">
           Please Make Payment To View Cut-Off of:

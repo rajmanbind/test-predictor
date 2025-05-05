@@ -46,9 +46,9 @@ export function generateCols(
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 1`}
+          data-tooltip-content={`Closing Rank / Marks ${currentYear} Round 1`}
         >
-          Closing Rank/Marks {currentYear} [R1]
+          Closing Rank / Marks {currentYear} [R1]
         </div>
       ),
       tableKey: `closingRankR1_new`,
@@ -58,9 +58,9 @@ export function generateCols(
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 2`}
+          data-tooltip-content={`Closing Rank / Marks ${currentYear} Round 2`}
         >
-          Closing Rank/Marks {currentYear} [R2]
+          Closing Rank / Marks {currentYear} [R2]
         </div>
       ),
       tableKey: `closingRankR2_new`,
@@ -70,9 +70,9 @@ export function generateCols(
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 3`}
+          data-tooltip-content={`Closing Rank / Marks ${currentYear} Round 3`}
         >
-          Closing Rank/Marks {currentYear} [R3]
+          Closing Rank / Marks {currentYear} [R3]
         </div>
       ),
       tableKey: `closingRankR3_new`,
@@ -82,9 +82,9 @@ export function generateCols(
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Stray Round Rank/Marks ${currentYear}`}
+          data-tooltip-content={`Stray Round Rank / Marks ${currentYear}`}
         >
-          Stray Round Rank/Marks {currentYear}
+          Stray Round Rank / Marks {currentYear}
         </div>
       ),
       tableKey: `strayRound_new`,
@@ -94,9 +94,9 @@ export function generateCols(
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Last Stray Round Rank/Marks ${currentYear}`}
+          data-tooltip-content={`Last Stray Round Rank / Marks ${currentYear}`}
         >
-          Last Stray Round Rank/Marks {currentYear}
+          Last Stray Round Rank / Marks {currentYear}
         </div>
       ),
       tableKey: `lastStrayRound_new`,
@@ -315,9 +315,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 1`}
+          data-tooltip-content={`Closing Rank / Marks ${currentYear} Round 1`}
         >
-          Closing Rank/Marks {currentYear} [R1]
+          Closing Rank / Marks {currentYear} [R1]
         </div>
       ),
       tableKey: `closingRankR1_new`,
@@ -444,9 +444,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 2`}
+            data-tooltip-content={`Closing Rank / Marks ${currentYear} Round 2`}
           >
-            Closing Rank/Marks {currentYear} [R2]
+            Closing Rank / Marks {currentYear} [R2]
           </div>
         ),
         tableKey: `closingRankR2_new`,
@@ -456,9 +456,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank/Marks ${currentYear} Round 3`}
+            data-tooltip-content={`Closing Rank / Marks ${currentYear} Round 3`}
           >
-            Closing Rank/Marks {currentYear} [R3]
+            Closing Rank / Marks {currentYear} [R3]
           </div>
         ),
         tableKey: `closingRankR3_new`,
@@ -468,9 +468,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round Rank/Marks ${currentYear}`}
+            data-tooltip-content={`Stray Round Rank / Marks ${currentYear}`}
           >
-            Stray Round Rank/Marks {currentYear}
+            Stray Round Rank / Marks {currentYear}
           </div>
         ),
         tableKey: `strayRound_new`,
@@ -480,9 +480,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round Rank/Marks ${currentYear}`}
+            data-tooltip-content={`Last Stray Round Rank / Marks ${currentYear}`}
           >
-            Last Stray Round Rank/Marks {currentYear}
+            Last Stray Round Rank / Marks {currentYear}
           </div>
         ),
         tableKey: `lastStrayRound_new`,

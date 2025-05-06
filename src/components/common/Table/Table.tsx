@@ -26,7 +26,7 @@ export interface TableColumn {
 }
 
 const headerTHClass =
-  "border-b border-color-border px-4 py-3 text-left text-white font-medium text-sm"
+  "border-b border-color-border px-4 py-3 text-left text-white font-medium text-sm title"
 
 export function Table({
   selectable,

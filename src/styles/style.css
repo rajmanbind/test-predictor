@@ -28,8 +28,12 @@
   }
 }
 
+h1,
+h2,
+h3,
 .title {
-  font-family: var(--font-poppins);
+  font-family: var(--font-poppins) !important;
+  letter-spacing: 0.3px;
 }
 
 .animate-bubble-expand {

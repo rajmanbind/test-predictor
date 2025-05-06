@@ -20,7 +20,7 @@ import Script from "next/script"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
-let yearList: IOption[] = []
+const yearList: IOption[] = []
 const configYearList = years()
 
 for (let i = 0; i < configYearList?.length; i++) {

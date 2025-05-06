@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/common/Button"
 import { Pagination } from "@/components/common/Pagination"
+import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { Table, TableColumn } from "@/components/common/Table/Table"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
@@ -9,20 +10,38 @@ import { FELayout } from "@/components/frontend/FELayout"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
-import { isEmpty, onPageChange } from "@/utils/utils"
+import { IOption } from "@/types/GlobalTypes"
+import { years } from "@/utils/static"
+import { autoComplete, onPageChange } from "@/utils/utils"
 import { ChevronLeft, Info, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import Script from "next/script"
 import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+
+let yearList: IOption[] = []
+const configYearList = years()
+
+for (let i = 0; i < configYearList?.length; i++) {
+  if (new Date().getFullYear() >= parseInt(configYearList?.[i]?.text)) {
+    yearList.push(configYearList?.[i])
+  }
+}
 
 export default function StateClosingRanksPage() {
-  const [configYear, setConfigYear] = useState<any>([])
   const [tableData, setTableData] = useState<any>(null)
 
   const [currentAmount, setCurrentAmount] = useState(0)
   const [currentRow, setCurrentRow] = useState<any>(null)
   const [updateUI, setUpdateUI] = useState(false)
+
+  const [selectedClosingRankYear, setSelectedClosingRankYear] = useState<
+    IOption | undefined
+  >()
+  const [defaultClosingRankValue, setDefaultClosingRankValue] = useState<
+    IOption | undefined
+  >()
 
   const params = useParams()
   const state = decodeURIComponent(params.id as any)
@@ -32,50 +51,49 @@ export default function StateClosingRanksPage() {
 
   const { showToast, appState, setAppState } = useAppState()
 
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm()
+
   useEffect(() => {
     getData()
   }, [updateUI])
 
   async function getData() {
-    const page = Number(getSearchParams("page") || 1)
+    const closingRankYear = await fetchData({
+      url: "/api/admin/configure/get",
+      params: { type: "CLOSING_RANK_YEAR" },
+    })
 
-    const [dataRes, configRes] = await Promise.all([
-      fetchData({
-        url: "/api/closing_ranks",
-        params: {
-          page,
-          size: 20,
-          state,
-        },
-      }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CONFIG_YEAR" },
-      }),
-    ])
-
-    if (dataRes?.success) {
-      setTableData(dataRes?.payload)
+    if (closingRankYear?.success) {
+      setDefaultClosingRankValue({
+        id: closingRankYear?.payload?.data?.[0]?.id,
+        text: closingRankYear?.payload?.data?.[0]?.text,
+      })
     }
 
-    if (configRes?.success) {
-      setConfigYear(
-        configRes?.payload?.data?.[0]?.text
-          ?.split("-")
-          .map((item: string) => item.trim()),
-      )
+    const page = Number(getSearchParams("page") || 1)
+
+    const res = await fetchData({
+      url: "/api/closing_ranks",
+      params: {
+        page,
+        size: 20,
+        state,
+        year:
+          selectedClosingRankYear?.text ||
+          closingRankYear?.payload?.data?.[0]?.text,
+      },
+    })
+
+    if (res?.success) {
+      setTableData(res?.payload)
     }
   }
 
   function generateCols() {
-    let currentYear = new Date().getFullYear()
-    let previousYear = currentYear - 1
-
-    if (!isEmpty(configYear)) {
-      previousYear = configYear[0]
-      currentYear = configYear[1]
-    }
-
     const columns: TableColumn[] = [
       {
         title: "Institute Name",
@@ -100,125 +118,63 @@ export default function StateClosingRanksPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 1`}
+            data-tooltip-content={`Closing Round ${selectedClosingRankYear?.text} Round 1`}
           >
-            CR {currentYear} [R1]
+            CR {selectedClosingRankYear?.text} [R1]
           </div>
         ),
-        tableKey: `closingRankR1_new`,
+        tableKey: `closingRankR1`,
         width: "130px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+            data-tooltip-content={`Closing Round ${selectedClosingRankYear?.text} Round 2`}
           >
-            CR {currentYear} [R2]
+            CR {selectedClosingRankYear?.text} [R2]
           </div>
         ),
-        tableKey: `closingRankR2_new`,
+        tableKey: `closingRankR2`,
         width: "130px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+            data-tooltip-content={`Closing Round ${selectedClosingRankYear?.text} Round 3`}
           >
-            CR {currentYear} [R3]
+            CR {selectedClosingRankYear?.text} [R3]
           </div>
         ),
-        tableKey: `closingRankR3_new`,
+        tableKey: `closingRankR3`,
         width: "130px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${currentYear}`}
+            data-tooltip-content={`Stray Round ${selectedClosingRankYear?.text}`}
           >
-            SR {currentYear}
+            SR {selectedClosingRankYear?.text}
           </div>
         ),
-        tableKey: `strayRound_new`,
+        tableKey: `strayRound`,
         width: "110px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round ${currentYear}`}
+            data-tooltip-content={`Last Stray Round ${selectedClosingRankYear?.text}`}
           >
             Last <br />
-            SR {currentYear}
+            SR {selectedClosingRankYear?.text}
           </div>
         ),
-        tableKey: `lastStrayRound_new`,
+        tableKey: `lastStrayRound`,
         width: "110px",
       },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-      //     >
-      //       CR {previousYear} [R1]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR1_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-      //     >
-      //       CR {previousYear} [R2]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR2_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-      //     >
-      //       CR {previousYear} [R3]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR3_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Stray Round ${previousYear}`}
-      //     >
-      //       SR {previousYear}
-      //     </div>
-      //   ),
-      //   tableKey: `strayRound_old`,
-      //   wid
-      // th: "110px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Last Stray Round ${previousYear}`}
-      //     >
-      //       Last <br />
-      //       SR {previousYear}
-      //     </div>
-      //   ),
-      //   tableKey: `lastStrayRound_old`,
-      //   width: "110px",
-      // },
       { title: "Fees", tableKey: "fees", width: "100px" },
       {
         title: "Buy Now",
@@ -295,6 +251,8 @@ export default function StateClosingRanksPage() {
             })
             const verifyData = await verifyResponse.json()
 
+            console.log("Verification response:", verifyData)
+
             if (verifyData.isOk) {
               showToast(
                 "success",
@@ -308,15 +266,10 @@ export default function StateClosingRanksPage() {
               const phone_no = "+91-7903924731"
 
               const value = []
-              const new_id = rowData?.new_id || currentRow?.new_id
-              const prev_id = rowData?.prev_id || currentRow?.prev_id
+              const id = rowData?.id || currentRow?.id
 
-              if (new_id) {
-                value.push(new_id)
-              }
-
-              if (prev_id) {
-                value.push(prev_id)
+              if (id) {
+                value.push(id)
               }
 
               const payload = {
@@ -389,7 +342,27 @@ export default function StateClosingRanksPage() {
               Back to All States
             </Link>
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <SearchAndSelect
+              name="closingRankYear"
+              placeholder="Select Year"
+              value={selectedClosingRankYear}
+              defaultOption={defaultClosingRankValue}
+              onChange={({ selectedValue }) => {
+                setSelectedClosingRankYear(selectedValue)
+                setUpdateUI((prev) => !prev)
+              }}
+              control={control}
+              setValue={setValue}
+              options={yearList}
+              debounceDelay={0}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, yearList, setOptions)
+              }
+              wrapperClass="max-w-[150px]"
+              errors={errors}
+            />
+
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-black">
                   {state} Medical Colleges
@@ -439,6 +412,7 @@ export default function StateClosingRanksPage() {
                   {
                     size: 20,
                     state,
+                    year: selectedClosingRankYear?.text,
                   },
                 )
               }}

@@ -36,16 +36,9 @@ export function NavbarItem({
   className?: string
 }) {
   return (
-    <div
-      className={cn("text-color-text cursor-default", className)}
-      data-tooltip-id="tooltip"
-      data-tooltip-content={`Coming Soon 🎉`}
-    >
+    <Link href={href} className={cn("text-color-text", className)}>
       {title}
-    </div>
-    // <Link href={href} className={cn("text-color-text", className)}>
-    //   {title}
-    // </Link>
+    </Link>
   )
 }
 
@@ -93,11 +86,7 @@ export function Navbar() {
           </nav>
         </div>
 
-        <div
-          // className="pc:w-[400px] tab:w-[200px] w-[160px] h-[70px] flex items-center justify-between relative pc:px-8"
-
-          className="pc:w-[400px] h-[70px] flex items-center justify-between relative px-2 pc:px-8"
-        >
+        <div className="pc:w-[400px] tab:w-[200px] w-[160px] h-[70px] flex items-center justify-between relative pc:px-8">
           <div
             className={cn(
               "absolute top-0 left-0 w-full h-full bg-gradient-to-t from-slate-950 to-slate-800 skew-x-[-10deg] -z-10 hidden pc:block",
@@ -108,10 +97,6 @@ export function Navbar() {
             <ThemeSwitcher />
           </div>
 
-          {/* 
-          
-          // UNHIDE WHEN LOGIN IS READY
-          
           {appState?.user ? (
             <div
               className="bg-color-accent size-10 grid place-items-center rounded-full relative cursor-pointer"
@@ -144,7 +129,7 @@ export function Navbar() {
                 ? "Admin Panel"
                 : "Sign in / Sign up"}
             </Button>
-          )} */}
+          )}
         </div>
       </div>
     </Container>

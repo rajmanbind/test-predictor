@@ -69,9 +69,9 @@ export const categories = [
 ]
 
 export const instituteTypes = [
-  { id: 0, text: "Deemed (All India / MCC)" },
-  { id: 1, text: "Private (State University)" },
-  { id: 2, text: "State Deemed University" },
+  { id: 0, text: "DEEMED MC" },
+  { id: 1, text: "PRIVATE MC" },
+  { id: 2, text: "PRIVATE UNIVERSITY MC" },
 ]
 
 export function years(): IOption[] {

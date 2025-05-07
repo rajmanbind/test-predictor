@@ -286,12 +286,17 @@ function copyToClipboard(text: string) {
 
 export function generateColsPublic(
   configYear: any[],
-  details: { paid?: boolean; course_ug_pg?: string },
+  details?: { paid?: boolean; course_ug_pg?: string },
 ) {
   let currentYear = new Date().getFullYear()
   let previousYear = currentYear - 1
 
-  const { paid, course_ug_pg } = details
+  let paid, course_ug_pg
+
+  if (details) {
+    paid = details?.paid
+    course_ug_pg = details?.course_ug_pg
+  }
 
   const percentile_Marks = course_ug_pg === "ug" ? "Marks" : "Percentile"
 

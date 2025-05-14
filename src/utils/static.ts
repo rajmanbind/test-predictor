@@ -53,6 +53,11 @@ export const courses = [
   { id: 4, text: "BDS" },
 ]
 
+export const courseType = [
+  { id: 0, text: "UG" },
+  { id: 1, text: "PG" },
+]
+
 export const categories = [
   { id: 0, text: "General" },
   { id: 1, text: "General-EWS" },
@@ -198,3 +203,4 @@ export const quotas = [
     text: "JIPMER - Pondicherry Domicile",
   },
 ]
+

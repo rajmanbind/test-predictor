@@ -8,7 +8,7 @@ import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
-import { instituteTypes, states, years } from "@/utils/static"
+import { courseType, instituteTypes, states, years } from "@/utils/static"
 import {
   autoComplete,
   clearReactHookFormValueAndStates,
@@ -18,7 +18,6 @@ import {
 } from "@/utils/utils"
 import { Delete, Save } from "lucide-react"
 import { useParams } from "next/navigation"
-import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -29,6 +28,7 @@ interface IFormData {
   instituteType?: IOption
   state?: IOption
   courses?: IOption
+  courseType?: IOption
   quotas?: IOption
   categories?: IOption
   fees?: number | string
@@ -109,6 +109,10 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
         text: data?.course,
         id: data?.course,
       },
+      courseType: {
+        text: data?.courseType,
+        id: data?.courseType,
+      },
       quotas: {
         text: data?.quota,
         id: data?.quota,
@@ -143,6 +147,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       instituteType: formData?.instituteType?.text,
       state: formData?.state?.text,
       course: formData?.courses?.text,
+      courseType: formData?.courseType?.text,
       quota: formData?.quotas?.text,
       category: formData?.categories?.text,
       fees: formData?.fees,
@@ -184,6 +189,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
         "instituteType",
         "state",
         "courses",
+        "courseType",
         "quotas",
         "categories",
         "fees",
@@ -296,6 +302,26 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               defaultOption={defaultValues?.courses}
               searchAPI={(text, setOptions) =>
                 autoComplete(text, coursesList, setOptions)
+              }
+              errors={errors}
+            />
+
+            <SearchAndSelect
+              name="courseType"
+              label="Course Type"
+              placeholder="Search and Select"
+              value={formData?.courseType}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+              }}
+              control={control}
+              setValue={setValue}
+              required
+              options={courseType}
+              debounceDelay={0}
+              defaultOption={defaultValues?.courseType}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, courseType, setOptions)
               }
               errors={errors}
             />
@@ -431,3 +457,4 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     </div>
   )
 }
+

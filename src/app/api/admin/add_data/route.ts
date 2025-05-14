@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       .eq("course", course)
       .eq("quota", quota)
       .eq("category", category)
-      .eq("year", Number(year)) // Ensure year is a number if stored as such
+      .eq("year", Number(year))
 
     if (checkError) {
       console.error("Check query error:", checkError)
@@ -74,3 +74,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+

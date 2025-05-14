@@ -135,7 +135,10 @@ export default function CutOffPage() {
 
         <Renderer
           rendererStatus={rendererStatus}
-          generateCols={generateColsPublic(configYear, true) as any}
+          generateCols={generateColsPublic(configYear, {
+            paid: true,
+            course_ug_pg: params?.id?.toString(),
+          } as any)}
           tableData={tableData}
           showCutoff={showCutoff}
         />

@@ -53,6 +53,11 @@ export const courses = [
   { id: 4, text: "BDS" },
 ]
 
+export const courseType = [
+  { id: 0, text: "UG" },
+  { id: 1, text: "PG" },
+]
+
 export const categories = [
   { id: 0, text: "General" },
   { id: 1, text: "General-EWS" },
@@ -69,9 +74,9 @@ export const categories = [
 ]
 
 export const instituteTypes = [
-  { id: 0, text: "Deemed (All India / MCC)" },
-  { id: 1, text: "Private (State University)" },
-  { id: 2, text: "State Deemed University" },
+  { id: 0, text: "DEEMED MC" },
+  { id: 1, text: "PRIVATE MC" },
+  { id: 2, text: "PRIVATE UNIVERSITY MC" },
 ]
 
 export function years(): IOption[] {
@@ -198,3 +203,4 @@ export const quotas = [
     text: "JIPMER - Pondicherry Domicile",
   },
 ]
+

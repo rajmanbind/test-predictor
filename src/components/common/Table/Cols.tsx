@@ -284,9 +284,21 @@ function copyToClipboard(text: string) {
   }
 }
 
-export function generateColsPublic(configYear: any[], paid = false) {
+export function generateColsPublic(
+  configYear: any[],
+  details?: { paid?: boolean; course_ug_pg?: string },
+) {
   let currentYear = new Date().getFullYear()
   let previousYear = currentYear - 1
+
+  let paid, course_ug_pg
+
+  if (details) {
+    paid = details?.paid
+    course_ug_pg = details?.course_ug_pg
+  }
+
+  const percentile_Marks = course_ug_pg === "ug" ? "Marks" : "Percentile"
 
   if (!isEmpty(configYear)) {
     previousYear = configYear[0]
@@ -315,9 +327,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
       title: (
         <div
           data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank / Marks Round 1 ${currentYear}`}
+          data-tooltip-content={`Closing Rank / ${percentile_Marks} Round 1 ${currentYear}`}
         >
-          Closing Rank / Marks [R1] {currentYear}
+          {`Closing Rank / ${percentile_Marks} [R1] ${currentYear}`}
         </div>
       ),
       tableKey: `closingRankR1_new`,
@@ -444,9 +456,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank / Marks Round 2 ${currentYear}`}
+            data-tooltip-content={`Closing Rank / ${percentile_Marks} Round 2 ${currentYear}`}
           >
-            Closing Rank / Marks [R2] {currentYear}
+            {`Closing Rank / ${percentile_Marks} [R2] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR2_new`,
@@ -456,9 +468,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank / Marks Round 3 ${currentYear}`}
+            data-tooltip-content={`Closing Rank / ${percentile_Marks} Round 3 ${currentYear}`}
           >
-            Closing Rank / Marks [R3] {currentYear}
+            {`Closing Rank / ${percentile_Marks} [R3] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR3_new`,
@@ -468,9 +480,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round Rank / Marks ${currentYear}`}
+            data-tooltip-content={`Stray Round Rank / ${percentile_Marks} ${currentYear}`}
           >
-            Stray Round Rank / Marks {currentYear}
+            {`Stray Round Rank / ${percentile_Marks} ${currentYear}`}
           </div>
         ),
         tableKey: `strayRound_new`,
@@ -480,9 +492,9 @@ export function generateColsPublic(configYear: any[], paid = false) {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round Rank / Marks ${currentYear}`}
+            data-tooltip-content={`Last Stray Round Rank / ${percentile_Marks} ${currentYear}`}
           >
-            Last Stray Round Rank / Marks {currentYear}
+            Last {`Stray Round Rank / ${percentile_Marks} ${currentYear}`}
           </div>
         ),
         tableKey: `lastStrayRound_new`,

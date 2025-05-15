@@ -19,6 +19,7 @@ export function FELayout({ children }: { children: React.ReactNode }) {
     const res = await fetchData({
       url: "/api/user",
       noToast: true,
+      noLoading: true,
     })
 
     if (res?.success) {
@@ -38,9 +39,10 @@ export function FELayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main>
+    <main className="min-h-screen flex flex-col">
       <Navbar />
-      {children}
+
+      <div className="flex-grow">{children}</div>
 
       <FloatingWhatsAppButton />
 
@@ -50,3 +52,4 @@ export function FELayout({ children }: { children: React.ReactNode }) {
     </main>
   )
 }
+

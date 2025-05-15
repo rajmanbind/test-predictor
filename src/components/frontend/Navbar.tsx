@@ -76,7 +76,7 @@ export function Navbar() {
   }
 
   return (
-    <Container>
+    <Container className="flex-shrink-0 w-full">
       <div className="flex items-center justify-between h-[70px]">
         <div className="flex items-center tab:gap-16 gap-2 px-4">
           {/* <Menu size={28} className="text-color-text pc:hidden" /> */}
@@ -150,3 +150,4 @@ export function Navbar() {
     </Container>
   )
 }
+

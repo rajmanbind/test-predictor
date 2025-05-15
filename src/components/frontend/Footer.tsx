@@ -1,3 +1,4 @@
+import { LocateIcon, MapPin } from "lucide-react"
 import Link from "next/link"
 
 import { Logo } from "../common/Logo"
@@ -37,7 +38,18 @@ export function Footer() {
             </div>
             <p className="text-sm text-gray-400">
               Making medical education choices simpler and smarter for NEET
-              aspirants across India.
+              aspirants across India. <br />{" "}
+              <p className="text-xs mt-1">
+                (Associated with{" "}
+                <Link
+                  href="https://careeredwise.com"
+                  target="_blank"
+                  className="underline hover:text-white"
+                >
+                  Career Edwise
+                </Link>{" "}
+                )
+              </p>
             </p>
           </div>
           <div className="space-y-4">
@@ -118,6 +130,10 @@ export function Footer() {
                 <a href="tel:+919028009835" className="text-gray-400">
                   +91 9028009835
                 </a>
+              </li>
+              <li className="flex items-start gap-2 text-gray-400">
+                <MapPin className="h-5 w-5 mt-0.5 text-gray-400 flex-shrink-0" />
+                302, Pyramid Axis, Baner, 411045, Pune Maharashtra
               </li>
             </ul>
           </div>

@@ -59,7 +59,7 @@ export function Navbar() {
 
   async function handleLogout() {
     const res = await fetchData({
-      url: "/api/admin/logout",
+      url: "/api/user/logout",
     })
 
     if (res?.success) {
@@ -135,3 +135,4 @@ export function Navbar() {
     </Container>
   )
 }
+

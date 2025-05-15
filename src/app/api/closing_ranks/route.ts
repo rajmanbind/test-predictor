@@ -1,4 +1,7 @@
-import { createAdminSupabaseClient } from "@/lib/supabase"
+import {
+  createAdminSupabaseClient,
+  createUserSupabaseClient,
+} from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -33,6 +36,7 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminSupabaseClient()
+  const supabaseUser = createUserSupabaseClient()
 
   // Calculate range for pagination
   const from = (page - 1) * pageSize
@@ -52,7 +56,15 @@ export async function GET(request: NextRequest) {
 
   const { data, error, count } = await query
 
-  const hiddenData = data?.map((item) => {
+  if (error) {
+    console.error("Supabase error:", error.message)
+    return NextResponse.json(
+      { error: "Failed to fetch data", details: error.message },
+      { status: 500 },
+    )
+  }
+
+  let hiddenData = data?.map((item) => {
     return {
       ...item,
       closingRankR2: "xxx",
@@ -63,12 +75,42 @@ export async function GET(request: NextRequest) {
     }
   })
 
-  if (error) {
-    console.error("Supabase error:", error.message)
-    return NextResponse.json(
-      { error: "Failed to fetch data", details: error.message },
-      { status: 500 },
-    )
+  const {
+    data: { user },
+  } = await supabaseUser.auth.getUser()
+
+  if (user) {
+    const { data: userPurchases, error: purchasesError } = await supabaseUser
+      .from("purchase")
+      .select(
+        `
+      *,
+      college_table:rowId (*)
+    `,
+      )
+      .eq("phone", user.phone)
+
+    if (purchasesError) {
+      console.error("Supabase error:", purchasesError.message)
+      return NextResponse.json(
+        {
+          error: "Failed to fetch user purchases",
+          details: purchasesError.message,
+        },
+        { status: 500 },
+      )
+    }
+
+    if (userPurchases && userPurchases?.length > 0 && hiddenData?.length > 0) {
+      hiddenData = hiddenData?.map((college) => {
+        const matchingPurchase = userPurchases.find(
+          (p) => p.rowId === college.id,
+        )
+        return matchingPurchase
+          ? { ...matchingPurchase.college_table, purchased: true }
+          : college
+      })
+    }
   }
 
   // Calculate pagination metadata
@@ -83,3 +125,4 @@ export async function GET(request: NextRequest) {
     totalPages,
   })
 }
+

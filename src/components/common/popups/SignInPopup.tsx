@@ -27,9 +27,11 @@ type CountryCode = {
 export function SignInPopup({
   successCallback,
   errorCallback,
+  noRedirect,
 }: {
   successCallback?: any
   errorCallback?: any
+  noRedirect?: boolean
 }) {
   const { appState, setAppState } = useAppState()
 
@@ -187,7 +189,9 @@ export function SignInPopup({
       if (typeof successCallback === "function") {
         successCallback?.()
       } else {
-        router.replace("/closing-ranks")
+        if (!noRedirect) {
+          router.replace("/closing-ranks")
+        }
       }
     }
   }
@@ -507,3 +511,4 @@ export function SignInPopup({
     </div>
   )
 }
+

@@ -7,6 +7,7 @@ import {
   Database,
   Home,
   PlusSquare,
+  ReceiptIndianRupee,
   Settings2,
   Trash2,
 } from "lucide-react"
@@ -44,6 +45,11 @@ export const sidebarMenus = [
     title: "Configure Dropdowns",
     link: "/admin/configure",
   },
+  {
+    icon: <ReceiptIndianRupee />,
+    title: "Configure Prices",
+    link: "/admin/configure/prices",
+  },
 ]
 
 export function Sidebar({ className }: { className?: string }) {
@@ -79,3 +85,4 @@ export function Sidebar({ className }: { className?: string }) {
     </div>
   )
 }
+

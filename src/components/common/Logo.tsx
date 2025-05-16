@@ -28,7 +28,7 @@ export function Logo({
         )}
       >
         <p>College</p>
-        <p className="pl-3">CutOff</p>
+        <p className="pl-3">Cutoff</p>
       </div>
     </Link>
   )

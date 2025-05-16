@@ -40,8 +40,8 @@ function TableSignup({ totalRecords, setUpdateUI }: TableSignupProps) {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: amount * 100, // Amount in paise
         currency: "INR",
-        name: "College CutOff",
-        description: "CollegeCutOff.net Payment for Closing Ranks",
+        name: "College Cutoff",
+        description: "CollegeCutoff.net Payment for College Predictor",
         order_id: orderId,
         handler: async function (response: any) {
           try {

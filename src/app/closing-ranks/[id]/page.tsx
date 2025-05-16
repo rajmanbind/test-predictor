@@ -300,7 +300,7 @@ export default function StateClosingRanksPage() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: amount * 100, // Amount in paise
         currency: "INR",
-        name: "College CutOff",
+        name: "College Cutoff",
         description: "CollegeCutOff.net Payment for Closing Ranks",
         order_id: orderId,
         handler: async function (response: any) {

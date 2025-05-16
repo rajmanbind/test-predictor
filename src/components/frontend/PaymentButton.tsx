@@ -46,8 +46,8 @@ const PaymentButton = ({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: amount * 100, // Amount in paise
         currency: "INR",
-        name: "Career Edwise",
-        description: "Test Transaction",
+        name: "College Cutoff",
+        description: "CollegeCutOff.net Payment for Closing Ranks",
         order_id: orderId,
         handler: async function (response: any) {
           try {
@@ -89,7 +89,7 @@ const PaymentButton = ({
           }
         },
         theme: {
-          color: "#3399cc",
+          color: "#E67817",
         },
         method: {
           upi: isMobile ? true : false,

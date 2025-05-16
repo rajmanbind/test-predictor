@@ -23,14 +23,20 @@ export function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <div className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href={"#"}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   College Predictor
-                </div>
+                </Link>
               </li>
               <li>
-                <div className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href={"/closing-ranks"}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Closing Ranks
-                </div>
+                </Link>
               </li>
               {/* <li>
                 <div

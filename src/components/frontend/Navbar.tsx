@@ -36,7 +36,10 @@ export function NavbarItem({
   className?: string
 }) {
   return (
-    <Link href={href} className={cn("text-color-text", className)}>
+    <Link
+      href={href}
+      className={cn("text-color-text hover:text-color-accent", className)}
+    >
       {title}
     </Link>
   )
@@ -156,7 +159,7 @@ export function Navbar() {
               <NavbarItem
                 key={item.href}
                 {...item}
-                className="hover:bg-color-accent p-2 px-6"
+                className="hover:bg-color-accent hover:text-white p-2 px-6"
               />
             ))}
           </nav>

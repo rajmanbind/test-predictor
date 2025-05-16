@@ -75,7 +75,7 @@ export function Navbar() {
   console.log(appState?.user ? true : false)
 
   return (
-    <Container className="w-full">
+    <Container className="flex-shrink-0 w-full">
       <div className="flex items-center justify-between h-[70px]">
         <div className="flex items-center tab:gap-16 gap-2 px-4">
           <Menu

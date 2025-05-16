@@ -1,11 +1,35 @@
+import { LocateIcon, MapPin } from "lucide-react"
 import Link from "next/link"
 
 import { Logo } from "../common/Logo"
 import { Container } from "./Container"
 
+const privacyPoliciesPages = [
+  {
+    title: "Pricing Policy",
+    href: "/pricing-policy",
+  },
+  {
+    title: "Shipping Policy",
+    href: "/shipping-policy",
+  },
+  {
+    title: "Terms And Conditions",
+    href: "/terms-and-conditions",
+  },
+  {
+    title: "Privacy Policy",
+    href: "/privacy-policy",
+  },
+  {
+    title: "Cancellation/Refund Policy",
+    href: "/cancellation-refund-policy",
+  },
+]
+
 export function Footer() {
   return (
-    <footer className="w-full py-12 md:py-16 bg-gray-900 text-gray-200">
+    <footer className="w-full py-12 md:py-16 bg-gray-900 text-gray-200 mt-auto">
       <Container className="px-4 md:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           <div className="col-span-2 md:col-span-1 space-y-4">
@@ -14,12 +38,23 @@ export function Footer() {
             </div>
             <p className="text-sm text-gray-400">
               Making medical education choices simpler and smarter for NEET
-              aspirants across India.
+              aspirants across India. <br />{" "}
+              <p className="text-xs mt-1">
+                (Associated with{" "}
+                <Link
+                  href="https://careeredwise.com"
+                  target="_blank"
+                  className="underline hover:text-white"
+                >
+                  Career Edwise
+                </Link>{" "}
+                )
+              </p>
             </p>
           </div>
           <div className="space-y-4">
             <h4 className="text-sm font-bold uppercase tracking-wider">
-              Services
+              Important Links
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
@@ -38,38 +73,9 @@ export function Footer() {
                   Closing Ranks
                 </Link>
               </li>
-              {/* <li>
-                <div
-                  className="text-gray-400 hover:text-white transition-colors"
-                  data-tooltip-id="tooltip"
-                  data-tooltip-content={`Coming Soon 🎉`}
-                >
-                  Counselling
-                </div>
-              </li>
-              <li>
-                <div
-                  className="text-gray-400 hover:text-white transition-colors"
-                  data-tooltip-id="tooltip"
-                  data-tooltip-content={`Coming Soon 🎉`}
-                >
-                  College Comparison
-                </div>
-              </li> */}
             </ul>
           </div>
-          <div className="space-y-4">
-            <h4 className="text-sm font-bold uppercase tracking-wider">
-              Resources
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <div className="text-gray-400 hover:text-white transition-colors">
-                  FAQ
-                </div>
-              </li>
-            </ul>
-          </div>
+
           <div className="space-y-4">
             <h4 className="text-sm font-bold uppercase tracking-wider">
               Contact
@@ -77,7 +83,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <svg
-                  className="h-5 w-5 mt-0.5 text-gray-400"
+                  className="h-5 w-5 mt-0.5 text-gray-400 flex-shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -98,7 +104,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <svg
-                  className="h-5 w-5 mt-0.5 text-gray-400"
+                  className="h-5 w-5 mt-0.5 text-gray-400 flex-shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -114,6 +120,28 @@ export function Footer() {
                   +91 9028009835
                 </a>
               </li>
+              <li className="flex items-start gap-2 text-gray-400">
+                <MapPin className="h-5 w-5 mt-0.5 text-gray-400 flex-shrink-0" />
+                302, Pyramid Axis, Baner, 411045, Pune Maharashtra
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold uppercase tracking-wider">
+              Privacy / Terms
+            </h4>
+            <ul className="space-y-3 text-sm">
+              {privacyPoliciesPages.map((page) => (
+                <li key={page.title}>
+                  <Link
+                    href={page.href}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    {page.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -123,22 +151,17 @@ export function Footer() {
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link
-              href="#"
-              className="text-xs text-gray-400 hover:text-white transition-colors"
+              href="/privacy-policy"
+              className="text-gray-400 hover:text-white transition-colors text-xs"
             >
               Privacy Policy
             </Link>
+
             <Link
-              href="#"
+              href="/terms-and-conditions"
               className="text-xs text-gray-400 hover:text-white transition-colors"
             >
-              Terms of Service
-            </Link>
-            <Link
-              href="#"
-              className="text-xs text-gray-400 hover:text-white transition-colors"
-            >
-              Cookie Policy
+              Terms And Conditions
             </Link>
           </div>
         </div>

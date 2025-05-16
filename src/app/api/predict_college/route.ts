@@ -119,14 +119,26 @@ export async function GET(request: NextRequest) {
     // Define rank check order
     const shouldInclude =
       rank > 0
-        ? (latest?.strayRound && rank <= latest.strayRound) ||
-          (latest?.closingRankR3 && rank <= latest.closingRankR3) ||
-          (latest?.closingRankR2 && rank <= latest.closingRankR2) ||
-          (latest?.closingRankR1 && rank <= latest.closingRankR1) ||
-          (!latest && old?.strayRound && rank <= old.strayRound) ||
-          (!latest && old?.closingRankR3 && rank <= old.closingRankR3) ||
-          (!latest && old?.closingRankR2 && rank <= old.closingRankR2) ||
-          (!latest && old?.closingRankR1 && rank <= old.closingRankR1)
+        ? (cleanRanks(latest?.strayRound) &&
+            rank <= cleanRanks(latest.strayRound)) ||
+          (cleanRanks(latest?.closingRankR3) &&
+            rank <= cleanRanks(latest.closingRankR3)) ||
+          (cleanRanks(latest?.closingRankR2) &&
+            rank <= cleanRanks(latest.closingRankR2)) ||
+          (cleanRanks(latest?.closingRankR1) &&
+            rank <= cleanRanks(latest.closingRankR1)) ||
+          (!latest &&
+            cleanRanks(old?.strayRound) &&
+            rank <= cleanRanks(old.strayRound)) ||
+          (!latest &&
+            cleanRanks(old?.closingRankR3) &&
+            rank <= cleanRanks(old.closingRankR3)) ||
+          (!latest &&
+            cleanRanks(old?.closingRankR2) &&
+            rank <= cleanRanks(old.closingRankR2)) ||
+          (!latest &&
+            cleanRanks(old?.closingRankR1) &&
+            rank <= cleanRanks(old.closingRankR1))
         : true
 
     if (shouldInclude) {
@@ -185,3 +197,8 @@ export async function GET(request: NextRequest) {
     totalPages,
   })
 }
+
+function cleanRanks(ranks: string): number {
+  return Number(ranks?.split("/")?.[0])
+}
+

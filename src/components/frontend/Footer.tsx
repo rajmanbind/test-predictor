@@ -58,31 +58,20 @@ export function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <div
+                <Link
+                  href={"#"}
                   className="text-gray-400 hover:text-white transition-colors"
-                  data-tooltip-id="tooltip"
-                  data-tooltip-content={`Coming Soon 🎉`}
                 >
                   College Predictor
-                </div>
+                </Link>
               </li>
               <li>
-                <div
+                <Link
+                  href={"/closing-ranks"}
                   className="text-gray-400 hover:text-white transition-colors"
-                  data-tooltip-id="tooltip"
-                  data-tooltip-content={`Coming Soon 🎉`}
                 >
                   Closing Ranks
-                </div>
-              </li>
-              <li>
-                <div
-                  className="text-gray-400 hover:text-white transition-colors"
-                  data-tooltip-id="tooltip"
-                  data-tooltip-content={`Coming Soon 🎉`}
-                >
-                  Counselling
-                </div>
+                </Link>
               </li>
             </ul>
           </div>

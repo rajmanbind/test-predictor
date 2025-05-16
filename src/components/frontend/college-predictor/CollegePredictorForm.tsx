@@ -170,17 +170,11 @@ export function CollegePredictorForm() {
           errors={errors}
         />
 
-        <Button
-          className="mt-6"
-          onClick={onSubmit}
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Coming Soon 🎉`}
-          // disabled={disableCheck()} <-- remove this when needed
-          disabled // <-- tmp disabled
-        >
+        <Button className="mt-6" onClick={onSubmit} disabled={disableCheck()}>
           Predict My College
         </Button>
       </form>
     </Card>
   )
 }
+

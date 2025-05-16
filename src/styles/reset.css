@@ -1,30 +1,37 @@
 :root {
   --font-roboto: "Roboto", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
 }
 
 /* Reset User Agent Styles */
 *,
 *::before,
 *::after {
-  font-family: "Open Sans", sans-serif;
+  font-family: var(--font-roboto), sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
   font-variation-settings: "wdth" 100;
   box-sizing: border-box;
-
-  font-family: var(--font-roboto), sans-serif;
+  font-family: inherit;
 }
 
 /*CSS Reset & Inherit Font Family */
 input,
 textarea,
-button {
+button,
+p,
+span {
   font-family: var(--font-roboto), sans-serif;
 }
 
 ::placeholder {
   font-family: var(--font-roboto), sans-serif;
 }
+
+body {
+  font-family: var(--font-roboto), sans-serif;
+}
+
 /* -------------------------------- */
 
 html,

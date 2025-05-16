@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
-export default function ConfigureYearPage() {
+export default function ConfigurePricesPage() {
   const [selectedYear, setSelectedYear] = useState<IOption | undefined>()
   const [selectedClosingRankYear, setSelectedClosingRankYear] = useState<
     IOption | undefined
@@ -99,7 +99,7 @@ export default function ConfigureYearPage() {
 
   return (
     <BELayout className="mb-10 tab:mb-0">
-      <Heading>Configure Year</Heading>
+      <Heading>Configure Prices</Heading>
 
       <Card className="mt-4 px-6 py-10 flex flex-col tab:flex-row items-start gap-8 w-fit">
         <form
@@ -207,3 +207,4 @@ export default function ConfigureYearPage() {
     </BELayout>
   )
 }
+

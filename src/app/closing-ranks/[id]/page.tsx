@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/common/Button"
 import { Pagination } from "@/components/common/Pagination"
+import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { Table, TableColumn } from "@/components/common/Table/Table"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
@@ -9,20 +10,39 @@ import { FELayout } from "@/components/frontend/FELayout"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
-import { isEmpty, onPageChange } from "@/utils/utils"
+import { IOption } from "@/types/GlobalTypes"
+import { years } from "@/utils/static"
+import { autoComplete, onPageChange } from "@/utils/utils"
 import { ChevronLeft, Info, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import Script from "next/script"
 import { useEffect, useState } from "react"
+import { isMobile } from "react-device-detect"
+import { useForm } from "react-hook-form"
+
+const yearList: IOption[] = []
+const configYearList = years()
+
+for (let i = 0; i < configYearList?.length; i++) {
+  if (new Date().getFullYear() >= parseInt(configYearList?.[i]?.text)) {
+    yearList.push(configYearList?.[i])
+  }
+}
 
 export default function StateClosingRanksPage() {
-  const [configYear, setConfigYear] = useState<any>([])
   const [tableData, setTableData] = useState<any>(null)
 
-  const [currentAmount, setCurrentAmount] = useState(0)
-  const [currentRow, setCurrentRow] = useState<any>(null)
   const [updateUI, setUpdateUI] = useState(false)
+
+  const [processingPayment, setProcessingPayment] = useState<any>(false)
+
+  const [selectedClosingRankYear, setSelectedClosingRankYear] = useState<
+    IOption | undefined
+  >()
+  const [defaultClosingRankValue, setDefaultClosingRankValue] = useState<
+    IOption | undefined
+  >()
 
   const params = useParams()
   const state = decodeURIComponent(params.id as any)
@@ -30,52 +50,59 @@ export default function StateClosingRanksPage() {
 
   const { fetchData } = useFetch()
 
-  const { showToast, appState, setAppState } = useAppState()
+  const { showToast, setAppState } = useAppState()
+
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm()
 
   useEffect(() => {
     getData()
   }, [updateUI])
 
   async function getData() {
-    const page = Number(getSearchParams("page") || 1)
+    const closingRankYear = await fetchData({
+      url: "/api/admin/configure/get",
+      params: { type: "CLOSING_RANK_YEAR" },
+    })
 
-    const [dataRes, configRes] = await Promise.all([
-      fetchData({
-        url: "/api/closing_ranks",
-        params: {
-          page,
-          size: 20,
-          state,
-        },
-      }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CONFIG_YEAR" },
-      }),
-    ])
-
-    if (dataRes?.success) {
-      setTableData(dataRes?.payload)
+    if (closingRankYear?.success) {
+      setDefaultClosingRankValue({
+        id: closingRankYear?.payload?.data?.[0]?.id,
+        text: closingRankYear?.payload?.data?.[0]?.text,
+      })
     }
 
-    if (configRes?.success) {
-      setConfigYear(
-        configRes?.payload?.data?.[0]?.text
-          ?.split("-")
-          .map((item: string) => item.trim()),
-      )
+    const page = Number(getSearchParams("page") || 1)
+
+    const res = await fetchData({
+      url: "/api/closing_ranks",
+      params: {
+        page,
+        size: 20,
+        state,
+        year:
+          selectedClosingRankYear?.text ||
+          closingRankYear?.payload?.data?.[0]?.text,
+      },
+    })
+
+    if (res?.success) {
+      setTableData(res?.payload)
     }
   }
 
-  function generateCols() {
-    let currentYear = new Date().getFullYear()
-    let previousYear = currentYear - 1
-
-    if (!isEmpty(configYear)) {
-      previousYear = configYear[0]
-      currentYear = configYear[1]
+  function buttonText(rowData: any) {
+    if (rowData?.purchased) {
+      return "Paid"
     }
 
+    return processingPayment === rowData?.id ? "Processing..." : "Unlock ₹49"
+  }
+
+  function generateCols() {
     const columns: TableColumn[] = [
       {
         title: "Institute Name",
@@ -100,126 +127,118 @@ export default function StateClosingRanksPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 1`}
+            data-tooltip-content={`Closing Round ${selectedClosingRankYear?.text} Round 1`}
           >
-            CR {currentYear} [R1]
+            CR {selectedClosingRankYear?.text} [R1]
           </div>
         ),
-        tableKey: `closingRankR1_new`,
+        tableKey: `closingRankR1`,
         width: "130px",
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+            data-tooltip-content={`Closing Round ${selectedClosingRankYear?.text} Round 2`}
           >
-            CR {currentYear} [R2]
+            CR {selectedClosingRankYear?.text} [R2]
           </div>
         ),
-        tableKey: `closingRankR2_new`,
+        tableKey: `closingRankR2`,
         width: "130px",
+        renderer({ cellData }) {
+          return (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "-"}
+            </div>
+          )
+        },
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+            data-tooltip-content={`Closing Round ${selectedClosingRankYear?.text} Round 3`}
           >
-            CR {currentYear} [R3]
+            CR {selectedClosingRankYear?.text} [R3]
           </div>
         ),
-        tableKey: `closingRankR3_new`,
+        tableKey: `closingRankR3`,
         width: "130px",
+        renderer({ cellData }) {
+          return (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "-"}
+            </div>
+          )
+        },
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${currentYear}`}
+            data-tooltip-content={`Stray Round ${selectedClosingRankYear?.text}`}
           >
-            SR {currentYear}
+            SR {selectedClosingRankYear?.text}
           </div>
         ),
-        tableKey: `strayRound_new`,
+        tableKey: `strayRound`,
         width: "110px",
+        renderer({ cellData }) {
+          return (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "-"}
+            </div>
+          )
+        },
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round ${currentYear}`}
+            data-tooltip-content={`Last Stray Round ${selectedClosingRankYear?.text}`}
           >
             Last <br />
-            SR {currentYear}
+            SR {selectedClosingRankYear?.text}
           </div>
         ),
-        tableKey: `lastStrayRound_new`,
+        tableKey: `lastStrayRound`,
         width: "110px",
+        renderer({ cellData }) {
+          return (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "-"}
+            </div>
+          )
+        },
       },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-      //     >
-      //       CR {previousYear} [R1]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR1_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-      //     >
-      //       CR {previousYear} [R2]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR2_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-      //     >
-      //       CR {previousYear} [R3]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR3_old`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Stray Round ${previousYear}`}
-      //     >
-      //       SR {previousYear}
-      //     </div>
-      //   ),
-      //   tableKey: `strayRound_old`,
-      //   wid
-      // th: "110px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Last Stray Round ${previousYear}`}
-      //     >
-      //       Last <br />
-      //       SR {previousYear}
-      //     </div>
-      //   ),
-      //   tableKey: `lastStrayRound_old`,
-      //   width: "110px",
-      // },
-      { title: "Fees", tableKey: "fees", width: "100px" },
+      {
+        title: "Fees",
+        tableKey: "fees",
+        width: "100px",
+        renderer({ cellData }) {
+          return (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "-"}
+            </div>
+          )
+        },
+      },
       {
         title: "Buy Now",
         tableKey: "action",
@@ -228,11 +247,15 @@ export default function StateClosingRanksPage() {
           return (
             <div className="flex justify-center w-full">
               <Button
-                className="py-2 px-2 text-[14px] w-fit"
+                className="py-2 px-2 text-[14px] w-fit disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed min-w-[86px]"
                 variant="primary"
-                onClick={() => handleBuyNow(rowData, 49)}
+                onClick={() => {
+                  if (rowData?.purchased) return
+                  handleBuyNow(rowData, 49)
+                }}
+                disabled={processingPayment === rowData?.id}
               >
-                Unlock ₹49
+                {buttonText(rowData)}
               </Button>
             </div>
           )
@@ -244,9 +267,6 @@ export default function StateClosingRanksPage() {
   }
 
   async function handleBuyNow(rowData: any, amount: number) {
-    setCurrentRow(rowData)
-    setCurrentAmount(amount)
-
     const user = await fetchData({
       url: "/api/user",
       method: "GET",
@@ -254,6 +274,7 @@ export default function StateClosingRanksPage() {
     })
 
     if (user?.success) {
+      setProcessingPayment(rowData?.id)
       processPayment(rowData, amount)
     } else {
       setAppState({ signInModalOpen: true })
@@ -271,16 +292,16 @@ export default function StateClosingRanksPage() {
     return data.orderId
   }
 
-  const processPayment = async (rowData?: any, amount?: number) => {
+  const processPayment = async (rowData: any, amount: number) => {
     try {
-      const orderId = await createOrder(amount || currentAmount)
+      const orderId = await createOrder(amount)
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: currentAmount * 100, // Amount in paise
+        amount: amount * 100, // Amount in paise
         currency: "INR",
-        name: "Career Edwise",
-        description: "Test Transaction",
+        name: "College Cutoff",
+        description: "CollegeCutOff.net Payment for Closing Ranks",
         order_id: orderId,
         handler: async function (response: any) {
           try {
@@ -305,62 +326,70 @@ export default function StateClosingRanksPage() {
                 </p>,
               )
 
-              const phone_no = "+91-7903924731"
-
-              const value = []
-              const new_id = rowData?.new_id || currentRow?.new_id
-              const prev_id = rowData?.prev_id || currentRow?.prev_id
-
-              if (new_id) {
-                value.push(new_id)
-              }
-
-              if (prev_id) {
-                value.push(prev_id)
-              }
-
               const payload = {
-                phone_no,
-                value,
-                type: "college",
+                orderId,
+                amount,
+                rowId: rowData?.id,
+                type: "SINGLE_COLLEGE",
               }
 
               const res = await fetchData({
-                url: "/api/purchase/plans_or_colleges",
+                url: "/api/purchase",
                 method: "POST",
                 data: payload,
               })
 
               if (res?.success) {
                 setUpdateUI((prev) => !prev)
+
+                await fetchData({
+                  url: "/api/payment",
+                  method: "POST",
+                  data: {
+                    single_college_amount: amount,
+                  },
+                  noLoading: true,
+                  noToast: true,
+                })
               }
             } else {
               showToast("error", "Payment verification failed!")
             }
+
+            setProcessingPayment(false)
           } catch (error) {
             console.error("Verification error:", error)
             showToast("error", "Payment verification failed!")
+            setProcessingPayment(false)
           }
         },
         theme: {
-          color: "#3399cc",
+          color: "#E67817",
         },
         method: {
-          upi: true,
+          upi: isMobile ? true : false,
           card: true,
           netbanking: true,
           wallet: true,
+        },
+        modal: {
+          ondismiss: function () {
+            showToast("error", "Payment was cancelled by user.")
+            setProcessingPayment(false)
+          },
         },
         // Add callback for failed payments
         "payment.failed": function (response: any) {
           console.error("Payment failed:", response)
           showToast("error", `Payment failed: ${response.error.description}`)
+          setProcessingPayment(false)
         },
       }
 
       const paymentObject = new (window as any).Razorpay(options)
       paymentObject.on("payment.failed", (response: any) => {
         showToast("error", `Payment failed: ${response.error.description}`)
+        setProcessingPayment(false)
       })
       paymentObject.open()
     } catch (error) {
@@ -371,6 +400,7 @@ export default function StateClosingRanksPage() {
           Internal Server Error <br /> Please try again.
         </p>,
       )
+      setProcessingPayment(false)
     }
   }
 
@@ -389,13 +419,35 @@ export default function StateClosingRanksPage() {
               Back to All States
             </Link>
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <SearchAndSelect
+              name="closingRankYear"
+              label="Select Year"
+              placeholder="Select Year"
+              value={selectedClosingRankYear}
+              defaultOption={defaultClosingRankValue}
+              onChange={({ selectedValue }) => {
+                setSelectedClosingRankYear(selectedValue)
+                setUpdateUI((prev) => !prev)
+              }}
+              control={control}
+              setValue={setValue}
+              options={yearList}
+              debounceDelay={0}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, yearList, setOptions)
+              }
+              wrapperClass="max-w-[150px]"
+              errors={errors}
+            />
+
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-black">
                   {state} Medical Colleges
                 </h1>
                 <p className="text-gray-600">
-                  NEET UG 2024 Closing Ranks for Medical Colleges
+                  NEET UG {selectedClosingRankYear?.text} Closing Ranks for
+                  Medical Colleges
                 </p>
               </div>
             </div>
@@ -410,11 +462,11 @@ export default function StateClosingRanksPage() {
               <Info className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-blue-800 text-sm">
-                  <strong>Note:</strong> Closing ranks are based on the 2024
-                  NEET counselling data. These ranks represent the last rank at
-                  which a candidate was admitted to the college in the
-                  respective category. Actual cutoffs may vary for the current
-                  year.
+                  <strong>Note:</strong> Closing ranks are based on the{" "}
+                  {selectedClosingRankYear?.text} NEET counselling data. These
+                  ranks represent the last rank at which a candidate was
+                  admitted to the college in the respective category. Actual
+                  cutoffs may vary for the current year.
                 </p>
               </div>
             </div>
@@ -439,6 +491,7 @@ export default function StateClosingRanksPage() {
                   {
                     size: 20,
                     state,
+                    year: selectedClosingRankYear?.text,
                   },
                 )
               }}
@@ -460,7 +513,7 @@ export default function StateClosingRanksPage() {
                 </p>
               </div>
               <Link
-                href="/counselling"
+                href="https://wa.me/919028009835"
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2"
               >
                 <Users className="h-5 w-5" />
@@ -470,7 +523,8 @@ export default function StateClosingRanksPage() {
           </Container>
         </section>
       </div>
-      <SignInPopup successCallback={processPayment} />
+      <SignInPopup noRedirect />
     </FELayout>
   )
 }
+

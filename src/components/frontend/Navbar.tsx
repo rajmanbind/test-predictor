@@ -36,16 +36,12 @@ export function NavbarItem({
   className?: string
 }) {
   return (
-    <div
-      className={cn("text-color-text cursor-default", className)}
-      data-tooltip-id="tooltip"
-      data-tooltip-content={`Coming Soon 🎉`}
+    <Link
+      href={href}
+      className={cn("text-color-text hover:text-color-accent", className)}
     >
       {title}
-    </div>
-    // <Link href={href} className={cn("text-color-text", className)}>
-    //   {title}
-    // </Link>
+    </Link>
   )
 }
 
@@ -55,6 +51,7 @@ export function Navbar() {
   const pathname = usePathname()
 
   const { appState, setAppState, showToast } = useAppState()
+  const [mobSidebar, setMobSidebar] = useState(false)
 
   const [popOver, setPopOver] = useState(false)
   const ref = useRef(null)
@@ -66,7 +63,7 @@ export function Navbar() {
 
   async function handleLogout() {
     const res = await fetchData({
-      url: "/api/admin/logout",
+      url: "/api/user/logout",
     })
 
     if (res?.success) {
@@ -75,11 +72,17 @@ export function Navbar() {
     }
   }
 
+  console.log(appState?.user ? true : false)
+
   return (
     <Container className="flex-shrink-0 w-full">
       <div className="flex items-center justify-between h-[70px]">
         <div className="flex items-center tab:gap-16 gap-2 px-4">
-          {/* <Menu size={28} className="text-color-text pc:hidden" /> */}
+          <Menu
+            size={28}
+            className="text-color-text pc:hidden"
+            onClick={() => setMobSidebar(true)}
+          />
 
           <Logo
             className="gap-2 tab:gap-3"
@@ -93,11 +96,7 @@ export function Navbar() {
           </nav>
         </div>
 
-        <div
-          // className="pc:w-[400px] tab:w-[200px] w-[160px] h-[70px] flex items-center justify-between relative pc:px-8"
-
-          className="pc:w-[400px] h-[70px] flex items-center justify-between relative px-2 pc:px-8"
-        >
+        <div className="pc:w-[400px] tab:w-[200px] w-[160px] h-[70px] flex items-center justify-between relative pc:px-8">
           <div
             className={cn(
               "absolute top-0 left-0 w-full h-full bg-gradient-to-t from-slate-950 to-slate-800 skew-x-[-10deg] -z-10 hidden pc:block",
@@ -108,10 +107,6 @@ export function Navbar() {
             <ThemeSwitcher />
           </div>
 
-          {/* 
-          
-          // UNHIDE WHEN LOGIN IS READY
-          
           {appState?.user ? (
             <div
               className="bg-color-accent size-10 grid place-items-center rounded-full relative cursor-pointer"
@@ -144,7 +139,30 @@ export function Navbar() {
                 ? "Admin Panel"
                 : "Sign in / Sign up"}
             </Button>
-          )} */}
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Sidebar */}
+
+      <div
+        className={cn(
+          "fixed w-full h-dvh bg-[rgba(0,0,0,0.5)] z-[9999] top-0 left-0 translate-x-[-100%] opacity-0 transition-all duration-500 ease-in-out",
+          mobSidebar && "translate-x-0 opacity-100",
+        )}
+        onClick={() => setMobSidebar(false)}
+      >
+        <div className={cn("w-[240px] h-full bg-color-form-background py-6")}>
+          <Logo textStyle="text-color-text" className="px-6" />
+          <nav className="flex flex-col gap-2 mt-8">
+            {navbarMenus.map((item) => (
+              <NavbarItem
+                key={item.href}
+                {...item}
+                className="hover:bg-color-accent hover:text-white p-2 px-6"
+              />
+            ))}
+          </nav>
         </div>
       </div>
     </Container>

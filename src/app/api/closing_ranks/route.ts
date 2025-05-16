@@ -1,4 +1,7 @@
-import { createAdminSupabaseClient } from "@/lib/supabase"
+import {
+  createAdminSupabaseClient,
+  createUserSupabaseClient,
+} from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -6,111 +9,120 @@ export const dynamic = "force-dynamic"
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
 
+  // Parse and validate query parameters
   const page = parseInt(searchParams.get("page") || "1")
   const pageSize = parseInt(searchParams.get("size") || "10")
-  const state = searchParams.get("state")
+  const state = searchParams.get("state")?.trim()
+  const year = searchParams.get("year")?.trim()
 
-  const supabase = createAdminSupabaseClient()
-
-  const { data: selectedYear, error: yearsError } = await supabase
-    .from("dropdown_options")
-    .select("*")
-    .eq("type", "CONFIG_YEAR")
-    .single()
-
-  if (yearsError) {
+  // Input validation
+  if (page < 1 || pageSize < 1) {
     return NextResponse.json(
-      {
-        msg: "Failed to get year config",
-        error: yearsError,
-        data: selectedYear,
-      },
+      { error: "Page and pageSize must be positive integers" },
+      { status: 400 },
+    )
+  }
+  if (!year || isNaN(parseInt(year))) {
+    return NextResponse.json(
+      { error: "Valid year is required" },
+      { status: 400 },
+    )
+  }
+  if (pageSize > 100) {
+    return NextResponse.json(
+      { error: "pageSize cannot exceed 100" },
       { status: 400 },
     )
   }
 
-  const latestYears = selectedYear.text
-    ?.split("-")
-    .map((item: string) => item.trim())
+  const supabase = createAdminSupabaseClient()
+  const supabaseUser = createUserSupabaseClient()
 
-  // Modify the query to include state filter if provided
+  // Calculate range for pagination
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
+
+  // Build the query
   let query = supabase
     .from("college_table")
-    .select("*")
-    .in("year", latestYears)
+    .select("*", { count: "exact" }) // Include count for total items
+    .in("year", [year])
     .order("created_at", { ascending: false })
+    .range(from, to) // Database-level pagination
 
   if (state) {
     query = query.ilike("state", state)
   }
 
-  const { data, error } = await query
+  const { data, error, count } = await query
 
   if (error) {
-    return new Response(JSON.stringify({ error }), { status: 400 })
+    console.error("Supabase error:", error.message)
+    return NextResponse.json(
+      { error: "Failed to fetch data", details: error.message },
+      { status: 500 },
+    )
   }
 
-  // Step 3: Merge records with updated key
-  const mergedData: any[] = []
-  const recordMap = new Map()
-
-  data.forEach((record) => {
-    const key = `${record.instituteName}-${record.instituteType}-${record.state}-${record.course}-${record.category}-${record.quota}`
-
-    if (!recordMap.has(key)) {
-      recordMap.set(key, { old: null, new: null })
-    }
-
-    if (Number(record.year) === Math.max(...latestYears)) {
-      recordMap.get(key).new = record
-    } else {
-      recordMap.get(key).old = record
+  let hiddenData = data?.map((item) => {
+    return {
+      ...item,
+      closingRankR2: "xxx",
+      closingRankR3: "xxx",
+      strayRound: "xxx",
+      lastStrayRound: "xxx",
+      fees: "xxx",
     }
   })
 
-  recordMap.forEach((value, key) => {
-    const { old, new: latest } = value
+  const {
+    data: { user },
+  } = await supabaseUser.auth.getUser()
 
-    if (old || latest) {
-      mergedData.push({
-        prev_id: old?.id,
-        new_id: latest?.id,
-        created_at: latest?.created_at ?? old?.created_at,
-        instituteName: latest?.instituteName ?? old?.instituteName,
-        instituteType: latest?.instituteType ?? old?.instituteType,
-        state: latest?.state ?? old?.state,
-        course: latest?.course ?? old?.course,
-        quota: latest?.quota ?? old?.quota,
-        category: latest?.category ?? old?.category,
-        fees: "xxx",
-        closingRankR1_old: "xxx",
-        closingRankR2_old: "xxx",
-        closingRankR3_old: "xxx",
-        strayRound_old: "xxx",
-        lastStrayRound_old: "xxx",
-        closingRankR1_new: "xxx",
-        closingRankR2_new: "xxx",
-        closingRankR3_new: "xxx",
-        strayRound_new: "xxx",
-        lastStrayRound_new: "xxx",
-        year:
-          old?.year && latest?.year
-            ? `${old.year} - ${latest.year}`
-            : (old?.year ?? latest?.year),
+  if (user) {
+    const { data: userPurchases, error: purchasesError } = await supabaseUser
+      .from("purchase")
+      .select(
+        `
+      *,
+      college_table:rowId (*)
+    `,
+      )
+      .eq("phone", user.phone)
+
+    if (purchasesError) {
+      console.error("Supabase error:", purchasesError.message)
+      return NextResponse.json(
+        {
+          error: "Failed to fetch user purchases",
+          details: purchasesError.message,
+        },
+        { status: 500 },
+      )
+    }
+
+    if (userPurchases && userPurchases?.length > 0 && hiddenData?.length > 0) {
+      hiddenData = hiddenData?.map((college) => {
+        const matchingPurchase = userPurchases.find(
+          (p) => p.rowId === college.id,
+        )
+        return matchingPurchase
+          ? { ...matchingPurchase.college_table, purchased: true }
+          : college
       })
     }
-  })
+  }
 
-  // Step 4: Pagination
-  const totalItems = mergedData.length
+  // Calculate pagination metadata
+  const totalItems = count ?? 0
   const totalPages = Math.ceil(totalItems / pageSize)
-  const paginatedData = mergedData.slice((page - 1) * pageSize, page * pageSize)
 
   return NextResponse.json({
-    data: paginatedData,
+    data: hiddenData ?? [],
     currentPage: page,
     pageSize,
     totalItems,
     totalPages,
   })
 }
+

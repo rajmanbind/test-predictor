@@ -3,19 +3,19 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    const { text } = await request.json()
+    const { text, type } = await request.json()
     const supabase = createAdminSupabaseClient()
 
     // Check if CONFIG_YEAR exists
     const { data: existingData, error: fetchError } = await supabase
       .from("dropdown_options")
       .select("id")
-      .eq("type", "CONFIG_YEAR")
+      .eq("type", type)
       .single()
 
     if (fetchError && fetchError.code !== "PGRST116") {
       return NextResponse.json(
-        { msg: "Failed to fetch existing CONFIG_YEAR", error: fetchError },
+        { msg: `Failed to fetch existing ${type}`, error: fetchError },
         { status: 400 },
       )
     }
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
       if (updateError) {
         return NextResponse.json(
-          { msg: "Failed to update CONFIG_YEAR", error: updateError },
+          { msg: `Failed to update ${type}`, error: updateError },
           { status: 400 },
         )
       }
@@ -39,11 +39,11 @@ export async function POST(request: NextRequest) {
       // Insert new entry
       const { error: insertError } = await supabase
         .from("dropdown_options")
-        .insert({ type: "CONFIG_YEAR", text })
+        .insert({ type, text })
 
       if (insertError) {
         return NextResponse.json(
-          { msg: "Failed to insert CONFIG_YEAR", error: insertError },
+          { msg: `Failed to insert ${type}`, error: insertError },
           { status: 400 },
         )
       }

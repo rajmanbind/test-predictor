@@ -26,7 +26,7 @@ export interface TableColumn {
 }
 
 const headerTHClass =
-  "border-b border-color-border px-4 py-3 text-left text-white font-medium text-sm"
+  "border-b border-color-border px-4 py-3 text-left text-white font-medium text-sm title"
 
 export function Table({
   selectable,
@@ -89,14 +89,14 @@ export function Table({
       )}
       <div
         className={cn(
-          "overflow-x-auto border rounded-lg border-color-border relative min-h-[543px]",
+          "overflow-auto border rounded-lg border-color-border relative min-h-[543px] max-h-[800px]",
           data?.length === 10 && "min-h-0",
           className,
         )}
       >
         <table className="min-w-full border-collapse table-fixed">
-          <thead>
-            <tr className="bg-color-table-header">
+          <thead className="sticky top-0 z-[11] bg-color-table-header">
+            <tr>
               {selectable && (
                 <th
                   className={cn(
@@ -122,7 +122,6 @@ export function Table({
                     "uppercase",
                     column?.tableKey === "action" &&
                       "tableActionStatic bg-color-table-header",
-
                     column?.tableKey === "instituteName" &&
                       "tableStaticLeft bg-color-table-header",
                   )}
@@ -135,61 +134,56 @@ export function Table({
           </thead>
 
           <tbody>
-            {data?.map((row, rowIndex) => {
-              return (
-                <tr
-                  key={rowIndex}
-                  className={cn(
-                    "cursor-pointer group",
-                    "border-b border-color-border",
-                  )}
-                  onClick={() => handleSelectRow(rowIndex)}
-                >
-                  {selectable && (
-                    <td className="p-3 bg-color-form-background tableCheckboxStatic">
-                      <input
-                        className="translate-y-[2px]"
-                        type="checkbox"
-                        checked={selectedRows.has(rowIndex)}
-                      />
-                    </td>
-                  )}
-                  {!hideSLNo && (
-                    <td className="p-3 text-left text-[13px] bg-color-white_black">
-                      <div>{getRowSLNumber(rowIndex)}</div>
-                    </td>
-                  )}
-                  {columns?.map((column, colIndex) => (
-                    <td
-                      key={colIndex}
-                      className={cn(
-                        "px-4 py-3 text-left text-[13px] bg-color-white_black",
-                        column?.overrideInternalClick && "cursor-auto",
-                        column?.tableKey === "action" &&
-                          "tableActionStatic px-0 py-0",
-
-                        column?.tableKey === "instituteName" &&
-                          "tableStaticLeft bg-color-white_black",
-                      )}
-                      onClick={(e) =>
-                        column?.overrideInternalClick
-                          ? e.stopPropagation()
-                          : null
-                      }
-                    >
-                      <div className="min-h-8 flex items-center text-[13px]">
-                        {column?.renderer
-                          ? column?.renderer({
-                              rowData: row,
-                              cellData: row[column?.tableKey],
-                            })
-                          : row[column?.tableKey] || "-"}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-              )
-            })}
+            {data?.map((row, rowIndex) => (
+              <tr
+                key={rowIndex}
+                className={cn(
+                  "cursor-pointer group",
+                  "border-b border-color-border",
+                )}
+                onClick={() => handleSelectRow(rowIndex)}
+              >
+                {selectable && (
+                  <td className="p-3 bg-color-form-background tableCheckboxStatic">
+                    <input
+                      className="translate-y-[2px]"
+                      type="checkbox"
+                      checked={selectedRows.has(rowIndex)}
+                    />
+                  </td>
+                )}
+                {!hideSLNo && (
+                  <td className="p-3 text-left text-[13px] bg-color-white_black">
+                    <div>{getRowSLNumber(rowIndex)}</div>
+                  </td>
+                )}
+                {columns?.map((column, colIndex) => (
+                  <td
+                    key={colIndex}
+                    className={cn(
+                      "px-4 py-3 text-left text-[13px] bg-color-white_black",
+                      column?.overrideInternalClick && "cursor-auto",
+                      column?.tableKey === "action" &&
+                        "tableActionStatic px-0 py-0",
+                      column?.tableKey === "instituteName" &&
+                        "tableStaticLeft bg-color-white_black",
+                    )}
+                    onClick={(e) =>
+                      column?.overrideInternalClick ? e.stopPropagation() : null
+                    }
+                  >
+                    <div className="min-h-8 flex items-center text-[13px]">
+                      {column?.renderer
+                        ? column?.renderer({
+                            rowData: row,
+                            cellData: row[column?.tableKey],
+                          })
+                        : row[column?.tableKey] || "-"}
+                    </div>
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
 
@@ -198,3 +192,4 @@ export function Table({
     </div>
   )
 }
+

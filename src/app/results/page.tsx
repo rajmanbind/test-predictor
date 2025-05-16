@@ -3,7 +3,6 @@
 import { Button } from "@/components/common/Button"
 import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import { Pagination } from "@/components/common/Pagination"
-import { generateColsPublic } from "@/components/common/Table/Cols"
 import { Table, TableColumn } from "@/components/common/Table/Table"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
@@ -14,8 +13,9 @@ import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { isEmpty } from "@/utils/utils"
+import { getLocalStorageItem, isEmpty } from "@/utils/utils"
 import { Info, Settings2 } from "lucide-react"
+import Script from "next/script"
 import { useEffect, useState } from "react"
 import { Tooltip } from "react-tooltip"
 
@@ -32,11 +32,23 @@ export default function ResultPage() {
   const [filterParams, setFilterParams] = useState<any>(null)
   const [updateUI, setUpdateUI] = useState(false)
 
+  const [paid, setPaid] = useState(false)
+
   const { fetchData } = useFetch()
   const { getSearchParams } = useInternalSearchParams()
 
   useEffect(() => {
     getData()
+
+    const paymentStatus = getLocalStorageItem<any>(
+      `payment-predictor-${getSearchParams("rank")}`,
+    )
+
+    if (paymentStatus) {
+      setPaid(true)
+    } else {
+      setPaid(false)
+    }
   }, [filterParams, updateUI])
 
   useEffect(() => {
@@ -115,8 +127,241 @@ export default function ResultPage() {
     }
   }
 
+  function generateCols() {
+    let currentYear = new Date().getFullYear()
+    let previousYear = currentYear - 1
+
+    if (!isEmpty(configYear)) {
+      previousYear = configYear[0]
+      currentYear = configYear[1]
+    }
+
+    const columns: TableColumn[] = [
+      {
+        title: "Institute Name",
+        tableKey: "instituteName",
+        width: "150px",
+      },
+      { title: "Course", tableKey: "course" },
+      { title: "Quota", tableKey: "quota", width: "150px" },
+      {
+        title: (
+          <div>
+            Allotted
+            <br />
+            Category
+          </div>
+        ),
+        tableKey: "category",
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank Round 1 ${currentYear}`}
+          >
+            {`Closing Rank [R1] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `closingRankR1_new`,
+        width: "160px",
+        renderer({ cellData }) {
+          // @ts-ignore
+          return cellData?.split("/")?.[0]
+        },
+      },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${currentYear} Round 2`}
+      //     >
+      //       CR {currentYear} [R2]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR2_new`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${currentYear} Round 3`}
+      //     >
+      //       CR {currentYear} [R3]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR3_new`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Stray Round ${currentYear}`}
+      //     >
+      //       SR {currentYear}
+      //     </div>
+      //   ),
+      //   tableKey: `strayRound_new`,
+      //   width: "160px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Last Stray Round ${currentYear}`}
+      //     >
+      //       Last <br />
+      //       SR {currentYear}
+      //     </div>
+      //   ),
+      //   tableKey: `lastStrayRound_new`,
+      //   width: "160px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
+      //     >
+      //       CR {previousYear} [R1]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR1_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
+      //     >
+      //       CR {previousYear} [R2]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR2_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
+      //     >
+      //       CR {previousYear} [R3]
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR3_old`,
+      //   width: "130px",
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Stray Round ${previousYear}`}
+      //     >
+      //       SR {previousYear}
+      //     </div>
+      //   ),
+      //   tableKey: `strayRound_old`,
+      //   width: "160px",
+      // },
+
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Last Stray Round ${previousYear}`}
+      //     >
+      //          Last <br />
+      //         SR {previousYear}
+      //     </div>
+      //   ),
+      //   tableKey: `lastStrayRound_old`,
+      //   width: "160px",
+      // },
+
+      // { title: "Fees", tableKey: "fees", width: "100px" },
+    ]
+
+    if (paid) {
+      columns.push(
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Closing Rank Round 2 ${currentYear}`}
+            >
+              {`Closing Rank [R2] ${currentYear}`}
+            </div>
+          ),
+          tableKey: `closingRankR2_new`,
+          width: "160px",
+          renderer({ cellData }) {
+            // @ts-ignore
+            return cellData?.split("/")?.[0]
+          },
+        },
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Closing Rank Round 3 ${currentYear}`}
+            >
+              {`Closing Rank [R3] ${currentYear}`}
+            </div>
+          ),
+          tableKey: `closingRankR3_new`,
+          width: "160px",
+          renderer({ cellData }) {
+            // @ts-ignore
+            return cellData?.split("/")?.[0]
+          },
+        },
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Stray Round Rank ${currentYear}`}
+            >
+              {`Stray Round Rank ${currentYear}`}
+            </div>
+          ),
+          tableKey: `strayRound_new`,
+          width: "160px",
+        },
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Last Stray Round Rank ${currentYear}`}
+            >
+              Last {`Stray Round Rank ${currentYear}`}
+            </div>
+          ),
+          tableKey: `lastStrayRound_new`,
+          width: "160px",
+          renderer({ cellData }) {
+            // @ts-ignore
+            return cellData?.split("/")?.[0]
+          },
+        },
+      )
+    }
+    columns.push(
+      { title: "Institute Type", tableKey: "instituteType", width: "150px" },
+      { title: "State", tableKey: "state", width: "150px" },
+      { title: "Fees", tableKey: "fees", width: "100px" },
+    )
+
+    return columns
+  }
+
   return (
     <FELayout>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+
       <Container className="pb-10 pt-1 pc:pt-10">
         <div className="pb-4 pc:pb-8 flex justify-between flex-col pc:flex-row">
           <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">
@@ -155,12 +400,15 @@ export default function ResultPage() {
             />
 
             <Table
-              columns={generateColsPublic(configYear)}
+              columns={generateCols()}
               data={tableData?.data}
               className="mt-6 min-h-[600px]"
               renderBelowTable={
-                isEmpty(tableData?.data) ? null : (
-                  <TableSignup totalRecords={tableData?.totalItems} />
+                paid || isEmpty(tableData?.data) ? null : (
+                  <TableSignup
+                    totalRecords={tableData?.totalItems}
+                    setUpdateUI={setUpdateUI}
+                  />
                 )
               }
             />
@@ -168,7 +416,7 @@ export default function ResultPage() {
             <Pagination
               currentPage={tableData?.currentPage}
               totalItems={tableData?.totalItems}
-              showOnlyOnePage
+              showOnlyOnePage={!paid}
               wrapperClass="pb-[50px]"
               onPageChange={(page: number) => {
                 fetchData({
@@ -201,3 +449,4 @@ export default function ResultPage() {
     </FELayout>
   )
 }
+

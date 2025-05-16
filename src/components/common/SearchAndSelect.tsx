@@ -31,6 +31,7 @@ interface SearchAndSelectProps extends ICommonComponentProps {
     text: string,
     setListOptions: React.Dispatch<SetStateAction<IOption[]>>,
   ) => void
+  labelClassName?: string
 }
 
 export const SearchAndSelect = ({
@@ -52,6 +53,7 @@ export const SearchAndSelect = ({
   searchAPI,
   defaultOption,
   setValue,
+  labelClassName,
   ...props
 }: SearchAndSelectProps) => {
   const [input, setInput] = useState(defaultOption ? defaultOption.text : "")
@@ -153,14 +155,21 @@ export const SearchAndSelect = ({
       render={({ field }) => {
         return (
           <div className={cn("text-color-text", props?.wrapperClass)}>
-            <div className="flex items-baseline gap-2">
-              <label className="text-base pc:text-lg mb-[6px] block font-medium">
-                {isRequired() + label}
-              </label>
+            {label && (
+              <div className="flex items-baseline gap-2">
+                <label
+                  className={cn(
+                    "text-base pc:text-lg mb-[6px] block font-medium",
+                    labelClassName,
+                  )}
+                >
+                  {isRequired() + label}
+                </label>
 
-              {labelHint}
-              {labelTooltipIcon}
-            </div>
+                {labelHint}
+                {labelTooltipIcon}
+              </div>
+            )}
 
             <div
               className={cn(

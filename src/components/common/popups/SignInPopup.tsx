@@ -16,6 +16,7 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 
 import { Button } from "../Button"
+import { Logo } from "../Logo"
 
 type CountryCode = {
   code: string
@@ -270,14 +271,7 @@ export function SignInPopup({
     >
       <div className="w-full max-w-md p-6 mx-4 bg-white rounded-2xl shadow-xl transform transition-all">
         <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-yellow-400 to-yellow-600 font-bold text-black shadow-md">
-              CE
-            </div>
-            <span className="text-lg font-bold">
-              Career<span className="text-yellow-500">Edwise</span>
-            </span>
-          </div>
+          <Logo textStyle="text-black text-xl font-medium" />
           <button
             onClick={() => setAppState({ signInModalOpen: false })}
             className="text-gray-500 hover:text-gray-700 transition-colors"

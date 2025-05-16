@@ -23,24 +23,16 @@ export function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <div
-                  className="text-gray-400 hover:text-white transition-colors"
-                  data-tooltip-id="tooltip"
-                  data-tooltip-content={`Coming Soon 🎉`}
-                >
+                <div className="text-gray-400 hover:text-white transition-colors">
                   College Predictor
                 </div>
               </li>
               <li>
-                <div
-                  className="text-gray-400 hover:text-white transition-colors"
-                  data-tooltip-id="tooltip"
-                  data-tooltip-content={`Coming Soon 🎉`}
-                >
+                <div className="text-gray-400 hover:text-white transition-colors">
                   Closing Ranks
                 </div>
               </li>
-              <li>
+              {/* <li>
                 <div
                   className="text-gray-400 hover:text-white transition-colors"
                   data-tooltip-id="tooltip"
@@ -57,7 +49,7 @@ export function Footer() {
                 >
                   College Comparison
                 </div>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div className="space-y-4">
@@ -148,3 +140,4 @@ export function Footer() {
     </footer>
   )
 }
+

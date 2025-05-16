@@ -421,6 +421,7 @@ export default function StateClosingRanksPage() {
 
             <SearchAndSelect
               name="closingRankYear"
+              label="Select Year"
               placeholder="Select Year"
               value={selectedClosingRankYear}
               defaultOption={defaultClosingRankValue}
@@ -512,7 +513,7 @@ export default function StateClosingRanksPage() {
                 </p>
               </div>
               <Link
-                href="/counselling"
+                href="https://wa.me/919028009835"
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2"
               >
                 <Users className="h-5 w-5" />

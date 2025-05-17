@@ -11,7 +11,7 @@ import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { years } from "@/utils/static"
+import { paymentType, years } from "@/utils/static"
 import { autoComplete, onPageChange } from "@/utils/utils"
 import { ChevronLeft, Info, Users } from "lucide-react"
 import Link from "next/link"
@@ -330,7 +330,7 @@ export default function StateClosingRanksPage() {
                 orderId,
                 amount,
                 rowId: rowData?.id,
-                type: "SINGLE_COLLEGE",
+                payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
               }
 
               const res = await fetchData({
@@ -346,7 +346,7 @@ export default function StateClosingRanksPage() {
                   url: "/api/payment",
                   method: "POST",
                   data: {
-                    single_college_amount: amount,
+                    [paymentType?.SINGLE_COLLEGE_CLOSING_RANK]: amount,
                   },
                   noLoading: true,
                   noToast: true,

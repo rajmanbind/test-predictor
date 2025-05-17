@@ -2,6 +2,7 @@ import {
   createAdminSupabaseClient,
   createUserSupabaseClient,
 } from "@/lib/supabase"
+import { addYears, isBefore, parseISO } from "date-fns"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -64,16 +65,16 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  let hiddenData = data?.map((item) => {
-    return {
+  // Hide sensitive fields by default
+  let hiddenData =
+    data?.map((item) => ({
       ...item,
       closingRankR2: "xxx",
       closingRankR3: "xxx",
       strayRound: "xxx",
       lastStrayRound: "xxx",
       fees: "xxx",
-    }
-  })
+    })) || []
 
   const {
     data: { user },
@@ -84,9 +85,9 @@ export async function GET(request: NextRequest) {
       .from("purchase")
       .select(
         `
-      *,
-      college_table:rowId (*)
-    `,
+        *,
+        college_table:rowId (*)
+      `,
       )
       .eq("phone", user.phone)
 
@@ -101,15 +102,56 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    if (userPurchases && userPurchases?.length > 0 && hiddenData?.length > 0) {
-      hiddenData = hiddenData?.map((college) => {
-        const matchingPurchase = userPurchases.find(
-          (p) => p.rowId === college.id,
+    if (userPurchases && userPurchases.length > 0 && hiddenData.length > 0) {
+      // Check for valid purchases (not expired)
+      const currentDate = new Date()
+
+      // Check for valid PREMIUM_PLAN
+      const hasValidPremiumPlan = userPurchases.some((purchase) => {
+        const purchaseDate = parseISO(purchase.created_at)
+        const expiryDate = addYears(purchaseDate, 1)
+        return (
+          purchase.payment_type === "PREMIUM_PLAN" &&
+          isBefore(currentDate, expiryDate)
         )
-        return matchingPurchase
-          ? { ...matchingPurchase.college_table, purchased: true }
-          : college
       })
+
+      if (hasValidPremiumPlan) {
+        hiddenData = data // Reveal all data for premium users
+      } else {
+        // Check for valid STATE_CLOSING_RANK purchase
+        const hasValidStatePurchase = userPurchases.some((purchase) => {
+          const purchaseDate = parseISO(purchase.created_at)
+          const expiryDate = addYears(purchaseDate, 1)
+          return (
+            purchase.payment_type === "STATE_CLOSING_RANK" &&
+            purchase.state === state &&
+            isBefore(currentDate, expiryDate)
+          )
+        })
+
+        if (hasValidStatePurchase) {
+          hiddenData = data // Reveal all data for the state
+        } else {
+          // Handle SINGLE_COLLEGE_CLOSING_RANK purchases
+          hiddenData = hiddenData.map((college) => {
+            const matchingPurchase = userPurchases.find((p) => {
+              const purchaseDate = parseISO(p.created_at)
+              const expiryDate = addYears(purchaseDate, 1)
+
+              return (
+                p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
+                p.rowId === college.id &&
+                isBefore(currentDate, expiryDate)
+              )
+            })
+
+            return matchingPurchase
+              ? { ...matchingPurchase.college_table, purchased: true }
+              : college
+          })
+        }
+      }
     }
   }
 
@@ -118,7 +160,7 @@ export async function GET(request: NextRequest) {
   const totalPages = Math.ceil(totalItems / pageSize)
 
   return NextResponse.json({
-    data: hiddenData ?? [],
+    data: hiddenData,
     currentPage: page,
     pageSize,
     totalItems,

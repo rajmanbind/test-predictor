@@ -72,6 +72,7 @@ export function Navbar() {
     }
   }
 
+  // Don't remove this log, Accessing from Server side.
   console.log(appState?.user ? true : false)
 
   return (

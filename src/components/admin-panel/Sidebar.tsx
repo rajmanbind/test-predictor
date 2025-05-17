@@ -3,11 +3,11 @@
 import { useAppState } from "@/hooks/useAppState"
 import { cn } from "@/utils/utils"
 import {
+  BadgeIndianRupee,
   CalendarCog,
   Database,
   Home,
   PlusSquare,
-  ReceiptIndianRupee,
   Settings2,
   Trash2,
 } from "lucide-react"
@@ -46,7 +46,7 @@ export const sidebarMenus = [
     link: "/admin/configure",
   },
   {
-    icon: <ReceiptIndianRupee />,
+    icon: <BadgeIndianRupee />,
     title: "Configure Prices",
     link: "/admin/configure/prices",
   },

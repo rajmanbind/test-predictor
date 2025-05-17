@@ -4,26 +4,36 @@ import { BELayout } from "@/components/admin-panel/BELayout"
 import { Heading } from "@/components/admin-panel/Heading"
 import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
+import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
-import { configYearOptions, years } from "@/utils/static"
-import { autoComplete } from "@/utils/utils"
-import { Info } from "lucide-react"
-import { useRouter } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import {
+  autoComplete,
+  cn,
+  isEmpty,
+  onOptionSelected,
+  shouldRenderComponent,
+} from "@/utils/utils"
+import React, { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
+import { Tooltip } from "react-tooltip"
+
+const dropDownType: IOption[] = [
+  { id: 0, text: "College Cutoff - UG" },
+  { id: 0, text: "College Cutoff - PG" },
+  { id: 1, text: "College Predictor" },
+  { id: 2, text: "Single College Closing Rank - UG" },
+  { id: 2, text: "Single College Closing Rank - PG" },
+  { id: 3, text: "Full State Closing Rank" },
+  { id: 4, text: "Plans" },
+]
 
 export default function ConfigurePricesPage() {
-  const [selectedYear, setSelectedYear] = useState<IOption | undefined>()
-  const [selectedClosingRankYear, setSelectedClosingRankYear] = useState<
-    IOption | undefined
-  >()
-  const [defaultValue, setDefaultValue] = useState<IOption | undefined>()
-  const [defaultClosingRankValue, setDefaultClosingRankValue] = useState<
-    IOption | undefined
-  >()
+  const [configList, setConfigList] = useState<any[]>([])
+  const [initialConfigList, setInitialConfigList] = useState<any[]>([])
+  const [selectedType, setSelectedType] = useState<IOption | undefined>()
 
   const {
     control,
@@ -34,176 +44,159 @@ export default function ConfigurePricesPage() {
   const { fetchData } = useFetch()
   const { showToast } = useAppState()
 
-  const router = useRouter()
+  const [updateMode, setUpdateMode] = useState<string>("")
+  const { appState } = useAppState()
+  const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
-    getData()
-  }, [])
+    if (selectedType) getData(selectedType.text)
+  }, [selectedType])
 
-  async function getData() {
-    const [configYear, closingRankYear] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CONFIG_YEAR" },
-      }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CLOSING_RANK_YEAR" },
-      }),
-    ])
-
-    if (configYear?.success) {
-      setDefaultValue({
-        id: configYear?.payload?.data?.[0]?.id,
-        text: configYear?.payload?.data?.[0]?.text,
-      })
-    }
-
-    if (closingRankYear?.success) {
-      setDefaultClosingRankValue({
-        id: closingRankYear?.payload?.data?.[0]?.id,
-        text: closingRankYear?.payload?.data?.[0]?.text,
-      })
-    }
-  }
-
-  async function onSubmitConfigYear() {
+  async function getData(type: string) {
     const res = await fetchData({
-      url: "/api/admin/configure/update_config_year",
-      method: "POST",
-      data: {
-        type: "CONFIG_YEAR",
-        text: selectedYear?.text,
-      },
+      url: "/api/admin/configure_prices/get",
+      params: { type },
     })
     if (res?.success) {
-      showToast("success", res?.payload?.msg)
-      router.push("/admin/manage-data")
+      setConfigList(res?.payload?.data || [])
+      setInitialConfigList(res?.payload?.data || [])
     }
   }
 
-  async function onSubmitClosingRankPage() {
+  function updateText(index: number, text: string) {
+    setConfigList((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, text } : item)),
+    )
+  }
+
+  async function updateData(id: number, price: string) {
+    if (!String(price)?.trim()) return
+
     const res = await fetchData({
-      url: "/api/admin/configure/update_config_year",
+      url: "/api/admin/configure_prices/update",
       method: "POST",
-      data: {
-        type: "CLOSING_RANK_YEAR",
-        text: selectedClosingRankYear?.text,
-      },
+      data: { id, price: Number(price.trim()) },
     })
+
     if (res?.success) {
-      showToast("success", res?.payload?.msg)
-      router.push("/admin/manage-data")
+      showToast("success", "Updated successfully")
+      getData(selectedType!.text)
     }
   }
+
+  const isSaveDisabled =
+    configList?.length === 0 ||
+    configList?.some(({ price }) => String(price)?.trim() === "") ||
+    JSON.stringify(configList) === JSON.stringify(initialConfigList)
 
   return (
     <BELayout className="mb-10 tab:mb-0">
       <Heading>Configure Prices</Heading>
 
-      <Card className="mt-4 px-6 py-10 flex flex-col tab:flex-row items-start gap-8 w-fit">
-        <form
-          className="w-full max-w-96"
-          onSubmit={handleSubmit(onSubmitConfigYear)}
-        >
+      <Card className="mt-4 p-6 min-h-[400px]">
+        <div className="w-full max-w-96">
           <SearchAndSelect
-            name="configYear"
-            label="Select Year To Show Data System wide"
-            labelClassName="text-sm pc:text-base"
-            placeholder="Select Dropdown Type"
-            value={selectedYear}
-            defaultOption={defaultValue}
-            onChange={({ selectedValue }) => {
-              setSelectedYear(selectedValue)
+            name="dropDownType"
+            label="Select Option"
+            placeholder="Select Option"
+            value={selectedType}
+            onChange={({ name, selectedValue }) => {
+              onOptionSelected(name, selectedValue, () => {})
+              setSelectedType(selectedValue)
             }}
             control={control}
             setValue={setValue}
             required
-            options={configYearOptions()}
+            options={dropDownType}
             debounceDelay={0}
             searchAPI={(text, setOptions) =>
-              autoComplete(text, configYearOptions(), setOptions)
+              autoComplete(text, dropDownType, setOptions)
             }
             errors={errors}
           />
-
-          <div className="flex mt-8 items-center justify-end">
-            <Button
-              className="py-2"
-              type="submit"
-              disabled={defaultValue?.text === selectedYear?.text}
-            >
-              Save Changes
-            </Button>
-          </div>
-        </form>
-
-        <div className="flex gap-2 text-color-text text-base font-light tracking-[1px] text-justify w-full max-w-[500px]">
-          <Info
-            className="text-blue-600 flex-shrink-0 translate-y-[2px]"
-            size={20}
-          />
-
-          <p className="text-xs tab:text-sm pc:text-base leading-relaxed">
-            This Selected Year will be used to display data in system. For eg:
-            In Table Columns where we have cr1, cr2, cr3 etc. will reflect years
-            data from here. suppose u have selected 2023 - 2024 then in Table it
-            will show: CR 2023 [R1], CR 2024 [R1], CR 2023 [R2], CR 2024 [R2]
-            and so on.
-          </p>
         </div>
-      </Card>
-      <Card className="mt-4 px-6 py-10 flex flex-col tab:flex-row items-start gap-8 w-fit max-w-[865px]">
-        <form
-          className="w-full max-w-96"
-          onSubmit={handleSubmit(onSubmitClosingRankPage)}
-        >
-          <SearchAndSelect
-            name="closingRankYear"
-            label="Select Default Year To Show on Closing-Ranks Page"
-            labelClassName="text-sm pc:text-base"
-            placeholder="Select Dropdown Type"
-            value={selectedClosingRankYear}
-            defaultOption={defaultClosingRankValue}
-            onChange={({ selectedValue }) => {
-              setSelectedClosingRankYear(selectedValue)
-            }}
-            control={control}
-            setValue={setValue}
-            required
-            options={years()}
-            debounceDelay={0}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, years(), setOptions)
-            }
-            errors={errors}
-          />
 
-          <div className="flex mt-8 items-center justify-end">
-            <Button
-              className="py-2"
-              type="submit"
-              disabled={
-                defaultClosingRankValue?.text === selectedClosingRankYear?.text
-              }
+        {shouldRenderComponent([selectedType], "AND") && (
+          <form className="w-full max-w-[500px]">
+            <div className="text-xl text-color-text mt-8 mb-4">
+              {selectedType?.text} Price
+            </div>
+
+            {shouldRenderComponent(
+              [isEmpty(configList), !appState.isLoading],
+              "AND",
+            ) && (
+              <div className="text-color-subtext text-center mt-10 mb-2 w-full border border-color-border py-10">
+                No options to show
+              </div>
+            )}
+
+            <ul
+              ref={listRef}
+              className="flex flex-col gap-6 w-full max-w-[400px] max-h-[calc(100vh-500px)] overflow-y-auto"
             >
-              Save Changes
-            </Button>
-          </div>
-        </form>
+              {configList?.map(({ id, item, price }, index) => (
+                <li
+                  key={index}
+                  className="grid grid-cols-[1fr_100px] items-center text-color-subtext py-2 mr-4 text-sm border-t border-b border-color-border"
+                >
+                  <div>{item}</div>
 
-        <div className="flex gap-2 text-color-text text-base font-light tracking-[1px] text-justify w-full max-w-[500px]">
-          <Info
-            className="text-blue-600 flex-shrink-0 translate-y-[2px]"
-            size={20}
-          />
+                  <Input
+                    name={String(index)}
+                    placeholder="Enter here"
+                    value={price}
+                    type="number"
+                    setValue={setValue}
+                    onChange={(e) => {
+                      updateText(index, e.target.value)
+                    }}
+                    onFocus={(e) => {
+                      if (id) {
+                        setUpdateMode(e.target.name)
+                      }
+                    }}
+                    onBlur={(e) => {
+                      if (id) {
+                        setUpdateMode("")
+                        if (item !== initialConfigList?.[index]?.price)
+                          updateData(id, e.target.value)
 
-          <p className="text-xs tab:text-sm pc:text-base leading-relaxed">
-            This Selected Year will be used as default year on Closing-Ranks
-            Page.
-          </p>
-        </div>
+                        if (e.target.value.trim() === "") {
+                          setValue(
+                            String(index),
+                            initialConfigList?.[index]?.price,
+                          )
+                          updateData(id, e.target.value)
+                        }
+                      }
+                    }}
+                    control={control}
+                    errors={errors}
+                    boxWrapperClass="h-[40px]"
+                    wrapperClass={cn(
+                      "w-full",
+                      String(index) === updateMode && "z-[1001]",
+                    )}
+                  />
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex mt-8 items-center justify-end mb-8">
+              <Button className="py-2" type="submit" disabled={isSaveDisabled}>
+                Update Changes
+              </Button>
+            </div>
+          </form>
+        )}
       </Card>
+
+      {updateMode && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-[rgba(0,0,0,0.4)] z-[1000]"></div>
+      )}
+
+      <Tooltip id="tooltip" place="top" className="z-[1100]" />
     </BELayout>
   )
 }

@@ -31,7 +31,7 @@ export default function UserAnalyticsChart() {
 
   useEffect(() => {
     fetchData({
-      url: `/api/admin/dashboard/revenue/get_date_wise`,
+      url: `/api/admin/dashboard/user/get_date_wise`,
       params: { days: selectedRange },
     }).then((res) => {
       setData(res?.payload)
@@ -140,7 +140,7 @@ export default function UserAnalyticsChart() {
             />
             <Area
               type="linear"
-              dataKey="revenue"
+              dataKey="userCount"
               stroke="#719DF8"
               fill="url(#colorRegistered)"
             />
@@ -150,3 +150,4 @@ export default function UserAnalyticsChart() {
     </div>
   )
 }
+

@@ -17,13 +17,24 @@ export default function AdminDashboardPage() {
     totalRevenue: 0,
   })
 
+  const [user, setUser] = useState({
+    monthlyUser: 0,
+    totalUser: 0,
+  })
+
   useEffect(() => {
-    fetchData({
-      url: `/api/admin/dashboard/revenue/get_total`,
-    }).then((res) => {
+    Promise.all([
+      fetchData({ url: `/api/admin/dashboard/revenue/get_total` }),
+      fetchData({ url: `/api/admin/dashboard/user/get_total` }),
+    ]).then(([revenueRes, userRes]) => {
       setRevenue({
-        monthlyRevenue: res?.payload?.monthlyRevenue || 0,
-        totalRevenue: res?.payload?.totalRevenue || 0,
+        monthlyRevenue: revenueRes?.payload?.monthlyRevenue || 0,
+        totalRevenue: revenueRes?.payload?.totalRevenue || 0,
+      })
+
+      setUser({
+        monthlyUser: userRes?.payload?.thisMonthUsers || 0,
+        totalUser: userRes?.payload?.totalUsers || 0,
       })
     })
   }, [])
@@ -60,7 +71,7 @@ export default function AdminDashboardPage() {
             <div className="block tab:hidden">
               Monthly Reg. <br /> User:
             </div>
-            <p className="font-semibold">0</p>
+            <p className="font-semibold">{user?.monthlyUser}</p>
           </div>
           <div className="flex items-center justify-between">
             <div className="hidden tab:block">Total Reg. User:</div>
@@ -68,7 +79,7 @@ export default function AdminDashboardPage() {
               Total Reg. <br /> User:
             </div>
 
-            <p className="font-semibold">0</p>
+            <p className="font-semibold">{user?.totalUser}</p>
           </div>
         </Card>
       </div>
@@ -78,7 +89,7 @@ export default function AdminDashboardPage() {
         <UserAnalyticsChart />
       </div>
 
-      <UserTable />
+      <UserTable totalUser={user?.totalUser} />
     </BELayout>
   )
 }

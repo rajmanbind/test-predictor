@@ -7,7 +7,10 @@ import { Table, TableColumn } from "@/components/common/Table/Table"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
-import { Filter } from "@/components/frontend/college-predictor/Filter"
+import {
+  Filter,
+  IFormData,
+} from "@/components/frontend/college-predictor/Filter"
 import { FilterPopup } from "@/components/frontend/college-predictor/FilterPopup"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
@@ -41,6 +44,13 @@ export default function ResultPage() {
   const { getSearchParams, setSearchParams } = useInternalSearchParams()
 
   const paginationRef = useRef<PaginationHandle>(null)
+
+  const [mobFilterFormData, setMobFilterFormData] = useState<IFormData>({
+    state: [],
+    instituteType: [],
+    category: [],
+    quota: [],
+  })
 
   useEffect(() => {
     const paymentStatus = getLocalStorageItem<any>(
@@ -428,6 +438,28 @@ export default function ResultPage() {
     return columns
   }
 
+  function filterCount() {
+    let count = 0
+
+    if (!isEmpty(mobFilterFormData?.state)) {
+      count += mobFilterFormData?.state?.length
+    }
+
+    if (!isEmpty(mobFilterFormData?.instituteType)) {
+      count += mobFilterFormData?.instituteType?.length
+    }
+
+    if (!isEmpty(mobFilterFormData?.category)) {
+      count += mobFilterFormData?.category?.length
+    }
+
+    if (!isEmpty(mobFilterFormData?.quota)) {
+      count += mobFilterFormData?.quota?.length
+    }
+
+    return count
+  }
+
   return (
     <FELayout>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
@@ -453,6 +485,11 @@ export default function ResultPage() {
             className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm pc:hidden mb-3"
             onClick={() => setFilterPopup(true)}
           >
+            {filterCount() > 0 && (
+              <p className="bg-red-600 size-5 rounded-full absolute top-[-10px] right-[-3px] grid place-items-center text-white font-semibold text-xs">
+                {filterCount()}
+              </p>
+            )}
             <Settings2 size={18} />
             Filter
           </Button>
@@ -497,6 +534,8 @@ export default function ResultPage() {
           quotasList={quotasList}
           categoryList={categoriesList}
           setFilterParams={setFilterParams}
+          setMobFilterFormData={setMobFilterFormData}
+          mobFilterFormData={mobFilterFormData}
           onClose={() => setFilterPopup(false)}
           onConfirm={() => {}}
         />

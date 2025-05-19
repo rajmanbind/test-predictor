@@ -73,7 +73,7 @@ export function Navbar() {
   }
 
   // Don't remove this log, Accessing from Server side.
-  console.log(appState?.user ? "" : false)
+  console.log(appState?.user ? "" : "")
 
   return (
     <Container className="flex-shrink-0 w-full">

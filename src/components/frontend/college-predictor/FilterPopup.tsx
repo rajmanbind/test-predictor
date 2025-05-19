@@ -6,7 +6,7 @@ import AnimatedPopup from "@/components/common/popups/AnimatedPopup"
 import { IOption } from "@/types/GlobalTypes"
 import { instituteTypes, states } from "@/utils/static"
 import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
-import React, { SetStateAction, useState } from "react"
+import React, { SetStateAction, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { FeeRangeSlider, MAX_FEE } from "../FeeRangeSlider"
@@ -17,12 +17,14 @@ const filterStates = states.slice(1)
 interface IFilterPopupProps {
   isOpen: boolean
 
+  setMobFilterFormData: React.Dispatch<SetStateAction<IFormData>>
+  mobFilterFormData: IFormData
+
   setFilterParams: React.Dispatch<SetStateAction<any>>
   categoryList: IOption[]
   quotasList: IOption[]
 
   onConfirm: () => void
-  onCancel?: () => void
   onClose: () => void
 }
 
@@ -31,32 +33,25 @@ export function FilterPopup({
   categoryList,
   quotasList,
   setFilterParams,
+  setMobFilterFormData,
+  mobFilterFormData,
   onConfirm,
-  onCancel,
   onClose,
 }: IFilterPopupProps) {
   const {
     handleSubmit,
     control,
     setValue,
-
     formState: { errors },
   } = useForm({
     shouldFocusError: true,
-  })
-
-  const [formData, setFormData] = useState<IFormData>({
-    state: [],
-    instituteType: [],
-    category: [],
-    quota: [],
   })
 
   const [range, setRange] = useState<[number, number]>([0, MAX_FEE])
   const [includeFeeRange, setIncludeFeeRange] = useState(false)
 
   async function onSubmit() {
-    let params: IParams = {}
+    let params: IParams = { page: 1 }
 
     if (includeFeeRange) {
       params = {
@@ -65,10 +60,10 @@ export function FilterPopup({
       }
     }
 
-    includeInParams(formData?.state, "states", params)
-    includeInParams(formData?.instituteType, "instituteType", params)
-    includeInParams(formData?.category, "category", params)
-    includeInParams(formData?.quota, "quota", params)
+    includeInParams(mobFilterFormData?.state, "states", params)
+    includeInParams(mobFilterFormData?.instituteType, "instituteType", params)
+    includeInParams(mobFilterFormData?.category, "category", params)
+    includeInParams(mobFilterFormData?.quota, "quota", params)
 
     setFilterParams(params)
   }
@@ -92,20 +87,21 @@ export function FilterPopup({
     >
       <div className="bg-color-form-background py-12 grid place-items-center">
         <form
-          className={cn("flex flex-col gap-4")}
+          className={cn("flex flex-col gap-4 w-full px-6")}
           onSubmit={handleSubmit(onSubmit)}
         >
           <MultiSelect
             name="instituteType"
             label="Institute Type"
             placeholder="Select Institute Type"
-            value={formData?.instituteType}
+            value={mobFilterFormData?.instituteType}
             onChange={({ name, selectedOptions }) => {
-              onOptionSelected(name, selectedOptions, setFormData)
+              onOptionSelected(name, selectedOptions, setMobFilterFormData)
             }}
             control={control}
             setValue={setValue}
             options={instituteTypes}
+            defaultOption={mobFilterFormData?.instituteType}
             debounceDelay={0}
             searchAPI={(text, setOptions) =>
               autoComplete(text, instituteTypes, setOptions)
@@ -117,14 +113,15 @@ export function FilterPopup({
             name="state"
             label="State"
             placeholder="Select State"
-            value={formData?.state}
+            value={mobFilterFormData?.state}
             onChange={({ name, selectedOptions }) => {
-              onOptionSelected(name, selectedOptions, setFormData)
+              onOptionSelected(name, selectedOptions, setMobFilterFormData)
             }}
             control={control}
             setValue={setValue}
             options={filterStates}
             debounceDelay={0}
+            defaultOption={mobFilterFormData?.state}
             searchAPI={(text, setOptions) =>
               autoComplete(text, filterStates, setOptions)
             }
@@ -135,14 +132,15 @@ export function FilterPopup({
             name="category"
             label="Category"
             placeholder="Select Category"
-            value={formData?.category}
+            value={mobFilterFormData?.category}
             onChange={({ name, selectedOptions }) => {
-              onOptionSelected(name, selectedOptions, setFormData)
+              onOptionSelected(name, selectedOptions, setMobFilterFormData)
             }}
             control={control}
             setValue={setValue}
             options={categoryList}
             debounceDelay={0}
+            defaultOption={mobFilterFormData?.category}
             searchAPI={(text, setOptions) =>
               autoComplete(text, categoryList, setOptions)
             }
@@ -153,14 +151,15 @@ export function FilterPopup({
             name="quota"
             label="Quota"
             placeholder="Select Quota"
-            value={formData?.quota}
+            value={mobFilterFormData?.quota}
             onChange={({ name, selectedOptions }) => {
-              onOptionSelected(name, selectedOptions, setFormData)
+              onOptionSelected(name, selectedOptions, setMobFilterFormData)
             }}
             control={control}
             setValue={setValue}
             options={quotasList}
             debounceDelay={0}
+            defaultOption={mobFilterFormData?.quota}
             searchAPI={(text, setOptions) =>
               autoComplete(text, quotasList, setOptions)
             }
@@ -176,6 +175,7 @@ export function FilterPopup({
 
           <Button
             className="mt-2"
+            type="submit"
             onClick={() => {
               onConfirm()
               onClose()
@@ -188,3 +188,4 @@ export function FilterPopup({
     </AnimatedPopup>
   )
 }
+

@@ -9,10 +9,12 @@ import { v4 as uuidv4 } from "uuid"
 
 import { SmallSpinner } from "./SmallSpinner"
 
-interface SearchAndSelectProps extends ICommonComponentProps {
+interface SearchAndSelectProps
+  extends Omit<ICommonComponentProps, "defaultOption"> {
   className?: string
   options: IOption[]
   value: IOption[] | undefined
+  defaultOption?: IOption[]
   onChange: ({
     name,
     selectedOptions,
@@ -54,7 +56,7 @@ export const MultiSelect = ({
   setValue,
   ...props
 }: SearchAndSelectProps) => {
-  const [input, setInput] = useState(defaultOption ? defaultOption.text : "")
+  const [input, setInput] = useState("")
   const [optionListOpen, setOptionListOpen] = useState(false)
   const [listOptions, setListOptions] = useState(options)
   const [isLoading, setIsLoading] = useState(false)
@@ -77,9 +79,8 @@ export const MultiSelect = ({
   }, [listOptions])
 
   useEffect(() => {
-    if (defaultOption?.text) {
-      setValue(name, defaultOption)
-      setInput(defaultOption.text)
+    if (defaultOption && defaultOption?.length > 0) {
+      setSelectedOptions(defaultOption)
     }
   }, [defaultOption])
 
@@ -343,3 +344,4 @@ function ListOptions({
     </>
   )
 }
+

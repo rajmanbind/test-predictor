@@ -89,9 +89,9 @@ function detailsRenderer(rowData: any) {
       <div>
         <p>Institute Name: {instituteName}</p>
         <p>Institute Type: {instituteType}</p>
-        <p>Course Type: {courseType}</p>
+        <p>State: {state}</p>
         <div className="flex gap-2">
-          <p>State: {state}</p>
+          <p>Course Type: {courseType}</p>
           <p>Year: {year}</p>
         </div>
       </div>
@@ -113,9 +113,9 @@ function detailsRenderer(rowData: any) {
     return (
       <div>
         <p>Institute Name: {instituteName}</p>
-        <p>Course Type: {courseType}</p>
+        <p>State: {state}</p>
         <div className="flex gap-2">
-          <p>State: {state}</p>
+          <p>Course Type: {courseType}</p>
           <p>Year: {year}</p>
         </div>
       </div>

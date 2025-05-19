@@ -8,6 +8,7 @@ import {
   Database,
   Home,
   PlusSquare,
+  ReceiptIndianRupee,
   Settings2,
   Trash2,
 } from "lucide-react"
@@ -19,6 +20,11 @@ export const sidebarMenus = [
     icon: <Home />,
     title: "Dashboard",
     link: "/admin/dashboard",
+  },
+  {
+    icon: <ReceiptIndianRupee />,
+    title: "Payment Insights",
+    link: "/admin/payment-insights",
   },
   {
     icon: <PlusSquare />,

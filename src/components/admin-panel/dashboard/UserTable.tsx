@@ -6,6 +6,7 @@ import { Table, TableColumn } from "@/components/common/Table/Table"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { onPageChange } from "@/utils/utils"
+import { format, parseISO } from "date-fns"
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
 
@@ -14,6 +15,14 @@ const columns: TableColumn[] = [
     title: "Joined On",
     tableKey: "created_at",
     width: "120px",
+    renderer({ cellData }) {
+      return (
+        <div>
+          {" "}
+          {format(parseISO(cellData as string), "dd MMM yyyy / hh:mm a")}
+        </div>
+      )
+    },
   },
   {
     title: "Phone Number",
@@ -90,7 +99,7 @@ function UserTable({ totalUser }: { totalUser: number }) {
       <Pagination
         currentPage={tableData?.currentPage}
         totalItems={tableData?.totalItems}
-        itemsCountPerPage={1}
+        itemsCountPerPage={tableData?.itemsCountPerPage}
         wrapperClass="pb-[50px]"
         onPageChange={(page: number) => {
           onPageChange(

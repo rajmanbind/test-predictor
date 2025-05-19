@@ -18,26 +18,33 @@ export async function GET(request: NextRequest) {
 
     const supabase = createAdminSupabaseClient()
 
-    let query = supabase
-      .from("price")
-      .select("*")
-      .eq("type", type)
-      .order("item", { ascending: true })
+    let query = supabase.from("price").select("*").eq("type", type)
 
     if (item) {
       query = query.eq("item", item)
+      const { data, error } = await query.single()
+
+      if (error) {
+        return NextResponse.json(
+          { msg: "Failed to fetch data", error },
+          { status: 400 },
+        )
+      }
+
+      return NextResponse.json({ data, msg: "price fetched successfully" })
+    } else {
+      query = query.order("item", { ascending: true })
+      const { data, error } = await query
+
+      if (error) {
+        return NextResponse.json(
+          { msg: "Failed to fetch data", error },
+          { status: 400 },
+        )
+      }
+
+      return NextResponse.json({ data, msg: "prices fetched successfully" })
     }
-
-    const { data, error } = await query
-
-    if (error) {
-      return NextResponse.json(
-        { msg: "Failed to fetch data", error },
-        { status: 400 },
-      )
-    }
-
-    return NextResponse.json({ data })
   } catch (err) {
     console.error(err)
     return NextResponse.json(

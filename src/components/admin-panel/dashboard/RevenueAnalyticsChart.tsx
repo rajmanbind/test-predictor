@@ -1,5 +1,6 @@
 "use client"
 
+import useFetch from "@/hooks/useFetch"
 import { cn } from "@/utils/utils"
 import { format, subDays } from "date-fns"
 import { X } from "lucide-react"
@@ -14,27 +15,28 @@ import {
   YAxis,
 } from "recharts"
 
-const generateData = (days: number) => {
-  return Array.from({ length: days }).map((_, index) => {
-    const date = subDays(new Date(), days - 1 - index)
-    return {
-      date,
-      revenue: Math.floor(Math.random() * 5000) + 2000,
-    }
-  })
-}
-
 const timeRanges = [
   { label: "7 Days", value: 7 },
-  { label: "1 Month", value: 30 },
-  { label: "All Time", value: 180 },
+  { label: "30 Days", value: 30 },
+  { label: "365 Days", value: 365 },
 ]
 
 export default function RevenueChart() {
   const [selectedRange, setSelectedRange] = useState(7)
-  const data = useMemo(() => generateData(selectedRange), [selectedRange])
+  const [data, setData] = useState<any[]>([])
   const [isFullScreen, setIsFullScreen] = useState(false)
   const chartRef = React.useRef<any>(null)
+
+  const { fetchData } = useFetch()
+
+  useEffect(() => {
+    fetchData({
+      url: `/api/admin/dashboard/revenue/get_date_wise`,
+      params: { days: selectedRange },
+    }).then((res) => {
+      setData(res?.payload)
+    })
+  }, [selectedRange])
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -128,7 +130,7 @@ export default function RevenueChart() {
                         {format(new Date(label), "MMM d, yyyy")}
                       </p>
                       <p className="text-emerald-600 dark:text-emerald-400">
-                        Revenue: ${payload[0].value}
+                        Revenue: ₹{payload[0].value}
                       </p>
                     </div>
                   )
@@ -137,7 +139,7 @@ export default function RevenueChart() {
               }}
             />
             <Area
-              type="monotone"
+              type="linear"
               dataKey="revenue"
               stroke="#34D399"
               fill="url(#colorRevenue)"

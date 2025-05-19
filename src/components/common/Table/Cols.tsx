@@ -185,7 +185,10 @@ export function generateCols(
                 size={20}
                 className="text-color-text cursor-pointer"
                 onClick={() => {
-                  setRowData(rowData)
+                  const link = `https://www.collegecutoff.net/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
+
+                  copyToClipboard(link)
+                  showToast?.("success", "Copied to clipboard")
                 }}
               />
               <Pencil
@@ -216,12 +219,8 @@ export function generateCols(
               size={20}
               className="text-color-text cursor-pointer"
               onClick={() => {
-                let link = ""
-                if (rowData?.course === "MBBS") {
-                  link = `https://www.collegecutoff.net/ug/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}`
-                } else {
-                  link = `https://www.collegecutoff.net/pg/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}`
-                }
+                const link = `https://www.collegecutoff.net/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
+
                 copyToClipboard(link)
                 showToast?.("success", "Copied to clipboard")
               }}
@@ -275,7 +274,6 @@ function copyToClipboard(text: string) {
 
     try {
       const successful = document.execCommand("copy")
-      console.log(successful ? "Copied to clipboard!" : "Copy failed")
     } catch (err) {
       console.error("Fallback copy failed:", err)
     }
@@ -511,3 +509,4 @@ export function generateColsPublic(
 
   return columns
 }
+

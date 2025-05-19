@@ -1,6 +1,7 @@
 import { cn, isEmpty } from "@/utils/utils"
 import { useSearchParams } from "next/navigation"
 import React, { ReactNode, useEffect, useState } from "react"
+import { isMobile } from "react-device-detect"
 
 interface TableProps {
   columns: TableColumn[]
@@ -89,8 +90,10 @@ export function Table({
       )}
       <div
         className={cn(
-          "overflow-auto border rounded-lg border-color-border relative min-h-[543px] max-h-[800px]",
+          "overflow-auto border rounded-lg border-color-border relative min-h-[543px] max-h-[750px]",
           data?.length === 10 && "min-h-0",
+          isMobile &&
+            "landscape:min-h-[250px] landscape:max-h-[calc(100vh-10px)]",
           className,
         )}
       >

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/common/Button"
 import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
-import { Pagination } from "@/components/common/Pagination"
+import { Pagination, PaginationHandle } from "@/components/common/Pagination"
 import { Table, TableColumn } from "@/components/common/Table/Table"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
@@ -13,10 +13,12 @@ import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
+import { priceType } from "@/utils/static"
 import { getLocalStorageItem, isEmpty } from "@/utils/utils"
-import { Info, Settings2 } from "lucide-react"
+import { Settings2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import Script from "next/script"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Tooltip } from "react-tooltip"
 
 import TableSignup from "./TableSignup"
@@ -33,16 +35,19 @@ export default function ResultPage() {
   const [updateUI, setUpdateUI] = useState(false)
 
   const [paid, setPaid] = useState(false)
+  const [amount, setAmount] = useState(149)
 
   const { fetchData } = useFetch()
-  const { getSearchParams } = useInternalSearchParams()
+  const { getSearchParams, setSearchParams } = useInternalSearchParams()
+
+  const paginationRef = useRef<PaginationHandle>(null)
 
   useEffect(() => {
-    getData()
-
     const paymentStatus = getLocalStorageItem<any>(
       `payment-predictor-${getSearchParams("rank")}`,
     )
+
+    getData(paymentStatus ? true : false, false)
 
     if (paymentStatus) {
       setPaid(true)
@@ -56,43 +61,53 @@ export default function ResultPage() {
   }, [])
 
   async function getConfigs() {
-    const [quotaData, categoryData, coursesData] = await Promise.all([
-      fetchData({ url: "/api/admin/configure/get", params: { type: "QUOTA" } }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CATEGORY" },
-      }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "COURSES" },
-      }),
-    ])
+    const [quotaData, categoryData, coursesData, priceData] = await Promise.all(
+      [
+        fetchData({
+          url: "/api/admin/configure/get",
+          params: { type: "QUOTA" },
+        }),
+        fetchData({
+          url: "/api/admin/configure/get",
+          params: { type: "CATEGORY" },
+        }),
+        fetchData({
+          url: "/api/admin/configure/get",
+          params: { type: "COURSES" },
+        }),
+        fetchData({
+          url: "/api/admin/configure_prices/get",
+          params: {
+            type: priceType.RANK_COLLEGE_PREDICTOR,
+          },
+        }),
+      ],
+    )
 
     setQuotasList(quotaData?.payload?.data || [])
     setCategoriesList(categoryData?.payload?.data || [])
     setCoursesList(coursesData?.payload?.data || [])
+    setAmount(priceData?.payload?.data?.[0]?.price)
   }
 
-  async function getData() {
-    const page = Number(getSearchParams("page") || 1)
+  async function getData(paymentStatus: boolean, paginationPage: any) {
+    let page = 1
+
+    if (paginationPage) {
+      page = paginationPage
+    } else {
+      page = Number(getSearchParams("page") || 1)
+    }
+
     const rank = getSearchParams("rank")
-    const state = getSearchParams("state")
     const course = getSearchParams("course")
-    const category = getSearchParams("category")
 
     const params: Record<string, any> = {
       page,
       size: 10,
       rank,
-      states: state,
       course,
-      category,
-    }
-
-    if (state !== "All") {
-      params.states = state
-    } else {
-      delete params.states
+      paymentStatus,
     }
 
     if (!isEmpty(filterParams)) {
@@ -101,6 +116,13 @@ export default function ResultPage() {
           params[key] = value
         }
       })
+
+      if (!paginationPage) {
+        setSearchParams("page", "1")
+        if (paginationRef.current) {
+          paginationRef.current.setActivePage(1)
+        }
+      }
     }
 
     const [dataRes, configRes] = await Promise.all([
@@ -170,55 +192,103 @@ export default function ResultPage() {
           return cellData?.split("/")?.[0]
         },
       },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${currentYear} Round 2`}
-      //     >
-      //       CR {currentYear} [R2]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR2_new`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Round ${currentYear} Round 3`}
-      //     >
-      //       CR {currentYear} [R3]
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR3_new`,
-      //   width: "130px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Stray Round ${currentYear}`}
-      //     >
-      //       SR {currentYear}
-      //     </div>
-      //   ),
-      //   tableKey: `strayRound_new`,
-      //   width: "160px",
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Last Stray Round ${currentYear}`}
-      //     >
-      //       Last <br />
-      //       SR {currentYear}
-      //     </div>
-      //   ),
-      //   tableKey: `lastStrayRound_new`,
-      //   width: "160px",
-      // },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank Round 2 ${currentYear}`}
+          >
+            {`Closing Rank [R2] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `closingRankR2_new`,
+        width: "160px",
+        renderer({ cellData }: any) {
+          return (
+            <div
+              data-tooltip-id={
+                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
+              }
+              data-tooltip-content={`Unlock @ ₹${amount}`}
+            >
+              {cellData?.split("/")?.[0]}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank Round 3 ${currentYear}`}
+          >
+            {`Closing Rank [R3] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `closingRankR3_new`,
+        width: "160px",
+        renderer({ cellData }: any) {
+          return (
+            <div
+              data-tooltip-id={
+                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
+              }
+              data-tooltip-content={`Unlock @ ₹${amount}`}
+            >
+              {cellData?.split("/")?.[0]}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round ${currentYear}`}
+          >
+            Stray Round {currentYear}
+          </div>
+        ),
+        tableKey: `strayRound_new`,
+        width: "160px",
+        renderer({ cellData }: any) {
+          return (
+            <div
+              data-tooltip-id={
+                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
+              }
+              data-tooltip-content={`Unlock @ ₹${amount}`}
+            >
+              {cellData?.split("/")?.[0]}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Last Stray Round ${currentYear}`}
+          >
+            Last Stray Round {currentYear}
+          </div>
+        ),
+        tableKey: `lastStrayRound_new`,
+        width: "160px",
+        renderer({ cellData }: any) {
+          return (
+            <div
+              data-tooltip-id={
+                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
+              }
+              data-tooltip-content={`Unlock @ ₹${amount}`}
+            >
+              {cellData?.split("/")?.[0]}
+            </div>
+          )
+        },
+      },
+
       // {
       //   title: (
       //     <div
@@ -393,11 +463,7 @@ export default function ResultPage() {
               overflowX: "auto",
             }}
           >
-            <SearchForm
-              categoriesList={categoriesList}
-              coursesList={coursesList}
-              setUpdateUI={setUpdateUI}
-            />
+            <SearchForm coursesList={coursesList} setUpdateUI={setUpdateUI} />
 
             <Table
               columns={generateCols()}
@@ -408,28 +474,20 @@ export default function ResultPage() {
                   <TableSignup
                     totalRecords={tableData?.totalItems}
                     setUpdateUI={setUpdateUI}
+                    amount={amount}
+                    configYear={configYear}
                   />
                 )
               }
             />
 
             <Pagination
+              ref={paginationRef}
               currentPage={tableData?.currentPage}
               totalItems={tableData?.totalItems}
               showOnlyOnePage={!paid}
               wrapperClass="pb-[50px]"
-              onPageChange={(page: number) => {
-                fetchData({
-                  url: "/api/predict_college",
-                  params: {
-                    page,
-                    size: 10,
-                    rank: getSearchParams("rank"),
-                  },
-                }).then((data: any) => {
-                  setTableData(data?.payload)
-                })
-              }}
+              onPageChange={(page: number) => getData(paid, page)}
             />
           </div>
         </div>

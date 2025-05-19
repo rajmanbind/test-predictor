@@ -23,7 +23,6 @@ interface IFormData {
   rank?: number | string
   state?: IOption
   courses?: IOption
-  category?: IOption
 }
 
 export function CollegePredictorForm() {
@@ -40,7 +39,6 @@ export function CollegePredictorForm() {
     rank: "",
   })
 
-  const [categoriesList, setCategoriesList] = useState<IOption[]>([])
   const [coursesList, setCoursesList] = useState<IOption[]>([])
   const { fetchData } = useFetch()
 
@@ -53,19 +51,12 @@ export function CollegePredictorForm() {
   }, [])
 
   async function getConfigData() {
-    const [coursesData, categoryData] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "COURSES" },
-      }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CATEGORY" },
-      }),
-    ])
+    const res = await fetchData({
+      url: "/api/admin/configure/get",
+      params: { type: "COURSES" },
+    })
 
-    setCoursesList(coursesData?.payload?.data || [])
-    setCategoriesList(categoryData?.payload?.data || [])
+    setCoursesList(res?.payload?.data || [])
   }
 
   function onSubmit() {
@@ -76,7 +67,6 @@ export function CollegePredictorForm() {
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("state", formData?.state?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
-    searchParams.set("category", formData?.category?.text || "")
 
     router.push(`/results?${searchParams.toString()}`)
   }
@@ -85,8 +75,7 @@ export function CollegePredictorForm() {
     return (
       isEmpty(formData?.rank) ||
       isEmpty(formData?.state?.text) ||
-      isEmpty(formData?.courses?.text) ||
-      isEmpty(formData?.category?.text)
+      isEmpty(formData?.courses?.text)
     )
   }
 
@@ -149,23 +138,6 @@ export function CollegePredictorForm() {
           debounceDelay={0}
           searchAPI={(text, setOptions) =>
             autoComplete(text, coursesList, setOptions)
-          }
-          errors={errors}
-        />
-        <SearchAndSelect
-          name="category"
-          label="Category"
-          placeholder="Select Category"
-          value={formData?.category}
-          onChange={({ name, selectedValue }) => {
-            onOptionSelected(name, selectedValue, setFormData)
-          }}
-          control={control}
-          setValue={setValue}
-          options={categoriesList}
-          debounceDelay={0}
-          searchAPI={(text, setOptions) =>
-            autoComplete(text, categoriesList, setOptions)
           }
           errors={errors}
         />

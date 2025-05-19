@@ -1,5 +1,7 @@
 "use client"
 
+import { IOption } from "@/types/GlobalTypes"
+import { autoComplete } from "@/utils/utils"
 import {
   ArrowRight,
   Download,
@@ -10,8 +12,11 @@ import {
   Users,
 } from "lucide-react"
 import Link from "next/link"
+import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
 
+import SearchAndSelect from "../common/SearchAndSelect"
 import { Container } from "./Container"
 
 // Define the state data structure
@@ -65,9 +70,24 @@ const states: StateData[] = [
   { name: "West Bengal", slug: "west-bengal" },
 ]
 
+const coursesList: IOption[] = [
+  { id: 0, text: "UG" },
+  { id: 1, text: "PG" },
+]
+
 export function ClosingRanksPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("all")
+  const [selectedCourses, setSelectedCourses] = useState<IOption | undefined>()
+
+  const router = useRouter()
+  const params = useParams()
+
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm()
 
   // Filter states based on search query and active tab
   const filteredStates = states.filter((state) => {
@@ -83,10 +103,38 @@ export function ClosingRanksPage() {
     <>
       {/* Hero Section */}
       <section className="w-full py-12 md:py-16 lg:py-20 bg-gradient-to-r from-yellow-50 to-emerald-50 relative overflow-hidden">
-        <Container className="pb-10 pt-1 pc:mt-10">
+        <Container className="pb-10 pt-1 pc:mt-10 px-3">
+          <div className="pc:translate-y-[-90px] translate-y-[-40px]  pc:px-4 px-3">
+            <SearchAndSelect
+              name="closingRankYear"
+              label="Select Course"
+              placeholder="Select Course"
+              value={selectedCourses}
+              defaultOption={{
+                id: params.id,
+                text: params.id.toString().toUpperCase(),
+              }}
+              onChange={({ selectedValue }) => {
+                setSelectedCourses(selectedValue)
+                router.replace(
+                  `/closing-ranks/${selectedValue?.text.toLowerCase()}`,
+                )
+              }}
+              control={control}
+              setValue={setValue}
+              options={coursesList}
+              debounceDelay={0}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, coursesList, setOptions)
+              }
+              wrapperClass="max-w-[150px]"
+              errors={errors}
+            />
+          </div>
+
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
             <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
-              NEET UG 2025
+              NEET {selectedCourses?.text}
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-black">
               Medical College Closing Ranks
@@ -145,10 +193,6 @@ export function ClosingRanksPage() {
               >
                 Popular States
               </button>
-              <button className="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 flex items-center gap-1">
-                <Filter className="h-4 w-4" />
-                <span>Filter</span>
-              </button>
             </div>
           </div>
 
@@ -170,7 +214,7 @@ export function ClosingRanksPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredStates.map((state) => (
               <Link
-                href={`/closing-ranks/${state.name}`}
+                href={`/closing-ranks/${params.id}/${state.name}`}
                 key={state.slug}
                 className="group bg-white rounded-xl border border-gray-200 p-5 transition-all hover:shadow-md hover:border-yellow-300 flex flex-col"
               >
@@ -188,7 +232,7 @@ export function ClosingRanksPage() {
                   )}
                 </div>
                 <p className="text-sm text-gray-500 mb-3">
-                  {state.name} - UG Medical
+                  {state.name} - {selectedCourses?.text} Medical
                 </p>
                 <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">
                   View Closing Ranks

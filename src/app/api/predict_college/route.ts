@@ -31,8 +31,14 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
 
   // Pagination parameters
-  const page = parseInt(searchParams.get("page") || "1")
+  let page = parseInt(searchParams.get("page") || "1")
   const pageSize = parseInt(searchParams.get("pageSize") || "10")
+
+  const paymentStatus = searchParams.get("paymentStatus") === "true"
+
+  if (!paymentStatus) {
+    page = 1
+  }
 
   // Search and filter parameters
   const rank = parseInt(searchParams.get("rank") || "0")
@@ -96,7 +102,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Merge and filter records based on rank
-  const mergedData: MergedRecord[] = []
+  let mergedData: MergedRecord[] = []
   const recordMap = new Map()
 
   data.forEach((record) => {
@@ -183,6 +189,22 @@ export async function GET(request: NextRequest) {
 
   // Sort by lowest rank first
   mergedData.sort((a, b) => a.sortKey - b.sortKey)
+
+  if (!paymentStatus) {
+    mergedData = mergedData.map((item) => ({
+      ...item,
+      closingRankR2_old: "xxx",
+      closingRankR3_old: "xxx",
+      strayRound_old: "xxx",
+      closingRankR2_new: "xxx",
+      closingRankR3_new: "xxx",
+      strayRound_new: "xxx",
+      finalStrayRound_old: "xxx",
+      finalStrayRound_new: "xxx",
+      lastStrayRound_old: "xxx",
+      lastStrayRound_new: "xxx",
+    }))
+  }
 
   // Pagination
   const totalItems = mergedData.length

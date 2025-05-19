@@ -185,3 +185,10 @@ export function updateQueryParams(router: any, updatedParams: any) {
 
   router.push(`?${params.toString()}`, { scroll: false })
 }
+
+export function getPhoneFromUser(user: any) {
+  if (!user) return null
+  const phone = user?.payload?.user?.phone ?? null
+  return phone
+}
+

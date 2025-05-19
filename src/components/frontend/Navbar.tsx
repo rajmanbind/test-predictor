@@ -22,7 +22,7 @@ export const navbarMenus = [
   },
   {
     title: "Closing Ranks",
-    href: "/closing-ranks",
+    href: "/closing-ranks/ug",
   },
 ]
 
@@ -73,7 +73,7 @@ export function Navbar() {
   }
 
   // Don't remove this log, Accessing from Server side.
-  console.log(appState?.user ? true : false)
+  console.log(appState?.user ? "" : false)
 
   return (
     <Container className="flex-shrink-0 w-full">

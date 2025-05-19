@@ -209,6 +209,16 @@ export const paymentType = {
   STATE_CLOSING_RANK: "STATE_CLOSING_RANK",
   PREMIUM_PLAN: "PREMIUM_PLAN",
   COLLEGE_CUT_OFF: "COLLEGE_CUT_OFF",
-  COLLEGE_PREDICTOR: "COLLEGE_PREDICTOR",
+  RANK_COLLEGE_PREDICTOR: "RANK_COLLEGE_PREDICTOR",
+}
+
+export const priceType = {
+  COLLEGE_CUT_OFF_UG: "College Cutoff - UG",
+  COLLEGE_CUT_OFF_PG: "College Cutoff - PG",
+  RANK_COLLEGE_PREDICTOR: "College Predictor",
+  SINGLE_COLLEGE_CLOSING_RANK_UG: "Single College Closing Rank - UG",
+  SINGLE_COLLEGE_CLOSING_RANK_PG: "Single College Closing Rank - PG",
+  STATE_CLOSING_RANK: "Full State Closing Rank",
+  PREMIUM_PLAN: "Plans",
 }
 

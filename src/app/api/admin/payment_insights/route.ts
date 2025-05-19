@@ -1,5 +1,5 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
-import { format, subDays } from "date-fns"
+import { startOfMonth, startOfToday, startOfYear, subDays } from "date-fns"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const page = parseInt(searchParams.get("page") || "1")
   const pageSize = parseInt(searchParams.get("size") || "20")
+  const range = searchParams.get("range") || "allTime"
 
   if (page < 1 || pageSize < 1) {
     return NextResponse.json(
@@ -17,15 +18,41 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminSupabaseClient()
-
   const from = (page - 1) * pageSize
   const to = from + pageSize - 1
 
-  const { data, count, error } = await supabase
-    .from("user")
+  let dateFilter: string | null = null
+
+  switch (range) {
+    case "today":
+      dateFilter = startOfToday().toISOString()
+      break
+    case "last7Days":
+      dateFilter = subDays(new Date(), 7).toISOString()
+      break
+    case "thisMonth":
+      dateFilter = startOfMonth(new Date()).toISOString()
+      break
+    case "thisYear":
+      dateFilter = startOfYear(new Date()).toISOString()
+      break
+    case "allTime":
+    default:
+      dateFilter = null
+      break
+  }
+
+  let query = supabase
+    .from("purchase")
     .select("*", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, to)
+
+  if (dateFilter) {
+    query = query.gte("created_at", dateFilter)
+  }
+
+  const { data, count, error } = await query
 
   if (error) {
     return NextResponse.json(

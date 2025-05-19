@@ -35,7 +35,7 @@ const columns: TableColumn[] = [
           target="_blank"
           className="cursor-pointer"
         >
-          <div className="text-blue-600 hover:underline">{cellData}</div>
+          <div className="text-blue-600 hover:underline">+{cellData}</div>
         </Link>
       )
     },

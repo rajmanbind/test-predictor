@@ -3,6 +3,7 @@
 import { useAppState } from "@/hooks/useAppState"
 import { cn } from "@/utils/utils"
 import {
+  BadgeIndianRupee,
   CalendarCog,
   Database,
   Home,
@@ -19,6 +20,11 @@ export const sidebarMenus = [
     icon: <Home />,
     title: "Dashboard",
     link: "/admin/dashboard",
+  },
+  {
+    icon: <ReceiptIndianRupee />,
+    title: "Payment Insights",
+    link: "/admin/payment-insights",
   },
   {
     icon: <PlusSquare />,
@@ -46,7 +52,7 @@ export const sidebarMenus = [
     link: "/admin/configure",
   },
   {
-    icon: <ReceiptIndianRupee />,
+    icon: <BadgeIndianRupee />,
     title: "Configure Prices",
     link: "/admin/configure/prices",
   },

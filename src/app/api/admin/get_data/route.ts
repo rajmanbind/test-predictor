@@ -78,6 +78,7 @@ export async function GET(request: NextRequest) {
         created_at: latest?.created_at ?? old?.created_at,
         instituteName: latest?.instituteName ?? old?.instituteName,
         instituteType: latest?.instituteType ?? old?.instituteType,
+        courseType: latest?.courseType ?? old?.courseType,
         state: latest?.state ?? old?.state,
         course: latest?.course ?? old?.course,
         quota: latest?.quota ?? old?.quota,
@@ -114,3 +115,4 @@ export async function GET(request: NextRequest) {
     totalPages,
   })
 }
+

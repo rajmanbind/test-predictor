@@ -1,15 +1,145 @@
+"use client"
+
 import { BELayout } from "@/components/admin-panel/BELayout"
 import { Heading } from "@/components/admin-panel/Heading"
-import React from "react"
+import { Button } from "@/components/common/Button"
+import { Card } from "@/components/common/Card"
+import SearchAndSelect from "@/components/common/SearchAndSelect"
+import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
+import { useAppState } from "@/hooks/useAppState"
+import useFetch from "@/hooks/useFetch"
+import { IOption } from "@/types/GlobalTypes"
+import { configYearOptions, years } from "@/utils/static"
+import { autoComplete, isEmpty } from "@/utils/utils"
+import { Info, Skull } from "lucide-react"
+import { useRouter } from "next/navigation"
+import React, { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
 
 export default function DeleteYearlyData() {
+  const [selectedYear, setSelectedYear] = useState<IOption>()
+
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({ shouldFocusError: true })
+  const { fetchData } = useFetch()
+  const { showToast } = useAppState()
+
+  const [popupOpen, setPopupOpen] = useState(false)
+
+  const router = useRouter()
+
+  async function onSubmit() {
+    const res = await fetchData({
+      url: "/api/admin/delete_yearly_data",
+      method: "POST",
+      data: {
+        year: selectedYear?.text,
+      },
+    })
+    if (res?.success) {
+      showToast("success", res?.payload?.msg)
+      router.push("/admin/manage-data")
+    }
+  }
+
   return (
     <BELayout className="mb-10 tab:mb-0">
       <Heading>Delete Yearly Data</Heading>
 
-      <div className="h-[400px] grid place-items-center w-full text-xl bg-color-form-background mt-4">
-        🎉 Coming Soon...
-      </div>
+      <Card className="mt-4 px-6 py-10 flex flex-col tab:flex-row items-start gap-8 w-fit max-w-[865px]">
+        <form className="w-full max-w-96">
+          <SearchAndSelect
+            name="selectedYear"
+            label="Select Year to Delete"
+            labelClassName="text-sm pc:text-base"
+            placeholder="Select Dropdown Type"
+            value={selectedYear}
+            onChange={({ selectedValue }) => {
+              setSelectedYear(selectedValue)
+            }}
+            control={control}
+            setValue={setValue}
+            required
+            options={years()}
+            debounceDelay={0}
+            searchAPI={(text, setOptions) =>
+              autoComplete(text, years(), setOptions)
+            }
+            errors={errors}
+          />
+
+          <div className="flex mt-8 items-center justify-end">
+            <Button
+              className="py-2 flex items-center gap-2"
+              disabled={isEmpty(selectedYear?.text)}
+              onClick={() => setPopupOpen(true)}
+            >
+              <Skull />
+              Delete All Data
+            </Button>
+          </div>
+        </form>
+
+        <div className="flex gap-2 text-color-text text-base font-light tracking-[1px] text-justify w-full max-w-[500px]">
+          <Info
+            className="text-blue-600 flex-shrink-0 translate-y-[2px]"
+            size={20}
+          />
+
+          <div>
+            <p className="text-xs tab:text-sm pc:text-base leading-relaxed text-color-text">
+              This will deleted All Data of the selected year. This includes
+              Both UG & PG.
+            </p>
+            <p className="mt-4">
+              <span className="font-semibold text-red-600">Note:</span> This
+              action is irreversible. Please proceed with caution.
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <ConfirmationPopup
+        isOpen={popupOpen}
+        title={
+          <>
+            <div className="hidden pc:block">
+              <p>Are You Sure You Want To Delete All Data</p>
+              <p>of: {selectedYear?.text} ?</p>
+            </div>
+
+            {/* Mobile */}
+            <div className="pc:hidden px-1">
+              <p>
+                Are You Sure You Want To Delete All Data of:{" "}
+                {selectedYear?.text} ?
+              </p>
+            </div>
+          </>
+        }
+        text={
+          <>
+            <div className="text-red-600 font-medium text-lg pc:flex items-center gap-2 w-fit mx-auto hidden">
+              <Skull />
+              {`This data will Permanently Deleted and You can't undo it`}
+            </div>
+
+            {/* Mobile */}
+            <div className="text-red-600 font-medium text-sm flex w-fit justify-center mx-auto pc:hidden translate-y-[6px]">
+              <Skull className="flex-shrink-0" />
+              <p className="max-w-[280px] text-center">
+                {`This data will Permanently Deleted and You can't undo it`}
+              </p>
+            </div>
+          </>
+        }
+        onClose={() => setPopupOpen(false)}
+        onConfirm={onSubmit}
+      />
     </BELayout>
   )
 }
+

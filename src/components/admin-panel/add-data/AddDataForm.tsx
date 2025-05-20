@@ -206,29 +206,52 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
 
   return (
     <div>
-      <SearchAndSelect
-        name="year"
-        label="Year"
-        value={formData?.year}
-        onChange={({ name, selectedValue }) => {
-          onOptionSelected(name, selectedValue, setFormData)
-        }}
-        control={control}
-        required
-        setValue={setValue}
-        options={years()}
-        debounceDelay={0}
-        defaultOption={
-          editMode
-            ? defaultValues?.year
-            : { id: 0, text: String(new Date().getFullYear() - 1) }
-        }
-        searchAPI={(text, setOptions) =>
-          autoComplete(text, years(), setOptions)
-        }
-        wrapperClass="max-w-[395px]"
-        errors={errors}
-      />
+      <div className="flex items-center gap-8 w-full">
+        <SearchAndSelect
+          name="year"
+          label="Year"
+          value={formData?.year}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+          }}
+          control={control}
+          required
+          setValue={setValue}
+          options={years()}
+          debounceDelay={0}
+          defaultOption={
+            editMode
+              ? defaultValues?.year
+              : { id: 0, text: String(new Date().getFullYear() - 1) }
+          }
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, years(), setOptions)
+          }
+          wrapperClass="max-w-[395px]"
+          errors={errors}
+        />
+
+        <SearchAndSelect
+          name="courseType"
+          label="Course Type"
+          placeholder="Search and Select"
+          value={formData?.courseType}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+          }}
+          control={control}
+          setValue={setValue}
+          required
+          options={courseType}
+          debounceDelay={0}
+          defaultOption={defaultValues?.courseType}
+          wrapperClass="max-w-[395px]"
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, courseType, setOptions)
+          }
+          errors={errors}
+        />
+      </div>
 
       <Card className="mt-4 p-6">
         <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
@@ -306,25 +329,6 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               errors={errors}
             />
 
-            <SearchAndSelect
-              name="courseType"
-              label="Course Type"
-              placeholder="Search and Select"
-              value={formData?.courseType}
-              onChange={({ name, selectedValue }) => {
-                onOptionSelected(name, selectedValue, setFormData)
-              }}
-              control={control}
-              setValue={setValue}
-              required
-              options={courseType}
-              debounceDelay={0}
-              defaultOption={defaultValues?.courseType}
-              searchAPI={(text, setOptions) =>
-                autoComplete(text, courseType, setOptions)
-              }
-              errors={errors}
-            />
             <SearchAndSelect
               name="quotas"
               label="Quota"

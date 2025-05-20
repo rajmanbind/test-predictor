@@ -7,8 +7,9 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
 
   const instituteName = searchParams.get("instituteName")?.trim()
-  const course = searchParams.get("course")?.trim()
+  const courseType = searchParams.get("courseType")?.trim()
   const dataCheckMode = searchParams.get("dataCheckMode")
+  const state = searchParams.get("state")
 
   const supabase = createAdminSupabaseClient()
 
@@ -33,18 +34,13 @@ export async function GET(request: NextRequest) {
     ?.split("-")
     .map((item: string) => item.trim())
 
-  // Fetch data with required instituteName and optional course filter
-  let query = supabase
+  const query = supabase
     .from("college_table")
     .select("*")
     .in("year", latestYears)
-    .ilike("instituteName", `%${instituteName}%`)
-
-  if (course) {
-    query = query.eq("course", course)
-  } else {
-    query = query.neq("course", "MBBS")
-  }
+    .eq("instituteName", instituteName)
+    .eq("courseType", courseType)
+    .eq("state", state)
 
   const { data, error } = await query.order("created_at", { ascending: false })
 
@@ -109,3 +105,4 @@ export async function GET(request: NextRequest) {
     data: mergedData,
   })
 }
+

@@ -21,15 +21,12 @@ interface IFormData {
   rank?: number | string
   state?: IOption
   course?: IOption
-  category?: IOption
 }
 
 export function SearchForm({
-  categoriesList,
   coursesList,
   setUpdateUI,
 }: {
-  categoriesList: IOption[]
   coursesList: IOption[]
   setUpdateUI: React.Dispatch<SetStateAction<boolean>>
 }) {
@@ -71,7 +68,6 @@ export function SearchForm({
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("state", formData?.state?.text || "")
     searchParams.set("course", formData?.course?.text || "")
-    searchParams.set("category", formData?.category?.text || "")
 
     setAppState({ isLoading: true })
 
@@ -153,37 +149,9 @@ export function SearchForm({
         }
         errors={errors}
       />
-      <SearchAndSelect
-        name="category"
-        label="Category"
-        placeholder="Select Category"
-        value={formData?.category}
-        required
-        defaultOption={
-          getSearchParams("category")
-            ? { id: 0, text: getSearchParams("category") }
-            : undefined
-        }
-        onChange={({ name, selectedValue }) => {
-          onOptionSelected(name, selectedValue, setFormData)
-        }}
-        control={control}
-        setValue={setValue}
-        options={categoriesList}
-        debounceDelay={0}
-        searchAPI={(text, setOptions) =>
-          autoComplete(text, categoriesList, setOptions)
-        }
-        errors={errors}
-      />
+
       <Button
-        className="h-[50px] mt-3 tab:mt-auto place-items-center hidden pc:grid"
-        onClick={onSubmit}
-      >
-        <Search />
-      </Button>
-      <Button
-        className="h-[50px] mt-3 tab:mt-auto place-items-center pc:hidden"
+        className="h-[50px] mt-3 tab:mt-auto place-items-center"
         onClick={onSubmit}
       >
         Search
@@ -191,3 +159,4 @@ export function SearchForm({
     </form>
   )
 }
+

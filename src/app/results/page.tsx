@@ -13,6 +13,7 @@ import {
 } from "@/components/frontend/college-predictor/Filter"
 import { FilterPopup } from "@/components/frontend/college-predictor/FilterPopup"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
+import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
@@ -39,6 +40,8 @@ export default function ResultPage() {
 
   const [paid, setPaid] = useState(false)
   const [amount, setAmount] = useState(149)
+
+  const { setAppState } = useAppState()
 
   const { fetchData } = useFetch()
   const { getSearchParams, setSearchParams } = useInternalSearchParams()

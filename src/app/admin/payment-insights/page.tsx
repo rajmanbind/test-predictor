@@ -96,7 +96,7 @@ function detailsRenderer(rowData: any) {
         </div>
       </div>
     )
-  } else if (rowData?.payment_type === "COLLEGE_PREDICTOR") {
+  } else if (rowData?.payment_type === "RANK_COLLEGE_PREDICTOR") {
     const { course, rank, year } = rowData?.college_predictor_details
 
     return (

@@ -1,14 +1,14 @@
 "use client"
 
-import React from "react"
+import React, { ReactNode } from "react"
 
 import { Button } from "../Button"
 import AnimatedPopup from "./AnimatedPopup"
 
 interface IConfirmationPopupProps {
-  title: string
+  title: ReactNode
   isOpen: boolean
-  text?: string
+  text?: ReactNode
 
   onConfirm: () => void
   onCancel?: () => void
@@ -65,3 +65,4 @@ export function ConfirmationPopup({
     </AnimatedPopup>
   )
 }
+

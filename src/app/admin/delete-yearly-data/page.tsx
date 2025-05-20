@@ -124,14 +124,14 @@ export default function DeleteYearlyData() {
           <>
             <div className="text-red-600 font-medium text-lg pc:flex items-center gap-2 w-fit mx-auto hidden">
               <Skull />
-              This data will Permanently Deleted and You can't undo it
+              {`This data will Permanently Deleted and You can't undo it`}
             </div>
 
             {/* Mobile */}
             <div className="text-red-600 font-medium text-sm flex w-fit justify-center mx-auto pc:hidden translate-y-[6px]">
               <Skull className="flex-shrink-0" />
               <p className="max-w-[280px] text-center">
-                This data will Permanently Deleted and You can't undo it
+                {`This data will Permanently Deleted and You can't undo it`}
               </p>
             </div>
           </>

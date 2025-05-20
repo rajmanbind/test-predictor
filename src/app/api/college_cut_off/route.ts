@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     ?.split("-")
     .map((item: string) => item.trim())
 
-  let query = supabase
+  const query = supabase
     .from("college_table")
     .select("*")
     .in("year", latestYears)

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     if (error || isEmpty(data)) {
       return NextResponse.json(
-        { msg: "Failed to delete records", error, data },
+        { msg: "Nothing to delete", error, data },
         { status: 400 },
       )
     }

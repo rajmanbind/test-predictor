@@ -110,7 +110,7 @@ function TableSignup({
             }}
           >
             <div className="flex items-center gap-2">
-              Unlock @ ₹149 <ChevronRight />
+              Unlock @ ₹{amount} <ChevronRight />
             </div>
           </button>
         </div>

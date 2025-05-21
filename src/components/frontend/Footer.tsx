@@ -31,7 +31,7 @@ export function Footer() {
   return (
     <footer className="w-full py-12 md:py-16 bg-gray-900 text-gray-200 mt-auto">
       <Container className="px-4 md:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pc:gap-12">
           <div className="col-span-2 md:col-span-1 space-y-4">
             <div className="flex items-center gap-2">
               <Logo />
@@ -52,7 +52,7 @@ export function Footer() {
               </p>
             </p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             <h4 className="text-sm font-bold uppercase tracking-wider">
               Important Links
             </h4>
@@ -67,20 +67,36 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href={"/closing-ranks"}
+                  href={"/closing-ranks/ug"}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Closing Ranks
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={"/packages"}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Packages
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={"/contact-us"}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             <h4 className="text-sm font-bold uppercase tracking-wider">
               Contact
             </h4>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-2">
                 <svg
                   className="h-5 w-5 mt-0.5 text-gray-400 flex-shrink-0"
@@ -97,7 +113,7 @@ export function Footer() {
                 </svg>
                 <a
                   href="mailto:collegecutoff.net@gmail.com"
-                  className="text-gray-400"
+                  className="text-gray-400 break-all max-w-[120px] pc:max-w-full"
                 >
                   collegecutoff.net@gmail.com
                 </a>
@@ -127,7 +143,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             <h4 className="text-sm font-bold uppercase tracking-wider">
               Privacy / Terms
             </h4>

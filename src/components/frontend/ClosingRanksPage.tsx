@@ -2,15 +2,7 @@
 
 import { IOption } from "@/types/GlobalTypes"
 import { autoComplete } from "@/utils/utils"
-import {
-  ArrowRight,
-  Download,
-  Filter,
-  Info,
-  MapPin,
-  Search,
-  Users,
-} from "lucide-react"
+import { ArrowRight, Info, MapPin, Search, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
@@ -106,8 +98,13 @@ export function ClosingRanksPage() {
         <Container className="pb-10 pt-1 pc:mt-10 px-3">
           <div className="pc:translate-y-[-90px] translate-y-[-40px]  pc:px-4 px-3">
             <SearchAndSelect
-              name="closingRankYear"
-              label="Select Course"
+              name="closingRanksCourse"
+              labelNode={
+                <div className="text-lg font-bold text-color-accent">
+                  Select Course
+                </div>
+              }
+              boxWrapperClass="border-color-accent"
               placeholder="Select Course"
               value={selectedCourses}
               defaultOption={{

@@ -140,16 +140,19 @@ function PaymentCard({
         </div>
 
         <div className="mb-6 space-y-2">
-          <h3 className="font-medium">{`What You'll Get :`}</h3>
+          <h3 className="font-medium text-[20px]">{`What You'll Get :`}</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center font-poppins">
               <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
-              All Rounds Complete Category and Quota Wise MBBS Cut-off RANK/
-              MARKS Details (NEET UG 2024) of your Selected College.
+              <h3 className="text-[15px] leading-[1.4]">
+                All Rounds Complete Category and Quota Wise MBBS Cut-off RANK/
+                MARKS Details (NEET UG 2024) of your Selected College.
+              </h3>
             </li>
             <li className="flex items-center font-poppins">
               <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
-              Instant Access after Payment!
+
+              <h3 className="text-[15px]">Instant Access after Payment!</h3>
             </li>
           </ul>
         </div>

@@ -1,9 +1,11 @@
 import { Award, BookMarked, Building, Users } from "lucide-react"
 
+import { Container } from "../Container"
+
 export function StatsSection() {
   return (
-    <section className="w-full py-16 md:py-24 relative overflow-hidden">
-      <div className="container px-4 md:px-6">
+    <section className="w-full py-16 md:py-24 relative">
+      <Container>
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold">Our Impact in Numbers</h2>
           <p className="text-gray-500 mt-2 max-w-2xl mx-auto">
@@ -40,7 +42,8 @@ export function StatsSection() {
             <p className="text-sm text-gray-500 mt-1">Queries Answered</p>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }
+

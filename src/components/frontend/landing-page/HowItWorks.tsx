@@ -17,6 +17,8 @@ import {
   Users,
 } from "lucide-react"
 
+import WhyChooseUs from "./WhyChooseUS"
+
 export default function HowItWorks() {
   return (
     <section className="w-full py-20 md:py-28 relative overflow-hidden">
@@ -347,158 +349,8 @@ export default function HowItWorks() {
             </div>
           </motion.div>
         </div>
-
-        <div>
-          <h2 className="text-3xl font-bold text-center py-20">
-            Why Choose Us
-          </h2>
-
-          {/* Benefits Section */}
-          <motion.div
-            className="grid md:grid-cols-3 gap-6 text-black"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, staggerChildren: 0.1 }}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <motion.div
-              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              viewport={{ once: true }}
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
-                <Lightbulb className="h-7 w-7 text-yellow-600" />
-              </div>
-              <h3 className="font-bold mb-2 text-lg">
-                Focused on Private and Deemed Medical Colleges
-              </h3>
-              <p className="text-gray-600 text-sm">
-                We specialize in providing accurate information exclusively for
-                private and deemed medical colleges across India, helping you
-                make informed decisions for both MBBS and MD/MS admissions.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Users className="h-7 w-7 text-emerald-600" />
-              </div>
-              <h3 className="font-bold mb-2 text-lg">
-                Comprehensive Cutoff Data for MBBS and MD/MS
-              </h3>
-              <p className="text-gray-600 text-sm">
-                {`Access last year's detailed cutoff information — college-wise and category-wise — for MBBS and across all MD/MS specializations.
-                This gives you complete clarity to plan your medical admission journey with confidence.`}
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-              viewport={{ once: true }}
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
-                <Award className="h-7 w-7 text-yellow-600" />
-              </div>
-              <h3 className="font-bold mb-2 text-lg">
-                Authentic Information Sourced from Official Authorities
-              </h3>
-              <p className="text-gray-600 text-sm">
-                {`All our data is directly sourced from official counseling
-                authority websites, ensuring it's genuine, verified, and
-                completely up-to-date — no manipulation, no guesswork.`}
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Users className="h-7 w-7 text-emerald-600" />
-              </div>
-              <h3 className="font-bold mb-2 text-lg">
-                Personalized Counseling for Management and NRI Quota
-              </h3>
-              <p className="text-gray-600 text-sm">
-                {`Private medical education is a significant investment, and a single mistake can cost a valuable seat.
-                We offer paid personalized counseling (via phone, WhatsApp, and in-person) specifically for Management and NRI quota admissions — expert guidance that goes beyond what the portal alone can offer.`}
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
-                <Award className="h-7 w-7 text-yellow-600" />
-              </div>
-              <h3 className="font-bold mb-2 text-lg">
-                Simple, Transparent Process
-              </h3>
-              <p className="text-gray-600 text-sm">
-                {`Our platform is clean and easy to use — check cutoff details instantly and reach out when you need one-on-one support.
-                No confusing dashboards. No hidden steps.`}
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="bg-white p-6 rounded-xl shadow-md border border-gray-100 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Users className="h-7 w-7 text-emerald-600" />
-              </div>
-              <h3 className="font-bold mb-2 text-lg">
-                Trusted by Medical Aspirants
-              </h3>
-              <p className="text-gray-600 text-sm">
-                {`Every year, hundreds of MBBS and MD/MS aspirants rely on CollegeCutoff.net for accurate information and genuine support throughout their admission process.`}
-              </p>
-            </motion.div>
-          </motion.div>
-
-          {/* CTA */}
-          <motion.div
-            className="mt-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <a
-              href="#"
-              className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-emerald-500 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
-              Try Our College Predictor Now
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </a>
-            <p className="text-gray-500 mt-4">
-              Join 30,000+ students who found their perfect medical college
-              match
-            </p>
-          </motion.div>
-        </div>
       </div>
     </section>
   )
 }
+

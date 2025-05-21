@@ -21,13 +21,19 @@ import { useForm } from "react-hook-form"
 import { Tooltip } from "react-tooltip"
 
 const dropDownType: IOption[] = [
-  { id: 0, text: "College Cutoff - UG" },
-  { id: 0, text: "College Cutoff - PG" },
-  { id: 1, text: "College Predictor" },
-  { id: 2, text: "Single College Closing Rank - UG" },
-  { id: 2, text: "Single College Closing Rank - PG" },
-  { id: 3, text: "Full State Closing Rank" },
-  { id: 4, text: "Plans" },
+  { id: "College Cutoff - UG", text: "W College Cutoff - UG" },
+  { id: "College Cutoff - PG", text: "W College Cutoff - PG" },
+  { id: "College Predictor", text: "College Predictor" },
+  {
+    id: "Single College Closing Rank - UG",
+    text: "Single College Closing Rank - UG",
+  },
+  {
+    id: "Single College Closing Rank - PG",
+    text: "Single College Closing Rank - PG",
+  },
+  { id: "Full State Closing Rank", text: "Full State Closing Rank" },
+  { id: "Plans", text: "Plans" },
 ]
 
 export default function ConfigurePricesPage() {
@@ -37,7 +43,6 @@ export default function ConfigurePricesPage() {
 
   const {
     control,
-    handleSubmit,
     setValue,
     formState: { errors },
   } = useForm({ shouldFocusError: true })
@@ -49,7 +54,7 @@ export default function ConfigurePricesPage() {
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
-    if (selectedType) getData(selectedType.text)
+    if (selectedType) getData(selectedType.id)
   }, [selectedType])
 
   async function getData(type: string) {
@@ -80,7 +85,7 @@ export default function ConfigurePricesPage() {
 
     if (res?.success) {
       showToast("success", "Updated successfully")
-      getData(selectedType!.text)
+      getData(selectedType!.id)
     }
   }
 

@@ -80,13 +80,13 @@ export function CollegePredictorForm() {
   }
 
   return (
-    <Card className="tab:mx-16 p-7 tab:p-10">
+    <Card className="mt-2 tab:mx-16 p-7 tab:p-10">
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-2">
-          <h3 className="text-xl pc:text-2xl font-bold">
+          <h3 className="text-[25px] pc:text-4xl font-bold text-center">
             Predict Your College
           </h3>
-          <p className="text-sm text-gray-500">
+          <p className="text-base text-gray-500 text-center poppinsFont">
             Enter your details to find the best college matches
           </p>
         </div>

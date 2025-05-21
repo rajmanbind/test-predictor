@@ -20,8 +20,8 @@ export default function ContactUsContent() {
               Contact Us
             </h1>
             <p className="text-gray-600 md:text-lg mb-8 max-w-2xl">
-              Have questions about NEET counselling or need guidance for your
-              medical career? We're here to help you every step of the way.
+              {`Have questions about NEET counselling or need guidance for your
+              medical career? We're here to help you every step of the way.`}
             </p>
           </div>
         </Container>
@@ -36,10 +36,10 @@ export default function ContactUsContent() {
                 About CollegeCutoff
               </h2>
               <p className="text-gray-600 mb-4">
-                CollegeCutoff is India's leading platform dedicated to helping
+                {`CollegeCutoff is India's leading platform dedicated to helping
                 NEET aspirants make informed decisions about their medical
                 education journey. Founded in 2017, we have guided over 30,000
-                students to secure admissions in their dream medical colleges.
+                students to secure admissions in their dream medical colleges.`}
               </p>
               <p className="text-gray-600 mb-4">
                 Our team consists of experienced counsellors, medical

@@ -4,13 +4,14 @@ import { BELayout } from "@/components/admin-panel/BELayout"
 import { Heading } from "@/components/admin-panel/Heading"
 import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
+import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
 import { configYearOptions, years } from "@/utils/static"
-import { autoComplete, isEmpty } from "@/utils/utils"
+import { autoComplete, isEmpty, onTextFieldChange } from "@/utils/utils"
 import { Info, Skull } from "lucide-react"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
@@ -21,7 +22,10 @@ export default function DeleteYearlyData() {
 
   const {
     control,
+    handleSubmit,
     setValue,
+    clearErrors,
+    setError,
     formState: { errors },
   } = useForm({ shouldFocusError: true })
   const { fetchData } = useFetch()
@@ -29,9 +33,24 @@ export default function DeleteYearlyData() {
 
   const [popupOpen, setPopupOpen] = useState(false)
 
+  const [formData, setFormData] = useState({
+    adminDataDeletePassword: "",
+  })
+
   const router = useRouter()
 
   async function onSubmit() {
+    if (
+      formData?.adminDataDeletePassword !==
+      process.env.NEXT_PUBLIC_ADMIN_DATA_DELETE_PASSWORD
+    ) {
+      setError("adminDataDeletePassword", {
+        type: "manual",
+        message: "Wrong Password",
+      })
+      return
+    }
+
     const res = await fetchData({
       url: "/api/admin/delete_yearly_data",
       method: "POST",
@@ -104,6 +123,7 @@ export default function DeleteYearlyData() {
 
       <ConfirmationPopup
         isOpen={popupOpen}
+        disableInstantSubmit
         title={
           <>
             <div className="hidden pc:block">
@@ -122,22 +142,47 @@ export default function DeleteYearlyData() {
         }
         text={
           <>
-            <div className="text-red-600 font-medium text-lg pc:flex items-center gap-2 w-fit mx-auto hidden">
+            <div className="text-color-accent font-medium text-lg pc:flex items-center gap-2 w-fit mx-auto hidden">
               <Skull />
               {`This data will Permanently Deleted and You can't undo it`}
             </div>
 
             {/* Mobile */}
-            <div className="text-red-600 font-medium text-sm flex w-fit justify-center mx-auto pc:hidden translate-y-[6px]">
+            <div className="text-color-accent font-medium text-sm flex w-fit justify-center mx-auto pc:hidden translate-y-[6px]">
               <Skull className="flex-shrink-0" />
               <p className="max-w-[280px] text-center">
                 {`This data will Permanently Deleted and You can't undo it`}
               </p>
             </div>
+
+            <div className="mt-5 px-4 pc:px-0">
+              <Input
+                name="adminDataDeletePassword"
+                label="Admin Data Delete Password"
+                type="password"
+                placeholder="Enter here"
+                value={formData?.adminDataDeletePassword}
+                onChange={(e) => onTextFieldChange(e, setFormData)}
+                control={control}
+                setValue={setValue}
+                errorClass="text-left text-base"
+                rules={{
+                  required: true,
+                }}
+                errors={errors}
+              />
+            </div>
           </>
         }
-        onClose={() => setPopupOpen(false)}
-        onConfirm={onSubmit}
+        onClose={() => {
+          setPopupOpen(false)
+          clearErrors("adminDataDeletePassword")
+          setValue("adminDataDeletePassword", "")
+          setFormData({
+            adminDataDeletePassword: "",
+          })
+        }}
+        onConfirm={() => handleSubmit(onSubmit)()}
       />
     </BELayout>
   )

@@ -16,7 +16,7 @@ import { courseType, paymentType, priceType, years } from "@/utils/static"
 import { autoComplete, onPageChange, saveToLocalStorage } from "@/utils/utils"
 import { ChevronLeft, Eye, Info, Users, View } from "lucide-react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Script from "next/script"
 import { useEffect, useState } from "react"
 import { isMobile } from "react-device-detect"
@@ -55,13 +55,9 @@ export default function CollegeListClosingRanksPage() {
 
   const { fetchData } = useFetch()
 
-  const { showToast, setAppState } = useAppState()
+  const router = useRouter()
 
-  const {
-    control,
-    setValue,
-    formState: { errors },
-  } = useForm()
+  const { showToast, setAppState } = useAppState()
 
   useEffect(() => {
     getData()
@@ -128,6 +124,7 @@ export default function CollegeListClosingRanksPage() {
         title: "Institute Name",
         tableKey: "instituteName",
         width: "150px",
+        disableMobStaticLeft: true,
       },
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
       { title: "State", tableKey: "state", width: "150px" },
@@ -229,17 +226,22 @@ export default function CollegeListClosingRanksPage() {
     })
 
     if (res?.success) {
-      setUpdateUI((prev) => !prev)
+      // setUpdateUI((prev) => !prev)
 
-      await fetchData({
+      const priceRes = await fetchData({
         url: "/api/payment",
         method: "POST",
         data: {
           [paymentType?.SINGLE_COLLEGE_CLOSING_RANK]: amount,
         },
-        noLoading: true,
         noToast: true,
       })
+
+      if (priceRes?.success) {
+        router.push(
+          `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}`,
+        )
+      }
     }
 
     setProcessingPayment(false)
@@ -259,27 +261,6 @@ export default function CollegeListClosingRanksPage() {
               <ChevronLeft className="h-4 w-4 mr-1" />
               Back to All States
             </Link>
-
-            <SearchAndSelect
-              name="closingRankYear"
-              label="Select Year"
-              placeholder="Select Year"
-              value={selectedClosingRankYear}
-              defaultOption={defaultClosingRankValue}
-              onChange={({ selectedValue }) => {
-                setSelectedClosingRankYear(selectedValue)
-                setUpdateUI((prev) => !prev)
-              }}
-              control={control}
-              setValue={setValue}
-              options={yearList}
-              debounceDelay={0}
-              searchAPI={(text, setOptions) =>
-                autoComplete(text, yearList, setOptions)
-              }
-              wrapperClass="max-w-[150px]"
-              errors={errors}
-            />
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">
               <div>

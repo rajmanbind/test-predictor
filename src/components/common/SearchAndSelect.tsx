@@ -13,6 +13,7 @@ interface SearchAndSelectProps extends ICommonComponentProps {
   className?: string
   options: IOption[]
   value: IOption | undefined
+  labelNode?: React.ReactNode
   onChange: ({
     name,
     selectedValue,
@@ -40,6 +41,7 @@ export const SearchAndSelect = ({
   errors,
   required,
   label,
+  labelNode,
   labelHint,
   labelTooltipIcon,
   options,
@@ -170,6 +172,8 @@ export const SearchAndSelect = ({
                 {labelTooltipIcon}
               </div>
             )}
+
+            {labelNode && <>{labelNode}</>}
 
             <div
               className={cn(
@@ -329,3 +333,4 @@ function ListOptions({
     </>
   )
 }
+

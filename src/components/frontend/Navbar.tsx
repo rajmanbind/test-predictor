@@ -17,12 +17,20 @@ import { ThemeSwitcher } from "./ThemeSwitcher"
 
 export const navbarMenus = [
   {
-    title: "College Predictor",
+    title: "COLLEGE PREDICTOR",
     href: "/",
   },
   {
-    title: "Closing Ranks",
+    title: "CLOSING RANKS",
     href: "/closing-ranks/ug",
+  },
+  {
+    title: "PACKAGES",
+    href: "/packages",
+  },
+  {
+    title: "CONTACT US",
+    href: "/contact-us",
   },
 ]
 
@@ -38,7 +46,10 @@ export function NavbarItem({
   return (
     <Link
       href={href}
-      className={cn("text-color-text hover:text-color-accent", className)}
+      className={cn(
+        "text-color-text hover:text-color-accent poppinsFont",
+        className,
+      )}
     >
       {title}
     </Link>

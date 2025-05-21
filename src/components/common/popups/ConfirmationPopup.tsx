@@ -10,6 +10,8 @@ interface IConfirmationPopupProps {
   isOpen: boolean
   text?: ReactNode
 
+  disableInstantSubmit?: boolean
+
   onConfirm: () => void
   onCancel?: () => void
   onClose: () => void
@@ -20,6 +22,7 @@ export function ConfirmationPopup({
   text,
   isOpen,
   onConfirm,
+  disableInstantSubmit,
   onCancel,
   onClose,
 }: IConfirmationPopupProps) {
@@ -53,7 +56,9 @@ export function ConfirmationPopup({
             <Button
               className="py-2 px-8"
               onClick={() => {
-                onClose()
+                if (!disableInstantSubmit) {
+                  onClose()
+                }
                 onConfirm()
               }}
             >

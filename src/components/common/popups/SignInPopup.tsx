@@ -18,13 +18,6 @@ import { useEffect, useRef, useState } from "react"
 import { Button } from "../Button"
 import { Logo } from "../Logo"
 
-type CountryCode = {
-  code: string
-  name: string
-  dial_code: string
-  flag: string
-}
-
 export function SignInPopup({
   successCallback,
   errorCallback,
@@ -42,53 +35,15 @@ export function SignInPopup({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [countdown, setCountdown] = useState(0)
   const [error, setError] = useState("")
-  const [showCountrySelector, setShowCountrySelector] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>({
+  const [selectedCountry, setSelectedCountry] = useState({
     code: "IN",
     name: "India",
     dial_code: "+91",
-    flag: "🇮🇳",
   })
-
-  const countrySelectorRef = useRef<HTMLDivElement>(null)
 
   const router = useRouter()
 
-  const { showToast } = useAppState()
-
   const { fetchData } = useFetch()
-
-  // List of country codes (abbreviated for brevity)
-  const countryCodes: CountryCode[] = [
-    { code: "US", name: "United States", dial_code: "+1", flag: "🇺🇸" },
-    { code: "GB", name: "United Kingdom", dial_code: "+44", flag: "🇬🇧" },
-    { code: "IN", name: "India", dial_code: "+91", flag: "🇮🇳" },
-    { code: "CA", name: "Canada", dial_code: "+1", flag: "🇨🇦" },
-    { code: "AU", name: "Australia", dial_code: "+61", flag: "🇦🇺" },
-    { code: "DE", name: "Germany", dial_code: "+49", flag: "🇩🇪" },
-    { code: "FR", name: "France", dial_code: "+33", flag: "🇫🇷" },
-    { code: "IT", name: "Italy", dial_code: "+39", flag: "🇮🇹" },
-    { code: "JP", name: "Japan", dial_code: "+81", flag: "🇯🇵" },
-    { code: "CN", name: "China", dial_code: "+86", flag: "🇨🇳" },
-    { code: "BR", name: "Brazil", dial_code: "+55", flag: "🇧🇷" },
-    { code: "RU", name: "Russia", dial_code: "+7", flag: "🇷🇺" },
-    { code: "SG", name: "Singapore", dial_code: "+65", flag: "🇸🇬" },
-    { code: "AE", name: "United Arab Emirates", dial_code: "+971", flag: "🇦🇪" },
-    { code: "SA", name: "Saudi Arabia", dial_code: "+966", flag: "🇸🇦" },
-    { code: "ZA", name: "South Africa", dial_code: "+27", flag: "🇿🇦" },
-    { code: "MX", name: "Mexico", dial_code: "+52", flag: "🇲🇽" },
-    { code: "ES", name: "Spain", dial_code: "+34", flag: "🇪🇸" },
-    { code: "KR", name: "South Korea", dial_code: "+82", flag: "🇰🇷" },
-    { code: "NZ", name: "New Zealand", dial_code: "+64", flag: "🇳🇿" },
-  ]
-
-  // Filter countries based on search query
-  const filteredCountries = countryCodes.filter(
-    (country) =>
-      country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      country.dial_code.includes(searchQuery),
-  )
 
   // Handle OTP input
   const handleOtpChange = (index: number, value: string) => {
@@ -191,7 +146,7 @@ export function SignInPopup({
         successCallback?.()
       } else {
         if (!noRedirect) {
-          router.replace("/closing-ranks")
+          router.replace("/closing-ranks/ug")
         }
       }
     }
@@ -223,23 +178,6 @@ export function SignInPopup({
     }
   }
 
-  // Close country selector when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        countrySelectorRef.current &&
-        !countrySelectorRef.current.contains(event.target as Node)
-      ) {
-        setShowCountrySelector(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-
   // Reset state when modal closes
   useEffect(() => {
     if (!appState?.signInModalOpen) {
@@ -248,8 +186,6 @@ export function SignInPopup({
         setPhoneNumber("")
         setOtp(["", "", "", "", "", ""])
         setError("")
-        setShowCountrySelector(false)
-        setSearchQuery("")
       }, 300)
     }
   }, [appState?.signInModalOpen])
@@ -308,63 +244,16 @@ export function SignInPopup({
               </label>
               <div className="relative flex">
                 {/* Country Code Selector */}
-                <div className="relative" ref={countrySelectorRef}>
+                <div className="relative">
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-3 h-[50px] border border-gray-300 rounded-l-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                    onClick={() => setShowCountrySelector(!showCountrySelector)}
+                    className="flex items-center gap-2 px-3 h-[50px] border border-gray-300 rounded-l-lg bg-gray-50 focus:outline-non"
+                    disabled
                   >
-                    <span className="text-lg">{selectedCountry.flag}</span>
                     <span className="text-sm font-medium">
                       {selectedCountry.dial_code}
                     </span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
                   </button>
-
-                  {/* Country Dropdown */}
-                  {showCountrySelector && (
-                    <div className="absolute z-10 mt-1 left-0 w-64 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg">
-                      <div className="sticky top-0 bg-white p-2 border-b border-gray-200">
-                        <div className="relative">
-                          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                          <input
-                            type="text"
-                            placeholder="Search countries..."
-                            className="w-full pl-8 pr-2 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="py-1">
-                        {filteredCountries.map((country) => (
-                          <button
-                            key={country.code}
-                            type="button"
-                            className="flex items-center gap-3 w-full px-4 py-2 text-left hover:bg-gray-100"
-                            onClick={() => {
-                              setSelectedCountry(country)
-                              setShowCountrySelector(false)
-                              setSearchQuery("")
-                            }}
-                          >
-                            <span className="text-lg">{country.flag}</span>
-                            <span className="text-sm font-medium">
-                              {country.name}
-                            </span>
-                            <span className="text-xs text-color-accent ml-auto">
-                              {country.dial_code}
-                            </span>
-                          </button>
-                        ))}
-                        {filteredCountries.length === 0 && (
-                          <div className="px-4 py-2 text-sm text-gray-500">
-                            No countries found
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Phone Input */}
@@ -413,11 +302,19 @@ export function SignInPopup({
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-500">
                 By continuing, you agree to our{" "}
-                <a href="#" className="text-yellow-600 hover:underline">
-                  Terms of Service
+                <a
+                  href="/terms-and-conditions"
+                  target="_blank"
+                  className="text-yellow-600 hover:underline"
+                >
+                  Terms And Conditions
                 </a>{" "}
                 and{" "}
-                <a href="#" className="text-yellow-600 hover:underline">
+                <a
+                  href="/privacy-policy"
+                  target="_blank"
+                  className="text-yellow-600 hover:underline"
+                >
                   Privacy Policy
                 </a>
               </p>

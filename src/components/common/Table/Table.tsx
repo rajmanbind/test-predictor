@@ -20,6 +20,7 @@ export interface TableColumn {
   width?: string
   hidden?: boolean
   overrideInternalClick?: boolean
+  disableMobStaticLeft?: boolean
   renderer?: (props: {
     rowData: any
     cellData: React.ReactNode
@@ -81,6 +82,19 @@ export function Table({
     )
   }
 
+  function handleStaticLeft(column: TableColumn, isHeader?: boolean) {
+    const bgColor = isHeader ? "bg-color-table-header" : "bg-color-white_black"
+
+    if (column?.tableKey === "instituteName") {
+      if (column?.disableMobStaticLeft && isMobile) {
+        return ""
+      }
+      return `tableStaticLeft ${bgColor}`
+    }
+
+    return ""
+  }
+
   return (
     <div className={cn("relative")}>
       {isEmpty(data) && (
@@ -125,8 +139,7 @@ export function Table({
                     "uppercase",
                     column?.tableKey === "action" &&
                       "tableActionStatic bg-color-table-header",
-                    column?.tableKey === "instituteName" &&
-                      "tableStaticLeft bg-color-table-header",
+                    handleStaticLeft(column, true),
                   )}
                   style={{ minWidth: column?.width }}
                 >
@@ -168,8 +181,7 @@ export function Table({
                       column?.overrideInternalClick && "cursor-auto",
                       column?.tableKey === "action" &&
                         "tableActionStatic px-0 py-0",
-                      column?.tableKey === "instituteName" &&
-                        "tableStaticLeft bg-color-white_black",
+                      handleStaticLeft(column, false),
                     )}
                     onClick={(e) =>
                       column?.overrideInternalClick ? e.stopPropagation() : null

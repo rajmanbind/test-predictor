@@ -9,22 +9,12 @@ import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
-import { IOption } from "@/types/GlobalTypes"
 import { paymentType, years } from "@/utils/static"
 import { getLocalStorageItem, onPageChange } from "@/utils/utils"
 import { ChevronLeft, Info, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
-
-const yearList: IOption[] = []
-const configYearList = years()
-
-for (let i = 0; i < configYearList?.length; i++) {
-  if (new Date().getFullYear() >= parseInt(configYearList?.[i]?.text)) {
-    yearList.push(configYearList?.[i])
-  }
-}
 
 export default function StateClosingRanksPage() {
   const [tableData, setTableData] = useState<any>(null)
@@ -68,6 +58,10 @@ export default function StateClosingRanksPage() {
   }
 
   function generateCols() {
+    const percentile_Marks = params.id === "ug" ? "Marks" : "Percentile"
+
+    const currentYear = year
+
     const columns: TableColumn[] = [
       {
         title: "Institute Name",
@@ -92,9 +86,9 @@ export default function StateClosingRanksPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${year} Round 1`}
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
           >
-            CR {year} [R1]
+            {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR1`,
@@ -104,9 +98,9 @@ export default function StateClosingRanksPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${year} Round 2`}
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
           >
-            CR {year} [R2]
+            {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR2`,
@@ -126,9 +120,9 @@ export default function StateClosingRanksPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Round ${year} Round 3`}
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
           >
-            CR {year} [R3]
+            {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR3`,
@@ -148,9 +142,9 @@ export default function StateClosingRanksPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${year}`}
+            data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           >
-            SR {year}
+            {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           </div>
         ),
         tableKey: `strayRound`,
@@ -170,10 +164,9 @@ export default function StateClosingRanksPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round ${year}`}
+            data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           >
-            Last <br />
-            SR {year}
+            Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           </div>
         ),
         tableKey: `lastStrayRound`,

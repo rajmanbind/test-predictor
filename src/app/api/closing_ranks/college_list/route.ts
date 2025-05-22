@@ -3,7 +3,7 @@ import {
   createUserSupabaseClient,
 } from "@/lib/supabase"
 import { paymentType } from "@/utils/static"
-import { addYears, isBefore, parseISO } from "date-fns"
+import { addMonths, isBefore, parseISO } from "date-fns"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
 
       const hasValidPremiumPlan = userPurchases.some((purchase) => {
         const purchaseDate = parseISO(purchase.created_at)
-        const expiryDate = addYears(purchaseDate, 1)
+        const expiryDate = addMonths(purchaseDate, 6)
         return (
           purchase.payment_type === paymentType.PREMIUM_PLAN &&
           isBefore(currentDate, expiryDate)
@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
         // State Plan Check
         const hasValidStatePurchase = userPurchases.some((purchase) => {
           const purchaseDate = parseISO(purchase.created_at)
-          const expiryDate = addYears(purchaseDate, 1)
+          const expiryDate = addMonths(purchaseDate, 6)
           return (
             purchase.payment_type === "STATE_CLOSING_RANK" &&
             purchase.state === state &&
@@ -125,8 +125,7 @@ export async function GET(request: NextRequest) {
           hiddenData = hiddenData.map((college: any) => {
             const matchingPurchase = userPurchases.find((p) => {
               const purchaseDate = parseISO(p.created_at)
-              const expiryDate = addYears(purchaseDate, 1)
-
+              const expiryDate = addMonths(purchaseDate, 6)
               return (
                 p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
                 isBefore(currentDate, expiryDate) &&
@@ -161,4 +160,3 @@ function isCollegePurchased(college: any, userCollege: any) {
     college.year === year
   )
 }
-

@@ -180,6 +180,8 @@ export default function PaymentInsightsPage() {
     })
 
     if (res?.success) {
+      console.log("res?.payload", res?.payload)
+
       setTableData(res?.payload)
     }
   }
@@ -249,7 +251,7 @@ export default function PaymentInsightsPage() {
         <Pagination
           currentPage={tableData?.currentPage}
           totalItems={tableData?.totalItems}
-          itemsCountPerPage={tableData?.itemsCountPerPage}
+          itemsCountPerPage={tableData?.pageSize}
           wrapperClass="pb-[50px]"
           onPageChange={(page: number) => {
             onPageChange(

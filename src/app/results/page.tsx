@@ -166,6 +166,9 @@ export default function ResultPage() {
     let currentYear = new Date().getFullYear()
     let previousYear = currentYear - 1
 
+    const percentile_Marks =
+      getSearchParams("course") === "MBBS" ? "Marks" : "Percentile"
+
     if (!isEmpty(configYear)) {
       previousYear = configYear[0]
       currentYear = configYear[1]
@@ -193,29 +196,29 @@ export default function ResultPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank Round 1 ${currentYear}`}
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
           >
-            {`Closing Rank [R1] ${currentYear}`}
+            {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR1_new`,
-        width: "160px",
+        width: "190px",
         renderer({ cellData }) {
           // @ts-ignore
-          return cellData?.split("/")?.[0]
+          return cellData
         },
       },
       {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank Round 2 ${currentYear}`}
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
           >
-            {`Closing Rank [R2] ${currentYear}`}
+            {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR2_new`,
-        width: "160px",
+        width: "190px",
         renderer({ cellData }: any) {
           return (
             <div
@@ -224,7 +227,7 @@ export default function ResultPage() {
               }
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
-              {cellData?.split("/")?.[0]}
+              {cellData}
             </div>
           )
         },
@@ -233,13 +236,13 @@ export default function ResultPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank Round 3 ${currentYear}`}
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
           >
-            {`Closing Rank [R3] ${currentYear}`}
+            {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
           </div>
         ),
         tableKey: `closingRankR3_new`,
-        width: "160px",
+        width: "190px",
         renderer({ cellData }: any) {
           return (
             <div
@@ -248,7 +251,7 @@ export default function ResultPage() {
               }
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
-              {cellData?.split("/")?.[0]}
+              {cellData}
             </div>
           )
         },
@@ -257,13 +260,13 @@ export default function ResultPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round ${currentYear}`}
+            data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           >
-            Stray Round {currentYear}
+            {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           </div>
         ),
         tableKey: `strayRound_new`,
-        width: "160px",
+        width: "190px",
         renderer({ cellData }: any) {
           return (
             <div
@@ -272,7 +275,7 @@ export default function ResultPage() {
               }
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
-              {cellData?.split("/")?.[0]}
+              {cellData}
             </div>
           )
         },
@@ -281,13 +284,13 @@ export default function ResultPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round ${currentYear}`}
+            data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           >
-            Last Stray Round {currentYear}
+            Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           </div>
         ),
         tableKey: `lastStrayRound_new`,
-        width: "160px",
+        width: "190px",
         renderer({ cellData }: any) {
           return (
             <div
@@ -296,7 +299,7 @@ export default function ResultPage() {
               }
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
-              {cellData?.split("/")?.[0]}
+              {cellData}
             </div>
           )
         },

@@ -3,7 +3,7 @@
 import { Button } from "@/components/common/Button"
 import { useAppState } from "@/hooks/useAppState"
 import { cn } from "@/utils/utils"
-import { ArrowRight, Shield } from "lucide-react"
+import { ArrowRight, CircleCheckBig, Shield } from "lucide-react"
 import React, { ReactNode, useState } from "react"
 import { isMobile } from "react-device-detect"
 
@@ -141,16 +141,16 @@ function PaymentCard({
 
         <div className="mb-6 space-y-2">
           <h3 className="font-medium text-[20px]">{`What You'll Get :`}</h3>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-center font-poppins">
-              <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li className="flex font-poppins gap-2">
+              <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
               <h3 className="text-[15px] leading-[1.4]">
                 All Rounds Complete Category and Quota Wise MBBS Cut-off RANK/
                 MARKS Details (NEET UG 2024) of your Selected College.
               </h3>
             </li>
-            <li className="flex items-center font-poppins">
-              <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
+            <li className="flex font-poppins gap-2">
+              <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
 
               <h3 className="text-[15px]">Instant Access after Payment!</h3>
             </li>

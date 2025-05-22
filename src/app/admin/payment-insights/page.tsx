@@ -180,8 +180,6 @@ export default function PaymentInsightsPage() {
     })
 
     if (res?.success) {
-      console.log("res?.payload", res?.payload)
-
       setTableData(res?.payload)
     }
   }

@@ -222,9 +222,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return (
             <div
-              data-tooltip-id={
-                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
-              }
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
               {cellData}
@@ -246,9 +244,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return (
             <div
-              data-tooltip-id={
-                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
-              }
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
               {cellData}
@@ -270,9 +266,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return (
             <div
-              data-tooltip-id={
-                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
-              }
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
               {cellData}
@@ -294,9 +288,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return (
             <div
-              data-tooltip-id={
-                cellData?.split("/")?.[0] === "xxx" ? "tooltip" : ""
-              }
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock @ ₹${amount}`}
             >
               {cellData}
@@ -386,7 +378,7 @@ export default function ResultPage() {
           width: "160px",
           renderer({ cellData }) {
             // @ts-ignore
-            return cellData?.split("/")?.[0]
+            return cellData
           },
         },
         {
@@ -402,7 +394,7 @@ export default function ResultPage() {
           width: "160px",
           renderer({ cellData }) {
             // @ts-ignore
-            return cellData?.split("/")?.[0]
+            return cellData
           },
         },
         {
@@ -430,7 +422,7 @@ export default function ResultPage() {
           width: "160px",
           renderer({ cellData }) {
             // @ts-ignore
-            return cellData?.split("/")?.[0]
+            return cellData
           },
         },
       )

@@ -145,8 +145,8 @@ function PaymentCard({
             <li className="flex font-poppins gap-2">
               <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
               <h3 className="text-[15px] leading-[1.4]">
-                All Rounds Complete Category and Quota Wise MBBS Cut-off RANK/
-                MARKS Details (NEET UG 2024) of your Selected College.
+                {`All Round's Complete Category and Quota Wise MBBS Cut-off RANK/
+                MARKS Details (NEET UG 2024) of your Selected College.`}
               </h3>
             </li>
             <li className="flex font-poppins gap-2">

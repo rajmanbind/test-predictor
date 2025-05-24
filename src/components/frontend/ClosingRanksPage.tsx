@@ -133,7 +133,7 @@ export function ClosingRanksPage() {
             <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
               NEET {selectedCourses?.text}
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-black">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-color-table-header">
               Medical College Closing Ranks
             </h1>
             <p className="text-gray-600 md:text-lg mb-8 max-w-2xl">
@@ -190,20 +190,6 @@ export function ClosingRanksPage() {
               >
                 Popular States
               </button>
-            </div>
-          </div>
-
-          {/* Info Card */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 flex items-start gap-3">
-            <Info className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-blue-800 text-sm">
-                <strong>Note:</strong>
-                {`Closing ranks are based on the previous
-                year's NEET counselling data. Actual cutoffs may vary for the
-                current year. We recommend using this information as a reference
-                only.`}
-              </p>
             </div>
           </div>
 

@@ -13,7 +13,12 @@ import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { courseType, paymentType, priceType, years } from "@/utils/static"
-import { autoComplete, onPageChange, saveToLocalStorage } from "@/utils/utils"
+import {
+  autoComplete,
+  cn,
+  onPageChange,
+  saveToLocalStorage,
+} from "@/utils/utils"
 import { ChevronLeft, Eye, Info, Users, View } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
@@ -264,7 +269,7 @@ export default function CollegeListClosingRanksPage() {
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-black">
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-color-table-header">
                   {state} Medical Colleges
                 </h1>
                 <p className="text-gray-600">
@@ -281,6 +286,16 @@ export default function CollegeListClosingRanksPage() {
         {/* Main Content */}
         <section className="w-full py-12">
           <Container className="container px-4 md:px-6">
+            <div
+              className={cn(
+                "bg-sky-50 border border-sky-200 p-4 rounded-md text-color-text flex gap-2 pc:hidden overflow-hidden my-3",
+              )}
+            >
+              <p className="animated-new text-center">
+                Rotate your Phone to Landscape or Horizontal For Better view.
+              </p>
+            </div>
+
             <Table
               columns={generateCols()}
               data={tableData?.data}
@@ -340,7 +355,11 @@ export default function CollegeListClosingRanksPage() {
         isOpen={showPaymentPopup}
         onClose={() => setShowPaymentPopup(false)}
         paymentDescription="CollegeCutOff.net Payment for Closing Ranks"
-        title={<p className="pt-2">Please make payment to Unlock</p>}
+        title={
+          <p className="pt-2 uppercase poppinsFont">
+            Please make payment to Unlock
+          </p>
+        }
         btnText={`Unlock Now @ ₹${amount}`}
         amount={amount}
       />

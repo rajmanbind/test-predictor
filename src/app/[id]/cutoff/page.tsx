@@ -316,7 +316,7 @@ function Renderer({
           amount={amount}
           paymentDescription="Payment for Single College Cutoff at CollegeCutoff.net"
           title={
-            <p>
+            <p className="uppercase poppinsFont">
               Please Make Payment To View Cutoff of: <br />
               {getSearchParams("college")}
             </p>

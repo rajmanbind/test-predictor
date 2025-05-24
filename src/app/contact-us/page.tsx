@@ -1,10 +1,46 @@
 "use client"
 
+import { Button } from "@/components/common/Button"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import { CheckCircle, Mail, MapPin, MessageCircle, Phone } from "lucide-react"
+import { useState } from "react"
 
 export default function ContactUsContent() {
+  const [formData, setFormData] = useState({
+    name: "",
+    subject: "",
+    message: "",
+  })
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Construct mailto URL
+    const emailBody = `Name: ${formData.name}\n\nMessage:\n${formData.message}`
+    const mailtoUrl = `mailto:collegecutoff@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(emailBody)}`
+
+    // Open Gmail app or default email client
+    window.location.href = mailtoUrl
+
+    // Reset form
+    setFormData({
+      name: "",
+      subject: "",
+      message: "",
+    })
+  }
+
   return (
     <FELayout>
       <section className="w-full py-12 md:py-16 lg:py-20 bg-gradient-to-r from-yellow-50 to-emerald-50 relative overflow-hidden">
@@ -16,7 +52,7 @@ export default function ContactUsContent() {
             <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
               GET IN TOUCH
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-black">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-color-table-header">
               Contact Us
             </h1>
             <p className="text-gray-600 md:text-lg mb-8 max-w-2xl">
@@ -38,7 +74,7 @@ export default function ContactUsContent() {
               <p className="text-gray-600 mb-4">
                 {`CollegeCutoff is India's leading platform dedicated to helping
                 NEET aspirants make informed decisions about their medical
-                education journey. Founded in 2017, we have guided over 30,000
+                education journey. Founded in 2019, we have guided over 30,000
                 students to secure admissions in their dream medical colleges.`}
               </p>
               <p className="text-gray-600 mb-4">
@@ -144,91 +180,90 @@ export default function ContactUsContent() {
                         </a>
                       </div>
                     </div>
-
-                    <div className="flex items-start gap-3 md:gap-4">
-                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-yellow-100 flex-shrink-0 flex items-center justify-center">
-                        <MapPin className="h-5 w-5 md:h-6 md:w-6 text-yellow-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-base md:text-lg text-gray-900">
-                          Visit Us
-                        </h3>
-                        <p className="text-gray-600 mt-1 text-sm md:text-base">
-                          302, Pyramid Axis, Baner,
-                          <br />
-                          411045, Pune Maharashtra,
-                          <br />
-                          India
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Need Urgent Help - Redesigned */}
-              <div className="relative pt-10 md:pt-0">
-                <h2 className="text-2xl font-bold mb-6 absolute md:relative top-0 left-0">
-                  Need Urgent Help?
-                </h2>
-                <div className="bg-gradient-to-br from-yellow-500 via-yellow-600 to-yellow-700 rounded-xl shadow-xl overflow-hidden mt-4 md:mt-1">
-                  <div className="relative p-5 md:p-[34px]">
-                    {/* Decorative Elements */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
-
-                    <div className="relative z-10 text-white">
-                      <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">
-                        Get Immediate Assistance
-                      </h3>
-                      <p className="mb-5 md:mb-6 opacity-90 text-sm md:text-base">
-                        Our expert counsellors are available to provide
-                        immediate guidance for your NEET counselling queries and
-                        college selection decisions.
-                      </p>
-
-                      <div className="space-y-4 md:space-y-6">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 md:p-4 border border-white/20">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center">
-                              <Phone className="h-4 w-4 md:h-5 md:w-5 text-white" />
-                            </div>
-                            <div>
-                              <h4 className="font-medium text-sm md:text-base">
-                                Call Our Priority Helpline
-                              </h4>
-                              <a
-                                href="tel:+919876543211"
-                                className="text-white font-bold text-base md:text-lg hover:underline"
-                              >
-                                +91 9876543211
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 md:p-4 border border-white/20">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center">
-                              <MessageCircle className="h-4 w-4 md:h-5 md:w-5 text-white" />
-                            </div>
-                            <div>
-                              <h4 className="font-medium text-sm md:text-base">
-                                WhatsApp Support
-                              </h4>
-                              <a
-                                href="https://wa.me/919876543211"
-                                className="text-white font-bold text-base md:text-lg hover:underline"
-                              >
-                                +91 9876543211
-                              </a>
-                            </div>
-                          </div>
-                        </div>
+              {/* Contact Form */}
+              <div>
+                <Card className="bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-bold">
+                      Send Us a Message
+                    </CardTitle>
+                    <p className="text-orange-100">
+                      Fill out the form below and we'll get back to you as soon
+                      as possible.
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="name"
+                          className="text-white font-medium"
+                        >
+                          Name
+                        </Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          type="text"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          placeholder="Enter your full name"
+                          required
+                          className="bg-white/90 border-0 text-gray-900 placeholder:text-gray-500"
+                        />
                       </div>
-                    </div>
-                  </div>
-                </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="subject"
+                          className="text-white font-medium"
+                        >
+                          Subject
+                        </Label>
+                        <Input
+                          id="subject"
+                          name="subject"
+                          type="text"
+                          value={formData.subject}
+                          onChange={handleInputChange}
+                          placeholder="Enter the subject"
+                          required
+                          className="bg-white/90 border-0 text-gray-900 placeholder:text-gray-500"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="message"
+                          className="text-white font-medium"
+                        >
+                          Message
+                        </Label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          placeholder="Enter your message"
+                          required
+                          rows={4}
+                          className="bg-white/90 border-0 text-gray-900 placeholder:text-gray-500 resize-none"
+                        />
+                      </div>
+
+                      <Button
+                        type="submit"
+                        className="w-full bg-white text-orange-600 hover:bg-orange-50 font-semibold py-2 px-4 rounded-lg transition-colors"
+                      >
+                        Send Message
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
@@ -237,4 +272,132 @@ export default function ContactUsContent() {
     </FELayout>
   )
 }
+
+// re-design /about page Contact Information create a form ask "Name" subject and Message "" on submit click mailto:collegecutoff@gmail.com" with subject and msg and redirect them to gmail app in phone.
+
+// Custom Card components using divs
+const Card = ({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode
+  className?: string
+}) => (
+  <div
+    className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}
+  >
+    {children}
+  </div>
+)
+
+const CardHeader = ({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode
+  className?: string
+}) => (
+  <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>{children}</div>
+)
+
+const CardTitle = ({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode
+  className?: string
+}) => (
+  <div
+    className={`text-2xl font-semibold leading-none tracking-tight ${className}`}
+  >
+    {children}
+  </div>
+)
+
+const CardContent = ({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode
+  className?: string
+}) => <div className={`p-6 pt-0 ${className}`}>{children}</div>
+
+const Label = ({
+  children,
+  htmlFor,
+  className = "",
+}: {
+  children: React.ReactNode
+  htmlFor?: string
+  className?: string
+}) => (
+  <label
+    htmlFor={htmlFor}
+    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className}`}
+  >
+    {children}
+  </label>
+)
+
+const Input = ({
+  id,
+  name,
+  type = "text",
+  value,
+  onChange,
+  placeholder,
+  required = false,
+  className = "",
+}: {
+  id?: string
+  name?: string
+  type?: string
+  value?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
+  required?: boolean
+  className?: string
+}) => (
+  <input
+    id={id}
+    name={name}
+    type={type}
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    required={required}
+    className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+  />
+)
+
+const Textarea = ({
+  id,
+  name,
+  value,
+  onChange,
+  placeholder,
+  required = false,
+  rows = 3,
+  className = "",
+}: {
+  id?: string
+  name?: string
+  value?: string
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  placeholder?: string
+  required?: boolean
+  rows?: number
+  className?: string
+}) => (
+  <textarea
+    id={id}
+    name={name}
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    required={required}
+    rows={rows}
+    className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+  />
+)
 

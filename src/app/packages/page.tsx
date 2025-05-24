@@ -130,7 +130,7 @@ export default function PackagesPage() {
             <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
               NEET UG 2025
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-black">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-color-table-header">
               Premium Counselling Packages
             </h1>
             <p className="text-gray-600 md:text-lg mb-8 max-w-2xl">

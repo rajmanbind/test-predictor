@@ -27,7 +27,6 @@ export interface IParams {
   category?: any
   instituteType?: any
   quota?: any
-  page?: number
 }
 
 export function Filter({
@@ -61,7 +60,7 @@ export function Filter({
   const [includeFeeRange, setIncludeFeeRange] = useState(false)
 
   async function onSubmit() {
-    let params: IParams = { page: 1 }
+    let params: IParams = {}
 
     if (includeFeeRange) {
       params = {

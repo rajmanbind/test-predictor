@@ -13,14 +13,12 @@ import {
 } from "@/components/frontend/college-predictor/Filter"
 import { FilterPopup } from "@/components/frontend/college-predictor/FilterPopup"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
-import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { priceType } from "@/utils/static"
-import { getLocalStorageItem, isEmpty } from "@/utils/utils"
+import { cn, getLocalStorageItem, isEmpty } from "@/utils/utils"
 import { Settings2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import Script from "next/script"
 import { useEffect, useRef, useState } from "react"
 import { Tooltip } from "react-tooltip"
@@ -41,8 +39,6 @@ export default function ResultPage() {
   const [paid, setPaid] = useState(false)
   const [amount, setAmount] = useState(149)
 
-  const { setAppState } = useAppState()
-
   const { fetchData } = useFetch()
   const { getSearchParams, setSearchParams } = useInternalSearchParams()
 
@@ -60,7 +56,7 @@ export default function ResultPage() {
       `payment-predictor-${getSearchParams("rank")}`,
     )
 
-    getData(paymentStatus ? true : false, false)
+    getData(paymentStatus ? true : false, isEmpty(filterParams) ? null : 1)
 
     if (paymentStatus) {
       setPaid(true)
@@ -114,12 +110,14 @@ export default function ResultPage() {
 
     const rank = getSearchParams("rank")
     const course = getSearchParams("course")
+    const domicileState = getSearchParams("domicileState")
 
     const params: Record<string, any> = {
       page,
       size: 10,
       rank,
       course,
+      domicileState,
       paymentStatus,
     }
 
@@ -361,77 +359,10 @@ export default function ResultPage() {
       // },
 
       // { title: "Fees", tableKey: "fees", width: "100px" },
-    ]
-
-    if (paid) {
-      columns.push(
-        {
-          title: (
-            <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Closing Rank Round 2 ${currentYear}`}
-            >
-              {`Closing Rank [R2] ${currentYear}`}
-            </div>
-          ),
-          tableKey: `closingRankR2_new`,
-          width: "160px",
-          renderer({ cellData }) {
-            // @ts-ignore
-            return cellData
-          },
-        },
-        {
-          title: (
-            <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Closing Rank Round 3 ${currentYear}`}
-            >
-              {`Closing Rank [R3] ${currentYear}`}
-            </div>
-          ),
-          tableKey: `closingRankR3_new`,
-          width: "160px",
-          renderer({ cellData }) {
-            // @ts-ignore
-            return cellData
-          },
-        },
-        {
-          title: (
-            <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Stray Round Rank ${currentYear}`}
-            >
-              {`Stray Round Rank ${currentYear}`}
-            </div>
-          ),
-          tableKey: `strayRound_new`,
-          width: "160px",
-        },
-        {
-          title: (
-            <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Last Stray Round Rank ${currentYear}`}
-            >
-              Last {`Stray Round Rank ${currentYear}`}
-            </div>
-          ),
-          tableKey: `lastStrayRound_new`,
-          width: "160px",
-          renderer({ cellData }) {
-            // @ts-ignore
-            return cellData
-          },
-        },
-      )
-    }
-    columns.push(
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
       { title: "State", tableKey: "state", width: "150px" },
       { title: "Fees", tableKey: "fees", width: "100px" },
-    )
+    ]
 
     return columns
   }
@@ -471,6 +402,16 @@ export default function ResultPage() {
           <ClosingRankGuide className="max-w-[900px] flex-shrink-0" />
         </div>
 
+        <div
+          className={cn(
+            "bg-sky-50 border border-sky-200 p-4 rounded-md text-color-text flex gap-2 pc:hidden overflow-hidden my-3",
+          )}
+        >
+          <p className="animated-new text-center">
+            Rotate your Phone to Landscape or Horizontal For Better view.
+          </p>
+        </div>
+
         <div className="mt-10 block pc:flex items-start rounded-lg relative">
           <Filter
             className="flex-shrink-0 w-[300px] hidden pc:flex"
@@ -479,18 +420,20 @@ export default function ResultPage() {
             setFilterParams={setFilterParams}
           />
 
-          <Button
-            className="flex items-center gap-2 text-white py-2 px-4 ml-auto mt-2 relative text-sm pc:hidden mb-3"
-            onClick={() => setFilterPopup(true)}
-          >
-            {filterCount() > 0 && (
-              <p className="bg-red-600 size-5 rounded-full absolute top-[-10px] right-[-3px] grid place-items-center text-white font-semibold text-xs">
-                {filterCount()}
-              </p>
-            )}
-            <Settings2 size={18} />
-            Filter
-          </Button>
+          {paid && (
+            <Button
+              className="flex items-center gap-2 text-white px-4 ml-auto mt-2 relative text-sm pc:hidden mb-3 bg-color-table-header hover:bg-color-table-header w-[150px] py-4"
+              onClick={() => setFilterPopup(true)}
+            >
+              {filterCount() > 0 && (
+                <p className="bg-red-600 size-5 rounded-full absolute top-[-10px] right-[-3px] grid place-items-center text-white font-semibold text-xs">
+                  {filterCount()}
+                </p>
+              )}
+              <Settings2 size={18} />
+              Filter Colleges
+            </Button>
+          )}
 
           <div
             className="flex-1 border-color-border"

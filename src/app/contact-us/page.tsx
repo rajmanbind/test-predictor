@@ -192,8 +192,8 @@ export default function ContactUsContent() {
                       Send Us a Message
                     </CardTitle>
                     <p className="text-orange-100">
-                      Fill out the form below and we'll get back to you as soon
-                      as possible.
+                      {`Fill out the form below and we'll get back to you as soon
+                      as possible.`}
                     </p>
                   </CardHeader>
                   <CardContent>

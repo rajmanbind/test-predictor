@@ -121,7 +121,11 @@ function TableSignup({
         isOpen={showPaymentPopup}
         onClose={() => setShowPaymentPopup(false)}
         paymentDescription="Payment for College Predictor at CollegeCutoff.net"
-        title={<p className="pt-2">Please make payment to view more options</p>}
+        title={
+          <p className="pt-2 uppercase poppinsFont">
+            Please Make Payment To View All Options
+          </p>
+        }
         btnText={`Unlock Now @ ₹${amount}`}
         amount={amount}
       />

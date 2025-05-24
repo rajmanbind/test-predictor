@@ -20,7 +20,7 @@ import { useForm } from "react-hook-form"
 
 interface IFormData {
   rank?: number | string
-  state?: IOption
+  domicileState?: IOption
   courses?: IOption
 }
 
@@ -64,7 +64,7 @@ export function CollegePredictorForm() {
     const searchParams = new URLSearchParams()
 
     searchParams.set("rank", formData?.rank?.toString() || "")
-    searchParams.set("state", formData?.state?.text || "")
+    searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
 
     router.push(`/results?${searchParams.toString()}`)
@@ -73,7 +73,7 @@ export function CollegePredictorForm() {
   function disableCheck() {
     return (
       isEmpty(formData?.rank) ||
-      isEmpty(formData?.state?.text) ||
+      isEmpty(formData?.domicileState?.text) ||
       isEmpty(formData?.courses?.text)
     )
   }
@@ -106,10 +106,10 @@ export function CollegePredictorForm() {
         />
 
         <SearchAndSelect
-          name="state"
-          label="State"
-          placeholder="Select State"
-          value={formData?.state}
+          name="domicileState"
+          label="State (Domicile State)"
+          placeholder="Select Domicile State"
+          value={formData?.domicileState}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
           }}

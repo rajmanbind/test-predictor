@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 
-// Define the type for merged records including sortKey
 interface MergedRecord {
   prev_id: any
   new_id: any
@@ -42,6 +41,7 @@ export async function GET(request: NextRequest) {
 
   // Search and filter parameters
   const rank = parseInt(searchParams.get("rank") || "0")
+  const domicileState = searchParams.get("domicileState") || ""
   const states = searchParams.get("states")?.split(",") || []
   const courses = searchParams.get("course")?.split(",") || []
   const categories = searchParams.get("category")?.split(",") || []
@@ -84,7 +84,15 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false })
 
   // Apply optional filters
-  if (states.length > 0) query = query.in("state", states)
+  // Only apply states filter if states are provided; otherwise, query all states
+  if (states.length > 0) {
+    // Include domicileState in states filter if provided
+    const statesToQuery = domicileState
+      ? // @ts-ignore
+        [...new Set([domicileState, ...states])]
+      : states
+    query = query.in("state", statesToQuery)
+  }
   if (courses.length > 0) query = query.in("course", courses)
   if (categories.length > 0) query = query.in("category", categories)
   if (instituteTypes.length > 0)
@@ -172,14 +180,14 @@ export async function GET(request: NextRequest) {
             ? `${old.year} - ${latest.year}`
             : (old?.year ?? latest?.year),
         sortKey: Math.min(
-          latest?.strayRound || Infinity,
-          latest?.closingRankR3 || Infinity,
-          latest?.closingRankR2 || Infinity,
-          latest?.closingRankR1 || Infinity,
-          !latest ? old?.strayRound || Infinity : Infinity,
-          !latest ? old?.closingRankR3 || Infinity : Infinity,
-          !latest ? old?.closingRankR2 || Infinity : Infinity,
-          !latest ? old?.closingRankR1 || Infinity : Infinity,
+          cleanRanks(latest?.closingRankR1) || Infinity,
+          cleanRanks(latest?.closingRankR2) || Infinity,
+          cleanRanks(latest?.closingRankR3) || Infinity,
+          cleanRanks(latest?.strayRound) || Infinity,
+          !latest ? cleanRanks(old?.closingRankR1) || Infinity : Infinity,
+          !latest ? cleanRanks(old?.closingRankR2) || Infinity : Infinity,
+          !latest ? cleanRanks(old?.closingRankR3) || Infinity : Infinity,
+          !latest ? cleanRanks(old?.strayRound) || Infinity : Infinity,
         ),
       }
 
@@ -187,8 +195,18 @@ export async function GET(request: NextRequest) {
     }
   })
 
-  // Sort by lowest rank first
-  mergedData.sort((a, b) => a.sortKey - b.sortKey)
+  // Sort records: prioritize domicileState matches first, then others, both sorted by rank
+  mergedData.sort((a, b) => {
+    const aIsDomicileMatch = domicileState && a.state === domicileState
+    const bIsDomicileMatch = domicileState && b.state === domicileState
+
+    // Prioritize domicile matches
+    if (aIsDomicileMatch && !bIsDomicileMatch) return -1
+    if (!aIsDomicileMatch && bIsDomicileMatch) return 1
+
+    // Within same domicile status, sort by sortKey (lowest rank first)
+    return a.sortKey - b.sortKey
+  })
 
   if (!paymentStatus) {
     mergedData = mergedData.map((item) => ({
@@ -221,6 +239,6 @@ export async function GET(request: NextRequest) {
 }
 
 function cleanRanks(ranks: string): number {
-  return Number(ranks?.split("/")?.[0])
+  return Number(ranks?.split("/")?.[0]) || Infinity
 }
 

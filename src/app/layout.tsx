@@ -22,8 +22,9 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "College Predictor - Career Edwise",
-  description: "NEET College Predictor by Career Edwise",
+  title: "College Cutoff - NEET - Closing Rank",
+  description:
+    "College Cutoff a platform to check NEET Cutoff, closing ranks and Predict colleges",
 }
 
 export default function RootLayout({
@@ -53,3 +54,4 @@ export default function RootLayout({
     </html>
   )
 }
+

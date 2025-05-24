@@ -12,14 +12,13 @@ import {
   onOptionSelected,
   onTextFieldChange,
 } from "@/utils/utils"
-import { Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { SetStateAction, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IFormData {
   rank?: number | string
-  state?: IOption
+  domicileState?: IOption
   course?: IOption
 }
 
@@ -66,7 +65,7 @@ export function SearchForm({
     }
 
     searchParams.set("rank", formData?.rank?.toString() || "")
-    searchParams.set("state", formData?.state?.text || "")
+    searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.course?.text || "")
 
     setAppState({ isLoading: true })
@@ -105,13 +104,13 @@ export function SearchForm({
       />
 
       <SearchAndSelect
-        name="state"
-        label="State"
-        placeholder="Select State"
-        value={formData?.state}
+        name="domicileState"
+        label="State (Domicile State)"
+        placeholder="Select Domicile State"
+        value={formData?.domicileState}
         defaultOption={
-          getSearchParams("state")
-            ? { id: 0, text: getSearchParams("state") }
+          getSearchParams("domicileState")
+            ? { id: 0, text: getSearchParams("domicileState") }
             : undefined
         }
         onChange={({ name, selectedValue }) => {

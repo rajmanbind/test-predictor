@@ -217,7 +217,7 @@ export default function StateClosingRanksPage() {
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-black">
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-color-table-header">
                   {getSearchParams("college")}
                 </h1>
                 <p className="text-gray-600">NEET UG {year} Closing Ranks</p>
@@ -229,20 +229,6 @@ export default function StateClosingRanksPage() {
         {/* Main Content */}
         <section className="w-full py-12">
           <Container className="container px-4 md:px-6">
-            {/* Info Card */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 flex items-start gap-3">
-              <Info className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-blue-800 text-sm">
-                  <strong>Note:</strong> Closing ranks are based on the {year}{" "}
-                  NEET counselling data. These ranks represent the last rank at
-                  which a candidate was admitted to the college in the
-                  respective category. Actual cutoffs may vary for the current
-                  year.
-                </p>
-              </div>
-            </div>
-
             <Table
               columns={generateCols()}
               data={tableData?.data}

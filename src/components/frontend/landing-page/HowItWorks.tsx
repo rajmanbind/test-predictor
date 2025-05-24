@@ -24,7 +24,9 @@ export default function HowItWorks() {
     <section className="w-full py-20 md:py-28 relative overflow-hidden">
       <div className="container px-4 md:px-6 mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold">How It Works</h2>
+          <h2 className="text-3xl font-bold text-color-table-header">
+            How It Works
+          </h2>
           <p className="text-gray-500 mt-2 max-w-2xl mx-auto">
             Simple steps to find your perfect medical college match
           </p>

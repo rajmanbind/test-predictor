@@ -51,7 +51,7 @@ export function FilterPopup({
   const [includeFeeRange, setIncludeFeeRange] = useState(false)
 
   async function onSubmit() {
-    let params: IParams = { page: 1 }
+    let params: IParams = {}
 
     if (includeFeeRange) {
       params = {

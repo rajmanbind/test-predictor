@@ -111,7 +111,7 @@ export default function ContactUsContent() {
             </div>
             <div className="relative">
               <div className="absolute -z-10 inset-0 bg-gradient-to-tr from-yellow-100 to-emerald-100 rounded-3xl transform rotate-3 scale-105 opacity-70"></div>
-              <div className="bg-color-form-background p-6 md:p-8 rounded-2xl shadow-lg">
+              <div className="bg-color-form-background p-6 md:p-8 rounded-2xl">
                 <img
                   src="/medical-education-counselling-team.png"
                   alt="CollegeCutoff Team"
@@ -186,7 +186,7 @@ export default function ContactUsContent() {
 
               {/* Contact Form */}
               <div>
-                <Card className="bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0">
+                <Card className="bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0 p-4">
                   <CardHeader>
                     <CardTitle className="text-xl font-bold">
                       Send Us a Message
@@ -236,7 +236,7 @@ export default function ContactUsContent() {
                         />
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="flex flex-col gap-4">
                         <Label
                           htmlFor="message"
                           className="text-white font-medium"
@@ -257,7 +257,7 @@ export default function ContactUsContent() {
 
                       <Button
                         type="submit"
-                        className="w-full bg-white text-orange-600 hover:bg-orange-50 font-semibold py-2 px-4 rounded-lg transition-colors"
+                        className="w-full bg-[#0054a4]/90 text-white hover:bg-[#0054a4] hover:border-white border border-transparent font-semibold py-2 px-4 rounded-lg transition-colors translate-y-3 h-[50px]"
                       >
                         Send Message
                       </Button>

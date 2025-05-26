@@ -54,25 +54,23 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    reqData.cRR1 = na.includes(reqData?.closingRankR1.toUpperCase())
-      ? null
-      : reqData?.cRR1
+    const rankFields = [
+      { check: "closingRankR1", assign: "cRR1" },
+      { check: "closingRankR2", assign: "cRR2" },
+      { check: "closingRankR3", assign: "cRR3" },
+      { check: "strayRound", assign: "sRR" },
+      { check: "lastStrayRound", assign: "lSRR" },
+    ]
 
-    reqData.cRR2 = na.includes(reqData?.closingRankR2.toUpperCase())
-      ? null
-      : reqData?.cRR2
+    rankFields.forEach(({ check, assign }) => {
+      const rawValue = reqData?.[check]
+      const value =
+        typeof rawValue === "string" || typeof rawValue === "number"
+          ? String(rawValue).toUpperCase()
+          : ""
 
-    reqData.cRR3 = na.includes(reqData?.closingRankR3.toUpperCase())
-      ? null
-      : reqData?.cRR3
-
-    reqData.sRR = na.includes(reqData?.strayRound.toUpperCase())
-      ? null
-      : reqData?.sRR
-
-    reqData.lSRR = na.includes(reqData?.lastStrayRound.toUpperCase())
-      ? null
-      : reqData?.lSRR
+      reqData[assign] = na.includes(value) ? null : reqData?.[assign]
+    })
 
     // Insert new data
     const { error, data } = await supabase

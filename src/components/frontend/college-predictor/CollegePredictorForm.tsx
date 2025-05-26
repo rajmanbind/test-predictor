@@ -22,6 +22,7 @@ interface IFormData {
   rank?: number | string
   domicileState?: IOption
   courses?: IOption
+  courseType?: IOption
 }
 
 export function CollegePredictorForm() {
@@ -37,6 +38,9 @@ export function CollegePredictorForm() {
   const [formData, setFormData] = useState<IFormData>({
     rank: "",
   })
+
+  const [radioOption, setRadioOption] = useState(["Rank", "Marks"])
+  const [selected, setSelected] = useState("")
 
   const [coursesList, setCoursesList] = useState<IOption[]>([])
   const { fetchData } = useFetch()
@@ -66,6 +70,7 @@ export function CollegePredictorForm() {
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
+    searchParams.set("rankType", selected || "")
 
     router.push(`/results?${searchParams.toString()}`)
   }
@@ -73,6 +78,8 @@ export function CollegePredictorForm() {
   function disableCheck() {
     return (
       isEmpty(formData?.rank) ||
+      isEmpty(selected) ||
+      isEmpty(formData?.courseType?.text) ||
       isEmpty(formData?.domicileState?.text) ||
       isEmpty(formData?.courses?.text)
     )
@@ -90,11 +97,70 @@ export function CollegePredictorForm() {
           </p>
         </div>
 
+        <SearchAndSelect
+          name="courseType"
+          label="Course Type"
+          placeholder="Select your Course Type"
+          value={formData?.courses}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+
+            setSelected("")
+
+            if (selectedValue?.id === "ug") {
+              setRadioOption(["Rank", "Marks"])
+            } else {
+              setRadioOption(["Rank", "Percentile"])
+            }
+          }}
+          control={control}
+          setValue={setValue}
+          options={[
+            {
+              id: "ug",
+              text: "UG",
+            },
+            {
+              id: "pg",
+              text: "PG",
+            },
+          ]}
+          debounceDelay={0}
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, coursesList, setOptions)
+          }
+          errors={errors}
+        />
+
+        <div className="flex space-x-6">
+          {radioOption.map((option) => (
+            <label
+              key={option}
+              className="relative flex items-center space-x-2 cursor-pointer"
+            >
+              <input
+                type="radio"
+                name="rankOrMarks"
+                value={option}
+                checked={selected === option}
+                onChange={() => setSelected(option)}
+                className="peer hidden"
+              />
+              <div className="w-4 h-4 rounded-full border border-gray-300 peer-checked:bg-orange-500 flex items-center justify-center">
+                <div className="w-2.5 h-2.5 bg-white rounded-full peer-checked:opacity-100 opacity-0 transition-opacity"></div>
+              </div>
+              <span className="text-gray-800 peer-checked:text-orange-500 ">
+                {option}
+              </span>
+            </label>
+          ))}
+        </div>
+
         <Input
           name="rank"
-          label="Rank"
+          label={selected || "Rank"}
           type="number"
-          placeholder="Enter Rank"
+          placeholder={`Enter your ${selected || "Rank"}`}
           setValue={setValue}
           value={formData?.rank}
           onChange={(e) => onTextFieldChange(e, setFormData)}
@@ -126,7 +192,7 @@ export function CollegePredictorForm() {
         <SearchAndSelect
           name="courses"
           label="Course"
-          placeholder="Select Course"
+          placeholder="Select your Course"
           value={formData?.courses}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)

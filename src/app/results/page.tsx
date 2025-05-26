@@ -111,14 +111,20 @@ export default function ResultPage() {
     const rank = getSearchParams("rank")
     const course = getSearchParams("course")
     const domicileState = getSearchParams("domicileState")
+    const rankType = getSearchParams("rankType") ?? null
 
     const params: Record<string, any> = {
       page,
       size: 10,
       rank,
+      rankType,
       course,
       domicileState,
       paymentStatus,
+    }
+
+    if (domicileState === "All") {
+      delete params.domicileState
     }
 
     if (!isEmpty(filterParams)) {
@@ -413,26 +419,28 @@ export default function ResultPage() {
         </div>
 
         <div className="mt-10 block pc:flex items-start rounded-lg relative">
-          <Filter
-            className="flex-shrink-0 w-[300px] hidden pc:flex"
-            quotasList={quotasList}
-            categoryList={categoriesList}
-            setFilterParams={setFilterParams}
-          />
-
           {paid && (
-            <Button
-              className="flex items-center gap-2 text-white px-4 ml-auto mt-2 relative text-sm pc:hidden mb-3 bg-color-table-header hover:bg-color-table-header w-[150px] py-4"
-              onClick={() => setFilterPopup(true)}
-            >
-              {filterCount() > 0 && (
-                <p className="bg-red-600 size-5 rounded-full absolute top-[-10px] right-[-3px] grid place-items-center text-white font-semibold text-xs">
-                  {filterCount()}
-                </p>
-              )}
-              <Settings2 size={18} />
-              Filter Colleges
-            </Button>
+            <>
+              <Filter
+                className="flex-shrink-0 w-[300px] hidden pc:flex"
+                quotasList={quotasList}
+                categoryList={categoriesList}
+                setFilterParams={setFilterParams}
+              />
+
+              <Button
+                className="flex items-center gap-2 text-white px-4 ml-auto mt-2 relative text-sm pc:hidden mb-3 bg-color-table-header hover:bg-color-table-header w-[150px] py-4"
+                onClick={() => setFilterPopup(true)}
+              >
+                {filterCount() > 0 && (
+                  <p className="bg-red-600 size-5 rounded-full absolute top-[-10px] right-[-3px] grid place-items-center text-white font-semibold text-xs">
+                    {filterCount()}
+                  </p>
+                )}
+                <Settings2 size={18} />
+                Filter Colleges
+              </Button>
+            </>
           )}
 
           <div

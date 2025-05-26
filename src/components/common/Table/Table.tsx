@@ -95,6 +95,12 @@ export function Table({
     return ""
   }
 
+  function handleBold(tableKey: string) {
+    if (tableKey.includes("Round") || tableKey.includes("Rank")) {
+      return "!font-[500]"
+    }
+  }
+
   return (
     <div className={cn("relative")}>
       {isEmpty(data) && (
@@ -173,30 +179,39 @@ export function Table({
                     <div>{getRowSLNumber(rowIndex)}</div>
                   </td>
                 )}
-                {columns?.map((column, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className={cn(
-                      "px-4 py-3 text-left text-[13px] bg-color-white_black",
-                      column?.overrideInternalClick && "cursor-auto",
-                      column?.tableKey === "action" &&
-                        "tableActionStatic px-0 py-0",
-                      handleStaticLeft(column, false),
-                    )}
-                    onClick={(e) =>
-                      column?.overrideInternalClick ? e.stopPropagation() : null
-                    }
-                  >
-                    <div className="min-h-8 flex items-center text-[14px]">
-                      {column?.renderer
-                        ? column?.renderer({
-                            rowData: row,
-                            cellData: row[column?.tableKey],
-                          })
-                        : row[column?.tableKey] || "-"}
-                    </div>
-                  </td>
-                ))}
+                {columns?.map((column, colIndex) => {
+                  return (
+                    <td
+                      key={colIndex}
+                      className={cn(
+                        "px-4 py-3 text-left text-[13px] bg-color-white_black",
+                        column?.overrideInternalClick && "cursor-auto",
+                        column?.tableKey === "action" &&
+                          "tableActionStatic px-0 py-0",
+                        handleStaticLeft(column, false),
+                      )}
+                      onClick={(e) =>
+                        column?.overrideInternalClick
+                          ? e.stopPropagation()
+                          : null
+                      }
+                    >
+                      <div
+                        className={cn(
+                          "min-h-8 flex items-center text-[13px]",
+                          handleBold(column?.tableKey),
+                        )}
+                      >
+                        {column?.renderer
+                          ? column?.renderer({
+                              rowData: row,
+                              cellData: row[column?.tableKey],
+                            })
+                          : row[column?.tableKey] || "-"}
+                      </div>
+                    </td>
+                  )
+                })}
               </tr>
             ))}
           </tbody>

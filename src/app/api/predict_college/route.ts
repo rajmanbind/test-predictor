@@ -3,29 +3,6 @@ import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 
-interface MergedRecord {
-  prev_id: any
-  new_id: any
-  created_at: any
-  instituteName: any
-  instituteType: any
-  state: any
-  course: any
-  quota: any
-  category: any
-  fees: any
-  closingRankR1_old: any
-  closingRankR2_old: any
-  closingRankR3_old: any
-  strayRound_old: any
-  closingRankR1_new: any
-  closingRankR2_new: any
-  closingRankR3_new: any
-  strayRound_new: any
-  year: any
-  sortKey: number
-}
-
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
 
@@ -105,7 +82,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Merge and filter records based on rank and domicileState
-  let mergedData: MergedRecord[] = []
+  let mergedData: any[] = []
   const recordMap = new Map()
 
   data.forEach((record) => {
@@ -124,6 +101,8 @@ export async function GET(request: NextRequest) {
 
   recordMap.forEach((value, key) => {
     const { old, new: latest } = value
+
+    console.log("typeof: ", typeof rank, rank)
 
     // Define rank check order for inclusion
     const shouldIncludeByRank =
@@ -158,7 +137,7 @@ export async function GET(request: NextRequest) {
         : true
 
     if (shouldIncludeByRank && shouldIncludeByState) {
-      const record: MergedRecord = {
+      const record: any = {
         prev_id: old?.id,
         new_id: latest?.id,
         created_at: latest?.created_at ?? old?.created_at,
@@ -169,14 +148,25 @@ export async function GET(request: NextRequest) {
         quota: latest?.quota ?? old?.quota,
         category: latest?.category ?? old?.category,
         fees: latest?.fees ?? old?.fees,
-        closingRankR1_old: old?.closingRankR1,
-        closingRankR2_old: old?.closingRankR2,
-        closingRankR3_old: old?.closingRankR3,
-        strayRound_old: old?.strayRound,
-        closingRankR1_new: latest?.closingRankR1,
-        closingRankR2_new: latest?.closingRankR2,
-        closingRankR3_new: latest?.closingRankR3,
-        strayRound_new: latest?.strayRound,
+        closingRankR1_old:
+          old?.closingRankR1 + (old?.cRR1 ? `/ ${old?.cRR1}` : ""),
+        closingRankR2_old:
+          old?.closingRankR2 + (old?.cRR2 ? `/ ${old?.cRR2}` : ""),
+        closingRankR3_old:
+          old?.closingRankR3 + (old?.cRR3 ? `/ ${old?.cRR3}` : ""),
+        strayRound_old: old?.strayRound + (old?.sRR ? `/ ${old?.sRR}` : ""),
+        lastStrayRound_old:
+          old?.lastStrayRound + (old?.lSRR ? `/ ${old?.lSRR}` : ""),
+        closingRankR1_new:
+          latest?.closingRankR1 + (latest?.cRR1 ? `/ ${latest?.cRR1}` : ""),
+        closingRankR2_new:
+          latest?.closingRankR2 + (latest?.cRR2 ? `/ ${latest?.cRR2}` : ""),
+        closingRankR3_new:
+          latest?.closingRankR3 + (latest?.cRR3 ? `/ ${latest?.cRR3}` : ""),
+        strayRound_new:
+          latest?.strayRound + (latest?.sRR ? `/ ${latest?.sRR}` : ""),
+        lastStrayRound_new:
+          latest?.lastStrayRound + (latest?.lSRR ? `/ ${latest?.lSRR}` : ""),
         year:
           old?.year && latest?.year
             ? `${old.year} - ${latest.year}`
@@ -241,5 +231,6 @@ export async function GET(request: NextRequest) {
 }
 
 function cleanRanks(ranks: string): number {
-  return Number(ranks?.split("/")?.[0]) || Infinity
+  return Number(ranks) || 0
 }
+

@@ -187,7 +187,7 @@ export function Table({
                       column?.overrideInternalClick ? e.stopPropagation() : null
                     }
                   >
-                    <div className="min-h-8 flex items-center text-[13px]">
+                    <div className="min-h-8 flex items-center text-[14px]">
                       {column?.renderer
                         ? column?.renderer({
                             rowData: row,

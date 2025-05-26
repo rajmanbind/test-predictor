@@ -63,6 +63,7 @@ export const SearchAndSelect = ({
   const [selectedValue, setSelectedValue] = useState<IOption>()
   const [listOptions, setListOptions] = useState(options)
   const [isLoading, setIsLoading] = useState(false)
+  const [activeOptionIndex, setActiveOptionIndex] = useState<number>(-1) // New state for active option
   const internalRef = useRef(null)
 
   useOutsideClick(internalRef, () => {
@@ -81,6 +82,7 @@ export const SearchAndSelect = ({
     }
 
     setOptionListOpen(false)
+    setActiveOptionIndex(-1) // Reset active index when closing
   })
 
   useEffect(() => {
@@ -91,6 +93,7 @@ export const SearchAndSelect = ({
 
   useEffect(() => {
     setIsLoading(false)
+    setActiveOptionIndex(-1) // Reset active index when options change
   }, [listOptions])
 
   useEffect(() => {
@@ -121,6 +124,7 @@ export const SearchAndSelect = ({
       onInputClear?.()
       setListOptions(options)
       setOptionListOpen(true)
+      setActiveOptionIndex(-1) // Reset active index on input clear
       return
     }
 
@@ -133,9 +137,9 @@ export const SearchAndSelect = ({
   function onOptionSelected(option: IOption, fieldOnChange: any) {
     onChange({ name, selectedValue: option })
     setSelectedValue(option)
-
     setInput(option.text)
     setOptionListOpen(false)
+    setActiveOptionIndex(-1) // Reset active index on selection
     fieldOnChange(option)
   }
 
@@ -145,6 +149,30 @@ export const SearchAndSelect = ({
     }
 
     return props?.disabled ? false : required
+  }
+
+  // New keyboard event handler
+  function handleKeyDown(
+    e: React.KeyboardEvent<HTMLInputElement>,
+    fieldOnChange: any,
+  ) {
+    if (!optionListOpen || isLoading || listOptions.length === 0) return
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault() // Prevent page scrolling
+      setActiveOptionIndex((prev) =>
+        prev < listOptions.length - 1 ? prev + 1 : prev,
+      )
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault() // Prevent page scrolling
+      setActiveOptionIndex((prev) => (prev > 0 ? prev - 1 : prev))
+    } else if (e.key === "Enter" && activeOptionIndex >= 0) {
+      e.preventDefault() // Prevent form submission
+      const selectedOption = listOptions[activeOptionIndex]
+      if (selectedOption) {
+        onOptionSelected(selectedOption, fieldOnChange)
+      }
+    }
   }
 
   const error = errors?.[name] as FieldError | undefined
@@ -206,8 +234,10 @@ export const SearchAndSelect = ({
                     setListOptions(options)
                     setOptionListOpen(true)
                     setIsLoading(false)
+                    setActiveOptionIndex(-1) // Reset active index on focus
                   }
                 }}
+                onKeyDown={(e) => handleKeyDown(e, field.onChange)} // Add keyboard event handler
               />
 
               <ChevronDown
@@ -221,6 +251,7 @@ export const SearchAndSelect = ({
                     setListOptions(options)
                     setOptionListOpen(true)
                     setIsLoading(false)
+                    setActiveOptionIndex(-1) // Reset active index
                   }
                 }}
               />
@@ -238,6 +269,7 @@ export const SearchAndSelect = ({
                   minInputLengthToCallAPI={minInputLengthToCallAPI}
                   displayIdToo={props?.displayIdToo}
                   listOptionClass={props?.listOptionClass}
+                  activeOptionIndex={activeOptionIndex} // Pass active index
                 />
               )}
             </div>
@@ -271,6 +303,7 @@ interface ListOptionsProps {
   minInputLengthToCallAPI: number
   displayIdToo?: boolean
   listOptionClass?: string
+  activeOptionIndex: number // New prop for active option
 }
 
 function ListOptions({
@@ -283,6 +316,7 @@ function ListOptions({
   displayIdToo,
   minInputLengthToCallAPI,
   listOptionClass,
+  activeOptionIndex,
 }: ListOptionsProps) {
   return (
     <>
@@ -296,12 +330,13 @@ function ListOptions({
           )}
         >
           {!isLoading &&
-            options?.map((option) => (
+            options?.map((option, index) => (
               <div
                 key={uuidv4()}
                 className={cn(
                   "cursor-pointer items-center gap-2 select-none text-color-text group hover:bg-color-accent hover:text-white w-full",
                   option?.text === selectedValue?.text && "text-color-accent",
+                  index === activeOptionIndex && "bg-color-accent text-white", // Highlight active option
                 )}
                 onClick={() => onOptionSelected(option, fieldOnChange)}
               >
@@ -310,6 +345,7 @@ function ListOptions({
                   <p
                     className={cn(
                       "text-xs px-7 text-[#8A8A8A] -mt-1 pb-2 group-hover:text-white/80",
+                      index === activeOptionIndex && "text-white/80", // Adjust text color for active option
                     )}
                   >
                     {option?.id}

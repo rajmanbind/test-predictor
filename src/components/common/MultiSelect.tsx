@@ -60,12 +60,14 @@ export const MultiSelect = ({
   const [optionListOpen, setOptionListOpen] = useState(false)
   const [listOptions, setListOptions] = useState(options)
   const [isLoading, setIsLoading] = useState(false)
+  const [activeOptionIndex, setActiveOptionIndex] = useState<number>(-1) // New state for active option
   const internalRef = useRef(null)
   const [selectedOptions, setSelectedOptions] = useState<IOption[]>([])
 
   useOutsideClick(internalRef, () => {
     if (isLoading) return
     setOptionListOpen(false)
+    setActiveOptionIndex(-1) // Reset active index when closing
   })
 
   useEffect(() => {
@@ -76,6 +78,7 @@ export const MultiSelect = ({
 
   useEffect(() => {
     setIsLoading(false)
+    setActiveOptionIndex(-1) // Reset active index when options change
   }, [listOptions])
 
   useEffect(() => {
@@ -95,6 +98,7 @@ export const MultiSelect = ({
       onInputClear?.()
       setListOptions(options)
       setOptionListOpen(true)
+      setActiveOptionIndex(-1) // Reset active index on input clear
       return
     }
 
@@ -117,7 +121,6 @@ export const MultiSelect = ({
       }
 
       onChange({ name, selectedOptions: updatedOptions })
-      // setInput(option.text)
       fieldOnChange(updatedOptions)
 
       return updatedOptions
@@ -130,6 +133,30 @@ export const MultiSelect = ({
     }
 
     return props?.disabled ? false : required
+  }
+
+  // New keyboard event handler
+  function handleKeyDown(
+    e: React.KeyboardEvent<HTMLInputElement>,
+    fieldOnChange: any,
+  ) {
+    if (!optionListOpen || isLoading || listOptions.length === 0) return
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault() // Prevent page scrolling
+      setActiveOptionIndex((prev) =>
+        prev < listOptions.length - 1 ? prev + 1 : prev,
+      )
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault() // Prevent page scrolling
+      setActiveOptionIndex((prev) => (prev > 0 ? prev - 1 : prev))
+    } else if (e.key === "Enter" && activeOptionIndex >= 0) {
+      e.preventDefault() // Prevent form submission
+      const selectedOption = listOptions[activeOptionIndex]
+      if (selectedOption) {
+        onOptionSelected(selectedOption, fieldOnChange)
+      }
+    }
   }
 
   const error = errors?.[name] as FieldError | undefined
@@ -173,6 +200,7 @@ export const MultiSelect = ({
                     if (props?.disabled) return
                     onChange({ name, selectedOptions: [] })
                     setSelectedOptions([])
+                    setActiveOptionIndex(-1) // Reset active index on clear
                     field.onChange([])
                   }}
                 >
@@ -200,8 +228,10 @@ export const MultiSelect = ({
                     setListOptions(options)
                     setOptionListOpen(true)
                     setIsLoading(false)
+                    setActiveOptionIndex(-1) // Reset active index on focus
                   }
                 }}
+                onKeyDown={(e) => handleKeyDown(e, field.onChange)} // Add keyboard event handler
               />
 
               <ChevronDown
@@ -215,6 +245,7 @@ export const MultiSelect = ({
                     setListOptions(options)
                     setOptionListOpen(true)
                     setIsLoading(false)
+                    setActiveOptionIndex(-1) // Reset active index
                   }
                 }}
               />
@@ -232,6 +263,7 @@ export const MultiSelect = ({
                   minInputLengthToCallAPI={minInputLengthToCallAPI}
                   displayIdToo={props?.displayIdToo}
                   listOptionClass={props?.listOptionClass}
+                  activeOptionIndex={activeOptionIndex} // Pass active index
                 />
               )}
             </div>
@@ -265,6 +297,7 @@ interface ListOptionsProps {
   minInputLengthToCallAPI: number
   displayIdToo?: boolean
   listOptionClass?: string
+  activeOptionIndex: number // New prop for active option
 }
 
 function ListOptions({
@@ -277,6 +310,7 @@ function ListOptions({
   displayIdToo,
   minInputLengthToCallAPI,
   listOptionClass,
+  activeOptionIndex,
 }: ListOptionsProps) {
   function isChecked(id: string) {
     return !!selectedOptions?.find((option) => option.id === id)
@@ -294,11 +328,12 @@ function ListOptions({
           )}
         >
           {!isLoading &&
-            options?.map((option) => (
+            options?.map((option, index) => (
               <div
                 key={uuidv4()}
                 className={cn(
                   "cursor-pointer flex items-center gap-[10px] select-none text-color-text group hover:bg-color-accent hover:text-white w-full px-4 py-2",
+                  index === activeOptionIndex && "bg-color-accent text-white", // Highlight active option
                 )}
                 onClick={() => {
                   onOptionSelected(option, fieldOnChange)
@@ -309,9 +344,9 @@ function ListOptions({
                   checked={isChecked(option.id)}
                   className={cn(
                     "bg-mane-page-bg-color border-[#28553D] flex-shrink-0",
+                    index === activeOptionIndex && "text-white", // Adjust checkbox for active option
                   )}
                   readOnly
-                  // onChange={() => handleCheckboxChange(item.name, "selectAll")}
                 />
 
                 <div className="space-y-2">
@@ -320,6 +355,7 @@ function ListOptions({
                     <p
                       className={cn(
                         "text-xs text-[#8A8A8A] -mt-1 group-hover:text-white/80",
+                        index === activeOptionIndex && "text-white/80", // Adjust text color for active option
                       )}
                     >
                       {option?.id}

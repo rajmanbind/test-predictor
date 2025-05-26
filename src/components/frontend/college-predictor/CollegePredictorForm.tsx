@@ -15,7 +15,7 @@ import {
   onTextFieldChange,
 } from "@/utils/utils"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IFormData {
@@ -49,17 +49,22 @@ export function CollegePredictorForm() {
 
   const router = useRouter()
 
-  useEffect(() => {
-    getConfigData()
-  }, [])
-
-  async function getConfigData() {
+  async function getCoursesData(type: string) {
     const res = await fetchData({
-      url: "/api/admin/configure/get",
-      params: { type: "COURSES" },
+      url: "/api/admin/configure/courses/get",
+      params: { type },
     })
 
-    setCoursesList(res?.payload?.data || [])
+    if (res?.payload?.data?.length > 0) {
+      setCoursesList([
+        {
+          id: "all",
+          text: `All ${type === "ug" ? "UG" : "PG"} Courses`,
+        },
+
+        ...res?.payload?.data,
+      ])
+    }
   }
 
   function onSubmit() {
@@ -68,9 +73,10 @@ export function CollegePredictorForm() {
     const searchParams = new URLSearchParams()
 
     searchParams.set("rank", formData?.rank?.toString() || "")
+    searchParams.set("rankType", selected || "")
     searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
-    searchParams.set("rankType", selected || "")
+    searchParams.set("courseType", formData?.courseType?.text || "")
 
     router.push(`/results?${searchParams.toString()}`)
   }
@@ -112,6 +118,8 @@ export function CollegePredictorForm() {
             } else {
               setRadioOption(["Rank", "Percentile"])
             }
+
+            getCoursesData(selectedValue?.id)
           }}
           control={control}
           setValue={setValue}
@@ -205,6 +213,7 @@ export function CollegePredictorForm() {
             autoComplete(text, coursesList, setOptions)
           }
           errors={errors}
+          disabled={isEmpty(formData?.courseType?.text)}
         />
 
         <Button className="mt-6" onClick={onSubmit} disabled={disableCheck()}>

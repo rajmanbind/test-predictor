@@ -6,10 +6,12 @@ export function Logo({
   className,
   textStyle,
   imgStyle,
+  sidebar,
 }: {
   className?: string
   textStyle?: string
   imgStyle?: string
+  sidebar?: boolean
 }) {
   return (
     <Link href="/" className={cn("flex items-center gap-3", className)}>
@@ -21,15 +23,25 @@ export function Logo({
         className={cn("rounded-md border border-slate-800 shadow-md", imgStyle)}
         quality={100}
       />
-      <div
-        className={cn(
-          "text-white tracking-wide leading-4 text-[18px]",
-          textStyle,
-        )}
-      >
-        <p>College</p>
-        <p className="pl-3">Cutoff</p>
+      <div className={cn("text-white tracking-wide", textStyle)}>
+        <p
+          className={cn(
+            "font-extrabold text-color-accent text-[18px] pc:text-[24px] translate-y-[2px] pc:translate-y-1",
+            sidebar && "text-[24px] translate-y-[6px]",
+          )}
+        >
+          College
+        </p>
+        <p
+          className={cn(
+            "font-extrabold text-color-table-header text-[18px] pc:text-[24px] translate-y-[-2px] pc:-translate-y-1",
+            sidebar && "text-[24px] translate-y-[-2px]",
+          )}
+        >
+          Cutoff
+        </p>
       </div>
     </Link>
   )
 }
+

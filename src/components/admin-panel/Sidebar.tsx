@@ -9,6 +9,7 @@ import {
   Home,
   PlusSquare,
   ReceiptIndianRupee,
+  Settings,
   Settings2,
   Trash2,
 } from "lucide-react"
@@ -50,6 +51,11 @@ export const sidebarMenus = [
     icon: <Settings2 />,
     title: "Configure Dropdowns",
     link: "/admin/configure",
+  },
+  {
+    icon: <Settings />,
+    title: "Configure Courses",
+    link: "/admin/configure/courses",
   },
   {
     icon: <BadgeIndianRupee />,

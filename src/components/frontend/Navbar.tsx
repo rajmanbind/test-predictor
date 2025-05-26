@@ -115,7 +115,12 @@ export function Navbar() {
               theme === "dark" ? "opacity-0" : "opacity-100",
             )}
           ></div>
-          <div>
+          <div
+            className={cn(
+              "translate-x-[70px] pc:translate-x-0",
+              !appState?.user && "translate-x-[10px] pc:translate-x-0",
+            )}
+          >
             <ThemeSwitcher />
           </div>
 
@@ -165,7 +170,7 @@ export function Navbar() {
         onClick={() => setMobSidebar(false)}
       >
         <div className={cn("w-[240px] h-full bg-color-form-background py-6")}>
-          <Logo textStyle="text-color-text" className="px-6" />
+          <Logo textStyle="text-color-text" className="px-6" sidebar />
           <nav className="flex flex-col gap-2 mt-8">
             {navbarMenus.map((item) => (
               <NavbarItem

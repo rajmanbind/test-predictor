@@ -1,5 +1,6 @@
 import { LocateIcon, MapPin } from "lucide-react"
 import Link from "next/link"
+import { isMobile } from "react-device-detect"
 
 import { Logo } from "../common/Logo"
 import { Container } from "./Container"
@@ -34,7 +35,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pc:gap-12">
           <div className="col-span-2 md:col-span-1 space-y-4">
             <div className="flex items-center gap-2">
-              <Logo />
+              <Logo sidebar />
             </div>
             <p className="text-sm text-gray-400">
               Making medical education choices simpler and smarter for NEET

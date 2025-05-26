@@ -15,7 +15,7 @@ export function Hero() {
 
           <h1 className="text-3xl font-bold tab:text-4xl pc:text-5xl pc:leading-[1.2] leading-[1.2] tab:leading-[1.2]">
             <div>
-              <span className="text-blue-500 hover:underline">
+              <span className="text-color-table-header hover:underline">
                 CollegeCutoff.net
               </span>
               {` — Your First Step Towards`}
@@ -31,7 +31,7 @@ export function Hero() {
             <Link
               href={"https://collegecutoff.net"}
               target="_blank"
-              className="text-blue-500 hover:underline"
+              className="text-color-table-header hover:underline"
             >
               CollegeCutoff.net
             </Link>

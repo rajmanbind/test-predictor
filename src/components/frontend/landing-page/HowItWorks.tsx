@@ -54,11 +54,11 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-center mb-4">
-                    Enter Your NEET Rank
+                    Select the Course Type
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    Start by filling in your valid NEET UG or PG rank in the
-                    input field.
+                    Start by selecting whether you're applying for UG or PG
+                    medical admissions.
                   </p>
                 </div>
               </motion.div>
@@ -88,13 +88,17 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-center mb-4">
-                    Select Your State
+                    Select Rank/Score Type (Radio Button)
                   </h3>
-                  <p className="text-gray-600 text-center mb-6">
-                    Choose the state where you are looking to take admission.
-                    This helps narrow down college options based on
-                    state-specific quotas.
-                  </p>
+                  <div className="mb-6 text-gray-600 ">
+                    <p className="text-center ">
+                      Choose the appropriate option using the radio buttons:
+                    </p>
+                    <ul className="list-disc list-inside pl-4 space-y-2 mt-2">
+                      <li>For UG, pick either Rank or Marks</li>
+                      <li>For PG, pick either Rank or Percentile</li>
+                    </ul>
+                  </div>
                 </div>
               </motion.div>
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 z-20">
@@ -123,11 +127,10 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-center mb-4">
-                    Choose the Course
+                    Enter Your Details
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    {`Select whether you're applying for MBBS, MD, or MS. The
-                    predictor adapts based on your course choice.`}
+                    {`Based on your radio selection, enter your valid NEET Rank, Marks, or Percentile in the input field.`}
                   </p>
                 </div>
               </motion.div>
@@ -158,12 +161,11 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-center mb-4">
-                    Choose Your Category
+                    Select Your Domicile State
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    Pick your reservation category (like General, OBC, SC, ST,
-                    etc.) so the prediction is aligned with applicable quotas
-                    and cutoff variations.
+                    Choose the state you belong to (your domicile). This helps
+                    filter colleges under state-specific quotas.
                   </p>
                 </div>
               </motion.div>
@@ -193,12 +195,10 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-center mb-4">
-                    {`Click “Predict My College”`}
+                    {`Choose Your Course`}
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    {`Hit the button and instantly view a list of colleges where
-                    you are most likely to get admission, based on last year's
-                    closing ranks.`}
+                    {`Select the medical course you're interested in — like MBBS, BDS, BAMS, BHMS, MD, MS, etc.`}
                   </p>
                 </div>
               </motion.div>
@@ -228,12 +228,10 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-center mb-4">
-                    Explore and Compare Colleges
+                    Predict Your College
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    {`Review predicted colleges, compare fees, last year's
-                    cut-offs, and seat types to make a confident, well-informed
-                    decision.`}
+                    {`Click on “Predict My College” to get a list of private and deemed medical colleges you are eligible for, based on the most updated and accurate cutoff data.`}
                   </p>
                 </div>
               </motion.div>

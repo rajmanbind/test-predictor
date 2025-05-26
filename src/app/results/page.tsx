@@ -112,6 +112,7 @@ export default function ResultPage() {
     const course = getSearchParams("course")
     const domicileState = getSearchParams("domicileState")
     const rankType = getSearchParams("rankType") ?? null
+    const courseType = getSearchParams("courseType")
 
     const params: Record<string, any> = {
       page,
@@ -119,6 +120,7 @@ export default function ResultPage() {
       rank,
       rankType,
       course,
+      courseType,
       domicileState,
       paymentStatus,
     }
@@ -171,7 +173,7 @@ export default function ResultPage() {
     let previousYear = currentYear - 1
 
     const percentile_Marks =
-      getSearchParams("course") === "MBBS" ? "Marks" : "Percentile"
+      getSearchParams("rankType") === "Marks" ? "Marks" : "Percentile"
 
     if (!isEmpty(configYear)) {
       previousYear = configYear[0]

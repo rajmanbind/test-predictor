@@ -28,8 +28,12 @@ export async function GET(request: NextRequest) {
 
   const rankType = searchParams.get("rankType")?.toString()?.toUpperCase()
 
+  const courseType = searchParams.get("courseType")?.toString()?.toUpperCase()
+
   const feeToRaw = searchParams.get("feeTo")
   const feeTo = feeToRaw === null ? Infinity : parseInt(feeToRaw)
+
+  const isAllCourses = courses.includes(`All ${courseType} Courses`)
 
   const supabase = createAdminSupabaseClient()
 
@@ -67,7 +71,12 @@ export async function GET(request: NextRequest) {
     // Apply states filter only if no domicileState is provided
     query = query.in("state", states)
   }
-  if (courses.length > 0) query = query.in("course", courses)
+  if (courses.length > 0 && !isAllCourses) query = query.in("course", courses)
+
+  if (isAllCourses) {
+    query = query.eq("courseType", courseType)
+  }
+
   if (categories.length > 0) query = query.in("category", categories)
   if (instituteTypes.length > 0)
     query = query.in("instituteType", instituteTypes)
@@ -106,9 +115,6 @@ export async function GET(request: NextRequest) {
 
     // Skip if both old and latest are null
     if (!old && !latest) {
-      console.log(
-        `Skipping record with key ${key}: both old and latest are null`,
-      )
       return
     }
 
@@ -140,31 +146,22 @@ export async function GET(request: NextRequest) {
               ))
           : true
     } else {
+      const marksToCheck = latest ?? old
+
       shouldIncludeByRank =
         rank > 0
-          ? (latest &&
-              [
-                latest.lSRR,
-                latest.sRR,
-                latest.cRR3,
-                latest.cRR2,
-                latest.cRR1,
-              ].some((mark) => {
-                const value = cleanMarks(mark, rankType, latest)
-                return (
-                  value &&
-                  (rankType === "percentile" ? rank <= value : rank >= value)
-                )
-              })) ||
-            (!latest &&
-              old &&
-              [old.lSRR, old.sRR, old.cRR3, old.cRR2, old.cRR1].some((mark) => {
-                const value = cleanMarks(mark, rankType, old)
-                return (
-                  value &&
-                  (rankType === "percentile" ? rank <= value : rank >= value)
-                )
-              }))
+          ? marksToCheck &&
+            [
+              marksToCheck.lSRR,
+              marksToCheck.sRR,
+              marksToCheck.cRR3,
+              marksToCheck.cRR2,
+              marksToCheck.cRR1,
+            ].some((mark) => {
+              const value = cleanMarks(mark)
+
+              return rank >= value
+            })
           : true
     }
 
@@ -273,15 +270,8 @@ function cleanRanks(ranks: string): number {
   return Number(ranks) || 0
 }
 
-function cleanMarks(marks: any, rankType: any, rowData: any) {
-  if (!rowData) {
-    return Infinity
-  }
-
-  if (marks) {
-    return Number(marks)
-  }
-
-  return Infinity
+function cleanMarks(marks: any): number {
+  const value = Number(marks)
+  return isNaN(value) || value <= 0 ? Infinity : value
 }
 

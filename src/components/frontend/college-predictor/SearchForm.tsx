@@ -67,6 +67,7 @@ export function SearchForm({
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.course?.text || "")
+    searchParams.set("rankType", getSearchParams("rankType") || "")
 
     setAppState({ isLoading: true })
 
@@ -84,7 +85,7 @@ export function SearchForm({
     >
       <Input
         name="rank"
-        label="Rank"
+        label={getSearchParams("rankType")}
         type="number"
         placeholder="Enter Rank"
         value={formData?.rank}

@@ -26,6 +26,8 @@ export async function GET(request: NextRequest) {
   const quotas = searchParams.get("quota")?.split(",") || []
   const feeFrom = parseInt(searchParams.get("feeFrom") || "0")
 
+  const rankType = searchParams.get("rankType")?.toString()?.toUpperCase()
+
   const feeToRaw = searchParams.get("feeTo")
   const feeTo = feeToRaw === null ? Infinity : parseInt(feeToRaw)
 
@@ -102,32 +104,69 @@ export async function GET(request: NextRequest) {
   recordMap.forEach((value, key) => {
     const { old, new: latest } = value
 
-    console.log("typeof: ", typeof rank, rank)
+    // Skip if both old and latest are null
+    if (!old && !latest) {
+      console.log(
+        `Skipping record with key ${key}: both old and latest are null`,
+      )
+      return
+    }
 
-    // Define rank check order for inclusion
-    const shouldIncludeByRank =
-      rank > 0
-        ? (cleanRanks(latest?.strayRound) &&
-            rank <= cleanRanks(latest.strayRound)) ||
-          (cleanRanks(latest?.closingRankR3) &&
-            rank <= cleanRanks(latest.closingRankR3)) ||
-          (cleanRanks(latest?.closingRankR2) &&
-            rank <= cleanRanks(latest.closingRankR2)) ||
-          (cleanRanks(latest?.closingRankR1) &&
-            rank <= cleanRanks(latest.closingRankR1)) ||
-          (!latest &&
-            cleanRanks(old?.strayRound) &&
-            rank <= cleanRanks(old.strayRound)) ||
-          (!latest &&
-            cleanRanks(old?.closingRankR3) &&
-            rank <= cleanRanks(old.closingRankR3)) ||
-          (!latest &&
-            cleanRanks(old?.closingRankR2) &&
-            rank <= cleanRanks(old.closingRankR2)) ||
-          (!latest &&
-            cleanRanks(old?.closingRankR1) &&
-            rank <= cleanRanks(old.closingRankR1))
-        : true
+    let shouldIncludeByRank: any = false
+
+    if (rankType === "RANK") {
+      shouldIncludeByRank =
+        rank > 0
+          ? (latest &&
+              [
+                latest.lastStrayRound,
+                latest.strayRound,
+                latest.closingRankR3,
+                latest.closingRankR2,
+                latest.closingRankR1,
+              ].some(
+                (rankVal) => cleanRanks(rankVal) && rank <= cleanRanks(rankVal),
+              )) ||
+            (!latest &&
+              old &&
+              [
+                old.lastStrayRound,
+                old.strayRound,
+                old.closingRankR3,
+                old.closingRankR2,
+                old.closingRankR1,
+              ].some(
+                (rankVal) => cleanRanks(rankVal) && rank <= cleanRanks(rankVal),
+              ))
+          : true
+    } else {
+      shouldIncludeByRank =
+        rank > 0
+          ? (latest &&
+              [
+                latest.lSRR,
+                latest.sRR,
+                latest.cRR3,
+                latest.cRR2,
+                latest.cRR1,
+              ].some((mark) => {
+                const value = cleanMarks(mark, rankType, latest)
+                return (
+                  value &&
+                  (rankType === "percentile" ? rank <= value : rank >= value)
+                )
+              })) ||
+            (!latest &&
+              old &&
+              [old.lSRR, old.sRR, old.cRR3, old.cRR2, old.cRR1].some((mark) => {
+                const value = cleanMarks(mark, rankType, old)
+                return (
+                  value &&
+                  (rankType === "percentile" ? rank <= value : rank >= value)
+                )
+              }))
+          : true
+    }
 
     // Apply domicileState filter with rank check
     const shouldIncludeByState = domicileState
@@ -136,7 +175,7 @@ export async function GET(request: NextRequest) {
         ? states.includes(latest?.state) || states.includes(old?.state)
         : true
 
-    if (shouldIncludeByRank && shouldIncludeByState) {
+    if (shouldIncludeByRank) {
       const record: any = {
         prev_id: old?.id,
         new_id: latest?.id,
@@ -232,5 +271,17 @@ export async function GET(request: NextRequest) {
 
 function cleanRanks(ranks: string): number {
   return Number(ranks) || 0
+}
+
+function cleanMarks(marks: any, rankType: any, rowData: any) {
+  if (!rowData) {
+    return Infinity
+  }
+
+  if (marks) {
+    return Number(marks)
+  }
+
+  return Infinity
 }
 

@@ -14,7 +14,12 @@ export function Hero() {
           </div>
 
           <h1 className="text-3xl font-bold tab:text-4xl pc:text-5xl pc:leading-[1.2] leading-[1.2] tab:leading-[1.2]">
-            {`CollegeCutoff.net — Your First Step Towards`}
+            <div>
+              <span className="text-blue-500 hover:underline">
+                CollegeCutoff.net
+              </span>
+              {` — Your First Step Towards`}
+            </div>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-color-accent to-color-accent-dark">
               {` Private Medical Admissions`}
             </span>

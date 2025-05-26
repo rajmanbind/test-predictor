@@ -47,7 +47,7 @@ export function NavbarItem({
     <Link
       href={href}
       className={cn(
-        "text-color-text hover:text-color-accent poppinsFont",
+        "text-color-text hover:text-color-accent poppinsFont font-[600]",
         className,
       )}
     >

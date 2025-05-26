@@ -2,6 +2,8 @@ import { createAdminSupabaseClient } from "@/lib/supabase"
 import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
+const na = ["NA", "N/A"]
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } },
@@ -18,6 +20,26 @@ export async function PUT(
     }
 
     const supabase = createAdminSupabaseClient()
+
+    updateData.cRR1 = na.includes(updateData?.closingRankR1.toUpperCase())
+      ? null
+      : updateData?.cRR1
+
+    updateData.cRR2 = na.includes(updateData?.closingRankR2.toUpperCase())
+      ? null
+      : updateData?.cRR2
+
+    updateData.cRR3 = na.includes(updateData?.closingRankR3.toUpperCase())
+      ? null
+      : updateData?.cRR3
+
+    updateData.sRR = na.includes(updateData?.strayRound.toUpperCase())
+      ? null
+      : updateData?.sRR
+
+    updateData.lSRR = na.includes(updateData?.lastStrayRound.toUpperCase())
+      ? null
+      : updateData?.lSRR
 
     const { error, data } = await supabase
       .from("college_table")
@@ -41,3 +63,4 @@ export async function PUT(
     )
   }
 }
+

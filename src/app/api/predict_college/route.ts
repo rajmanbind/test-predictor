@@ -84,14 +84,9 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false })
 
   // Apply optional filters
-  // Only apply states filter if states are provided; otherwise, query all states
-  if (states.length > 0) {
-    // Include domicileState in states filter if provided
-    const statesToQuery = domicileState
-      ? // @ts-ignore
-        [...new Set([domicileState, ...states])]
-      : states
-    query = query.in("state", statesToQuery)
+  if (states.length > 0 && !domicileState) {
+    // Apply states filter only if no domicileState is provided
+    query = query.in("state", states)
   }
   if (courses.length > 0) query = query.in("course", courses)
   if (categories.length > 0) query = query.in("category", categories)
@@ -109,7 +104,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error }, { status: 400 })
   }
 
-  // Merge and filter records based on rank
+  // Merge and filter records based on rank and domicileState
   let mergedData: MergedRecord[] = []
   const recordMap = new Map()
 
@@ -130,8 +125,8 @@ export async function GET(request: NextRequest) {
   recordMap.forEach((value, key) => {
     const { old, new: latest } = value
 
-    // Define rank check order
-    const shouldInclude =
+    // Define rank check order for inclusion
+    const shouldIncludeByRank =
       rank > 0
         ? (cleanRanks(latest?.strayRound) &&
             rank <= cleanRanks(latest.strayRound)) ||
@@ -155,7 +150,14 @@ export async function GET(request: NextRequest) {
             rank <= cleanRanks(old.closingRankR1))
         : true
 
-    if (shouldInclude) {
+    // Apply domicileState filter with rank check
+    const shouldIncludeByState = domicileState
+      ? latest?.state === domicileState || old?.state === domicileState
+      : states.length > 0
+        ? states.includes(latest?.state) || states.includes(old?.state)
+        : true
+
+    if (shouldIncludeByRank && shouldIncludeByState) {
       const record: MergedRecord = {
         prev_id: old?.id,
         new_id: latest?.id,
@@ -241,4 +243,3 @@ export async function GET(request: NextRequest) {
 function cleanRanks(ranks: string): number {
   return Number(ranks?.split("/")?.[0]) || Infinity
 }
-

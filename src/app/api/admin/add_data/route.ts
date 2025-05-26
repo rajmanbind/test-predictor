@@ -2,6 +2,8 @@ import { createAdminSupabaseClient } from "@/lib/supabase"
 import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
+const na = ["NA", "N/A"]
+
 export async function POST(request: NextRequest) {
   try {
     const reqData = await request.json()
@@ -51,6 +53,26 @@ export async function POST(request: NextRequest) {
         { status: 200 },
       )
     }
+
+    reqData.cRR1 = na.includes(reqData?.closingRankR1.toUpperCase())
+      ? null
+      : reqData?.cRR1
+
+    reqData.cRR2 = na.includes(reqData?.closingRankR2.toUpperCase())
+      ? null
+      : reqData?.cRR2
+
+    reqData.cRR3 = na.includes(reqData?.closingRankR3.toUpperCase())
+      ? null
+      : reqData?.cRR3
+
+    reqData.sRR = na.includes(reqData?.strayRound.toUpperCase())
+      ? null
+      : reqData?.sRR
+
+    reqData.lSRR = na.includes(reqData?.lastStrayRound.toUpperCase())
+      ? null
+      : reqData?.lSRR
 
     // Insert new data
     const { error, data } = await supabase

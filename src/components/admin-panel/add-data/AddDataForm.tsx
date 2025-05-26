@@ -33,10 +33,10 @@ interface IFormData {
   categories?: IOption
   fees?: number | string
   closingRankR1?: string
-  closingRankR2?: number
-  closingRankR3?: number
-  strayRound?: number
-  lastStrayRound?: number
+  closingRankR2?: string
+  closingRankR3?: string
+  strayRound?: string
+  lastStrayRound?: string
   year?: IOption
 }
 export default function AddDataForm({ editMode }: { editMode?: boolean }) {
@@ -128,14 +128,28 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       },
     }
 
+    const r1 = data?.closingRankR1 + (data?.cRR1 ? `/ ${data.cRR1}` : "")
+    const r2 = data?.closingRankR2
+      ? data?.closingRankR2 + (data?.cRR2 ? `/ ${data.cRR2}` : "")
+      : ""
+    const r3 = data?.closingRankR3
+      ? data?.closingRankR3 + (data?.cRR3 ? `/ ${data.cRR3}` : "")
+      : ""
+    const sr = data?.strayRound
+      ? data?.strayRound + (data?.sRR ? `/ ${data.sRR}` : "")
+      : ""
+    const lsr = data?.lastStrayRound
+      ? data?.lastStrayRound + (data?.lSRR ? `/ ${data.lSRR}` : "")
+      : ""
+
     setFormData({
       instituteName: data?.instituteName,
       fees: data?.fees,
-      closingRankR1: data?.closingRankR1,
-      closingRankR2: data?.closingRankR2,
-      closingRankR3: data?.closingRankR3,
-      strayRound: data?.strayRound,
-      lastStrayRound: data?.lastStrayRound,
+      closingRankR1: r1,
+      closingRankR2: r2,
+      closingRankR3: r3,
+      strayRound: sr,
+      lastStrayRound: lsr,
     })
 
     setDefaultValues(formatData)
@@ -151,11 +165,16 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       quota: formData?.quotas?.text,
       category: formData?.categories?.text,
       fees: formData?.fees,
-      closingRankR1: formData?.closingRankR1,
-      closingRankR2: formData?.closingRankR2,
-      closingRankR3: formData?.closingRankR3,
-      strayRound: formData?.strayRound,
-      lastStrayRound: formData?.lastStrayRound,
+      closingRankR1: formData?.closingRankR1?.split("/")?.[0],
+      closingRankR2: formData?.closingRankR2?.split("/")?.[0],
+      closingRankR3: formData?.closingRankR3?.split("/")?.[0],
+      strayRound: formData?.strayRound?.split("/")?.[0],
+      lastStrayRound: formData?.lastStrayRound?.split("/")?.[0],
+      cRR1: formData?.closingRankR1?.split("/")?.[1]?.trim() ?? null,
+      cRR2: formData?.closingRankR2?.split("/")?.[1]?.trim(),
+      cRR3: formData?.closingRankR3?.split("/")?.[1]?.trim(),
+      sRR: formData?.strayRound?.split("/")?.[1]?.trim(),
+      lSRR: formData?.lastStrayRound?.split("/")?.[1]?.trim(),
       year: formData?.year?.text,
     })
 
@@ -179,6 +198,12 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       if (res?.success) {
         showToast("success", res?.payload?.msg)
       }
+    }
+  }
+
+  function naCheck(text: string) {
+    if (text === "N/A") {
+      return true
     }
   }
 

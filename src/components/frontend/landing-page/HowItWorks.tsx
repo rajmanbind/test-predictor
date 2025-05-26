@@ -57,8 +57,8 @@ export default function HowItWorks() {
                     Select the Course Type
                   </h3>
                   <p className="text-gray-600 text-center mb-6">
-                    Start by selecting whether you're applying for UG or PG
-                    medical admissions.
+                    {`Start by selecting whether you're applying for UG or PG
+                    medical admissions.`}
                   </p>
                 </div>
               </motion.div>

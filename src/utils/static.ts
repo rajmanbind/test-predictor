@@ -1,5 +1,15 @@
 import { IOption } from "@/types/GlobalTypes"
 
+export const PGCourseSubTypeList: IOption[] = [
+  { id: "DM/MCh", text: "DM / MCh" },
+  { id: "DNB", text: "DNB" },
+  { id: "DNB-Diploma", text: "DNB-Diploma" },
+  { id: "MD/MS/Diploma", text: "MD / MS / Diploma" },
+  { id: "MD/MSAyurveda", text: "MD / MS Ayurveda" },
+  { id: "MDHomeopathy", text: "MMD Homeopathy" },
+  { id: "MDS", text: "MDS" },
+]
+
 export const states = [
   { id: 0, text: "All" },
   { id: 1, text: "Andaman and Nicobar Islands" },

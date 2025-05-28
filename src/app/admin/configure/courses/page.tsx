@@ -11,6 +11,7 @@ import { ConfirmationPopup } from "@/components/common/popups/ConfirmationPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { IOption } from "@/types/GlobalTypes"
+import { PGCourseSubTypeList } from "@/utils/static"
 import {
   autoComplete,
   cn,
@@ -28,8 +29,7 @@ const courseType: IOption[] = [
   { id: "pg", text: "PG" },
 ]
 
-const subType: IOption[] = [
-  { id: "None", text: "None" },
+export const courseSubType: IOption[] = [
   { id: "MD/MS/Diploma", text: "MD / MS / Diploma" },
   { id: "DNB", text: "DNB" },
   { id: "DNB-Diploma", text: "DNB-Diploma" },
@@ -212,11 +212,11 @@ export default function ConfigureDropdownPage() {
               control={control}
               setValue={setValue}
               required
-              options={subType}
+              options={PGCourseSubTypeList}
               debounceDelay={0}
               wrapperClass="max-w-full w-full"
               searchAPI={(text, setOptions) =>
-                autoComplete(text, subType, setOptions)
+                autoComplete(text, PGCourseSubTypeList, setOptions)
               }
               errors={errors}
             />

@@ -202,13 +202,20 @@ export default function StateClosingRanksPage() {
     return columns
   }
 
+  function backURL() {
+    if (params.id === "ug") {
+      return `/closing-ranks/${params.id}/${state}`
+    }
+    return `/closing-ranks/${params.id}/${state}?course=${getSearchParams("course")}`
+  }
+
   return (
     <FELayout>
       <div>
         <section className="w-full py-12 md:py-16 bg-gradient-to-r from-yellow-50 to-emerald-50 relative overflow-hidden">
           <Container className="container px-4 md:px-6">
             <Link
-              href={`/closing-ranks/${params.id}/${state}`}
+              href={backURL()}
               className="inline-flex items-center text-yellow-600 hover:text-yellow-700 mb-6"
             >
               <ChevronLeft className="h-4 w-4 mr-1" />

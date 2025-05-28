@@ -39,7 +39,7 @@ export const courseSubType: IOption[] = [
   { id: "DM / MCh", text: "DM/MCh" },
 ]
 
-export default function ConfigureDropdownPage() {
+export default function ConfigureCoursesPage() {
   const [configList, setConfigList] = useState<any[]>([])
   const [initialConfigList, setInitialConfigList] = useState<any[]>([])
   const [popupOpen, setPopupOpen] = useState(false)

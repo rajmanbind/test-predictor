@@ -90,10 +90,9 @@ function detailsRenderer(rowData: any) {
         <p>Institute Name: {instituteName}</p>
         <p>Institute Type: {instituteType}</p>
         <p>State: {state}</p>
-        <div className="flex gap-2">
-          <p>Course Type: {courseType}</p>
-          <p>Year: {year}</p>
-        </div>
+        <p>Course Type: {courseType}</p>
+
+        <p>Year: {year}</p>
       </div>
     )
   } else if (rowData?.payment_type === "RANK_COLLEGE_PREDICTOR") {

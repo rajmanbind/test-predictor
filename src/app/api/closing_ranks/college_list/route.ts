@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get("state")?.trim()
   const year = searchParams.get("year")?.trim()
   const courseType = searchParams.get("courseType")?.trim()
+  const course = searchParams.get("course")?.trim()
 
   if (page < 1 || pageSize < 1) {
     return NextResponse.json(
@@ -37,31 +38,96 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminSupabaseClient()
-  const supabaseUser = createUserSupabaseClient()
 
   const from = (page - 1) * pageSize
   const to = from + pageSize - 1
 
-  // Use the RPC
-  const { data, error } = await supabase.rpc("get_grouped_colleges", {
-    target_year: year,
-    course_type: courseType,
-  })
+  if (courseType === "UG") {
+    // Use the RPC
+    const { data, error } = await supabase.rpc("get_grouped_colleges", {
+      target_year: year,
+      course_type: courseType,
+    })
 
-  if (error) {
-    console.error("Supabase RPC error:", error.message)
-    return NextResponse.json(
-      { error: "Failed to fetch grouped colleges", details: error.message },
-      { status: 500 },
-    )
-  }
-
-  // Filter by state if provided
-  const filteredData = state
-    ? data.filter(
-        (item: any) => item.state?.toLowerCase() === state.toLowerCase(),
+    if (error) {
+      console.error("Supabase RPC error:", error.message)
+      return NextResponse.json(
+        { error: "Failed to fetch grouped colleges", details: error.message },
+        { status: 500 },
       )
-    : data
+    }
+
+    // Filter by state if provided
+    const filteredData = state
+      ? data.filter(
+          (item: any) => item.state?.toLowerCase() === state.toLowerCase(),
+        )
+      : data
+
+    const res = await checkPurchases(
+      filteredData,
+      from,
+      to,
+      state,
+      page,
+      pageSize,
+    )
+    return NextResponse.json(res)
+  } else {
+    const { data: courseData, error: courseError } = await supabase
+      .from("courses")
+      .select("*")
+      .eq("subType", course)
+
+    const filterCourseList = courseData?.map((c) => c.text) ?? []
+
+    // const { data: collegeData, error: collegeError } = await supabase
+    //   .from("college_table")
+    //   .select("*")
+    //   .eq("state", state)
+    //   .eq("year", year)
+    //   .in("course", filterCourseList)
+    //   .order("instituteName", { ascending: true })
+
+    const { data: collegeData, error: collegeError } = await supabase.rpc(
+      "get_distinct_colleges_by_institute",
+      {
+        p_state: state,
+        p_year: parseInt(year),
+        p_courses: filterCourseList,
+      },
+    )
+
+    for (let i = 0; i < collegeData.length; i++) {
+      collegeData[i].instituteName = collegeData?.[i].institutename
+      collegeData[i].instituteType = collegeData?.[i].institutetype
+      delete collegeData?.[i].institutename
+      delete collegeData?.[i].institutetype
+    }
+
+    const res = await checkPurchases(
+      collegeData,
+      from,
+      to,
+      state,
+      page,
+      pageSize,
+      filterCourseList,
+    )
+    return NextResponse.json(res)
+  }
+}
+
+async function checkPurchases(
+  filteredData: any[],
+  from: number,
+  to: number,
+  state: any,
+  page: number,
+  pageSize: number,
+  coursesList: string[] = [],
+) {
+  const supabaseUser = createUserSupabaseClient()
 
   // Manual pagination
   const paginated = filteredData.slice(from, to + 1)
@@ -129,7 +195,7 @@ export async function GET(request: NextRequest) {
               return (
                 p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
                 isBefore(currentDate, expiryDate) &&
-                isCollegePurchased(college, p.closing_rank_details)
+                isCollegePurchased(college, p.closing_rank_details, coursesList)
               )
             })
 
@@ -140,23 +206,38 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({
+  return {
     data: hiddenData,
     currentPage: page,
     pageSize,
     totalItems,
     totalPages,
-  })
+  }
 }
 
-function isCollegePurchased(college: any, userCollege: any) {
+function isCollegePurchased(
+  college: any,
+  userCollege: any,
+  coursesList: string[] = [],
+) {
   const { instituteName, instituteType, state, courseType, year } = userCollege
 
-  return (
-    college.instituteName === instituteName &&
-    college.instituteType === instituteType &&
-    college.state === state &&
-    college.courseType === courseType &&
-    college.year === year
-  )
+  if (courseType === "UG") {
+    return (
+      college.instituteName === instituteName &&
+      college.instituteType === instituteType &&
+      college.state === state &&
+      college.courseType === courseType &&
+      college.year === year
+    )
+  } else {
+    return (
+      college.instituteName === instituteName &&
+      college.instituteType === instituteType &&
+      college.state === state &&
+      college.year === year &&
+      coursesList.includes(college.course)
+    )
+  }
 }
+

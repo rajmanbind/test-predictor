@@ -9,26 +9,57 @@ import { useState } from "react"
 export default function ContactUsContent() {
   const [formData, setFormData] = useState({
     name: "",
-    subject: "",
+    phone: "",
     message: "",
   })
+  const [phoneError, setPhoneError] = useState("")
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
+    if (name === "phone") {
+      // Allow only numbers and an optional + at the start
+      const cleanedValue = value.replace(/[^0-9+]/g, "")
+      setFormData((prev) => ({
+        ...prev,
+        [name]: cleanedValue,
+      }))
+      // Validate phone number length
+      if (cleanedValue.startsWith("+")) {
+        if (cleanedValue.length < 13) {
+          setPhoneError("Phone number must be at least 10 digits")
+        } else if (cleanedValue.length > 16) {
+          setPhoneError("Phone number cannot exceed 15 digits")
+        } else {
+          setPhoneError("")
+        }
+      } else {
+        if (cleanedValue.length < 10 && cleanedValue.length > 0) {
+          setPhoneError("Phone number must be at least 10 digits")
+        } else {
+          setPhoneError("")
+        }
+      }
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }))
+    }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    // Additional validation before submission
+    if (formData.phone.replace(/\+/g, "").length < 10) {
+      setPhoneError("Phone number must be at least 10 digits")
+      return
+    }
 
     // Construct mailto URL
-    const emailBody = `Name: ${formData.name}\n\nMessage:\n${formData.message}`
-    const mailtoUrl = `mailto:collegecutoff@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(emailBody)}`
+    const emailBody = `Name: ${formData.name}\n\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
+    const mailtoUrl = `mailto:collegecutoff@gmail.com?subject=${encodeURIComponent(formData.phone)}&body=${encodeURIComponent(emailBody)}`
 
     // Open Gmail app or default email client
     window.location.href = mailtoUrl
@@ -36,9 +67,10 @@ export default function ContactUsContent() {
     // Reset form
     setFormData({
       name: "",
-      subject: "",
+      phone: "",
       message: "",
     })
+    setPhoneError("")
   }
 
   return (
@@ -186,14 +218,13 @@ export default function ContactUsContent() {
 
               {/* Contact Form */}
               <div>
-                <Card className="bg-gradient-to-br from-orange-400 to-orange-500 text-white border-0 p-4">
+                <Card className="bg-color-table-header text-white border-0 p-4">
                   <CardHeader>
                     <CardTitle className="text-xl font-bold">
                       Send Us a Message
                     </CardTitle>
                     <p className="text-orange-100">
-                      {`Fill out the form below and we'll get back to you as soon
-                      as possible.`}
+                      {`Fill out the form below and we'll get back to you as soon as possible.`}
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -219,21 +250,28 @@ export default function ContactUsContent() {
 
                       <div className="space-y-2">
                         <Label
-                          htmlFor="subject"
+                          htmlFor="phone"
                           className="text-white font-medium"
                         >
-                          Subject
+                          Phone Number
                         </Label>
                         <Input
-                          id="subject"
-                          name="subject"
-                          type="text"
-                          value={formData.subject}
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          value={formData.phone}
                           onChange={handleInputChange}
-                          placeholder="Enter the subject"
+                          placeholder="Enter your Phone Number"
                           required
+                          pattern="\+?[0-9]{10,15}"
+                          title="Please enter a valid phone number"
                           className="bg-white/90 border-0 text-gray-900 placeholder:text-gray-500"
                         />
+                        {phoneError && (
+                          <p className="text-red-500 text-sm font-medium">
+                            {phoneError}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex flex-col gap-4">
@@ -257,7 +295,7 @@ export default function ContactUsContent() {
 
                       <Button
                         type="submit"
-                        className="w-full bg-[#0054a4]/90 text-white hover:bg-[#0054a4] hover:border-white border border-transparent font-semibold py-2 px-4 rounded-lg transition-colors translate-y-3 h-[50px]"
+                        className="w-full bg-color-accent text-white hover:bg-color-accent-dark hover:border-white border border-transparent font-semibold py-2 px-4 rounded-lg transition-colors translate-y-3 h-[50px]"
                       >
                         Send Message
                       </Button>
@@ -347,6 +385,8 @@ const Input = ({
   onChange,
   placeholder,
   required = false,
+  pattern, // Add pattern prop
+  title, // Add title prop
   className = "",
 }: {
   id?: string
@@ -355,6 +395,8 @@ const Input = ({
   value?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
+  pattern?: string
+  title?: string
   required?: boolean
   className?: string
 }) => (
@@ -365,6 +407,8 @@ const Input = ({
     value={value}
     onChange={onChange}
     placeholder={placeholder}
+    pattern={pattern}
+    title={title}
     required={required}
     className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
   />

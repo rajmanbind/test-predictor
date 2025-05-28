@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation"
 import { SetStateAction, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
+const domicileStates: IOption[] = states.slice(1)
+
 interface IFormData {
   rank?: number | string
   domicileState?: IOption
@@ -120,9 +122,11 @@ export function SearchForm({
         control={control}
         setValue={setValue}
         required
-        options={states}
+        options={domicileStates}
         debounceDelay={0}
-        searchAPI={(text, setOptions) => autoComplete(text, states, setOptions)}
+        searchAPI={(text, setOptions) =>
+          autoComplete(text, domicileStates, setOptions)
+        }
         errors={errors}
       />
 

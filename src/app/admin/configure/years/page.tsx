@@ -153,7 +153,7 @@ export default function ConfigureYearPage() {
           </p>
         </div>
       </Card>
-      <Card className="mt-4 px-6 py-10 flex flex-col tab:flex-row items-start gap-8 w-fit max-w-[865px]">
+      {/* <Card className="mt-4 px-6 py-10 flex flex-col tab:flex-row items-start gap-8 w-fit max-w-[865px]">
         <form
           className="w-full max-w-96"
           onSubmit={handleSubmit(onSubmitClosingRankPage)}
@@ -203,7 +203,8 @@ export default function ConfigureYearPage() {
             Page.
           </p>
         </div>
-      </Card>
+      </Card> */}
     </BELayout>
   )
 }
+

@@ -33,8 +33,8 @@ export default function HowItWorks() {
         </div>
 
         {/* Desktop Timeline */}
-        <div className="hidden lg:block relative mb-20">
-          <div className="grid grid-cols-3 gap-8 gap-y-24 text-black">
+        <div className="relative mb-20">
+          <div className="grid pc:grid-cols-3 gap-8 gap-y-24 text-black">
             {/* Step 1 */}
             <div className="relative">
               <motion.div
@@ -242,112 +242,6 @@ export default function HowItWorks() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Mobile Steps */}
-        <div className="lg:hidden space-y-12">
-          {/* Step 1 */}
-          <motion.div
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 relative"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center text-white font-bold shadow-md">
-              1
-            </div>
-            <div className="flex flex-col sm:flex-row gap-6 items-center">
-              <div className="w-20 h-20 rounded-full bg-yellow-100 flex-shrink-0 flex items-center justify-center">
-                <ClipboardList className="h-10 w-10 text-yellow-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">Enter Your Details</h3>
-                <p className="text-gray-600 mb-4">
-                  Provide your NEET rank, state, preferred course, and category
-                  to get started.
-                </p>
-                <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
-                  <h4 className="font-medium text-yellow-800 mb-1 text-sm">
-                    {`What you'll need:`}
-                  </h4>
-                  <p className="text-xs text-gray-700">
-                    NEET rank, state, category, and course preferences
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Step 2 */}
-          <motion.div
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 relative"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <div className="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-gradient-to-r from-yellow-500 to-emerald-500 flex items-center justify-center text-white font-bold shadow-md">
-              2
-            </div>
-            <div className="flex flex-col sm:flex-row-reverse gap-6 items-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-100 flex-shrink-0 flex items-center justify-center">
-                <Search className="h-10 w-10 text-emerald-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">
-                  Get College Predictions
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Our algorithm analyzes your data and provides accurate college
-                  matches.
-                </p>
-                <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                  <h4 className="font-medium text-emerald-800 mb-1 text-sm">
-                    {`What you'll receive:`}
-                  </h4>
-                  <p className="text-xs text-gray-700">
-                    College list, admission probabilities, and cutoff trends
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Step 3 */}
-          <motion.div
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 relative"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold shadow-md">
-              3
-            </div>
-            <div className="flex flex-col sm:flex-row gap-6 items-center">
-              <div className="w-20 h-20 rounded-full bg-yellow-100 flex-shrink-0 flex items-center justify-center">
-                <CheckSquare className="h-10 w-10 text-yellow-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">
-                  Make Informed Decisions
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Compare colleges, explore specializations, and plan your
-                  medical career.
-                </p>
-                <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
-                  <h4 className="font-medium text-yellow-800 mb-1 text-sm">
-                    Tools at your disposal:
-                  </h4>
-                  <p className="text-xs text-gray-700">
-                    Comparison tools, counseling, and career planning
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

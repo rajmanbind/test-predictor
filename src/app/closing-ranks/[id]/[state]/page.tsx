@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/common/Button"
 import { Pagination } from "@/components/common/Pagination"
-import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { Table, TableColumn } from "@/components/common/Table/Table"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
@@ -12,20 +11,13 @@ import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { courseType, paymentType, priceType, years } from "@/utils/static"
-import {
-  autoComplete,
-  cn,
-  onPageChange,
-  saveToLocalStorage,
-} from "@/utils/utils"
+import { paymentType, priceType, years } from "@/utils/static"
+import { cn, onPageChange, saveToLocalStorage } from "@/utils/utils"
 import { ChevronLeft, Eye, Info, Users, View } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import Script from "next/script"
 import { useEffect, useState } from "react"
-import { isMobile } from "react-device-detect"
-import { useForm } from "react-hook-form"
 
 const yearList: IOption[] = []
 const configYearList = years()
@@ -105,7 +97,8 @@ export default function CollegeListClosingRanksPage() {
         page,
         size: 20,
         state,
-        courseType: params.id?.toString()?.toUpperCase(),
+        courseType: params.id?.toString()?.toUpperCase(), //ug pg
+        course: getSearchParams("course"),
         year:
           selectedClosingRankYear?.text ||
           closingRankYear?.payload?.data?.[0]?.text,
@@ -136,12 +129,16 @@ export default function CollegeListClosingRanksPage() {
       {
         title: "Course Type",
         tableKey: "courseType",
+
+        width: "150px",
         renderer({ cellData }) {
-          return <div className="text-center w-[100px]">{cellData}</div>
+          return params.id === "ug"
+            ? "All UG Courses"
+            : getSearchParams("course")
         },
       },
       {
-        title: "Buy Now",
+        title: "Unlock Cut-off",
         tableKey: "action",
         width: "120px",
         renderer({ rowData }) {
@@ -149,13 +146,29 @@ export default function CollegeListClosingRanksPage() {
             <div className="w-[120px] m-3">
               {rowData?.purchased ? (
                 <Link
-                  href={`/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}`}
+                  href={`/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams(
+                    "course",
+                  )}`}
                   className="text-[14px] disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed flex items-center gap-2"
                   onClick={() => {
-                    saveToLocalStorage(
-                      paymentType.SINGLE_COLLEGE_CLOSING_RANK,
-                      rowData,
-                    )
+                    if (params.id === "ug") {
+                      saveToLocalStorage(
+                        paymentType.SINGLE_COLLEGE_CLOSING_RANK,
+                        {
+                          ...rowData,
+                          courseType: params.id?.toString()?.toUpperCase(),
+                        },
+                      )
+                    } else {
+                      saveToLocalStorage(
+                        paymentType.SINGLE_COLLEGE_CLOSING_RANK,
+                        {
+                          ...rowData,
+                          course: getSearchParams("course"),
+                          courseType: params.id?.toString()?.toUpperCase(),
+                        },
+                      )
+                    }
                   }}
                 >
                   <Button
@@ -221,6 +234,7 @@ export default function CollegeListClosingRanksPage() {
       payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
       closing_rank_details: {
         ...rowData,
+        courseType: params?.id === "ug" ? "UG" : getSearchParams("course"),
       },
     }
 
@@ -243,13 +257,27 @@ export default function CollegeListClosingRanksPage() {
       })
 
       if (priceRes?.success) {
-        router.push(
-          `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}`,
-        )
+        if (params.id === "ug") {
+          router.push(
+            `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}}`,
+          )
+        } else {
+          router.push(
+            `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams("course")}`,
+          )
+        }
       }
     }
 
     setProcessingPayment(false)
+  }
+
+  function backURL() {
+    if (params.id === "ug") {
+      return `/closing-ranks/${params.id}`
+    }
+
+    return `/closing-ranks/${params.id}?course=${getSearchParams("course")}`
   }
 
   return (
@@ -260,7 +288,7 @@ export default function CollegeListClosingRanksPage() {
         <section className="w-full py-12 md:py-16 bg-gradient-to-r from-yellow-50 to-emerald-50 relative overflow-hidden">
           <Container className="container px-4 md:px-6">
             <Link
-              href={`/closing-ranks/${params.id}`}
+              href={backURL()}
               className="inline-flex items-center text-yellow-600 hover:text-yellow-700 mb-6"
             >
               <ChevronLeft className="h-4 w-4 mr-1" />

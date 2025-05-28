@@ -15,8 +15,10 @@ import {
   onTextFieldChange,
 } from "@/utils/utils"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+
+const domicileStates: IOption[] = states.slice(1)
 
 interface IFormData {
   rank?: number | string
@@ -40,7 +42,7 @@ export function CollegePredictorForm() {
   })
 
   const [radioOption, setRadioOption] = useState(["Rank", "Marks"])
-  const [selected, setSelected] = useState("")
+  const [selected, setSelected] = useState("Rank")
 
   const [coursesList, setCoursesList] = useState<IOption[]>([])
   const { fetchData } = useFetch()
@@ -107,11 +109,13 @@ export function CollegePredictorForm() {
           name="courseType"
           label="Course Type"
           placeholder="Select your Course Type"
-          value={formData?.courses}
+          value={formData?.courseType}
+          defaultOption={{
+            id: "ug",
+            text: "UG",
+          }}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
-
-            setSelected("")
 
             if (selectedValue?.id === "ug") {
               setRadioOption(["Rank", "Marks"])
@@ -189,10 +193,10 @@ export function CollegePredictorForm() {
           }}
           control={control}
           setValue={setValue}
-          options={states}
+          options={domicileStates}
           debounceDelay={0}
           searchAPI={(text, setOptions) =>
-            autoComplete(text, states, setOptions)
+            autoComplete(text, domicileStates, setOptions)
           }
           errors={errors}
         />

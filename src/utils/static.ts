@@ -64,8 +64,8 @@ export const courses = [
 ]
 
 export const courseType = [
-  { id: 0, text: "UG" },
-  { id: 1, text: "PG" },
+  { id: "ug", text: "UG" },
+  { id: "pg", text: "PG" },
 ]
 
 export const categories = [

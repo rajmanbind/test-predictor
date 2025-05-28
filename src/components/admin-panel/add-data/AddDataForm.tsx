@@ -13,6 +13,7 @@ import {
   autoComplete,
   clearReactHookFormValueAndStates,
   createPayload,
+  isEmpty,
   onOptionSelected,
   onTextFieldChange,
 } from "@/utils/utils"
@@ -69,21 +70,16 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   }, [params?.id])
 
   async function getConfigData() {
-    const [quotaData, categoryData, coursesData] = await Promise.all([
+    const [quotaData, categoryData] = await Promise.all([
       fetchData({ url: "/api/admin/configure/get", params: { type: "QUOTA" } }),
       fetchData({
         url: "/api/admin/configure/get",
         params: { type: "CATEGORY" },
       }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "COURSES" },
-      }),
     ])
 
     setQuotasList(quotaData?.payload?.data || [])
     setCategoriesList(categoryData?.payload?.data || [])
-    setCoursesList(coursesData?.payload?.data || [])
   }
 
   async function getDataById(id: any) {
@@ -229,6 +225,17 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     )
   }
 
+  async function getCoursesData(type: string) {
+    const res = await fetchData({
+      url: "/api/admin/configure/courses/get",
+      params: { type },
+    })
+
+    if (res?.payload?.data?.length > 0) {
+      setCoursesList(res?.payload?.data)
+    }
+  }
+
   return (
     <div>
       <div className="flex items-center gap-8 w-full">
@@ -263,6 +270,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
           value={formData?.courseType}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
+            getCoursesData(selectedValue?.id)
           }}
           control={control}
           setValue={setValue}
@@ -351,6 +359,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
               searchAPI={(text, setOptions) =>
                 autoComplete(text, coursesList, setOptions)
               }
+              disabled={isEmpty(coursesList)}
               errors={errors}
             />
 

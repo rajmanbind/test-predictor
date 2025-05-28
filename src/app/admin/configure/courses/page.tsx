@@ -29,16 +29,6 @@ const courseType: IOption[] = [
   { id: "pg", text: "PG" },
 ]
 
-export const courseSubType: IOption[] = [
-  { id: "MD/MS/Diploma", text: "MD / MS / Diploma" },
-  { id: "DNB", text: "DNB" },
-  { id: "DNB-Diploma", text: "DNB-Diploma" },
-  { id: "MDS", text: "MDS" },
-  { id: "MD/MSAyurveda", text: "MD / MS Ayurveda" },
-  { id: "MDHomeopathy", text: "MMD Homeopathy" },
-  { id: "DM / MCh", text: "DM/MCh" },
-]
-
 export default function ConfigureCoursesPage() {
   const [configList, setConfigList] = useState<any[]>([])
   const [initialConfigList, setInitialConfigList] = useState<any[]>([])

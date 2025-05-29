@@ -143,7 +143,7 @@ export function createPayload(data: any) {
 export function clearReactHookFormValueAndStates(
   fields: string[],
   setValue: any,
-  setState: React.Dispatch<React.SetStateAction<any>>,
+  setState?: React.Dispatch<React.SetStateAction<any>>,
 ) {
   const statePayload: any = {}
 
@@ -151,8 +151,9 @@ export function clearReactHookFormValueAndStates(
     setValue(field, "")
     statePayload[field] = ""
   })
-
-  setStateWithPrev(statePayload, setState)
+  if (setState) {
+    setStateWithPrev(statePayload, setState)
+  }
 }
 
 export function onPageChange(

@@ -203,9 +203,6 @@ export default function StateClosingRanksPage() {
   }
 
   function backURL() {
-    if (params.id === "ug") {
-      return `/closing-ranks/${params.id}/${state}`
-    }
     return `/closing-ranks/${params.id}/${state}?course=${getSearchParams("course")}`
   }
 
@@ -272,7 +269,7 @@ export default function StateClosingRanksPage() {
         <section className="w-full py-12">
           <Container className="container px-4 md:px-6">
             {/* Expert Guidance CTA */}
-            <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="mt-16 border border-color-accent rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
                 <h3 className="text-xl font-bold mb-2 text-black">
                   Need personalized guidance?
@@ -284,7 +281,7 @@ export default function StateClosingRanksPage() {
               </div>
               <Link
                 href="https://wa.me/919028009835"
-                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2"
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2"
               >
                 <Users className="h-5 w-5" />
                 Book Counselling Session

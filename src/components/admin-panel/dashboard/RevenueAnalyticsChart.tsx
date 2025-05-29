@@ -1,7 +1,7 @@
 "use client"
 
 import useFetch from "@/hooks/useFetch"
-import { cn } from "@/utils/utils"
+import { cn, isEmpty } from "@/utils/utils"
 import { format, subDays } from "date-fns"
 import { X } from "lucide-react"
 import React, { useEffect, useMemo, useState } from "react"
@@ -49,6 +49,10 @@ export default function RevenueChart() {
       document.removeEventListener("fullscreenchange", handleFullScreenChange)
     }
   }, [])
+
+  if (isEmpty(data)) {
+    return null
+  }
 
   return (
     <div
@@ -150,3 +154,4 @@ export default function RevenueChart() {
     </div>
   )
 }
+

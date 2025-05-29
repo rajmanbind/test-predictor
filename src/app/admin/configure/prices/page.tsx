@@ -32,7 +32,8 @@ const dropDownType: IOption[] = [
     id: "Single College Closing Rank - PG",
     text: "Single College Closing Rank - PG",
   },
-  { id: "Full State Closing Rank", text: "Full State Closing Rank" },
+  { id: "State Closing Rank - UG", text: "State Closing Rank - UG" },
+  { id: "State Closing Rank - PG", text: "State Closing Rank - PG" },
   { id: "Plans", text: "Plans" },
 ]
 
@@ -122,7 +123,7 @@ export default function ConfigurePricesPage() {
         </div>
 
         {shouldRenderComponent([selectedType], "AND") && (
-          <form className="w-full max-w-[500px]">
+          <form className="w-full max-w-fit">
             <div className="text-xl text-color-text mt-8 mb-4">
               {selectedType?.text} Price
             </div>

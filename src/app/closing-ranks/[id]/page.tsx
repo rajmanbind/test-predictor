@@ -9,11 +9,15 @@ import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { PGCourseSubTypeList } from "@/utils/static"
-import { autoComplete } from "@/utils/utils"
+import {
+  autoComplete,
+  clearReactHookFormValueAndStates,
+  isEmpty,
+} from "@/utils/utils"
 import { ArrowRight, Info, MapPin, Search, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import React from "react"
+import React, { useEffect } from "react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -75,12 +79,16 @@ const courseTypeList: IOption[] = [
 export default function ClosingRanks() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("all")
+  const [courseList, setCourseList] = useState<IOption[]>([])
   const [selectedType, setSelectedType] = useState<IOption | undefined>()
   const [selectedCourse, setSelectedCourse] = useState<IOption | undefined>()
   const { getSearchParams } = useInternalSearchParams()
 
   const router = useRouter()
   const params = useParams()
+  const { setAppState } = useAppState()
+
+  const { fetchData } = useFetch()
 
   const {
     control,
@@ -89,6 +97,23 @@ export default function ClosingRanks() {
     clearErrors,
     formState: { errors },
   } = useForm()
+
+  useEffect(() => {
+    if (params.id === "ug") {
+      getCoursesData()
+    }
+  }, [])
+
+  async function getCoursesData() {
+    const res = await fetchData({
+      url: "/api/admin/configure/courses/get",
+      params: { type: "ug" },
+    })
+
+    if (res?.payload?.data?.length > 0) {
+      setCourseList(res?.payload?.data)
+    }
+  }
 
   // Filter states based on search query and active tab
   const filteredStates = states.filter((state) => {
@@ -103,18 +128,17 @@ export default function ClosingRanks() {
   const { showToast } = useAppState()
 
   function redirectURL(state: any) {
-    if (selectedType?.id == "pg" && !selectedCourse?.text) {
+    if (isEmpty(selectedCourse?.text) || selectedCourse?.text === "EMPTY") {
       return ""
     }
 
-    if (selectedType?.id == "pg") {
-      return `/closing-ranks/${params.id}/${state}?course=${getSearchParams("course")}`
-    }
-    return `/closing-ranks/${params.id}/${state}`
+    return `/closing-ranks/${params.id}/${state}?course=${getSearchParams("course")}`
   }
 
   function onLinkClick() {
-    if (selectedType?.id == "pg" && !selectedCourse?.text) {
+    if (isEmpty(selectedCourse?.text) || selectedCourse?.text === "EMPTY") {
+      router.replace(`/closing-ranks/${params.id}`)
+
       setError("course", {
         type: "manual",
         message: "Please select a Course",
@@ -145,16 +169,24 @@ export default function ClosingRanks() {
                   text: params.id.toString().toUpperCase(),
                 }}
                 onChange={({ selectedValue }) => {
+                  router.replace(
+                    `/closing-ranks/${selectedValue?.text.toLowerCase()}`,
+                  )
+
                   setSelectedType(selectedValue)
 
-                  if (selectedValue?.id === "pg") {
-                    router.replace(
-                      `/closing-ranks/${selectedValue?.text.toLowerCase()}?course=${getSearchParams("course")}`,
-                    )
+                  if (selectedValue?.id === "ug") {
+                    getCoursesData()
+                    setSelectedCourse({ id: "", text: "EMPTY" })
                   } else {
-                    router.replace(
-                      `/closing-ranks/${selectedValue?.text.toLowerCase()}`,
-                    )
+                    setAppState({ isLoading: true })
+                    setCourseList([])
+                    setTimeout(() => {
+                      setCourseList(PGCourseSubTypeList)
+                      setAppState({ isLoading: false })
+                      setSelectedCourse({ id: "", text: "EMPTY" })
+                      clearReactHookFormValueAndStates(["course"], setValue)
+                    }, 1000)
                   }
                 }}
                 control={control}
@@ -168,45 +200,46 @@ export default function ClosingRanks() {
                 errors={errors}
               />
 
-              {selectedType?.id === "pg" && (
-                <SearchAndSelect
-                  name="course"
-                  labelNode={
-                    <div className="text-lg font-bold text-color-accent">
-                      Select Course
-                    </div>
-                  }
-                  placeholder="Select Course"
-                  value={selectedCourse}
-                  boxWrapperClass="border-color-accent"
-                  onChange={({ selectedValue }) => {
-                    setSelectedCourse(selectedValue)
+              <SearchAndSelect
+                name="course"
+                labelNode={
+                  <div className="text-lg font-bold text-color-accent">
+                    Select Course
+                  </div>
+                }
+                placeholder="Select Course"
+                value={selectedCourse}
+                boxWrapperClass="border-color-accent"
+                onChange={({ selectedValue }) => {
+                  setSelectedCourse(selectedValue)
 
-                    router.replace(
-                      `/closing-ranks/${params?.id}?course=${encodeURIComponent(
-                        selectedValue?.text,
-                      )}`,
-                    )
+                  console.log("selectedValue", selectedValue)
 
-                    clearErrors("course")
-                  }}
-                  control={control}
-                  setValue={setValue}
-                  defaultOption={{
-                    id: getSearchParams("course").replaceAll(" ", ""),
-                    text: getSearchParams("course"),
-                  }}
-                  required
-                  errorClass="absolute"
-                  options={PGCourseSubTypeList}
-                  debounceDelay={0}
-                  wrapperClass="max-w-full w-full"
-                  searchAPI={(text, setOptions) =>
-                    autoComplete(text, PGCourseSubTypeList, setOptions)
-                  }
-                  errors={errors}
-                />
-              )}
+                  router.replace(
+                    `/closing-ranks/${params?.id}?course=${encodeURIComponent(
+                      selectedValue?.text,
+                    )}`,
+                  )
+
+                  clearErrors("course")
+                }}
+                control={control}
+                setValue={setValue}
+                defaultOption={{
+                  id: getSearchParams("course").replaceAll(" ", ""),
+                  text: getSearchParams("course"),
+                }}
+                required
+                errorClass="absolute"
+                options={courseList}
+                debounceDelay={0}
+                wrapperClass="max-w-full w-full"
+                searchAPI={(text, setOptions) =>
+                  autoComplete(text, courseList, setOptions)
+                }
+                disabled={isEmpty(courseList)}
+                errors={errors}
+              />
             </div>
 
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
@@ -324,7 +357,7 @@ export default function ClosingRanks() {
             )}
 
             {/* Expert Guidance CTA */}
-            <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="mt-16 border border-color-accent rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
                 <h3 className="text-xl font-bold mb-2 text-black">
                   Need personalized guidance?
@@ -336,7 +369,7 @@ export default function ClosingRanks() {
               </div>
               <Link
                 href="https://wa.me/919028009835"
-                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2"
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2"
               >
                 <Users className="h-5 w-5" />
                 Book Counselling Session

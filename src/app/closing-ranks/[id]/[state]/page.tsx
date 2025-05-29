@@ -36,6 +36,8 @@ export default function CollegeListClosingRanksPage() {
   const [processingPayment, setProcessingPayment] = useState<any>(false)
   const [showPaymentPopup, setShowPaymentPopup] = useState(false)
   const [rowData, setRowData] = useState<any>(null)
+  const [stateAmount, setStateAmount] = useState<number>(299)
+  const [statePaymentPopup, setStatePaymentPopup] = useState(false)
 
   const [selectedClosingRankYear, setSelectedClosingRankYear] = useState<
     IOption | undefined
@@ -61,7 +63,7 @@ export default function CollegeListClosingRanksPage() {
   }, [updateUI])
 
   async function getData() {
-    const [closingRankYear, price] = await Promise.all([
+    const [closingRankYear, price, statePrice] = await Promise.all([
       fetchData({
         url: "/api/admin/configure/get",
         params: { type: "CLOSING_RANK_YEAR" },
@@ -76,6 +78,16 @@ export default function CollegeListClosingRanksPage() {
           item: state,
         },
       }),
+      fetchData({
+        url: "/api/admin/configure_prices/get",
+        params: {
+          type:
+            params.id === "ug"
+              ? priceType.STATE_CLOSING_RANK_UG
+              : priceType.STATE_CLOSING_RANK_PG,
+          item: state,
+        },
+      }),
     ])
 
     if (closingRankYear?.success) {
@@ -87,6 +99,10 @@ export default function CollegeListClosingRanksPage() {
 
     if (price?.success) {
       setAmount(price?.payload?.data?.price)
+    }
+
+    if (statePrice?.success) {
+      setStateAmount(statePrice?.payload?.data?.price)
     }
 
     const page = Number(getSearchParams("page") || 1)
@@ -107,6 +123,8 @@ export default function CollegeListClosingRanksPage() {
 
     if (res?.success) {
       setTableData(res?.payload)
+
+      console.log("res?.payload", res?.payload)
     }
   }
 
@@ -132,9 +150,7 @@ export default function CollegeListClosingRanksPage() {
 
         width: "150px",
         renderer({ cellData }) {
-          return params.id === "ug"
-            ? "All UG Courses"
-            : getSearchParams("course")
+          return getSearchParams("course")
         },
       },
       {
@@ -151,24 +167,14 @@ export default function CollegeListClosingRanksPage() {
                   )}`}
                   className="text-[14px] disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed flex items-center gap-2"
                   onClick={() => {
-                    if (params.id === "ug") {
-                      saveToLocalStorage(
-                        paymentType.SINGLE_COLLEGE_CLOSING_RANK,
-                        {
-                          ...rowData,
-                          courseType: params.id?.toString()?.toUpperCase(),
-                        },
-                      )
-                    } else {
-                      saveToLocalStorage(
-                        paymentType.SINGLE_COLLEGE_CLOSING_RANK,
-                        {
-                          ...rowData,
-                          course: getSearchParams("course"),
-                          courseType: params.id?.toString()?.toUpperCase(),
-                        },
-                      )
-                    }
+                    saveToLocalStorage(
+                      paymentType.SINGLE_COLLEGE_CLOSING_RANK,
+                      {
+                        ...rowData,
+                        course: getSearchParams("course"),
+                        courseType: params.id?.toString()?.toUpperCase(),
+                      },
+                    )
                   }}
                 >
                   <Button
@@ -234,7 +240,8 @@ export default function CollegeListClosingRanksPage() {
       payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
       closing_rank_details: {
         ...rowData,
-        courseType: params?.id === "ug" ? "UG" : getSearchParams("course"),
+        courseType: params?.id === "ug" ? "UG" : "PG",
+        course: getSearchParams("course"),
       },
     }
 
@@ -257,15 +264,58 @@ export default function CollegeListClosingRanksPage() {
       })
 
       if (priceRes?.success) {
-        if (params.id === "ug") {
-          router.push(
-            `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}}`,
-          )
-        } else {
-          router.push(
-            `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams("course")}`,
-          )
-        }
+        router.push(
+          `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams("course")}`,
+        )
+      }
+    }
+
+    setProcessingPayment(false)
+  }
+
+  async function successCallbackStatePayment(orderId: string) {
+    setShowPaymentPopup(false)
+
+    showToast(
+      "success",
+      <p>
+        Payment Successful
+        <br />
+        Thank You for purchasing!
+      </p>,
+    )
+
+    const payload = {
+      orderId,
+      amount: stateAmount,
+      payment_type: paymentType?.STATE_CLOSING_RANK,
+      closing_rank_details: {
+        state: params?.state,
+        courseType: params?.id === "ug" ? "UG" : "PG",
+        course: getSearchParams("course"),
+        year: defaultClosingRankValue?.text,
+      },
+    }
+
+    const res = await fetchData({
+      url: "/api/purchase",
+      method: "POST",
+      data: payload,
+    })
+
+    if (res?.success) {
+      const priceRes = await fetchData({
+        url: "/api/payment",
+        method: "POST",
+        data: {
+          [paymentType?.STATE_CLOSING_RANK]: stateAmount,
+        },
+        noToast: true,
+      })
+
+      if (priceRes?.success) {
+        setStatePaymentPopup(false)
+        setUpdateUI((prev) => !prev)
       }
     }
 
@@ -273,10 +323,6 @@ export default function CollegeListClosingRanksPage() {
   }
 
   function backURL() {
-    if (params.id === "ug") {
-      return `/closing-ranks/${params.id}`
-    }
-
     return `/closing-ranks/${params.id}?course=${getSearchParams("course")}`
   }
 
@@ -352,29 +398,59 @@ export default function CollegeListClosingRanksPage() {
           </Container>
         </section>
 
-        <section className="w-full py-12">
-          <Container className="container px-4 md:px-6">
-            {/* Expert Guidance CTA */}
-            <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h3 className="text-xl font-bold mb-2 text-black">
-                  Need personalized guidance?
-                </h3>
-                <p className="text-gray-600">
-                  Connect with our expert counselors to get personalized college
-                  recommendations based on your NEET rank and preferences.
-                </p>
+        <div className="mt-[-100px] pb-16">
+          {!tableData?.data?.[0]?.statePurchased && (
+            <section className="w-full">
+              <Container className="container px-4 md:px-6">
+                {/* State Wise Purchase */}
+                <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div>
+                    <div className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800 shadow-sm border border-green-200 mb-3 inline-block">
+                      State-Wise Purchase
+                    </div>
+
+                    <h3 className="text-xl font-bold mb-2 text-color-table-header">
+                      {`Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
+                    </h3>
+                    <p className="text-black">
+                      You can unlock state-wise NEET {getSearchParams("course")}{" "}
+                      closing ranks for all colleges in {params?.state} at once.
+                    </p>
+                  </div>
+
+                  <Button onClick={() => setStatePaymentPopup(true)}>
+                    Unlock Now @ ₹{stateAmount}
+                  </Button>
+                </div>
+              </Container>
+            </section>
+          )}
+
+          <section className="w-full">
+            <Container className="container px-4 md:px-6">
+              {/* Expert Guidance CTA */}
+              <div className="mt-16 border border-color-accent rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                  <h3 className="text-xl font-bold mb-2 text-black">
+                    Need personalized guidance?
+                  </h3>
+                  <p className="text-gray-600">
+                    Connect with our expert counselors to get personalized
+                    college recommendations based on your NEET rank and
+                    preferences.
+                  </p>
+                </div>
+                <Link
+                  href="https://wa.me/919028009835"
+                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2 text-white"
+                >
+                  <Users className="h-5 w-5" />
+                  Book Counselling Session
+                </Link>
               </div>
-              <Link
-                href="https://wa.me/919028009835"
-                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium px-6 py-3 rounded-lg shadow-md flex items-center gap-2"
-              >
-                <Users className="h-5 w-5" />
-                Book Counselling Session
-              </Link>
-            </div>
-          </Container>
-        </section>
+            </Container>
+          </section>
+        </div>
       </div>
       <SignInPopup successCallback={() => setShowPaymentPopup(true)} />
 
@@ -390,6 +466,20 @@ export default function CollegeListClosingRanksPage() {
         }
         btnText={`Unlock Now @ ₹${amount}`}
         amount={amount}
+      />
+
+      <PaymentPopupCard
+        successCallback={successCallbackStatePayment}
+        isOpen={statePaymentPopup}
+        onClose={() => setStatePaymentPopup(false)}
+        paymentDescription="CollegeCutOff.net Payment for State Closing Ranks"
+        title={
+          <p className="pt-2 uppercase poppinsFont">
+            {`Please make payment to Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
+          </p>
+        }
+        btnText={`Unlock Now @ ₹${stateAmount}`}
+        amount={stateAmount}
       />
     </FELayout>
   )

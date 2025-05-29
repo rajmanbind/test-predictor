@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       .select("*", { count: "exact", head: true })
       .eq("instituteName", college.instituteName)
       .eq("instituteType", college.instituteType)
-      .eq("courseType", college.courseType)
+      .eq("course", college.course)
       .eq("state", college.state)
       .eq("year", parseInt(college.year))
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       .select("*")
       .eq("instituteName", college.instituteName)
       .eq("instituteType", college.instituteType)
-      .eq("courseType", college.courseType)
+      .eq("course", college.course)
       .eq("state", college.state)
       .eq("year", parseInt(college.year))
       .order("created_at", { ascending: false })

@@ -136,7 +136,7 @@ export function SignInPopup({
 
     if (res?.success) {
       // Successful login - close modal and reset state
-      setAppState({ signInModalOpen: false })
+      setAppState({ signInModalOpen: false, user: true })
 
       setStep("phone")
       setPhoneNumber("")

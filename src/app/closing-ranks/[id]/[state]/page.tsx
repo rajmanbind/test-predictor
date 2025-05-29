@@ -38,6 +38,7 @@ export default function CollegeListClosingRanksPage() {
   const [rowData, setRowData] = useState<any>(null)
   const [stateAmount, setStateAmount] = useState<number>(299)
   const [statePaymentPopup, setStatePaymentPopup] = useState(false)
+  const [statePurchaseMode, setStatePurchaseMode] = useState(false)
 
   const [selectedClosingRankYear, setSelectedClosingRankYear] = useState<
     IOption | undefined
@@ -123,8 +124,6 @@ export default function CollegeListClosingRanksPage() {
 
     if (res?.success) {
       setTableData(res?.payload)
-
-      console.log("res?.payload", res?.payload)
     }
   }
 
@@ -418,7 +417,23 @@ export default function CollegeListClosingRanksPage() {
                     </p>
                   </div>
 
-                  <Button onClick={() => setStatePaymentPopup(true)}>
+                  <Button
+                    onClick={() => {
+                      setStatePurchaseMode(true)
+
+                      fetchData({
+                        url: "/api/user",
+                        method: "GET",
+                        noToast: true,
+                      }).then((user) => {
+                        if (user?.success) {
+                          setStatePaymentPopup(true)
+                        } else {
+                          setAppState({ signInModalOpen: true })
+                        }
+                      })
+                    }}
+                  >
                     Unlock Now @ ₹{stateAmount}
                   </Button>
                 </div>
@@ -452,7 +467,12 @@ export default function CollegeListClosingRanksPage() {
           </section>
         </div>
       </div>
-      <SignInPopup successCallback={() => setShowPaymentPopup(true)} />
+      <SignInPopup
+        successCallback={() => {
+          setUpdateUI((prev) => !prev)
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        }}
+      />
 
       <PaymentPopupCard
         successCallback={successCallback}

@@ -74,7 +74,10 @@ function TableSignup({
     })
 
     if (res?.success) {
-      saveToLocalStorage(`payment-predictor-${getSearchParams("rank")}`, true)
+      saveToLocalStorage(
+        `payment-predictor-${getSearchParams("rank")}`,
+        new Date(),
+      )
       setUpdateUI((prev) => !prev)
 
       await fetchData({

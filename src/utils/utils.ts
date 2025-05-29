@@ -193,3 +193,15 @@ export function getPhoneFromUser(user: any) {
   return phone
 }
 
+export function isExpired(dateStr: string, expiryMonths: number): boolean {
+  const originalDate = new Date(dateStr)
+  if (isNaN(originalDate.getTime())) {
+    return true
+  }
+
+  const expiryDate = new Date(originalDate)
+  expiryDate.setMonth(expiryDate.getMonth() + expiryMonths)
+
+  return new Date() > expiryDate
+}
+

@@ -17,7 +17,7 @@ import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { priceType } from "@/utils/static"
-import { cn, getLocalStorageItem, isEmpty } from "@/utils/utils"
+import { cn, getLocalStorageItem, isEmpty, isExpired } from "@/utils/utils"
 import { Settings2 } from "lucide-react"
 import Script from "next/script"
 import { useEffect, useRef, useState } from "react"
@@ -56,7 +56,10 @@ export default function ResultPage() {
       `payment-predictor-${getSearchParams("rank")}`,
     )
 
-    getData(paymentStatus ? true : false, isEmpty(filterParams) ? null : 1)
+    getData(
+      !isExpired(paymentStatus, 6) ? true : false,
+      isEmpty(filterParams) ? null : 1,
+    )
 
     if (paymentStatus) {
       setPaid(true)

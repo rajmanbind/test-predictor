@@ -8,7 +8,7 @@ import { Menu, UserRound } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { Button } from "../common/Button"
 import { Logo } from "../common/Logo"
@@ -61,6 +61,8 @@ export function Navbar() {
 
   const pathname = usePathname()
 
+  const [isUser, setIsUser] = useState(false)
+
   const { appState, setAppState, showToast } = useAppState()
   const [mobSidebar, setMobSidebar] = useState(false)
 
@@ -82,9 +84,6 @@ export function Navbar() {
       router.replace("/")
     }
   }
-
-  // Don't remove this log, Accessing from Server side.
-  console.log(appState?.user ? "" : "")
 
   return (
     <Container className="flex-shrink-0 w-full">

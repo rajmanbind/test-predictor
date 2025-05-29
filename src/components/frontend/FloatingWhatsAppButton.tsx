@@ -9,7 +9,7 @@ function FloatingWhatsAppButton() {
       href="https://wa.me/919028009835"
       className="fixed z-[999] right-0 bottom-0 m-4 cursor-pointer"
     >
-      <WhatsappIcon className="drop-shadow-lg hover:scale-125 transition-all duration-200 size-16" />
+      <WhatsappIcon className="drop-shadow-lg hover:scale-125 transition-all duration-200 size-16 pc:size-20" />
     </Link>
   )
 }
@@ -71,3 +71,4 @@ function WhatsappIcon(props: any) {
     </svg>
   )
 }
+

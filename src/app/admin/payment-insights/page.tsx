@@ -82,7 +82,7 @@ const columns: TableColumn[] = [
 
 function detailsRenderer(rowData: any) {
   if (rowData?.payment_type === "SINGLE_COLLEGE_CLOSING_RANK") {
-    const { instituteName, instituteType, courseType, state, year } =
+    const { instituteName, instituteType, course, courseType, state, year } =
       rowData?.closing_rank_details
 
     return (
@@ -90,8 +90,9 @@ function detailsRenderer(rowData: any) {
         <p>Institute Name: {instituteName}</p>
         <p>Institute Type: {instituteType}</p>
         <p>State: {state}</p>
-        <p>Course Type: {courseType}</p>
 
+        <p>Course Type: {courseType}</p>
+        <p>Course: {course}</p>
         <p>Year: {year}</p>
       </div>
     )
@@ -117,6 +118,18 @@ function detailsRenderer(rowData: any) {
           <p>Course Type: {courseType}</p>
           <p>Year: {year}</p>
         </div>
+      </div>
+    )
+  } else if (rowData?.payment_type === "STATE_CLOSING_RANK") {
+    const { course, courseType, state, year } = rowData?.closing_rank_details
+
+    return (
+      <div>
+        <p>State: {state}</p>
+
+        <p>Course Type: {courseType}</p>
+        <p>Course: {course}</p>
+        <p>Year: {year}</p>
       </div>
     )
   } else {

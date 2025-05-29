@@ -2,7 +2,7 @@ import {
   createAdminSupabaseClient,
   createUserSupabaseClient,
 } from "@/lib/supabase"
-import { paymentType } from "@/utils/static"
+import { courseType, paymentType } from "@/utils/static"
 import { addMonths, isBefore, parseISO } from "date-fns"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -60,7 +60,9 @@ export async function GET(request: NextRequest) {
     // Filter by state if provided
     const filteredData = state
       ? data.filter(
-          (item: any) => item.state?.toLowerCase() === state.toLowerCase(),
+          (item: any) =>
+            item.state?.toLowerCase() === state.toLowerCase() &&
+            item.course === course,
         )
       : data
 
@@ -71,6 +73,8 @@ export async function GET(request: NextRequest) {
       state,
       page,
       pageSize,
+      course,
+      courseType,
     )
     return NextResponse.json(res)
   } else {
@@ -113,6 +117,7 @@ export async function GET(request: NextRequest) {
       page,
       pageSize,
       filterCourseList,
+      courseType,
     )
     return NextResponse.json(res)
   }
@@ -125,7 +130,8 @@ async function checkPurchases(
   state: any,
   page: number,
   pageSize: number,
-  coursesList: string[] = [],
+  coursesList: any,
+  courseType: any,
 ) {
   const supabaseUser = createUserSupabaseClient()
 
@@ -175,17 +181,27 @@ async function checkPurchases(
       } else {
         // State Plan Check
         const hasValidStatePurchase = userPurchases.some((purchase) => {
+          const { state: purchase_state, courseType: purchase_courseType } =
+            purchase.closing_rank_details
+
           const purchaseDate = parseISO(purchase.created_at)
           const expiryDate = addMonths(purchaseDate, 6)
+
           return (
             purchase.payment_type === "STATE_CLOSING_RANK" &&
-            purchase.state === state &&
+            purchase_courseType === courseType &&
+            purchase_state === state &&
             isBefore(currentDate, expiryDate)
           )
         })
 
         if (hasValidStatePurchase) {
           hiddenData = paginated
+
+          for (let i = 0; i < hiddenData.length; i++) {
+            hiddenData[i].purchased = true
+            hiddenData[i].statePurchased = true
+          }
         } else {
           // Single College Plan Check of UG and PG particularly state
           hiddenData = hiddenData.map((college: any) => {
@@ -215,19 +231,15 @@ async function checkPurchases(
   }
 }
 
-function isCollegePurchased(
-  college: any,
-  userCollege: any,
-  coursesList: string[] = [],
-) {
+function isCollegePurchased(college: any, userCollege: any, coursesList: any) {
   const { instituteName, instituteType, state, courseType, year } = userCollege
 
   if (courseType === "UG") {
     return (
       college.instituteName === instituteName &&
+      college.course === coursesList &&
       college.instituteType === instituteType &&
       college.state === state &&
-      college.courseType === courseType &&
       college.year === year
     )
   } else {

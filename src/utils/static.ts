@@ -228,7 +228,8 @@ export const priceType = {
   RANK_COLLEGE_PREDICTOR: "College Predictor",
   SINGLE_COLLEGE_CLOSING_RANK_UG: "Single College Closing Rank - UG",
   SINGLE_COLLEGE_CLOSING_RANK_PG: "Single College Closing Rank - PG",
-  STATE_CLOSING_RANK: "Full State Closing Rank",
+  STATE_CLOSING_RANK_UG: "State Closing Rank - UG",
+  STATE_CLOSING_RANK_PG: "State Closing Rank - PG",
   PREMIUM_PLAN: "Plans",
 }
 

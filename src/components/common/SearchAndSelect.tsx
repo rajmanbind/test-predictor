@@ -78,7 +78,9 @@ export const SearchAndSelect = ({
         textValue = defaultOption?.text ? defaultOption?.text : ""
       }
 
-      setInput(textValue)
+      if (value?.text !== "EMPTY") {
+        setInput(textValue)
+      }
     }
 
     setOptionListOpen(false)
@@ -110,6 +112,9 @@ export const SearchAndSelect = ({
       setInput("")
     } else if (isEmpty(value?.text) && !isEmpty(defaultOption?.text)) {
       setInput(defaultOption?.text || "")
+    } else if (value?.text === "EMPTY") {
+      setInput("")
+      setSelectedValue(undefined)
     }
   }, [value])
 

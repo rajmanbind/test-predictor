@@ -8,6 +8,7 @@ import { Tooltip } from "react-tooltip"
 import FloatingWhatsAppButton from "./FloatingWhatsAppButton"
 import { Footer } from "./Footer"
 import { Navbar } from "./Navbar"
+import { ScrollToTopButton } from "./ScrollToTopButton"
 
 export function FELayout({ children }: { children: React.ReactNode }) {
   const [isThemeLoaded, setIsThemeLoaded] = useState(false)
@@ -49,6 +50,8 @@ export function FELayout({ children }: { children: React.ReactNode }) {
       <Footer />
 
       <Tooltip id="tooltip" place="top" className="z-[1100]" />
+
+      <ScrollToTopButton />
     </main>
   )
 }

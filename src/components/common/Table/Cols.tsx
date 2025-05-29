@@ -254,14 +254,7 @@ export function generateCols(
 function copyToClipboard(text: string) {
   if (navigator.clipboard && window.isSecureContext) {
     // Modern clipboard API
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        console.log("Copied to clipboard!")
-      })
-      .catch((err) => {
-        console.error("Clipboard copy failed:", err)
-      })
+    navigator.clipboard.writeText(text)
   } else {
     // Fallback for older browsers
     const textArea = document.createElement("textarea")

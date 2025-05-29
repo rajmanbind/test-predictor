@@ -213,8 +213,6 @@ export default function ClosingRanks() {
                 onChange={({ selectedValue }) => {
                   setSelectedCourse(selectedValue)
 
-                  console.log("selectedValue", selectedValue)
-
                   router.replace(
                     `/closing-ranks/${params?.id}?course=${encodeURIComponent(
                       selectedValue?.text,

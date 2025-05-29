@@ -16,6 +16,7 @@ import {
   cn,
   getLocalStorageItem,
   getPhoneFromUser,
+  isExpired,
   saveToLocalStorage,
 } from "@/utils/utils"
 import { useParams } from "next/navigation"
@@ -57,7 +58,7 @@ export default function CutOffPage() {
         `payment-${state}-${params?.id}-${college}`,
       )
 
-      if (paymentStatus) {
+      if (!isExpired(paymentStatus, 6)) {
         await showCutoff()
       } else {
         setRendererStatus("NOT_PAID")
@@ -249,7 +250,10 @@ function Renderer({
 
       if (college && state) {
         college = college.toLowerCase().trim().split(" ").join("-")
-        saveToLocalStorage(`payment-${state}-${params?.id}-${college}`, true)
+        saveToLocalStorage(
+          `payment-${state}-${params?.id}-${college}`,
+          new Date(),
+        )
 
         await fetchData({
           url: "/api/payment",

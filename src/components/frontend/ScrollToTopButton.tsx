@@ -21,7 +21,7 @@ export function ScrollToTopButton() {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-20 pc:bottom-[120px] right-6 z-50 rounded-full bg-[#EAEBFF] text-white shadow-lg transition-all duration-300 size-14 pc:size-16 grid place-items-center ${
+      className={`fixed bottom-[95px] pc:bottom-[120px] right-6 z-50 rounded-full bg-[#EAEBFF] text-white shadow-lg transition-all duration-300 size-14 pc:size-16 grid place-items-center ${
         visible ? "translate-x-0 opacity-100" : "translate-x-32 opacity-0"
       }`}
     >

@@ -52,19 +52,40 @@ export default function ResultPage() {
   })
 
   useEffect(() => {
+    verifyPurchases()
+  }, [filterParams, updateUI])
+
+  useEffect(() => {
+    getConfigs()
+  }, [])
+
+  async function verifyPurchases() {
+    let configRes: any = await fetchData({
+      url: "/api/admin/configure/get",
+      params: { type: "CONFIG_YEAR" },
+    })
+
+    if (configRes?.success) {
+      setConfigYear(
+        configRes?.payload?.data?.[0]?.text
+          ?.split("-")
+          .map((item: string) => item.trim()),
+      )
+
+      configRes = configRes?.payload?.data?.[0]?.text?.replaceAll(" ", "")
+    }
+
     let payment = false
     const paymentStatus = getLocalStorageItem<any>(
       `payment-predictor-${getSearchParams("rank")}-${getSearchParams("course")}`,
     )
 
     if (paymentStatus) {
-      const rank = paymentStatus?.split("-")[1]
-      const course = paymentStatus?.split("-")[2]
-
       if (
-        rank !== getSearchParams("rank") ||
-        course !== getSearchParams("course") ||
-        isExpired(paymentStatus, 6)
+        paymentStatus?.rank !== getSearchParams("rank") ||
+        paymentStatus?.course !== getSearchParams("course") ||
+        paymentStatus?.year !== configRes ||
+        isExpired(paymentStatus?.date, 6)
       ) {
         setPaid(false)
         payment = false
@@ -75,11 +96,7 @@ export default function ResultPage() {
     }
 
     getData(payment, isEmpty(filterParams) ? null : 1)
-  }, [filterParams, updateUI])
-
-  useEffect(() => {
-    getConfigs()
-  }, [])
+  }
 
   async function getConfigs() {
     const [quotaData, categoryData, coursesData, priceData] = await Promise.all(

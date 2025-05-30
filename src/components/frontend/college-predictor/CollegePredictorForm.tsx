@@ -58,14 +58,16 @@ export function CollegePredictorForm() {
     })
 
     if (res?.payload?.data?.length > 0) {
-      setCoursesList([
-        {
-          id: "all",
-          text: `All ${type === "ug" ? "UG" : "PG"} Courses`,
-        },
+      // setCoursesList([
+      //   {
+      //     id: "all",
+      //     text: `All ${type === "ug" ? "UG" : "PG"} Courses`,
+      //   },
 
-        ...res?.payload?.data,
-      ])
+      //   ...res?.payload?.data,
+      // ])
+
+      setCoursesList(res?.payload?.data || [])
     }
   }
 

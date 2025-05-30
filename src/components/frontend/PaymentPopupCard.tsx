@@ -11,6 +11,7 @@ interface IPaymentPopupCardProps {
   btnText: string
   paymentDescription: string
   amount: number
+  whatWillYouGet?: ReactNode
 
   successCallback?: (orderId: string) => void
   errorCallback?: (orderId: string) => void
@@ -23,6 +24,7 @@ export function PaymentPopupCard({
   title,
   btnText,
   paymentDescription,
+  whatWillYouGet,
   amount,
 
   successCallback,
@@ -42,6 +44,7 @@ export function PaymentPopupCard({
         errorCallback={errorCallback}
         amount={amount}
         paymentDescription={paymentDescription}
+        whatWillYouGet={whatWillYouGet}
         title={title}
         btnText={btnText}
       />

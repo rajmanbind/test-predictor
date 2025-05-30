@@ -13,7 +13,14 @@ import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { paymentType, priceType, years } from "@/utils/static"
 import { cn, onPageChange, saveToLocalStorage } from "@/utils/utils"
-import { ChevronLeft, Eye, Info, Users, View } from "lucide-react"
+import {
+  ChevronLeft,
+  CircleCheckBig,
+  Eye,
+  Info,
+  Users,
+  View,
+} from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import Script from "next/script"
@@ -398,48 +405,50 @@ export default function CollegeListClosingRanksPage() {
         </section>
 
         <div className="mt-[-100px] pb-16">
-          {!tableData?.data?.[0]?.statePurchased && (
-            <section className="w-full">
-              <Container className="container px-4 md:px-6">
-                {/* State Wise Purchase */}
-                <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div>
-                    <div className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800 shadow-sm border border-green-200 mb-3 inline-block">
-                      State-Wise Purchase
+          {tableData?.data?.length > 0 &&
+            !tableData?.data?.[0]?.statePurchased && (
+              <section className="w-full">
+                <Container className="container px-4 md:px-6">
+                  {/* State Wise Purchase */}
+                  <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                      <div className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800 shadow-sm border border-green-200 mb-3 inline-block">
+                        State-Wise Purchase
+                      </div>
+
+                      <h3 className="text-xl font-bold mb-2 text-color-table-header">
+                        {`Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
+                      </h3>
+                      <p className="text-black">
+                        You can unlock state-wise NEET{" "}
+                        {getSearchParams("course")} closing ranks for all
+                        colleges in {params?.state} at once.
+                      </p>
                     </div>
 
-                    <h3 className="text-xl font-bold mb-2 text-color-table-header">
-                      {`Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
-                    </h3>
-                    <p className="text-black">
-                      You can unlock state-wise NEET {getSearchParams("course")}{" "}
-                      closing ranks for all colleges in {params?.state} at once.
-                    </p>
+                    <Button
+                      onClick={() => {
+                        setStatePurchaseMode(true)
+
+                        fetchData({
+                          url: "/api/user",
+                          method: "GET",
+                          noToast: true,
+                        }).then((user) => {
+                          if (user?.success) {
+                            setStatePaymentPopup(true)
+                          } else {
+                            setAppState({ signInModalOpen: true })
+                          }
+                        })
+                      }}
+                    >
+                      Unlock Now @ ₹{stateAmount}
+                    </Button>
                   </div>
-
-                  <Button
-                    onClick={() => {
-                      setStatePurchaseMode(true)
-
-                      fetchData({
-                        url: "/api/user",
-                        method: "GET",
-                        noToast: true,
-                      }).then((user) => {
-                        if (user?.success) {
-                          setStatePaymentPopup(true)
-                        } else {
-                          setAppState({ signInModalOpen: true })
-                        }
-                      })
-                    }}
-                  >
-                    Unlock Now @ ₹{stateAmount}
-                  </Button>
-                </div>
-              </Container>
-            </section>
-          )}
+                </Container>
+              </section>
+            )}
 
           <section className="w-full">
             <Container className="container px-4 md:px-6">
@@ -499,6 +508,22 @@ export default function CollegeListClosingRanksPage() {
           </p>
         }
         btnText={`Unlock Now @ ₹${stateAmount}`}
+        whatWillYouGet={
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li className="flex font-poppins gap-2">
+              <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+              <h3 className="text-[15px] leading-[1.4]">
+                {`All Round's Complete Category and Quota Wise MBBS Cut-off RANK/
+                MARKS Details (NEET UG 2024) of your Selected State.`}
+              </h3>
+            </li>
+            <li className="flex font-poppins gap-2">
+              <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+
+              <h3 className="text-[15px]">Instant Access after Payment!</h3>
+            </li>
+          </ul>
+        }
         amount={stateAmount}
       />
     </FELayout>

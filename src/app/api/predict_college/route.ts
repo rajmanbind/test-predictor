@@ -176,8 +176,6 @@ export async function GET(request: NextRequest) {
         ? states.includes(latest?.state) || states.includes(old?.state)
         : true
 
-    console.log("shouldIncludeByState:", shouldIncludeByState)
-
     if (shouldIncludeByRank) {
       const record: any = {
         prev_id: old?.id,

@@ -76,7 +76,12 @@ function TableSignup({
     if (res?.success) {
       saveToLocalStorage(
         `payment-predictor-${getSearchParams("rank")}-${getSearchParams("course")}`,
-        new Date(),
+        {
+          date: new Date(),
+          rank: getSearchParams("rank"),
+          course: getSearchParams("course"),
+          year: `${configYear[0]}-${configYear[1]}`,
+        },
       )
       setUpdateUI((prev) => !prev)
 

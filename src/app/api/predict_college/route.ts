@@ -67,8 +67,13 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false })
 
   // Apply optional filters
-  if (states.length > 0 && !domicileState) {
+  if (states.length > 0) {
     // Apply states filter only if no domicileState is provided
+
+    if (!states?.includes(domicileState)) {
+      states.push(domicileState)
+    }
+
     query = query.in("state", states)
   }
   if (courses.length > 0 && !isAllCourses) query = query.in("course", courses)
@@ -166,11 +171,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Apply domicileState filter with rank check
-    const shouldIncludeByState = domicileState
-      ? latest?.state === domicileState || old?.state === domicileState
-      : states.length > 0
+    const shouldIncludeByState =
+      states.length > 0
         ? states.includes(latest?.state) || states.includes(old?.state)
         : true
+
+    console.log("shouldIncludeByState:", shouldIncludeByState)
 
     if (shouldIncludeByRank) {
       const record: any = {

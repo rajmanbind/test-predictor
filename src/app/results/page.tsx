@@ -52,20 +52,29 @@ export default function ResultPage() {
   })
 
   useEffect(() => {
+    let payment = false
     const paymentStatus = getLocalStorageItem<any>(
-      `payment-predictor-${getSearchParams("rank")}`,
-    )
-
-    getData(
-      !isExpired(paymentStatus, 6) ? true : false,
-      isEmpty(filterParams) ? null : 1,
+      `payment-predictor-${getSearchParams("rank")}-${getSearchParams("course")}`,
     )
 
     if (paymentStatus) {
-      setPaid(true)
-    } else {
-      setPaid(false)
+      const rank = paymentStatus?.split("-")[1]
+      const course = paymentStatus?.split("-")[2]
+
+      if (
+        rank !== getSearchParams("rank") ||
+        course !== getSearchParams("course") ||
+        isExpired(paymentStatus, 6)
+      ) {
+        setPaid(false)
+        payment = false
+      } else {
+        setPaid(true)
+        payment = true
+      }
     }
+
+    getData(payment, isEmpty(filterParams) ? null : 1)
   }, [filterParams, updateUI])
 
   useEffect(() => {
@@ -83,10 +92,14 @@ export default function ResultPage() {
           url: "/api/admin/configure/get",
           params: { type: "CATEGORY" },
         }),
+
         fetchData({
-          url: "/api/admin/configure/get",
-          params: { type: "COURSES" },
+          url: "/api/admin/configure/courses/get",
+          params: {
+            type: getSearchParams("courseType")?.toString()?.toLowerCase(),
+          },
         }),
+
         fetchData({
           url: "/api/admin/configure_prices/get",
           params: {

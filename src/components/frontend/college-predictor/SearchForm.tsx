@@ -67,9 +67,10 @@ export function SearchForm({
     }
 
     searchParams.set("rank", formData?.rank?.toString() || "")
+    searchParams.set("rankType", getSearchParams("rankType") || "")
     searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.course?.text || "")
-    searchParams.set("rankType", getSearchParams("rankType") || "")
+    searchParams.set("courseType", getSearchParams("courseType") || "")
 
     setAppState({ isLoading: true })
 

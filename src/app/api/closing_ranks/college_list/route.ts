@@ -181,8 +181,8 @@ async function checkPurchases(
       } else {
         // State Plan Check
         const hasValidStatePurchase = userPurchases.some((purchase) => {
-          const { state: purchase_state, courseType: purchase_courseType } =
-            purchase.closing_rank_details
+          const purchase_state = purchase?.closing_rank_details?.state
+          const purchase_courseType = purchase?.closing_rank_details?.courseType
 
           const purchaseDate = parseISO(purchase.created_at)
           const expiryDate = addMonths(purchaseDate, 6)

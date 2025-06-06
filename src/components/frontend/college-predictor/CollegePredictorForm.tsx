@@ -31,6 +31,8 @@ export function CollegePredictorForm() {
   const {
     handleSubmit,
     control,
+    setError,
+    clearErrors,
     setValue,
     formState: { errors },
   } = useForm({
@@ -72,6 +74,24 @@ export function CollegePredictorForm() {
   }
 
   function onSubmit() {
+    if (selected === "Rank") {
+      if (String(formData?.rank).length > 7) {
+        setError("rank", {
+          type: "manual",
+          message: "Rank should not be greater than 7 digits",
+        })
+        return
+      }
+    } else {
+      if (String(formData?.rank).length > 3) {
+        setError("rank", {
+          type: "manual",
+          message: "Marks should not be greater than 3 digits",
+        })
+        return
+      }
+    }
+
     setAppState({ pageLoader: true })
 
     const searchParams = new URLSearchParams()
@@ -146,11 +166,13 @@ export function CollegePredictorForm() {
           errors={errors}
         />
 
-        <div className="flex space-x-6">
+        <p>What do you have —</p>
+
+        <div className="flex space-x-6 mt-[-20px]">
           {radioOption.map((option) => (
             <label
               key={option}
-              className="relative flex items-center space-x-2 cursor-pointer"
+              className="relative flex items-center space-x-2 cursor-pointer text-color-text"
             >
               <input
                 type="radio"
@@ -163,9 +185,7 @@ export function CollegePredictorForm() {
               <div className="w-4 h-4 rounded-full border border-gray-300 peer-checked:bg-orange-500 flex items-center justify-center">
                 <div className="w-2.5 h-2.5 bg-white rounded-full peer-checked:opacity-100 opacity-0 transition-opacity"></div>
               </div>
-              <span className="text-gray-800 peer-checked:text-orange-500 ">
-                {option}
-              </span>
+              <span className="peer-checked:text-orange-500 ">{option}</span>
             </label>
           ))}
         </div>
@@ -177,7 +197,10 @@ export function CollegePredictorForm() {
           placeholder={`Enter your ${selected || "Rank"}`}
           setValue={setValue}
           value={formData?.rank}
-          onChange={(e) => onTextFieldChange(e, setFormData)}
+          onChange={(e) => {
+            onTextFieldChange(e, setFormData)
+            clearErrors("rank")
+          }}
           control={control}
           rules={{
             required: false,

@@ -526,7 +526,6 @@ export default function ResultPage() {
       </Container>
 
       <Tooltip id="tooltip" place="top" className="z-[1100]" />
-      <SignInPopup />
     </FELayout>
   )
 }

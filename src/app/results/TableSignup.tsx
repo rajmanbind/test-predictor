@@ -1,3 +1,4 @@
+import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { PaymentPopupCard } from "@/components/frontend/PaymentPopupCard"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
@@ -24,6 +25,7 @@ function TableSignup({
   const { getSearchParams } = useInternalSearchParams()
 
   const [showPaymentPopup, setShowPaymentPopup] = useState(false)
+  const { setAppState } = useAppState()
 
   const { showToast } = useAppState()
 
@@ -97,6 +99,20 @@ function TableSignup({
     }
   }
 
+  async function handleBuyNow() {
+    const user = await fetchData({
+      url: "/api/user",
+      method: "GET",
+      noToast: true,
+    })
+
+    if (user?.success) {
+      setShowPaymentPopup(true)
+    } else {
+      setAppState({ signInModalOpen: true })
+    }
+  }
+
   return (
     <div className="h-52 bg-[#ecbc00] sticky left-0">
       <div className="h-full w-full grid place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -113,9 +129,7 @@ function TableSignup({
           <button
             className="flex items-center gap-2 bg-black px-3 pl-5 py-3 mt-4 hover:bg-black/90 hover:border-white border-[2px] disabled:bg-black/50 border-transparent box-border transition-all rounded-md"
             disabled={showPaymentPopup}
-            onClick={() => {
-              setShowPaymentPopup(true)
-            }}
+            onClick={handleBuyNow}
           >
             <div className="flex items-center gap-2">
               Unlock @ ₹{amount} <ChevronRight />
@@ -123,6 +137,14 @@ function TableSignup({
           </button>
         </div>
       </div>
+
+      <SignInPopup
+        successCallback={() => {
+          setShowPaymentPopup(true)
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        }}
+        noRedirect
+      />
 
       <PaymentPopupCard
         successCallback={successCallback}

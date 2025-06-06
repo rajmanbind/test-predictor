@@ -252,5 +252,3 @@ export function CollegePredictorForm() {
     </Card>
   )
 }
-
-// trigger deployment

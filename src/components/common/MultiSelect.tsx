@@ -125,6 +125,8 @@ export const MultiSelect = ({
 
       return updatedOptions
     })
+
+    setOptionListOpen(false)
   }
 
   function isRulesRequired() {

@@ -27,9 +27,13 @@ interface IFormData {
 export function SearchForm({
   coursesList,
   setUpdateUI,
+  setFilterParams,
+  setMobFilterFormData,
 }: {
   coursesList: IOption[]
   setUpdateUI: React.Dispatch<SetStateAction<boolean>>
+  setMobFilterFormData: React.Dispatch<SetStateAction<any>>
+  setFilterParams: React.Dispatch<SetStateAction<any>>
 }) {
   const {
     handleSubmit,
@@ -65,6 +69,9 @@ export function SearchForm({
       })
       return
     }
+
+    setMobFilterFormData(null)
+    setFilterParams(null)
 
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("rankType", getSearchParams("rankType") || "")

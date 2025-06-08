@@ -484,7 +484,12 @@ export default function ResultPage() {
               overflowX: "auto",
             }}
           >
-            <SearchForm coursesList={coursesList} setUpdateUI={setUpdateUI} />
+            <SearchForm
+              coursesList={coursesList}
+              setUpdateUI={setUpdateUI}
+              setFilterParams={setFilterParams}
+              setMobFilterFormData={setMobFilterFormData}
+            />
 
             <Table
               columns={generateCols()}

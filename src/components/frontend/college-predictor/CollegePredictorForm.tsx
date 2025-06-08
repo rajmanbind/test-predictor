@@ -166,7 +166,7 @@ export function CollegePredictorForm() {
           errors={errors}
         />
 
-        <p>What do you have —</p>
+        <p>What do you have ?</p>
 
         <div className="flex space-x-6 mt-[-20px]">
           {radioOption.map((option) => (
@@ -252,3 +252,4 @@ export function CollegePredictorForm() {
     </Card>
   )
 }
+

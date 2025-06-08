@@ -95,77 +95,11 @@ export default function ContactUsContent() {
         </Container>
       </section>
 
-      {/* About Us Section */}
-      <section className="w-full py-12 md:py-16 bg-color-background">
-        <Container>
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                About CollegeCutoff
-              </h2>
-              <p className="text-gray-600 mb-4">
-                {`CollegeCutoff is India's leading platform dedicated to helping
-                NEET aspirants make informed decisions about their medical
-                education journey. Founded in 2019, we have guided over 30,000
-                students to secure admissions in their dream medical colleges.`}
-              </p>
-              <p className="text-gray-600 mb-4">
-                Our team consists of experienced counsellors, medical
-                professionals, and education experts who understand the
-                complexities of NEET counselling and admission processes across
-                India.
-              </p>
-              <p className="text-gray-600 mb-6">
-                We pride ourselves on providing accurate, up-to-date information
-                and personalized guidance to help students navigate the
-                challenging path to becoming medical professionals.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-yellow-600" />
-                  </div>
-                  <span className="font-medium">8+ Years Experience</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-yellow-600" />
-                  </div>
-                  <span className="font-medium">30,000+ Students Guided</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-yellow-600" />
-                  </div>
-                  <span className="font-medium">500+ Medical Colleges</span>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="absolute -z-10 inset-0 bg-gradient-to-tr from-yellow-100 to-emerald-100 rounded-3xl transform rotate-3 scale-105 opacity-70"></div>
-              <div className="bg-color-form-background p-6 md:p-8 rounded-2xl">
-                <img
-                  src="/medical-education-counselling-team.png"
-                  alt="CollegeCutoff Team"
-                  className="w-full h-auto rounded-lg mb-6"
-                />
-                <h3 className="text-xl font-bold mb-2">Our Mission</h3>
-                <p className="text-gray-600">
-                  To simplify medical education choices and empower NEET
-                  aspirants with accurate information and personalized guidance
-                  to achieve their career goals.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
       {/* Contact Information & Urgent Help Section */}
-      <section className="w-full py-12 md:py-16 bg-gray-50 dark:bg-color-form-background">
+      <section className="w-full py-12 md:py-16 px-3 bg-gray-50 dark:bg-color-form-background">
         <Container>
           <div className="max-w-5xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid gap-8">
               {/* Contact Information */}
               <div className="relative pt-10 md:pt-0">
                 <h2 className="text-2xl font-bold mb-6 absolute md:relative top-0 left-0">
@@ -302,6 +236,72 @@ export default function ContactUsContent() {
                     </form>
                   </CardContent>
                 </Card>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* About Us Section */}
+      <section className="w-full py-12 md:py-16 bg-color-background px-3">
+        <Container>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">
+                About CollegeCutoff
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {`CollegeCutoff is India's leading platform dedicated to helping
+                NEET aspirants make informed decisions about their medical
+                education journey. Founded in 2019, we have guided over 30,000
+                students to secure admissions in their dream medical colleges.`}
+              </p>
+              <p className="text-gray-600 mb-4">
+                Our team consists of experienced counsellors, medical
+                professionals, and education experts who understand the
+                complexities of NEET counselling and admission processes across
+                India.
+              </p>
+              <p className="text-gray-600 mb-6">
+                We pride ourselves on providing accurate, up-to-date information
+                and personalized guidance to help students navigate the
+                challenging path to becoming medical professionals.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <span className="font-medium">8+ Years Experience</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <span className="font-medium">30,000+ Students Guided</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <span className="font-medium">500+ Medical Colleges</span>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute -z-10 inset-0 bg-gradient-to-tr from-yellow-100 to-emerald-100 rounded-3xl transform rotate-3 scale-105 opacity-70"></div>
+              <div className="bg-color-form-background p-6 md:p-8 rounded-2xl">
+                <img
+                  src="/medical-education-counselling-team.png"
+                  alt="CollegeCutoff Team"
+                  className="w-full h-auto rounded-lg mb-6"
+                />
+                <h3 className="text-xl font-bold mb-2">Our Mission</h3>
+                <p className="text-gray-600">
+                  To simplify medical education choices and empower NEET
+                  aspirants with accurate information and personalized guidance
+                  to achieve their career goals.
+                </p>
               </div>
             </div>
           </div>

@@ -23,3 +23,4 @@ export interface ICommonComponentProps {
   boxWrapperClass?: string
   errorClass?: string
 }
+

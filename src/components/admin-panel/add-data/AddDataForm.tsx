@@ -119,8 +119,8 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       },
 
       year: {
-        text: data?.year,
-        id: data?.year,
+        text: String(data?.year),
+        id: String(data?.year),
       },
     }
 

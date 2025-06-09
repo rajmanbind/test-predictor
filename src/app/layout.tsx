@@ -1,5 +1,6 @@
 import { CoreLayout } from "@/components/common/CoreLayout"
 import { cn } from "@/utils/utils"
+import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
 import { Poppins, Roboto } from "next/font/google"
@@ -50,6 +51,8 @@ export default function RootLayout({
             <CoreLayout>{children}</CoreLayout>
           </Suspense>
         </ThemeProvider>
+
+        {process.env.VERCEL_ENVIRONMENT === "PRODUCTION" && <Analytics />}
       </body>
     </html>
   )

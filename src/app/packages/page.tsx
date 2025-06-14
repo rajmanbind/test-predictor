@@ -6,22 +6,15 @@ import { FELayout } from "@/components/frontend/FELayout"
 import { addMonths, format } from "date-fns"
 import { motion } from "framer-motion"
 import {
-  AlertCircle,
-  ArrowRight,
-  BarChart,
   BookOpenText,
   CheckCircle,
   ChevronDown,
   ChevronUp,
-  FileText,
   Handshake,
   Hospital,
-  MapPin,
   Phone,
   Unlock,
-  Video,
 } from "lucide-react"
-import Link from "next/link"
 import type React from "react"
 import { ReactNode, useState } from "react"
 

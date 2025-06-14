@@ -442,6 +442,9 @@ export default function CollegeListClosingRanksPage() {
                           }
                         })
                       }}
+                      disabled
+                      data-tooltip-id={"tooltip"}
+                      data-tooltip-content="Coming Soon"
                     >
                       Unlock Now @ ₹{stateAmount}
                     </Button>

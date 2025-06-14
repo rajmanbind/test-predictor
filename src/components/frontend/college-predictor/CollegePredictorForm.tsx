@@ -245,7 +245,14 @@ export function CollegePredictorForm() {
           disabled={isEmpty(formData?.courseType?.text)}
         />
 
-        <Button className="mt-6" onClick={onSubmit} disabled={disableCheck()}>
+        <Button
+          className="mt-6"
+          onClick={onSubmit}
+          data-tooltip-id={"tooltip"}
+          data-tooltip-content="Coming Soon"
+          // disabled={disableCheck()}
+          disabled
+        >
           Predict My College
         </Button>
       </form>

@@ -16,10 +16,10 @@ import { Container } from "./Container"
 import { ThemeSwitcher } from "./ThemeSwitcher"
 
 export const navbarMenus = [
-  {
-    title: "COLLEGE PREDICTOR",
-    href: "/",
-  },
+  // {
+  //   title: "COLLEGE PREDICTOR",
+  //   href: "/",
+  // },
   {
     title: "CLOSING RANKS",
     href: "/closing-ranks/ug",

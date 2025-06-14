@@ -2,6 +2,7 @@
 
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
+import Script from "next/script"
 import { useEffect, useState } from "react"
 import { Tooltip } from "react-tooltip"
 
@@ -41,6 +42,8 @@ export function FELayout({ children }: { children: React.ReactNode }) {
 
   return (
     <main className="min-h-screen flex flex-col">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+
       <Navbar />
 
       <div className="flex-grow">{children}</div>

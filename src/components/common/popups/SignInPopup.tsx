@@ -23,10 +23,12 @@ export function SignInPopup({
   successCallback,
   errorCallback,
   noRedirect,
+  onClose,
 }: {
   successCallback?: any
   errorCallback?: any
   noRedirect?: boolean
+  onClose?: () => void
 }) {
   const { appState, setAppState } = useAppState()
 
@@ -138,6 +140,7 @@ export function SignInPopup({
     if (res?.success) {
       // Successful login - close modal and reset state
       setAppState({ signInModalOpen: false, user: true })
+      onClose?.()
 
       setStep("phone")
       setPhoneNumber("")
@@ -176,6 +179,7 @@ export function SignInPopup({
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       setAppState({ signInModalOpen: false })
+      onClose?.()
     }
   }
 
@@ -211,7 +215,10 @@ export function SignInPopup({
           <div className="flex justify-between items-center mb-6">
             <Logo />
             <button
-              onClick={() => setAppState({ signInModalOpen: false })}
+              onClick={() => {
+                setAppState({ signInModalOpen: false })
+                onClose?.()
+              }}
               className="text-gray-500 hover:text-gray-700 transition-colors"
             >
               <X className="h-5 w-5" />

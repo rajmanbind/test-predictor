@@ -1,9 +1,14 @@
 "use client"
 
 import { Button } from "@/components/common/Button"
+import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
-import { addMonths, format } from "date-fns"
+import { useAppState } from "@/hooks/useAppState"
+import useFetch from "@/hooks/useFetch"
+import { paymentType } from "@/utils/static"
+import { cn, isExpired } from "@/utils/utils"
+import { addMonths, format, parseISO } from "date-fns"
 import { motion } from "framer-motion"
 import {
   BookOpenText,
@@ -16,7 +21,7 @@ import {
   Unlock,
 } from "lucide-react"
 import type React from "react"
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 
 import { Tabs } from "./Tabs"
 
@@ -47,9 +52,61 @@ type Package = {
   popular?: boolean
 }
 
+type SinglePurchasedPackage = {
+  id: string
+  created_at: string
+  orderId: string
+  amount: number
+  payment_type: string
+  phone: string
+  college_cut_off_details: any | null
+  college_predictor_details: any | null
+  closing_rank_details: any | null
+  plans: string
+  isPurchased: boolean
+}
+
+type PurchasedPackage = {
+  ug: SinglePurchasedPackage
+  pg: SinglePurchasedPackage
+}
+
+const faqs = [
+  {
+    question: "What is included in the packages?",
+    answer:
+      "Our packages include various levels of counselling support, from basic information access to personalized guidance. Each package offers different features like priority support, premium content, advanced tools, and coverage of different counselling processes based on the tier you choose.",
+  },
+  {
+    question: "How long is my package valid?",
+    answer:
+      "All packages are valid for 6 months from the date of purchase. This ensures you have access to our services throughout all counselling rounds and admission processes within this period.",
+  },
+  {
+    question: "Is there a refund policy?",
+    answer:
+      "All purchases on our website are non-refundable. Please review the package details carefully before making a purchase. If you have any questions, contact our support team for clarification.",
+  },
+  {
+    question: "How do I access the features after purchase?",
+    answer:
+      "You can access your features instantly after purchase—just revisit this page. For personalized counselling sessions, our team will contact you to schedule appointments.",
+  },
+]
+
 function getDatePlusSixMonths(): string {
   const futureDate = addMonths(new Date(), 6)
-  return format(futureDate, "d, MMMM yyyy")
+  return format(futureDate, "dd, MMM, yyyy")
+}
+
+function getExpireDate(dateString: string): string {
+  if (!dateString) {
+    return "Loading..."
+  }
+
+  const parsedDate = parseISO(dateString)
+  const futureDate = addMonths(parsedDate, 6)
+  return format(futureDate, "dd, MMM, yyyy")
 }
 
 const packages: Package[] = [
@@ -156,29 +213,212 @@ export default function PackagesPage() {
   const [activeTab, setActiveTab] = useState("ug")
 
   const [selectedPackage, setSelectedPackage] = useState(packages[0])
+  const [loading, setLoading] = useState(false)
 
-  const faqs = [
-    {
-      question: "What is included in the packages?",
-      answer:
-        "Our packages include various levels of counselling support, from basic information access to personalized guidance. Each package offers different features like priority support, premium content, advanced tools, and coverage of different counselling processes based on the tier you choose.",
-    },
-    {
-      question: "How long is my package valid?",
-      answer:
-        "All packages are valid for 6 months from the date of purchase. This ensures you have access to our services throughout all counselling rounds and admission processes within this period.",
-    },
-    {
-      question: "Is there a refund policy?",
-      answer:
-        "All purchases on our website are non-refundable. Please review the package details carefully before making a purchase. If you have any questions, contact our support team for clarification.",
-    },
-    {
-      question: "How do I access the features after purchase?",
-      answer:
-        "You can access your features instantly after purchase—just revisit this page. For personalized counselling sessions, our team will contact you to schedule appointments.",
-    },
-  ]
+  const [hasPurchased, setHasPurchased] = useState<PurchasedPackage>()
+
+  const [amount, setAmount] = useState<number | null>(null)
+
+  const { fetchData } = useFetch()
+  const { showToast, setAppState } = useAppState()
+
+  useEffect(() => {
+    getData()
+  }, [activeTab])
+
+  async function handleBuyNow() {
+    setLoading(true)
+
+    const user = await fetchData({
+      url: "/api/user",
+      method: "GET",
+      noToast: true,
+    })
+
+    if (user?.success) {
+      processPayment()
+    } else {
+      setAppState({ signInModalOpen: true })
+    }
+  }
+
+  const createOrder = async () => {
+    const response = await fetch("/api/order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount }),
+    })
+    const data = await response.json()
+    if (!response.ok) throw new Error("Failed to create order")
+    return data.orderId
+  }
+
+  const processPayment = async () => {
+    if (!amount) return
+
+    setLoading(true)
+    try {
+      const orderId = await createOrder()
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: amount * 100, // Amount in paise
+        currency: "INR",
+        name: "College Cutoff",
+        description: `Payment for College Cutoff ${activeTab === "ug" ? "UG Package" : "PG Package"}`,
+        order_id: orderId,
+        handler: async function (response: any) {
+          try {
+            const verifyResponse = await fetch("/api/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+              }),
+            })
+            const verifyData = await verifyResponse.json()
+
+            if (verifyData.isOk) {
+              successCallback?.(orderId)
+            } else {
+              showToast("error", "Payment verification failed!")
+              errorCallback?.(orderId)
+            }
+          } catch (error) {
+            console.error("Verification error:", error)
+            showToast("error", "Payment verification failed!")
+            errorCallback?.(orderId)
+          }
+        },
+        theme: {
+          color: "#E67817",
+        },
+        method: {
+          upi: true,
+          card: true,
+          netbanking: true,
+          wallet: true,
+        },
+        // Add callback for failed payments
+        "payment.failed": function (response: any) {
+          console.error("Payment failed:", response)
+          showToast("error", `Payment failed: ${response.error.description}`)
+          errorCallback?.(orderId)
+        },
+      }
+
+      const paymentObject = new (window as any).Razorpay(options)
+      paymentObject.on("payment.failed", (response: any) => {
+        showToast("error", `Payment failed: ${response.error.description}`)
+        errorCallback?.(orderId)
+      })
+      paymentObject.open()
+    } catch (error: any) {
+      console.error("Payment error:", error)
+      errorCallback?.(error.message)
+
+      showToast(
+        "error",
+        <p>
+          Internal Server Error <br /> Please try again.
+        </p>,
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function successCallback(orderId: string) {
+    showToast(
+      "success",
+      <p>
+        Payment Successful
+        <br />
+        Thank You for purchasing!
+      </p>,
+    )
+
+    const payload = {
+      orderId,
+      amount,
+      payment_type: paymentType?.PREMIUM_PLAN,
+      plans: activeTab === "ug" ? "UG Package" : "PG Package",
+    }
+
+    const res = await fetchData({
+      url: "/api/purchase",
+      method: "POST",
+      data: payload,
+    })
+
+    if (res?.success) {
+      const priceRes = await fetchData({
+        url: "/api/payment",
+        method: "POST",
+        data: {
+          [paymentType?.PREMIUM_PLAN]: amount,
+        },
+        noToast: true,
+      })
+
+      if (priceRes?.success) {
+        setLoading(false)
+        window.location.reload()
+      }
+    }
+  }
+
+  function errorCallback(orderId: string) {}
+
+  async function getData() {
+    const [priceRes, userPurchasesRes] = await Promise.all([
+      fetchData({
+        url: "/api/admin/configure_prices/get",
+        params: {
+          type: "Packages",
+          item: activeTab === "ug" ? "UG Package" : "PG Package",
+        },
+      }),
+      fetchData({
+        url: "/api/purchase",
+        method: "GET",
+        noToast: true,
+      }),
+    ])
+
+    if (priceRes?.success) {
+      setAmount(Number(priceRes?.payload?.data?.price))
+    }
+
+    if (userPurchasesRes?.success) {
+      const purchases = userPurchasesRes.payload.data
+
+      const hasUGPurchased = purchases.some(
+        (purchase: any) =>
+          purchase.plans === "UG Package" && !isExpired(purchase.created_at, 6),
+      )
+      const hasPGPurchased = purchases.some(
+        (purchase: any) =>
+          purchase.plans === "PG Package" && !isExpired(purchase.created_at, 6),
+      )
+
+      const UGPurchased = purchases.find((pr: any) => pr.plans === "UG Package")
+      const PGPurchased = purchases.find((pr: any) => pr.plans === "PG Package")
+
+      setHasPurchased({
+        ug: {
+          ...UGPurchased,
+          isPurchased: hasUGPurchased,
+        },
+        pg: {
+          ...PGPurchased,
+          isPurchased: hasPGPurchased,
+        },
+      })
+    }
+  }
 
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index)
@@ -250,25 +490,68 @@ export default function PackagesPage() {
                     {selectedPackage.name}
                   </h3>
                   <div className="mb-6">
-                    <span className="text-gray-500 line-through text-lg">
-                      ₹{selectedPackage.originalPrice}
+                    <span
+                      className={cn(
+                        "text-gray-500 text-lg",
+                        amount && "line-through",
+                      )}
+                    >
+                      {amount ? `₹${amount + 500}` : "Loading..."}
                     </span>
                     <div className="flex items-baseline gap-2">
                       <span className="text-4xl font-bold text-yellow-600">
-                        ₹{selectedPackage.discountedPrice}
+                        {amount ? `₹${amount}` : "Loading..."}
                       </span>
                       <span className="text-gray-600 text-sm">
                         (GST included.)
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Valid till {selectedPackage.validTill}
-                    </p>
+
+                    {activeTab === "ug" && !hasPurchased?.ug?.isPurchased && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        Valid till {selectedPackage.validTill} (6 Months.)
+                      </p>
+                    )}
+                    {activeTab === "pg" && !hasPurchased?.pg?.isPurchased && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        Valid till {selectedPackage.validTill} (6 Months.)
+                      </p>
+                    )}
                   </div>
                   <Button
-                    className={`w-full py-4 h-auto text-base bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-medium shadow-md`}
+                    className={`w-full py-4 h-auto text-base bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-medium shadow-md disabled:from-gray-400 disabled:to-gray-400 disabled:opacity-60 disabled:text-white`}
+                    onClick={handleBuyNow}
+                    disabled={
+                      loading || activeTab === "ug"
+                        ? hasPurchased?.ug?.isPurchased
+                        : hasPurchased?.pg?.isPurchased
+                    }
                   >
-                    Purchase Now
+                    {loading ? (
+                      "Loading..."
+                    ) : activeTab === "ug" ? (
+                      hasPurchased?.ug?.isPurchased ? (
+                        <div>
+                          <p>Already Purchased</p>
+                          <p>
+                            Valid Till:
+                            {getExpireDate(hasPurchased?.ug?.created_at)}
+                          </p>
+                        </div>
+                      ) : (
+                        "Purchase Now"
+                      )
+                    ) : hasPurchased?.pg?.isPurchased ? (
+                      <div>
+                        <p>Already Purchased</p>
+                        <p>
+                          Valid Till:{" "}
+                          {getExpireDate(hasPurchased?.ug?.created_at)}
+                        </p>
+                      </div>
+                    ) : (
+                      "Purchase Now"
+                    )}
                   </Button>
                 </div>
                 <div className="p-6 border-t border-gray-200 pb-8 bg-white">
@@ -393,6 +676,16 @@ export default function PackagesPage() {
           </Container>
         </section>
       </div>
+
+      <SignInPopup
+        successCallback={() => {
+          window.scrollTo({ top: 0, behavior: "smooth" })
+          window.location.reload()
+        }}
+        onClose={() => {
+          setLoading(false)
+        }}
+      />
     </FELayout>
   )
 }

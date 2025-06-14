@@ -140,8 +140,6 @@ export default function CutOffPage() {
 
   return (
     <FELayout>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-
       <Container className="pb-10 pt-1 pc:pt-10 bg-color-background">
         <div className="pb-4 pc:pb-8 flex justify-between flex-col pc:flex-row">
           <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">

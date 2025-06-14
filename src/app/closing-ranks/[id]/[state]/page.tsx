@@ -334,7 +334,6 @@ export default function CollegeListClosingRanksPage() {
 
   return (
     <FELayout>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
       <div>
         <section className="w-full py-12 md:py-16 bg-gradient-to-r from-yellow-50 to-emerald-50 relative overflow-hidden">

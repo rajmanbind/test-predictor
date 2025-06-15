@@ -215,12 +215,10 @@ export default function PackagesPage() {
   const [selectedPackage, setSelectedPackage] = useState(packages[0])
   const [loading, setLoading] = useState(false)
 
-  const [hasPurchased, setHasPurchased] = useState<PurchasedPackage>()
-
   const [amount, setAmount] = useState<number | null>(null)
 
   const { fetchData } = useFetch()
-  const { showToast, setAppState } = useAppState()
+  const { showToast, appState, setAppState } = useAppState()
 
   useEffect(() => {
     getData()
@@ -284,12 +282,10 @@ export default function PackagesPage() {
               successCallback?.(orderId)
             } else {
               showToast("error", "Payment verification failed!")
-              errorCallback?.(orderId)
             }
           } catch (error) {
             console.error("Verification error:", error)
             showToast("error", "Payment verification failed!")
-            errorCallback?.(orderId)
           }
         },
         theme: {
@@ -305,20 +301,16 @@ export default function PackagesPage() {
         "payment.failed": function (response: any) {
           console.error("Payment failed:", response)
           showToast("error", `Payment failed: ${response.error.description}`)
-          errorCallback?.(orderId)
         },
       }
 
       const paymentObject = new (window as any).Razorpay(options)
       paymentObject.on("payment.failed", (response: any) => {
         showToast("error", `Payment failed: ${response.error.description}`)
-        errorCallback?.(orderId)
       })
       paymentObject.open()
     } catch (error: any) {
       console.error("Payment error:", error)
-      errorCallback?.(error.message)
-
       showToast(
         "error",
         <p>
@@ -370,56 +362,17 @@ export default function PackagesPage() {
     }
   }
 
-  function errorCallback(orderId: string) {}
-
   async function getData() {
-    const [priceRes, userPurchasesRes] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure_prices/get",
-        params: {
-          type: "Packages",
-          item: activeTab === "ug" ? "UG Package" : "PG Package",
-        },
-      }),
-      fetchData({
-        url: "/api/purchase",
-        method: "GET",
-        params: {
-          paymentType: paymentType?.PREMIUM_PLAN,
-        },
-        noToast: true,
-      }),
-    ])
+    const priceRes = await fetchData({
+      url: "/api/admin/configure_prices/get",
+      params: {
+        type: "Packages",
+        item: activeTab === "ug" ? "UG Package" : "PG Package",
+      },
+    })
 
     if (priceRes?.success) {
       setAmount(Number(priceRes?.payload?.data?.price))
-    }
-
-    if (userPurchasesRes?.success) {
-      const purchases = userPurchasesRes.payload.data
-
-      const hasUGPurchased = purchases.some(
-        (purchase: any) =>
-          purchase.plans === "UG Package" && !isExpired(purchase.created_at, 6),
-      )
-      const hasPGPurchased = purchases.some(
-        (purchase: any) =>
-          purchase.plans === "PG Package" && !isExpired(purchase.created_at, 6),
-      )
-
-      const UGPurchased = purchases.find((pr: any) => pr.plans === "UG Package")
-      const PGPurchased = purchases.find((pr: any) => pr.plans === "PG Package")
-
-      setHasPurchased({
-        ug: {
-          ...UGPurchased,
-          isPurchased: hasUGPurchased,
-        },
-        pg: {
-          ...PGPurchased,
-          isPurchased: hasPGPurchased,
-        },
-      })
     }
   }
 
@@ -510,12 +463,12 @@ export default function PackagesPage() {
                       </span>
                     </div>
 
-                    {activeTab === "ug" && !hasPurchased?.ug?.isPurchased && (
+                    {activeTab === "ug" && !appState?.hasUGPackage && (
                       <p className="text-sm text-gray-500 mt-1">
                         Valid till {selectedPackage.validTill} (6 Months.)
                       </p>
                     )}
-                    {activeTab === "pg" && !hasPurchased?.pg?.isPurchased && (
+                    {activeTab === "pg" && !appState?.hasPGPackage && (
                       <p className="text-sm text-gray-500 mt-1">
                         Valid till {selectedPackage.validTill} (6 Months.)
                       </p>
@@ -526,30 +479,30 @@ export default function PackagesPage() {
                     onClick={handleBuyNow}
                     disabled={
                       loading || activeTab === "ug"
-                        ? hasPurchased?.ug?.isPurchased
-                        : hasPurchased?.pg?.isPurchased
+                        ? appState?.hasUGPackage
+                        : appState?.hasPGPackage
                     }
                   >
                     {loading ? (
                       "Loading..."
                     ) : activeTab === "ug" ? (
-                      hasPurchased?.ug?.isPurchased ? (
+                      appState?.hasUGPackage ? (
                         <div>
                           <p>Already Purchased</p>
                           <p>
                             Valid Till:
-                            {getExpireDate(hasPurchased?.ug?.created_at)}
+                            {getExpireDate(appState?.ugPackage.created_at)}
                           </p>
                         </div>
                       ) : (
                         "Purchase Now"
                       )
-                    ) : hasPurchased?.pg?.isPurchased ? (
+                    ) : appState?.hasPGPackage ? (
                       <div>
                         <p>Already Purchased</p>
                         <p>
                           Valid Till:{" "}
-                          {getExpireDate(hasPurchased?.ug?.created_at)}
+                          {getExpireDate(appState?.pgPackage?.created_at)}
                         </p>
                       </div>
                     ) : (

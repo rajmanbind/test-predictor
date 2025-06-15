@@ -31,6 +31,7 @@ export default function CutOffPage() {
   const [amount, setAmount] = useState<number>(49)
 
   const { fetchData } = useFetch()
+  const { appState } = useAppState()
   const { getSearchParams } = useInternalSearchParams()
 
   const params = useParams()
@@ -38,33 +39,37 @@ export default function CutOffPage() {
   const [rendererStatus, setRendererStatus] = useState<any>(null)
 
   useEffect(() => {
-    checkDataMode()
-  }, [])
+    if (
+      appState?.hasUGPackage !== undefined ||
+      appState?.hasPGPackage !== undefined
+    ) {
+      checkDataMode()
+    }
+  }, [appState.hasUGPackage, appState.hasPGPackage])
 
   async function checkPaymentStatus() {
     let college = getSearchParams("college")
     const state = getSearchParams("state")
 
-    if (!state) {
-      alert(
-        "State is missing in URL. Please Inform The Admin\nat: collegecutoff.net@gmail.com",
-      )
-      return
-    }
+    if (params?.id === "ug" && appState?.hasUGPackage) {
+      await showCutoff()
+    } else if (params?.id === "pg" && appState?.hasPGPackage) {
+      await showCutoff()
+    } else {
+      if (college) {
+        college = college.toLowerCase().trim().split(" ").join("-")
+        const paymentStatus = getLocalStorageItem<any>(
+          `payment-${state}-${params?.id}-${college}`,
+        )
 
-    if (college) {
-      college = college.toLowerCase().trim().split(" ").join("-")
-      const paymentStatus = getLocalStorageItem<any>(
-        `payment-${state}-${params?.id}-${college}`,
-      )
-
-      if (!isExpired(paymentStatus, 6)) {
-        await showCutoff()
+        if (!isExpired(paymentStatus, 6)) {
+          await showCutoff()
+        } else {
+          setRendererStatus("NOT_PAID")
+        }
       } else {
         setRendererStatus("NOT_PAID")
       }
-    } else {
-      setRendererStatus("NOT_PAID")
     }
   }
 

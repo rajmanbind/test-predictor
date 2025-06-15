@@ -13,6 +13,7 @@ import {
 } from "@/components/frontend/college-predictor/Filter"
 import { FilterPopup } from "@/components/frontend/college-predictor/FilterPopup"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
+import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
@@ -40,6 +41,7 @@ export default function ResultPage() {
   const [amount, setAmount] = useState(149)
 
   const { fetchData } = useFetch()
+  const { appState } = useAppState()
   const { getSearchParams, setSearchParams } = useInternalSearchParams()
 
   const paginationRef = useRef<PaginationHandle>(null)
@@ -86,6 +88,22 @@ export default function ResultPage() {
     }
 
     let payment = false
+
+    if (getSearchParams("courseType") === "UG" && appState?.hasUGPackage) {
+      setPaid(true)
+      payment = true
+      getData(payment, isEmpty(filterParams) ? null : 1)
+      return
+    } else if (
+      getSearchParams("courseType") === "PG" &&
+      appState?.hasPGPackage
+    ) {
+      setPaid(true)
+      payment = true
+      getData(payment, isEmpty(filterParams) ? null : 1)
+      return
+    }
+
     for (let i = 0; i < userPurchases?.payload?.data?.length; i++) {
       const purchase =
         userPurchases?.payload?.data[i]?.college_predictor_details

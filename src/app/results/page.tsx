@@ -62,6 +62,7 @@ export default function ResultPage() {
   }, [])
 
   async function verifyPurchases() {
+    // eslint-disable-next-line prefer-const
     let [configRes, userPurchases] = await Promise.all([
       fetchData({
         url: "/api/admin/configure/get",

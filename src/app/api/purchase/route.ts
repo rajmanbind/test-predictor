@@ -39,7 +39,11 @@ export async function POST(request: NextRequest) {
 }
 
 // Get User Packages details
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+
+  const paymentType = searchParams.get("paymentType")
+
   try {
     const supabase = createUserSupabaseClient()
 
@@ -52,7 +56,7 @@ export async function GET() {
         .from("purchase")
         .select("*")
         .eq("phone", user.phone)
-        .eq("payment_type", paymentType.PREMIUM_PLAN)
+        .eq("payment_type", paymentType)
 
       if (purchasesError) {
         console.error("Supabase error:", purchasesError.message)
@@ -67,7 +71,7 @@ export async function GET() {
 
       return NextResponse.json({
         data: userPurchases,
-        msg: "Data inserted successfully.",
+        msg: "User purchases fetched successfully",
       })
     }
   } catch (err) {

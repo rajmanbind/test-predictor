@@ -16,7 +16,7 @@ import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { priceType } from "@/utils/static"
+import { paymentType, priceType } from "@/utils/static"
 import { cn, getLocalStorageItem, isEmpty, isExpired } from "@/utils/utils"
 import { Settings2 } from "lucide-react"
 import Script from "next/script"
@@ -60,10 +60,20 @@ export default function ResultPage() {
   }, [])
 
   async function verifyPurchases() {
-    let configRes: any = await fetchData({
-      url: "/api/admin/configure/get",
-      params: { type: "CONFIG_YEAR" },
-    })
+    let [configRes, userPurchases] = await Promise.all([
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "CONFIG_YEAR" },
+      }),
+      fetchData({
+        url: "/api/purchase",
+        method: "GET",
+        params: {
+          paymentType: paymentType.RANK_COLLEGE_PREDICTOR,
+        },
+        noToast: true,
+      }),
+    ])
 
     if (configRes?.success) {
       setConfigYear(
@@ -76,22 +86,19 @@ export default function ResultPage() {
     }
 
     let payment = false
-    const paymentStatus = getLocalStorageItem<any>(
-      `payment-predictor-${getSearchParams("rank")}-${getSearchParams("course")}`,
-    )
+    for (let i = 0; i < userPurchases?.payload?.data?.length; i++) {
+      const purchase =
+        userPurchases?.payload?.data[i]?.college_predictor_details
 
-    if (paymentStatus) {
       if (
-        paymentStatus?.rank !== getSearchParams("rank") ||
-        paymentStatus?.course !== getSearchParams("course") ||
-        paymentStatus?.year !== configRes ||
-        isExpired(paymentStatus?.date, 6)
+        purchase?.rank === getSearchParams("rank") &&
+        purchase?.course === getSearchParams("course") &&
+        purchase?.year === configRes &&
+        !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
       ) {
-        setPaid(false)
-        payment = false
-      } else {
         setPaid(true)
         payment = true
+        break
       }
     }
 

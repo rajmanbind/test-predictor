@@ -384,6 +384,9 @@ export default function PackagesPage() {
       fetchData({
         url: "/api/purchase",
         method: "GET",
+        params: {
+          paymentType: paymentType?.PREMIUM_PLAN,
+        },
         noToast: true,
       }),
     ])

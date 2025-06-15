@@ -4,10 +4,9 @@ import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { paymentType } from "@/utils/static"
-import { getPhoneFromUser, saveToLocalStorage } from "@/utils/utils"
+import { getPhoneFromUser } from "@/utils/utils"
 import { ChevronRight } from "lucide-react"
 import { SetStateAction, useState } from "react"
-import { isMobile } from "react-device-detect"
 
 interface TableSignupProps {
   totalRecords: number
@@ -76,15 +75,6 @@ function TableSignup({
     })
 
     if (res?.success) {
-      saveToLocalStorage(
-        `payment-predictor-${getSearchParams("rank")}-${getSearchParams("course")}`,
-        {
-          date: new Date(),
-          rank: getSearchParams("rank"),
-          course: getSearchParams("course"),
-          year: `${configYear[0]}-${configYear[1]}`,
-        },
-      )
       setUpdateUI((prev) => !prev)
 
       await fetchData({

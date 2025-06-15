@@ -13,10 +13,11 @@ import {
 } from "@/components/frontend/college-predictor/Filter"
 import { FilterPopup } from "@/components/frontend/college-predictor/FilterPopup"
 import { SearchForm } from "@/components/frontend/college-predictor/SearchForm"
+import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { priceType } from "@/utils/static"
+import { paymentType, priceType } from "@/utils/static"
 import { cn, getLocalStorageItem, isEmpty, isExpired } from "@/utils/utils"
 import { Settings2 } from "lucide-react"
 import Script from "next/script"
@@ -40,6 +41,7 @@ export default function ResultPage() {
   const [amount, setAmount] = useState(149)
 
   const { fetchData } = useFetch()
+  const { appState } = useAppState()
   const { getSearchParams, setSearchParams } = useInternalSearchParams()
 
   const paginationRef = useRef<PaginationHandle>(null)
@@ -60,10 +62,21 @@ export default function ResultPage() {
   }, [])
 
   async function verifyPurchases() {
-    let configRes: any = await fetchData({
-      url: "/api/admin/configure/get",
-      params: { type: "CONFIG_YEAR" },
-    })
+    // eslint-disable-next-line prefer-const
+    let [configRes, userPurchases] = await Promise.all([
+      fetchData({
+        url: "/api/admin/configure/get",
+        params: { type: "CONFIG_YEAR" },
+      }),
+      fetchData({
+        url: "/api/purchase",
+        method: "GET",
+        params: {
+          paymentType: paymentType.RANK_COLLEGE_PREDICTOR,
+        },
+        noToast: true,
+      }),
+    ])
 
     if (configRes?.success) {
       setConfigYear(
@@ -76,22 +89,35 @@ export default function ResultPage() {
     }
 
     let payment = false
-    const paymentStatus = getLocalStorageItem<any>(
-      `payment-predictor-${getSearchParams("rank")}-${getSearchParams("course")}`,
-    )
 
-    if (paymentStatus) {
+    if (getSearchParams("courseType") === "UG" && appState?.hasUGPackage) {
+      setPaid(true)
+      payment = true
+      getData(payment, isEmpty(filterParams) ? null : 1)
+      return
+    } else if (
+      getSearchParams("courseType") === "PG" &&
+      appState?.hasPGPackage
+    ) {
+      setPaid(true)
+      payment = true
+      getData(payment, isEmpty(filterParams) ? null : 1)
+      return
+    }
+
+    for (let i = 0; i < userPurchases?.payload?.data?.length; i++) {
+      const purchase =
+        userPurchases?.payload?.data[i]?.college_predictor_details
+
       if (
-        paymentStatus?.rank !== getSearchParams("rank") ||
-        paymentStatus?.course !== getSearchParams("course") ||
-        paymentStatus?.year !== configRes ||
-        isExpired(paymentStatus?.date, 6)
+        purchase?.rank === getSearchParams("rank") &&
+        purchase?.course === getSearchParams("course") &&
+        purchase?.year === configRes &&
+        !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
       ) {
-        setPaid(false)
-        payment = false
-      } else {
         setPaid(true)
         payment = true
+        break
       }
     }
 
@@ -432,8 +458,6 @@ export default function ResultPage() {
 
   return (
     <FELayout>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-
       <Container className="pb-10 pt-1 pc:pt-10">
         <div className="pb-4 pc:pb-8 flex justify-between flex-col pc:flex-row">
           <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">

@@ -13,27 +13,10 @@ import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { paymentType, priceType, years } from "@/utils/static"
 import { cn, onPageChange, saveToLocalStorage } from "@/utils/utils"
-import {
-  ChevronLeft,
-  CircleCheckBig,
-  Eye,
-  Info,
-  Users,
-  View,
-} from "lucide-react"
+import { ChevronLeft, CircleCheckBig, Eye, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import Script from "next/script"
 import { useEffect, useState } from "react"
-
-const yearList: IOption[] = []
-const configYearList = years()
-
-for (let i = 0; i < configYearList?.length; i++) {
-  if (new Date().getFullYear() >= parseInt(configYearList?.[i]?.text)) {
-    yearList.push(configYearList?.[i])
-  }
-}
 
 export default function CollegeListClosingRanksPage() {
   const [tableData, setTableData] = useState<any>(null)
@@ -47,12 +30,7 @@ export default function CollegeListClosingRanksPage() {
   const [statePaymentPopup, setStatePaymentPopup] = useState(false)
   const [statePurchaseMode, setStatePurchaseMode] = useState(false)
 
-  const [selectedClosingRankYear, setSelectedClosingRankYear] = useState<
-    IOption | undefined
-  >()
-  const [defaultClosingRankValue, setDefaultClosingRankValue] = useState<
-    IOption | undefined
-  >()
+  const [configYear, setConfigYear] = useState<any>(null)
 
   const [amount, setAmount] = useState<number>(49)
 
@@ -74,7 +52,7 @@ export default function CollegeListClosingRanksPage() {
     const [closingRankYear, price, statePrice] = await Promise.all([
       fetchData({
         url: "/api/admin/configure/get",
-        params: { type: "CLOSING_RANK_YEAR" },
+        params: { type: "CONFIG_YEAR" },
       }),
       fetchData({
         url: "/api/admin/configure_prices/get",
@@ -99,8 +77,8 @@ export default function CollegeListClosingRanksPage() {
     ])
 
     if (closingRankYear?.success) {
-      setDefaultClosingRankValue({
-        id: closingRankYear?.payload?.data?.[0]?.id,
+      setConfigYear({
+        id: closingRankYear?.payload?.data?.[0]?.text,
         text: closingRankYear?.payload?.data?.[0]?.text,
       })
     }
@@ -123,9 +101,6 @@ export default function CollegeListClosingRanksPage() {
         state,
         courseType: params.id?.toString()?.toUpperCase(), //ug pg
         course: getSearchParams("course"),
-        year:
-          selectedClosingRankYear?.text ||
-          closingRankYear?.payload?.data?.[0]?.text,
       },
     })
 
@@ -248,6 +223,7 @@ export default function CollegeListClosingRanksPage() {
         ...rowData,
         courseType: params?.id === "ug" ? "UG" : "PG",
         course: getSearchParams("course"),
+        year: configYear?.text,
       },
     }
 
@@ -299,7 +275,7 @@ export default function CollegeListClosingRanksPage() {
         state: params?.state,
         courseType: params?.id === "ug" ? "UG" : "PG",
         course: getSearchParams("course"),
-        year: defaultClosingRankValue?.text,
+        year: configYear?.text,
       },
     }
 
@@ -334,8 +310,6 @@ export default function CollegeListClosingRanksPage() {
 
   return (
     <FELayout>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-
       <div>
         <section className="w-full py-12 md:py-16 bg-gradient-to-r from-yellow-50 to-emerald-50 relative overflow-hidden">
           <Container className="container px-4 md:px-6">
@@ -354,9 +328,8 @@ export default function CollegeListClosingRanksPage() {
                 </h1>
                 <p className="text-gray-600">
                   NEET {params?.id?.toString()?.toUpperCase()}{" "}
-                  {selectedClosingRankYear?.text}{" "}
-                  <span className="capitalize">{state}</span> Medical Colleges
-                  List
+                  {configYear?.text} <span className="capitalize">{state}</span>{" "}
+                  Medical Colleges List
                 </p>
               </div>
             </div>
@@ -396,7 +369,6 @@ export default function CollegeListClosingRanksPage() {
                   {
                     size: 20,
                     state,
-                    year: selectedClosingRankYear?.text,
                   },
                 )
               }}

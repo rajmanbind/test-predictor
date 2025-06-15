@@ -8,6 +8,10 @@ export interface IAppState {
   overFlowYHidden: boolean
   signInModalOpen?: boolean
   user?: any
+  ugPackage?: any
+  pgPackage?: any
+  hasUGPackage?: boolean
+  hasPGPackage?: boolean
   toast: {
     showToast: boolean
     toastType: "success" | "error"
@@ -38,3 +42,4 @@ export const useAppStateStore = create<{
       appState: { ...state.appState, ...value },
     })),
 }))
+

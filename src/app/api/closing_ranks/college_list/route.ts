@@ -3,6 +3,7 @@ import {
   createUserSupabaseClient,
 } from "@/lib/supabase"
 import { courseType, paymentType } from "@/utils/static"
+import { isExpired } from "@/utils/utils"
 import { addMonths, isBefore, parseISO } from "date-fns"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -14,7 +15,6 @@ export async function GET(request: NextRequest) {
   const page = parseInt(searchParams.get("page") || "1")
   const pageSize = parseInt(searchParams.get("size") || "10")
   const state = searchParams.get("state")?.trim()
-  const year = searchParams.get("year")?.trim()
   const courseType = searchParams.get("courseType")?.trim()
   const course = searchParams.get("course")?.trim()
 
@@ -24,12 +24,7 @@ export async function GET(request: NextRequest) {
       { status: 400 },
     )
   }
-  if (!year || isNaN(parseInt(year))) {
-    return NextResponse.json(
-      { error: "Valid year is required" },
-      { status: 400 },
-    )
-  }
+
   if (pageSize > 100) {
     return NextResponse.json(
       { error: "pageSize cannot exceed 100" },
@@ -39,13 +34,35 @@ export async function GET(request: NextRequest) {
 
   const supabase = createAdminSupabaseClient()
 
+  // Get configured years
+  const { data: selectedYear, error: yearsError } = await supabase
+    .from("dropdown_options")
+    .select("*")
+    .eq("type", "CONFIG_YEAR")
+    .single()
+
+  if (yearsError) {
+    return NextResponse.json(
+      {
+        msg: "Failed to get year config",
+        error: yearsError,
+      },
+      { status: 400 },
+    )
+  }
+
+  const latestYears = selectedYear.text
+    ?.split("-")
+    .map((item: string) => item.trim())
+  const [olderYear, newerYear] = latestYears
+
   const from = (page - 1) * pageSize
   const to = from + pageSize - 1
 
   if (courseType === "UG") {
     // Use the RPC
     const { data, error } = await supabase.rpc("get_grouped_colleges", {
-      target_year: year,
+      year_array: latestYears,
       course_type: courseType,
     })
 
@@ -93,16 +110,24 @@ export async function GET(request: NextRequest) {
     //   .in("course", filterCourseList)
     //   .order("instituteName", { ascending: true })
 
+    // const { data: collegeData, error: collegeError } = await supabase.rpc(
+    //   "get_distinct_colleges_by_institute",
+    //   {
+    //     p_state: state,
+    //     p_year: [2024, 2023],
+    //     p_courses: filterCourseList,
+    //   },
+    // )
     const { data: collegeData, error: collegeError } = await supabase.rpc(
       "get_distinct_colleges_by_institute",
       {
         p_state: state,
-        p_year: parseInt(year),
+        p_years: latestYears,
         p_courses: filterCourseList,
       },
     )
 
-    for (let i = 0; i < collegeData.length; i++) {
+    for (let i = 0; i < collegeData?.length; i++) {
       collegeData[i].instituteName = collegeData?.[i].institutename
       collegeData[i].instituteType = collegeData?.[i].institutetype
       delete collegeData?.[i].institutename
@@ -136,8 +161,8 @@ async function checkPurchases(
   const supabaseUser = createUserSupabaseClient()
 
   // Manual pagination
-  const paginated = filteredData.slice(from, to + 1)
-  const totalItems = filteredData.length
+  const paginated = filteredData?.slice(from, to + 1)
+  const totalItems = filteredData?.length
   const totalPages = Math.ceil(totalItems / pageSize)
 
   let hiddenData = paginated
@@ -167,17 +192,31 @@ async function checkPurchases(
     if (userPurchases && userPurchases.length > 0 && paginated.length > 0) {
       const currentDate = new Date()
 
-      const hasValidPremiumPlan = userPurchases.some((purchase) => {
-        const purchaseDate = parseISO(purchase.created_at)
-        const expiryDate = addMonths(purchaseDate, 6)
-        return (
-          purchase.payment_type === paymentType.PREMIUM_PLAN &&
-          isBefore(currentDate, expiryDate)
-        )
-      })
+      let hasValidPremiumPlan = false
+
+      const hasUGPurchased = userPurchases.some(
+        (purchase: any) =>
+          purchase.plans === "UG Package" && !isExpired(purchase.created_at, 6),
+      )
+
+      const hasPGPurchased = userPurchases.some(
+        (purchase: any) =>
+          purchase.plans === "PG Package" && !isExpired(purchase.created_at, 6),
+      )
+
+      if (courseType === "UG" && hasUGPurchased) {
+        hasValidPremiumPlan = true
+      } else if (courseType === "PG" && hasPGPurchased) {
+        hasValidPremiumPlan = true
+      }
 
       if (hasValidPremiumPlan) {
         hiddenData = paginated
+
+        for (let i = 0; i < hiddenData.length; i++) {
+          hiddenData[i].purchased = true
+          hiddenData[i].statePurchased = true
+        }
       } else {
         // State Plan Check
         const hasValidStatePurchase = userPurchases.some((purchase) => {

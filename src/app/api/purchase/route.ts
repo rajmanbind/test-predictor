@@ -73,6 +73,11 @@ export async function GET(request: NextRequest) {
         data: userPurchases,
         msg: "User purchases fetched successfully",
       })
+    } else {
+      return NextResponse.json({
+        data: [],
+        msg: "User purchases fetched successfully",
+      })
     }
   } catch (err) {
     console.error(err)

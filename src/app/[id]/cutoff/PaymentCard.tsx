@@ -82,7 +82,7 @@ function PaymentCard({
           color: "#E67817",
         },
         method: {
-          upi: isMobile ? true : false,
+          upi: true,
           card: true,
           netbanking: true,
           wallet: true,

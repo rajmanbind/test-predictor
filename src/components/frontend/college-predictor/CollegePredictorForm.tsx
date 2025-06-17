@@ -248,10 +248,10 @@ export function CollegePredictorForm() {
         <Button
           className="mt-6"
           onClick={onSubmit}
-          data-tooltip-id={"tooltip"}
-          data-tooltip-content="Coming Soon"
-          // disabled={disableCheck()}
-          disabled
+          // data-tooltip-id={"tooltip"}
+          // data-tooltip-content="Coming Soon"
+          disabled={disableCheck()}
+          // disabled
         >
           Predict My College
         </Button>

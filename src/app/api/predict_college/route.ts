@@ -68,12 +68,6 @@ export async function GET(request: NextRequest) {
 
   // Apply optional filters
   if (states.length > 0) {
-    // Apply states filter only if no domicileState is provided
-
-    if (!states?.includes(domicileState)) {
-      states.push(domicileState)
-    }
-
     query = query.in("state", states)
   }
   if (courses.length > 0 && !isAllCourses) query = query.in("course", courses)

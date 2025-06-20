@@ -1,4 +1,3 @@
-import useOutsideClick from "@/hooks/useOutsideClick"
 import { IOption } from "@/types/GlobalTypes"
 import { ICommonComponentProps } from "@/types/GlobalTypes"
 import { cn, debounce, isEmpty } from "@/utils/utils"
@@ -63,12 +62,6 @@ export const MultiSelect = ({
   const [activeOptionIndex, setActiveOptionIndex] = useState<number>(-1) // New state for active option
   const internalRef = useRef(null)
   const [selectedOptions, setSelectedOptions] = useState<IOption[]>([])
-
-  useOutsideClick(internalRef, () => {
-    if (isLoading) return
-    setOptionListOpen(false)
-    setActiveOptionIndex(-1) // Reset active index when closing
-  })
 
   useEffect(() => {
     if (!isEmpty(input) && input?.length >= minInputLengthToCallAPI) {
@@ -242,13 +235,11 @@ export const MultiSelect = ({
                   optionListOpen ? "rotate-180" : "",
                 )}
                 onClick={() => {
-                  if (input?.length >= minInputLengthToCallAPI) {
-                    setInput("")
-                    setListOptions(options)
-                    setOptionListOpen(true)
-                    setIsLoading(false)
-                    setActiveOptionIndex(-1) // Reset active index
-                  }
+                  setInput("")
+                  setListOptions(options)
+                  setOptionListOpen((prev) => !prev)
+                  setIsLoading(false)
+                  setActiveOptionIndex(-1)
                 }}
               />
 

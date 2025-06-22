@@ -22,7 +22,7 @@ export interface IAppState {
 
 const defaultAppState: IAppState = {
   isLoading: false,
-  paymentRedirectPopupOpen: false,
+  paymentRedirectPopupOpen: true,
   pageLoader: false,
   isSidebarOpen: false,
   overFlowYHidden: false,

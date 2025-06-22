@@ -1,12 +1,7 @@
 import crypto from "crypto"
 import { NextRequest, NextResponse } from "next/server"
 
-// Required to get raw body
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
+export const dynamic = "force-dynamic" // or "auto" depending on your caching strategy
 
 export async function POST(req: NextRequest) {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET!
@@ -36,7 +31,7 @@ export async function POST(req: NextRequest) {
   if (payload.event === "payment.captured") {
     const paymentInfo = payload.payload.payment.entity
     console.log("Payment captured:", paymentInfo)
-    // Save to DB or perform your logic
+    // Add DB logic or anything else here
   }
 
   return NextResponse.json({ received: true })

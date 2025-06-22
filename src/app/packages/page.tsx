@@ -295,7 +295,7 @@ export default function PackagesPage() {
           color: "#E67817",
         },
         method: {
-          upi: true,
+          upi_intent: true,
           card: true,
           netbanking: true,
           wallet: true,
@@ -308,8 +308,6 @@ export default function PackagesPage() {
 
         modal: {
           ondismiss: () => {
-          
-
             setAppState({ paymentRedirectPopupOpen: false })
           },
         },

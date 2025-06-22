@@ -74,6 +74,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    for (let i = 0; i < data?.length; i++) {
+      data[i].year = selectedYear.text
+    }
+
     // Filter by state if provided
     const filteredData = state
       ? data.filter(
@@ -102,22 +106,6 @@ export async function GET(request: NextRequest) {
 
     const filterCourseList = courseData?.map((c) => c.text) ?? []
 
-    // const { data: collegeData, error: collegeError } = await supabase
-    //   .from("college_table")
-    //   .select("*")
-    //   .eq("state", state)
-    //   .eq("year", year)
-    //   .in("course", filterCourseList)
-    //   .order("instituteName", { ascending: true })
-
-    // const { data: collegeData, error: collegeError } = await supabase.rpc(
-    //   "get_distinct_colleges_by_institute",
-    //   {
-    //     p_state: state,
-    //     p_year: [2024, 2023],
-    //     p_courses: filterCourseList,
-    //   },
-    // )
     const { data: collegeData, error: collegeError } = await supabase.rpc(
       "get_distinct_colleges_by_institute",
       {
@@ -130,6 +118,7 @@ export async function GET(request: NextRequest) {
     for (let i = 0; i < collegeData?.length; i++) {
       collegeData[i].instituteName = collegeData?.[i].institutename
       collegeData[i].instituteType = collegeData?.[i].institutetype
+      collegeData[i].year = selectedYear.text
       delete collegeData?.[i].institutename
       delete collegeData?.[i].institutetype
     }
@@ -247,6 +236,7 @@ async function checkPurchases(
             const matchingPurchase = userPurchases.find((p) => {
               const purchaseDate = parseISO(p.created_at)
               const expiryDate = addMonths(purchaseDate, 6)
+
               return (
                 p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
                 isBefore(currentDate, expiryDate) &&

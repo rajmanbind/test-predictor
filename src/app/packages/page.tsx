@@ -4,10 +4,11 @@ import { Button } from "@/components/common/Button"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
+import { PaymentRedirectPopup } from "@/components/frontend/PaymentRedirectPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { paymentType } from "@/utils/static"
-import { cn, isExpired } from "@/utils/utils"
+import { cn, isExpired, saveToLocalStorage } from "@/utils/utils"
 import { addMonths, format, parseISO } from "date-fns"
 import { motion } from "framer-motion"
 import {
@@ -258,6 +259,10 @@ export default function PackagesPage() {
     try {
       const orderId = await createOrder()
 
+      saveToLocalStorage("orderId", orderId)
+
+      setAppState({ paymentRedirectPopupOpen: true })
+
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: amount * 100, // Amount in paise
@@ -278,9 +283,7 @@ export default function PackagesPage() {
             })
             const verifyData = await verifyResponse.json()
 
-            if (verifyData.isOk) {
-              successCallback?.(orderId)
-            } else {
+            if (!verifyData.isOk) {
               showToast("error", "Payment verification failed!")
             }
           } catch (error) {
@@ -301,6 +304,14 @@ export default function PackagesPage() {
         "payment.failed": function (response: any) {
           console.error("Payment failed:", response)
           showToast("error", `Payment failed: ${response.error.description}`)
+        },
+
+        modal: {
+          ondismiss: () => {
+          
+
+            setAppState({ paymentRedirectPopupOpen: false })
+          },
         },
       }
 
@@ -642,6 +653,8 @@ export default function PackagesPage() {
           setLoading(false)
         }}
       />
+
+      <PaymentRedirectPopup successCallback={successCallback} />
     </FELayout>
   )
 }

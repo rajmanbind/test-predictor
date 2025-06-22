@@ -2,33 +2,33 @@
 
 import { Button } from "@/components/common/Button"
 import { useAppState } from "@/hooks/useAppState"
-import { cn } from "@/utils/utils"
+import { cn, getLocalStorageItem, saveToLocalStorage } from "@/utils/utils"
 import { ArrowRight, CircleCheckBig, Shield } from "lucide-react"
 import React, { ReactNode, useState } from "react"
 import { isMobile } from "react-device-detect"
 
 interface IPaymentCardProps {
-  successCallback?: (orderId: string) => void
-  errorCallback?: (orderId: string) => void
   whatWillYouGet?: ReactNode
   amount: number
   title: ReactNode
   paymentDescription: string
   btnText: string
+  onConfirm?: () => void
 }
 
 function PaymentCard({
-  successCallback,
-  errorCallback,
   whatWillYouGet,
   amount,
   title,
   paymentDescription,
   btnText,
+  onConfirm,
 }: IPaymentCardProps) {
   const [loading, setLoading] = useState(false)
 
   const { showToast } = useAppState()
+
+  const { setAppState } = useAppState()
 
   const createOrder = async () => {
     const response = await fetch("/api/order", {
@@ -42,9 +42,14 @@ function PaymentCard({
   }
 
   const processPayment = async () => {
+    onConfirm?.()
     setLoading(true)
     try {
       const orderId = await createOrder()
+
+      saveToLocalStorage("orderId", orderId)
+
+      setAppState({ paymentRedirectPopupOpen: true })
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -66,16 +71,12 @@ function PaymentCard({
             })
             const verifyData = await verifyResponse.json()
 
-            if (verifyData.isOk) {
-              successCallback?.(orderId)
-            } else {
+            if (!verifyData.isOk) {
               showToast("error", "Payment verification failed!")
-              errorCallback?.(orderId)
             }
           } catch (error) {
             console.error("Verification error:", error)
             showToast("error", "Payment verification failed!")
-            errorCallback?.(orderId)
           }
         },
         theme: {
@@ -91,19 +92,22 @@ function PaymentCard({
         "payment.failed": function (response: any) {
           console.error("Payment failed:", response)
           showToast("error", `Payment failed: ${response.error.description}`)
-          errorCallback?.(orderId)
+        },
+
+        modal: {
+          ondismiss: () => {
+            setAppState({ paymentRedirectPopupOpen: false })
+          },
         },
       }
 
       const paymentObject = new (window as any).Razorpay(options)
       paymentObject.on("payment.failed", (response: any) => {
         showToast("error", `Payment failed: ${response.error.description}`)
-        errorCallback?.(orderId)
       })
       paymentObject.open()
     } catch (error: any) {
       console.error("Payment error:", error)
-      errorCallback?.(error.message)
 
       showToast(
         "error",

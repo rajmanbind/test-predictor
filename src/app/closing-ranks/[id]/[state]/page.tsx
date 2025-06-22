@@ -7,12 +7,18 @@ import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import { PaymentPopupCard } from "@/components/frontend/PaymentPopupCard"
+import { PaymentRedirectPopup } from "@/components/frontend/PaymentRedirectPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { paymentType, priceType, years } from "@/utils/static"
-import { cn, onPageChange, saveToLocalStorage } from "@/utils/utils"
+import {
+  cn,
+  onPageChange,
+  saveToLocalStorage,
+  shouldRenderComponent,
+} from "@/utils/utils"
 import { ChevronLeft, CircleCheckBig, Eye, Users } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
@@ -28,6 +34,7 @@ export default function CollegeListClosingRanksPage() {
   const [rowData, setRowData] = useState<any>(null)
   const [stateAmount, setStateAmount] = useState<number>(299)
   const [statePaymentPopup, setStatePaymentPopup] = useState(false)
+  const [paymentChecker, setPaymentChecker] = useState(false)
   const [statePurchaseMode, setStatePurchaseMode] = useState(false)
 
   const [configYear, setConfigYear] = useState<any>(null)
@@ -170,7 +177,17 @@ export default function CollegeListClosingRanksPage() {
                   className="py-2 px-2 text-[14px] w-fit disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed min-w-[100px] flex items-center gap-2"
                   variant="primary"
                   onClick={() => {
-                    if (rowData?.purchased) return
+                    setPaymentChecker(true)
+
+                    saveToLocalStorage(
+                      paymentType.SINGLE_COLLEGE_CLOSING_RANK,
+                      {
+                        ...rowData,
+                        course: getSearchParams("course"),
+                        courseType: params.id?.toString()?.toUpperCase(),
+                      },
+                    )
+
                     setRowData(rowData)
                     handleBuyNow()
                   }}
@@ -198,6 +215,7 @@ export default function CollegeListClosingRanksPage() {
     if (user?.success) {
       setProcessingPayment(rowData?.id)
       setShowPaymentPopup(true)
+      setStatePurchaseMode(false)
     } else {
       setAppState({ signInModalOpen: true })
     }
@@ -400,14 +418,13 @@ export default function CollegeListClosingRanksPage() {
 
                     <Button
                       onClick={() => {
-                        setStatePurchaseMode(true)
-
                         fetchData({
                           url: "/api/user",
                           method: "GET",
                           noToast: true,
                         }).then((user) => {
                           if (user?.success) {
+                            setStatePurchaseMode(true)
                             setStatePaymentPopup(true)
                           } else {
                             setAppState({ signInModalOpen: true })
@@ -459,9 +476,9 @@ export default function CollegeListClosingRanksPage() {
       />
 
       <PaymentPopupCard
-        successCallback={successCallback}
         isOpen={showPaymentPopup}
         onClose={() => setShowPaymentPopup(false)}
+        onConfirm={() => setShowPaymentPopup(false)}
         paymentDescription="CollegeCutOff.net Payment for Closing Ranks"
         title={
           <p className="pt-2 uppercase poppinsFont">
@@ -473,9 +490,9 @@ export default function CollegeListClosingRanksPage() {
       />
 
       <PaymentPopupCard
-        successCallback={successCallbackStatePayment}
         isOpen={statePaymentPopup}
         onClose={() => setStatePaymentPopup(false)}
+        onConfirm={() => setStatePaymentPopup(false)}
         paymentDescription="CollegeCutOff.net Payment for State Closing Ranks"
         title={
           <p className="pt-2 uppercase poppinsFont">
@@ -501,6 +518,14 @@ export default function CollegeListClosingRanksPage() {
         }
         amount={stateAmount}
       />
+
+      {paymentChecker && (
+        <PaymentRedirectPopup
+          successCallback={
+            statePurchaseMode ? successCallbackStatePayment : successCallback
+          }
+        />
+      )}
     </FELayout>
   )
 }

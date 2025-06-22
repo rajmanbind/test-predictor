@@ -13,13 +13,6 @@ export async function POST(request: NextRequest) {
       error: authError,
     } = await supabase.auth.getUser()
 
-    if (!user) {
-      return NextResponse.json(
-        { message: "Login to continue.", authError },
-        { status: 401 },
-      )
-    }
-
     reqData.phone = user?.phone
 
     const { error, data } = await supabase

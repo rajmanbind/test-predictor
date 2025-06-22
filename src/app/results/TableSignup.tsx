@@ -1,5 +1,6 @@
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { PaymentPopupCard } from "@/components/frontend/PaymentPopupCard"
+import { PaymentRedirectPopup } from "@/components/frontend/PaymentRedirectPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
@@ -137,9 +138,9 @@ function TableSignup({
       />
 
       <PaymentPopupCard
-        successCallback={successCallback}
         isOpen={showPaymentPopup}
         onClose={() => setShowPaymentPopup(false)}
+        onConfirm={() => setShowPaymentPopup(false)}
         paymentDescription="Payment for College Predictor at CollegeCutoff.net"
         title={
           <p className="pt-2 uppercase poppinsFont">
@@ -149,6 +150,8 @@ function TableSignup({
         btnText={`Unlock Now @ ₹${amount}`}
         amount={amount}
       />
+
+      <PaymentRedirectPopup successCallback={successCallback} />
     </div>
   )
 }

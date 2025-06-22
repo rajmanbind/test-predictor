@@ -12,6 +12,7 @@ export interface IAppState {
   pgPackage?: any
   hasUGPackage?: boolean
   hasPGPackage?: boolean
+  paymentRedirectPopupOpen: boolean
   toast: {
     showToast: boolean
     toastType: "success" | "error"
@@ -21,6 +22,7 @@ export interface IAppState {
 
 const defaultAppState: IAppState = {
   isLoading: false,
+  paymentRedirectPopupOpen: false,
   pageLoader: false,
   isSidebarOpen: false,
   overFlowYHidden: false,

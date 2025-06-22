@@ -8,6 +8,7 @@ import { Table, TableColumn } from "@/components/common/Table/Table"
 import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
+import { PaymentRedirectPopup } from "@/components/frontend/PaymentRedirectPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
@@ -20,7 +21,6 @@ import {
   saveToLocalStorage,
 } from "@/utils/utils"
 import { useParams } from "next/navigation"
-import Script from "next/script"
 import { useEffect, useState } from "react"
 
 import PaymentCard from "./PaymentCard"
@@ -317,20 +317,23 @@ function Renderer({
     )
   } else if (rendererStatus === "NOT_PAID") {
     return (
-      <div className="grid place-items-center min-h-[240px] w-full mt-12 mb-4 translate-y-[-100px]">
-        <PaymentCard
-          successCallback={successCallback}
-          amount={amount}
-          paymentDescription="Payment for Single College Cutoff at CollegeCutoff.net"
-          title={
-            <p className="uppercase poppinsFont">
-              Please Make Payment To View Cutoff of: <br />
-              {getSearchParams("college")}
-            </p>
-          }
-          btnText={`Unlock Cut-Off Now @ ₹${amount}`}
-        />
-      </div>
+      <>
+        <div className="grid place-items-center min-h-[240px] w-full mt-12 mb-4 translate-y-[-100px]">
+          <PaymentCard
+            amount={amount}
+            paymentDescription="Payment for Single College Cutoff at CollegeCutoff.net"
+            title={
+              <p className="uppercase poppinsFont">
+                Please Make Payment To View Cutoff of: <br />
+                {getSearchParams("college")}
+              </p>
+            }
+            btnText={`Unlock Cut-Off Now @ ₹${amount}`}
+          />
+        </div>
+
+        <PaymentRedirectPopup successCallback={successCallback} />
+      </>
     )
   } else {
     return (

@@ -1,7 +1,7 @@
 import crypto from "crypto"
 import { NextRequest, NextResponse } from "next/server"
 
-export const dynamic = "force-dynamic" // or "auto" depending on your caching strategy
+export const dynamic = "force-dynamic"
 
 export async function POST(req: NextRequest) {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET!
@@ -14,25 +14,18 @@ export async function POST(req: NextRequest) {
     .update(bodyString)
     .digest("hex")
 
-  console.log(
-    "------ RAZORPAY_WEBHOOK ------",
-    process.env.RAZORPAY_WEBHOOK_SECRET,
-  )
-
   if (expectedSignature !== razorpaySignature) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 })
   }
 
   const payload = JSON.parse(bodyString)
 
-  console.log("------ PAYLOAD ------", payload)
-
   // ✅ Handle events
-  if (payload.event === "payment.captured") {
-    const paymentInfo = payload.payload.payment.entity
-    console.log("Payment captured:", paymentInfo)
-    // Add DB logic or anything else here
-  }
+  // if (payload.event === "payment.captured") {
+  //   const paymentInfo = payload.payload.payment.entity
+  // } else if (payload.event === "payment.failed") {
+  //   const paymentInfo = payload.payload.payment.entity
+  // }
 
   return NextResponse.json({ received: true })
 }

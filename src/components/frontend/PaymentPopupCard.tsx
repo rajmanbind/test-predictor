@@ -12,10 +12,8 @@ interface IPaymentPopupCardProps {
   paymentDescription: string
   amount: number
   whatWillYouGet?: ReactNode
-
-  successCallback?: (orderId: string) => void
-  errorCallback?: (orderId: string) => void
   onClose: () => void
+  onConfirm?: () => void
 }
 
 export function PaymentPopupCard({
@@ -26,9 +24,7 @@ export function PaymentPopupCard({
   paymentDescription,
   whatWillYouGet,
   amount,
-
-  successCallback,
-  errorCallback,
+  onConfirm,
   onClose,
 }: IPaymentPopupCardProps) {
   return (
@@ -40,13 +36,12 @@ export function PaymentPopupCard({
       closeIconClass="text-white hover:text-white tab:top-2 tab:right-2"
     >
       <PaymentCard
-        successCallback={successCallback}
-        errorCallback={errorCallback}
         amount={amount}
         paymentDescription={paymentDescription}
         whatWillYouGet={whatWillYouGet}
         title={title}
         btnText={btnText}
+        onConfirm={onConfirm}
       />
     </AnimatedPopup>
   )

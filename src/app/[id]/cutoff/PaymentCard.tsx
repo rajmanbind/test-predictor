@@ -83,7 +83,7 @@ function PaymentCard({
           color: "#E67817",
         },
         method: {
-          upi: true,
+          upi_intent: true,
           card: true,
           netbanking: true,
           wallet: true,

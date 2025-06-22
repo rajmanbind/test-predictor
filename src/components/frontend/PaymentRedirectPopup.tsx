@@ -93,7 +93,7 @@ export function PaymentRedirectPopup({
 
         <div className="py-5 text-center text-lg pc:text-base text-gray-800 leading-relaxed">
           <p className="mb-2 font-bold text-lg">{`PLEASE DON'T PRESS BACK OR RELOAD THE PAGE.`}</p>
-          <p className="text-lg">{`This will interrupt payment and cause finical loss.`}</p>
+          <p className="text-lg">{`This will interrupt payment and cause financial loss.`}</p>
         </div>
       </div>
     </AnimatedPopup>

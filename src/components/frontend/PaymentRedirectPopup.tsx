@@ -3,7 +3,7 @@
 import AnimatedPopup from "@/components/common/popups/AnimatedPopup"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
-import { getLocalStorageItem, removeFromLocalStorage } from "@/utils/utils"
+import { cn, getLocalStorageItem, removeFromLocalStorage } from "@/utils/utils"
 import React, { useEffect, useState } from "react"
 
 const time = 600
@@ -85,13 +85,15 @@ export function PaymentRedirectPopup({
           Redirecting...
         </div>
 
+        <div className={"loader w-fit mx-auto mt-4"}></div>
+
         <div className="text-center text-xl pc:text-2xl font-medium text-[#0054A4] pt-5">
           Please wait few minutes...
         </div>
 
-        <div className="py-5 text-center text-sm pc:text-base text-gray-800 leading-relaxed">
-          <p className="mb-2 font-semibold">{`Please don't press back or reload the page.`}</p>
-          <p>{`This may interrupt payment and cause finical loss.`}</p>
+        <div className="py-5 text-center text-lg pc:text-base text-gray-800 leading-relaxed">
+          <p className="mb-2 font-bold text-lg">{`PLEASE DON'T PRESS BACK OR RELOAD THE PAGE.`}</p>
+          <p className="text-lg">{`This will interrupt payment and cause finical loss.`}</p>
         </div>
       </div>
     </AnimatedPopup>

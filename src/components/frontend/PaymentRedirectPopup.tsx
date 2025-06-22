@@ -70,12 +70,6 @@ export function PaymentRedirectPopup({
     }
   }
 
-  const formatTime = (totalSeconds: number) => {
-    const mins = String(Math.floor(totalSeconds / 60)).padStart(2, "0")
-    const secs = String(totalSeconds % 60).padStart(2, "0")
-    return `${mins}:${secs}`
-  }
-
   return (
     <AnimatedPopup
       isOpen={appState.paymentRedirectPopupOpen}
@@ -88,11 +82,11 @@ export function PaymentRedirectPopup({
     >
       <div className="bg-color-form-background rounded-lg overflow-hidden">
         <div className="bg-[#0054A4] py-3 px-4 text-white text-2xl pc:text-3xl font-semibold">
-          Redirecting, please wait...
+          Redirecting...
         </div>
 
         <div className="text-center text-xl pc:text-2xl font-medium text-[#0054A4] pt-5">
-          Time Remaining: {formatTime(secondsLeft)}
+          Please wait few minutes...
         </div>
 
         <div className="py-5 text-center text-sm pc:text-base text-gray-800 leading-relaxed">

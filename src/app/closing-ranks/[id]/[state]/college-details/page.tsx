@@ -32,7 +32,7 @@ export default function StateClosingRanksPage() {
       paymentType.SINGLE_COLLEGE_CLOSING_RANK,
     )
 
-    setYear(closingRankCollege?.year)
+    // setYear(closingRankCollege?.year)
 
     getData(closingRankCollege)
   }, [])
@@ -91,7 +91,7 @@ export default function StateClosingRanksPage() {
             {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
           </div>
         ),
-        tableKey: `closingRankR1`,
+        tableKey: `closingRankR1_new`,
         width: "130px",
       },
       {
@@ -103,7 +103,7 @@ export default function StateClosingRanksPage() {
             {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
           </div>
         ),
-        tableKey: `closingRankR2`,
+        tableKey: `closingRankR2_new`,
         width: "130px",
         renderer({ cellData }) {
           return (
@@ -125,7 +125,7 @@ export default function StateClosingRanksPage() {
             {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
           </div>
         ),
-        tableKey: `closingRankR3`,
+        tableKey: `closingRankR3_new`,
         width: "130px",
         renderer({ cellData }) {
           return (
@@ -147,7 +147,7 @@ export default function StateClosingRanksPage() {
             {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           </div>
         ),
-        tableKey: `strayRound`,
+        tableKey: `strayRound_new`,
         width: "110px",
         renderer({ cellData }) {
           return (
@@ -169,7 +169,7 @@ export default function StateClosingRanksPage() {
             Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
           </div>
         ),
-        tableKey: `lastStrayRound`,
+        tableKey: `lastStrayRound_new`,
         width: "110px",
         renderer({ cellData }) {
           return (
@@ -216,7 +216,7 @@ export default function StateClosingRanksPage() {
               className="inline-flex items-center text-yellow-600 hover:text-yellow-700 mb-6"
             >
               <ChevronLeft className="h-4 w-4 mr-1" />
-              Back to {params?.state} Colleges
+              Back to {decodeURIComponent(params?.state as string)} Colleges
             </Link>
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">

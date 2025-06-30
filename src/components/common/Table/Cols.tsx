@@ -53,6 +53,9 @@ export function generateCols(
       ),
       tableKey: `closingRankR1_new`,
       width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
     },
     {
       title: (
@@ -65,6 +68,9 @@ export function generateCols(
       ),
       tableKey: `closingRankR2_new`,
       width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
     },
     {
       title: (
@@ -77,6 +83,9 @@ export function generateCols(
       ),
       tableKey: `closingRankR3_new`,
       width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
     },
     {
       title: (
@@ -89,6 +98,9 @@ export function generateCols(
       ),
       tableKey: `strayRound_new`,
       width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
     },
     {
       title: (
@@ -101,69 +113,84 @@ export function generateCols(
       ),
       tableKey: `lastStrayRound_new`,
       width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
     },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-    //     >
-    //       CR {previousYear} [R1]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR1_old`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-    //     >
-    //       CR {previousYear} [R2]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR2_old`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-    //     >
-    //       CR {previousYear} [R3]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR3_old`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Stray Round ${previousYear}`}
-    //     >
-    //       SR {previousYear}
-    //     </div>
-    //   ),
-    //   tableKey: `strayRound_old`,
-    //   width: "110px",
-    // },
 
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Last Stray Round ${previousYear}`}
-    //     >
-    //          Last <br />
-    //         SR {previousYear}
-    //     </div>
-    //   ),
-    //   tableKey: `lastStrayRound_old`,
-    //   width: "110px",
-    // },
+    {
+      title: (
+        <div
+          data-tooltip-id="tooltip"
+          data-tooltip-content={`Closing Rank/ Marks Round 1 ${previousYear}`}
+        >
+          Closing Rank/ Marks [R1] {previousYear}
+        </div>
+      ),
+      tableKey: `closingRankR1_old`,
+      width: "185px",
+    },
+    {
+      title: (
+        <div
+          data-tooltip-id="tooltip"
+          data-tooltip-content={`Closing Rank/ Marks Round 2 ${previousYear}`}
+        >
+          Closing Rank/ Marks [R2] {previousYear}
+        </div>
+      ),
+      tableKey: `closingRankR2_old`,
+      width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
+    },
+    {
+      title: (
+        <div
+          data-tooltip-id="tooltip"
+          data-tooltip-content={`Closing Rank/ Marks Round 3 ${previousYear}`}
+        >
+          Closing Rank/ Marks [R3] {previousYear}
+        </div>
+      ),
+      tableKey: `closingRankR3_old`,
+      width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
+    },
+    {
+      title: (
+        <div
+          data-tooltip-id="tooltip"
+          data-tooltip-content={`Stray Round Rank/ Marks ${previousYear}`}
+        >
+          Stray Round Rank/ Marks {previousYear}
+        </div>
+      ),
+      tableKey: `strayRound_old`,
+      width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
+    },
+    {
+      title: (
+        <div
+          data-tooltip-id="tooltip"
+          data-tooltip-content={`Last Stray Round Rank/ Marks ${previousYear}`}
+        >
+          Last Stray Round Rank/ Marks {previousYear}
+        </div>
+      ),
+      tableKey: `lastStrayRound_old`,
+      width: "185px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
+    },
+
     { title: "Institute Type", tableKey: "instituteType", width: "150px" },
     { title: "State", tableKey: "state", width: "150px" },
     { title: "Fees", tableKey: "fees", width: "100px" },
@@ -325,120 +352,10 @@ export function generateColsPublic(
       ),
       tableKey: `closingRankR1_new`,
       width: "190px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
     },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${currentYear} Round 2`}
-    //     >
-    //       CR {currentYear} [R2]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR2_new`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${currentYear} Round 3`}
-    //     >
-    //       CR {currentYear} [R3]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR3_new`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Stray Round ${currentYear}`}
-    //     >
-    //       SR {currentYear}
-    //     </div>
-    //   ),
-    //   tableKey: `strayRound_new`,
-    //   width: "110px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Last Stray Round ${currentYear}`}
-    //     >
-    //       Last <br />
-    //       SR {currentYear}
-    //     </div>
-    //   ),
-    //   tableKey: `lastStrayRound_new`,
-    //   width: "110px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${previousYear} Round 1`}
-    //     >
-    //       CR {previousYear} [R1]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR1_old`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${previousYear} Round 2`}
-    //     >
-    //       CR {previousYear} [R2]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR2_old`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Round ${previousYear} Round 3`}
-    //     >
-    //       CR {previousYear} [R3]
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR3_old`,
-    //   width: "130px",
-    // },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Stray Round ${previousYear}`}
-    //     >
-    //       SR {previousYear}
-    //     </div>
-    //   ),
-    //   tableKey: `strayRound_old`,
-    //   width: "110px",
-    // },
-
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Last Stray Round ${previousYear}`}
-    //     >
-    //          Last <br />
-    //         SR {previousYear}
-    //     </div>
-    //   ),
-    //   tableKey: `lastStrayRound_old`,
-    //   width: "110px",
-    // },
-
-    // { title: "Fees", tableKey: "fees", width: "100px" },
   ]
 
   if (paid) {
@@ -454,6 +371,11 @@ export function generateColsPublic(
         ),
         tableKey: `closingRankR2_new`,
         width: "190px",
+        renderer({ cellData }) {
+          return cellData === "undefined" || cellData === "null"
+            ? "-"
+            : cellData
+        },
       },
       {
         title: (
@@ -466,6 +388,11 @@ export function generateColsPublic(
         ),
         tableKey: `closingRankR3_new`,
         width: "190px",
+        renderer({ cellData }) {
+          return cellData === "undefined" || cellData === "null"
+            ? "-"
+            : cellData
+        },
       },
       {
         title: (
@@ -478,6 +405,11 @@ export function generateColsPublic(
         ),
         tableKey: `strayRound_new`,
         width: "190px",
+        renderer({ cellData }) {
+          return cellData === "undefined" || cellData === "null"
+            ? "-"
+            : cellData
+        },
       },
       {
         title: (
@@ -490,8 +422,102 @@ export function generateColsPublic(
         ),
         tableKey: `lastStrayRound_new`,
         width: "190px",
+        renderer({ cellData }) {
+          return cellData === "undefined" || cellData === "null"
+            ? "-"
+            : cellData
+        },
       },
     )
+
+    columns.push({
+      title: (
+        <div
+          data-tooltip-id="tooltip"
+          data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${previousYear}`}
+        >
+          {`Closing Rank/ ${percentile_Marks} [R1] ${previousYear}`}
+        </div>
+      ),
+      tableKey: `closingRankR1_old`,
+      width: "190px",
+      renderer({ cellData }) {
+        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+      },
+    })
+
+    if (paid) {
+      columns.push(
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${previousYear}`}
+            >
+              {`Closing Rank/ ${percentile_Marks} [R2] ${previousYear}`}
+            </div>
+          ),
+          tableKey: `closingRankR2_old`,
+          width: "190px",
+          renderer({ cellData }) {
+            return cellData === "undefined" || cellData === "null"
+              ? "-"
+              : cellData
+          },
+        },
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${previousYear}`}
+            >
+              {`Closing Rank/ ${percentile_Marks} [R3] ${previousYear}`}
+            </div>
+          ),
+          tableKey: `closingRankR3_old`,
+          width: "190px",
+          renderer({ cellData }) {
+            return cellData === "undefined" || cellData === "null"
+              ? "-"
+              : cellData
+          },
+        },
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+            >
+              {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+            </div>
+          ),
+          tableKey: `strayRound_old`,
+          width: "190px",
+          renderer({ cellData }) {
+            return cellData === "undefined" || cellData === "null"
+              ? "-"
+              : cellData
+          },
+        },
+        {
+          title: (
+            <div
+              data-tooltip-id="tooltip"
+              data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+            >
+              Last {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+            </div>
+          ),
+          tableKey: `lastStrayRound_old`,
+          width: "190px",
+          renderer({ cellData }) {
+            return cellData === "undefined" || cellData === "null"
+              ? "-"
+              : cellData
+          },
+        },
+      )
+    }
 
     columns.push(
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },

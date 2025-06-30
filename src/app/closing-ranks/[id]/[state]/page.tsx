@@ -344,15 +344,10 @@ export default function CollegeListClosingRanksPage() {
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-color-table-header">
                   {state} Medical Colleges
                 </h1>
-                {/* <p className="text-gray-600">
+                <p className="text-gray-600">
                   NEET {params?.id?.toString()?.toUpperCase()}{" "}
                   {configYear?.text} <span className="capitalize">{state}</span>{" "}
                   Medical Colleges List
-                </p> */}
-                <p className="text-gray-600">
-                  NEET {params?.id?.toString()?.toUpperCase()} 2024 - 2025{" "}
-                  <span className="capitalize">{state}</span> Medical Colleges
-                  List
                 </p>
               </div>
             </div>

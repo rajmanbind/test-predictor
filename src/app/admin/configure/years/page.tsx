@@ -149,61 +149,13 @@ export default function ConfigureYearPage() {
             In Table Columns where we have cr1, cr2, cr3 etc. will reflect years
             data from here. suppose u have selected 2023 - 2024 then in Table it
             will show: CR 2023 [R1], CR 2024 [R1], CR 2023 [R2], CR 2024 [R2]
-            and so on.
+            and so on.{" "}
+            <span className="font-bold">
+              This Applies on Frontend WebSite Too.
+            </span>
           </p>
         </div>
       </Card>
-      {/* <Card className="mt-4 px-6 py-10 flex flex-col tab:flex-row items-start gap-8 w-fit max-w-[865px]">
-        <form
-          className="w-full max-w-96"
-          onSubmit={handleSubmit(onSubmitClosingRankPage)}
-        >
-          <SearchAndSelect
-            name="closingRankYear"
-            label="Select Default Year To Show on Closing-Ranks Page"
-            labelClassName="text-sm pc:text-base"
-            placeholder="Select Dropdown Type"
-            value={selectedClosingRankYear}
-            defaultOption={defaultClosingRankValue}
-            onChange={({ selectedValue }) => {
-              setSelectedClosingRankYear(selectedValue)
-            }}
-            control={control}
-            setValue={setValue}
-            required
-            options={years()}
-            debounceDelay={0}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, years(), setOptions)
-            }
-            errors={errors}
-          />
-
-          <div className="flex mt-8 items-center justify-end">
-            <Button
-              className="py-2"
-              type="submit"
-              disabled={
-                defaultClosingRankValue?.text === selectedClosingRankYear?.text
-              }
-            >
-              Save Changes
-            </Button>
-          </div>
-        </form>
-
-        <div className="flex gap-2 text-color-text text-base font-light tracking-[1px] text-justify w-full max-w-[500px]">
-          <Info
-            className="text-blue-600 flex-shrink-0 translate-y-[2px]"
-            size={20}
-          />
-
-          <p className="text-xs tab:text-sm pc:text-base leading-relaxed">
-            This Selected Year will be used as default year on Closing-Ranks
-            Page.
-          </p>
-        </div>
-      </Card> */}
     </BELayout>
   )
 }

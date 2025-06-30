@@ -41,19 +41,7 @@ export default function StateClosingRanksPage() {
   async function getData(closingRankCollege: any) {
     const page = Number(getSearchParams("page") || 1)
 
-    // const res = await fetchData({
-    //   method: "POST",
-    //   url: "/api/closing_ranks",
-    //   params: {
-    //     page,
-    //     size: 20,
-    //   },
-    //   data: {
-    //     closingRankCollege,
-    //   },
-    // })
-
-    let [configRes, closingRanksRes] = await Promise.all([
+    const [configRes, closingRanksRes] = await Promise.all([
       fetchData({
         url: "/api/admin/configure/get",
         params: { type: "CONFIG_YEAR" },
@@ -81,8 +69,6 @@ export default function StateClosingRanksPage() {
           ?.split("-")
           .map((item: string) => item.trim()),
       )
-
-      // configRes = configRes?.payload?.data?.[0]?.text?.replaceAll(" ", "")
     }
   }
 

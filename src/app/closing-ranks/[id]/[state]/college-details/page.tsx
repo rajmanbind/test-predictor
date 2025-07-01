@@ -91,146 +91,144 @@ export default function StateClosingRanksPage() {
         tableKey: "instituteName",
         width: "150px",
       },
-      { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
 
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
-          >
-            {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
-          </div>
-        ),
-        tableKey: `closingRankR1_new`,
-        width: "190px",
-        renderer({ cellData }) {
-          return cellData !== "xxx" &&
-            (cellData === "undefined" ||
-              cellData === "null" ||
-              cellData == null) ? (
-            "-"
-          ) : (
-            <div
-              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock This College @ ₹49`}
-            >
-              {cellData ?? "-"}
-            </div>
-          )
-        },
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
-          >
-            {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
-          </div>
-        ),
-        tableKey: `closingRankR2_new`,
-        width: "190px",
-        renderer({ cellData }) {
-          return cellData !== "xxx" &&
-            (cellData === "undefined" ||
-              cellData === "null" ||
-              cellData == null) ? (
-            "-"
-          ) : (
-            <div
-              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock This College @ ₹49`}
-            >
-              {cellData ?? "-"}
-            </div>
-          )
-        },
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
-          >
-            {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
-          </div>
-        ),
-        tableKey: `closingRankR3_new`,
-        width: "190px",
-        renderer({ cellData }) {
-          return cellData !== "xxx" &&
-            (cellData === "undefined" ||
-              cellData === "null" ||
-              cellData == null) ? (
-            "-"
-          ) : (
-            <div
-              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock This College @ ₹49`}
-            >
-              {cellData ?? "-"}
-            </div>
-          )
-        },
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-          >
-            {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-          </div>
-        ),
-        tableKey: `strayRound_new`,
-        width: "210px",
-        renderer({ cellData }) {
-          return cellData !== "xxx" &&
-            (cellData === "undefined" ||
-              cellData === "null" ||
-              cellData == null) ? (
-            "-"
-          ) : (
-            <div
-              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock This College @ ₹49`}
-            >
-              {cellData ?? "-"}
-            </div>
-          )
-        },
-      },
-      {
-        title: (
-          <div
-            data-tooltip-id="tooltip"
-            data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-          >
-            Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-          </div>
-        ),
-        tableKey: `lastStrayRound_new`,
-        width: "210px",
-        renderer({ cellData }) {
-          return cellData !== "xxx" &&
-            (cellData === "undefined" ||
-              cellData === "null" ||
-              cellData == null) ? (
-            "-"
-          ) : (
-            <div
-              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock This College @ ₹49`}
-            >
-              {cellData ?? "-"}
-            </div>
-          )
-        },
-      },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
+      //     >
+      //       {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR1_new`,
+      //   width: "190px",
+      //   renderer({ cellData }) {
+      //     return cellData !== "xxx" &&
+      //       (cellData === "undefined" ||
+      //         cellData === "null" ||
+      //         cellData == null) ? (
+      //       "-"
+      //     ) : (
+      //       <div
+      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+      //         data-tooltip-content={`Unlock This College @ ₹49`}
+      //       >
+      //         {cellData ?? "-"}
+      //       </div>
+      //     )
+      //   },
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
+      //     >
+      //       {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR2_new`,
+      //   width: "190px",
+      //   renderer({ cellData }) {
+      //     return cellData !== "xxx" &&
+      //       (cellData === "undefined" ||
+      //         cellData === "null" ||
+      //         cellData == null) ? (
+      //       "-"
+      //     ) : (
+      //       <div
+      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+      //         data-tooltip-content={`Unlock This College @ ₹49`}
+      //       >
+      //         {cellData ?? "-"}
+      //       </div>
+      //     )
+      //   },
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
+      //     >
+      //       {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
+      //     </div>
+      //   ),
+      //   tableKey: `closingRankR3_new`,
+      //   width: "190px",
+      //   renderer({ cellData }) {
+      //     return cellData !== "xxx" &&
+      //       (cellData === "undefined" ||
+      //         cellData === "null" ||
+      //         cellData == null) ? (
+      //       "-"
+      //     ) : (
+      //       <div
+      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+      //         data-tooltip-content={`Unlock This College @ ₹49`}
+      //       >
+      //         {cellData ?? "-"}
+      //       </div>
+      //     )
+      //   },
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+      //     >
+      //       {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+      //     </div>
+      //   ),
+      //   tableKey: `strayRound_new`,
+      //   width: "210px",
+      //   renderer({ cellData }) {
+      //     return cellData !== "xxx" &&
+      //       (cellData === "undefined" ||
+      //         cellData === "null" ||
+      //         cellData == null) ? (
+      //       "-"
+      //     ) : (
+      //       <div
+      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+      //         data-tooltip-content={`Unlock This College @ ₹49`}
+      //       >
+      //         {cellData ?? "-"}
+      //       </div>
+      //     )
+      //   },
+      // },
+      // {
+      //   title: (
+      //     <div
+      //       data-tooltip-id="tooltip"
+      //       data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+      //     >
+      //       Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+      //     </div>
+      //   ),
+      //   tableKey: `lastStrayRound_new`,
+      //   width: "210px",
+      //   renderer({ cellData }) {
+      //     return cellData !== "xxx" &&
+      //       (cellData === "undefined" ||
+      //         cellData === "null" ||
+      //         cellData == null) ? (
+      //       "-"
+      //     ) : (
+      //       <div
+      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+      //         data-tooltip-content={`Unlock This College @ ₹49`}
+      //       >
+      //         {cellData ?? "-"}
+      //       </div>
+      //     )
+      //   },
+      // },
 
       {
         title: (
@@ -367,6 +365,9 @@ export default function StateClosingRanksPage() {
           )
         },
       },
+
+      { title: "Institute Type", tableKey: "instituteType", width: "150px" },
+      { title: "State", tableKey: "state", width: "150px" },
 
       {
         title: "Fees",

@@ -93,6 +93,16 @@ export default function StateClosingRanksPage() {
       },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
+      {
+        title: (
+          <div>
+            Allotted
+            <br />
+            Category
+          </div>
+        ),
+        tableKey: "category",
+      },
 
       // {
       //   title: (

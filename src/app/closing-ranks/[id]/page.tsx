@@ -29,7 +29,6 @@ type StateData = {
 
 // States and Union Territories data
 const states: StateData[] = [
-  { name: "All", slug: "all" },
   {
     name: "Andaman and Nicobar Islands",
     slug: "andaman-and-nicobar-islands",

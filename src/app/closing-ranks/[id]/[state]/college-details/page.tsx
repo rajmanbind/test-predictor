@@ -422,7 +422,7 @@ export default function StateClosingRanksPage() {
                   {getSearchParams("college")}
                 </h1>
                 <p className="text-gray-600">
-                  NEET UG {configYear} Closing Ranks
+                  NEET UG {configYear?.[0] - configYear?.[1]} Closing Ranks
                 </p>
               </div>
             </div>

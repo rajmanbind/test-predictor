@@ -381,12 +381,15 @@ export default function CollegeListClosingRanksPage() {
               onPageChange={(page: number) => {
                 onPageChange(
                   page,
-                  "/api/closing_ranks",
+                  "/api/closing_ranks/college_list",
                   fetchData,
                   setTableData,
                   {
+                    page,
                     size: 20,
                     state,
+                    courseType: params.id?.toString()?.toUpperCase(),
+                    course: getSearchParams("course"),
                   },
                 )
               }}

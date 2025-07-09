@@ -21,7 +21,6 @@ export const states = [
   { id: 7, text: "Chhattisgarh" },
   { id: 8, text: "Dadra and Nagar Haveli" },
   { id: 9, text: "Daman and Diu" },
-  { id: 37, text: "Delhi" },
   { id: 10, text: "Goa" },
   { id: 11, text: "Gujarat" },
   { id: 12, text: "Haryana" },
@@ -49,6 +48,7 @@ export const states = [
   { id: 34, text: "Uttar Pradesh" },
   { id: 35, text: "Uttarakhand" },
   { id: 36, text: "West Bengal" },
+   { id: 37, text: "Delhi" },
   
 ]
 

@@ -41,6 +41,7 @@ const states: StateData[] = [
   { name: "Chhattisgarh", slug: "chhattisgarh" },
   { name: "Dadra and Nagar Haveli", slug: "dadra-and-nagar-haveli" },
   { name: "Daman and Diu", slug: "daman-and-diu" },
+  { name: "Delhi", slug: "delhi" },
   { name: "Goa", slug: "goa" },
   { name: "Gujarat", slug: "gujarat", popular: true },
   { name: "Haryana", slug: "haryana" },
@@ -68,7 +69,6 @@ const states: StateData[] = [
   { name: "Uttar Pradesh", slug: "uttar-pradesh", popular: true },
   { name: "Uttarakhand", slug: "uttarakhand" },
   { name: "West Bengal", slug: "west-bengal" },
-  { name: "Delhi", slug: "delhi" },
 ]
 
 const courseTypeList: IOption[] = [

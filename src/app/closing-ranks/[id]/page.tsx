@@ -68,6 +68,7 @@ const states: StateData[] = [
   { name: "Uttar Pradesh", slug: "uttar-pradesh", popular: true },
   { name: "Uttarakhand", slug: "uttarakhand" },
   { name: "West Bengal", slug: "west-bengal" },
+  { name: "Delhi", slug: "delhi" },
 ]
 
 const courseTypeList: IOption[] = [

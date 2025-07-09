@@ -48,6 +48,7 @@ export const states = [
   { id: 34, text: "Uttar Pradesh" },
   { id: 35, text: "Uttarakhand" },
   { id: 36, text: "West Bengal" },
+  { id: 37, text: "Delhi" },
 ]
 
 export const closingRanksStates = [

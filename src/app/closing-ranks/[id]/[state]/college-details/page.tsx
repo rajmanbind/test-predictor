@@ -120,13 +120,13 @@ export default function StateClosingRanksPage() {
       //       (cellData === "undefined" ||
       //         cellData === "null" ||
       //         cellData == null) ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
       //         data-tooltip-content={`Unlock This College @ ₹49`}
       //       >
-      //         {cellData ?? "-"}
+      //         {cellData ?? "NA"}
       //       </div>
       //     )
       //   },
@@ -147,13 +147,13 @@ export default function StateClosingRanksPage() {
       //       (cellData === "undefined" ||
       //         cellData === "null" ||
       //         cellData == null) ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
       //         data-tooltip-content={`Unlock This College @ ₹49`}
       //       >
-      //         {cellData ?? "-"}
+      //         {cellData ?? "NA"}
       //       </div>
       //     )
       //   },
@@ -174,13 +174,13 @@ export default function StateClosingRanksPage() {
       //       (cellData === "undefined" ||
       //         cellData === "null" ||
       //         cellData == null) ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
       //         data-tooltip-content={`Unlock This College @ ₹49`}
       //       >
-      //         {cellData ?? "-"}
+      //         {cellData ?? "NA"}
       //       </div>
       //     )
       //   },
@@ -201,13 +201,13 @@ export default function StateClosingRanksPage() {
       //       (cellData === "undefined" ||
       //         cellData === "null" ||
       //         cellData == null) ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
       //         data-tooltip-content={`Unlock This College @ ₹49`}
       //       >
-      //         {cellData ?? "-"}
+      //         {cellData ?? "NA"}
       //       </div>
       //     )
       //   },
@@ -228,13 +228,13 @@ export default function StateClosingRanksPage() {
       //       (cellData === "undefined" ||
       //         cellData === "null" ||
       //         cellData == null) ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
       //         data-tooltip-content={`Unlock This College @ ₹49`}
       //       >
-      //         {cellData ?? "-"}
+      //         {cellData ?? "NA"}
       //       </div>
       //     )
       //   },
@@ -256,13 +256,13 @@ export default function StateClosingRanksPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData ?? "-"}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -283,13 +283,13 @@ export default function StateClosingRanksPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData ?? "-"}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -310,13 +310,13 @@ export default function StateClosingRanksPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData ?? "-"}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -337,13 +337,13 @@ export default function StateClosingRanksPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData ?? "-"}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -364,13 +364,13 @@ export default function StateClosingRanksPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData ?? "-"}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -389,7 +389,7 @@ export default function StateClosingRanksPage() {
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
               data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData ?? "-"}
+              {cellData ?? "NA"}
             </div>
           )
         },

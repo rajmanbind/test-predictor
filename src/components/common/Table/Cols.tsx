@@ -54,7 +54,7 @@ export function generateCols(
       tableKey: `closingRankR1_new`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
     {
@@ -69,7 +69,7 @@ export function generateCols(
       tableKey: `closingRankR2_new`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
     {
@@ -84,7 +84,7 @@ export function generateCols(
       tableKey: `closingRankR3_new`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
     {
@@ -99,7 +99,7 @@ export function generateCols(
       tableKey: `strayRound_new`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
     {
@@ -114,7 +114,7 @@ export function generateCols(
       tableKey: `lastStrayRound_new`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
 
@@ -142,7 +142,7 @@ export function generateCols(
       tableKey: `closingRankR2_old`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
     {
@@ -157,7 +157,7 @@ export function generateCols(
       tableKey: `closingRankR3_old`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
     {
@@ -172,7 +172,7 @@ export function generateCols(
       tableKey: `strayRound_old`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
     {
@@ -187,7 +187,7 @@ export function generateCols(
       tableKey: `lastStrayRound_old`,
       width: "185px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     },
 
@@ -353,7 +353,7 @@ export function generateColsPublic(
     //   tableKey: `closingRankR1_new`,
     //   width: "190px",
     //   renderer({ cellData }) {
-    //     return cellData === "undefined" || cellData === "null" ? "-" : cellData
+    //     return cellData === "undefined" || cellData === "null" ? "NA" : cellData
     //   },
     // },
   ]
@@ -373,7 +373,7 @@ export function generateColsPublic(
     //     width: "190px",
     //     renderer({ cellData }) {
     //       return cellData === "undefined" || cellData === "null"
-    //         ? "-"
+    //         ? "NA"
     //         : cellData
     //     },
     //   },
@@ -390,7 +390,7 @@ export function generateColsPublic(
     //     width: "190px",
     //     renderer({ cellData }) {
     //       return cellData === "undefined" || cellData === "null"
-    //         ? "-"
+    //         ? "NA"
     //         : cellData
     //     },
     //   },
@@ -407,7 +407,7 @@ export function generateColsPublic(
     //     width: "190px",
     //     renderer({ cellData }) {
     //       return cellData === "undefined" || cellData === "null"
-    //         ? "-"
+    //         ? "NA"
     //         : cellData
     //     },
     //   },
@@ -424,7 +424,7 @@ export function generateColsPublic(
     //     width: "190px",
     //     renderer({ cellData }) {
     //       return cellData === "undefined" || cellData === "null"
-    //         ? "-"
+    //         ? "NA"
     //         : cellData
     //     },
     //   },
@@ -442,7 +442,7 @@ export function generateColsPublic(
       tableKey: `closingRankR1_old`,
       width: "190px",
       renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "-" : cellData
+        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
       },
     })
 
@@ -461,7 +461,7 @@ export function generateColsPublic(
           width: "190px",
           renderer({ cellData }) {
             return cellData === "undefined" || cellData === "null"
-              ? "-"
+              ? "NA"
               : cellData
           },
         },
@@ -478,7 +478,7 @@ export function generateColsPublic(
           width: "190px",
           renderer({ cellData }) {
             return cellData === "undefined" || cellData === "null"
-              ? "-"
+              ? "NA"
               : cellData
           },
         },
@@ -495,7 +495,7 @@ export function generateColsPublic(
           width: "190px",
           renderer({ cellData }) {
             return cellData === "undefined" || cellData === "null"
-              ? "-"
+              ? "NA"
               : cellData
           },
         },
@@ -512,7 +512,7 @@ export function generateColsPublic(
           width: "190px",
           renderer({ cellData }) {
             return cellData === "undefined" || cellData === "null"
-              ? "-"
+              ? "NA"
               : cellData
           },
         },

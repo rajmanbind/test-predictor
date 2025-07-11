@@ -271,7 +271,7 @@ export default function ResultPage() {
       //   renderer({ cellData }) {
       //     return cellData !== "xxx" &&
       //       (cellData === "undefined" || cellData === "null")
-      //       ? "-"
+      //       ? "NA"
       //       : cellData
       //   },
       // },
@@ -289,7 +289,7 @@ export default function ResultPage() {
       //   renderer({ cellData }: any) {
       //     return cellData !== "xxx" &&
       //       (cellData === "undefined" || cellData === "null") ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -314,7 +314,7 @@ export default function ResultPage() {
       //   renderer({ cellData }: any) {
       //     return cellData !== "xxx" &&
       //       (cellData === "undefined" || cellData === "null") ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -339,7 +339,7 @@ export default function ResultPage() {
       //   renderer({ cellData }: any) {
       //     return cellData !== "xxx" &&
       //       (cellData === "undefined" || cellData === "null") ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -364,7 +364,7 @@ export default function ResultPage() {
       //   renderer({ cellData }: any) {
       //     return cellData !== "xxx" &&
       //       (cellData === "undefined" || cellData === "null") ? (
-      //       "-"
+      //       "NA"
       //     ) : (
       //       <div
       //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -390,7 +390,7 @@ export default function ResultPage() {
         renderer({ cellData }) {
           return cellData !== "xxx" &&
             (cellData === "undefined" || cellData === "null")
-            ? "-"
+            ? "NA"
             : cellData
         },
       },
@@ -408,7 +408,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return cellData !== "xxx" &&
             (cellData === "undefined" || cellData === "null") ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -433,7 +433,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return cellData !== "xxx" &&
             (cellData === "undefined" || cellData === "null") ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -458,7 +458,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return cellData !== "xxx" &&
             (cellData === "undefined" || cellData === "null") ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -483,7 +483,7 @@ export default function ResultPage() {
         renderer({ cellData }: any) {
           return cellData !== "xxx" &&
             (cellData === "undefined" || cellData === "null") ? (
-            "-"
+            "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}

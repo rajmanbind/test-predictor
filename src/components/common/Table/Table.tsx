@@ -1,4 +1,4 @@
-import { cn, isEmpty } from "@/utils/utils"
+import { cn, isEmpty, shouldRenderComponent } from "@/utils/utils"
 import { useSearchParams } from "next/navigation"
 import React, { ReactNode, useEffect, useState } from "react"
 import { isMobile } from "react-device-detect"
@@ -207,7 +207,15 @@ export function Table({
                               rowData: row,
                               cellData: row[column?.tableKey],
                             })
-                          : row[column?.tableKey] || "-"}
+                          : shouldRenderComponent(
+                                [
+                                  row[column?.tableKey] === "-",
+                                  !row[column?.tableKey],
+                                ],
+                                "OR",
+                              )
+                            ? "NA"
+                            : row[column?.tableKey]}
                       </div>
                     </td>
                   )

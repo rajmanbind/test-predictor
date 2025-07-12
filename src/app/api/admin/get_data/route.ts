@@ -8,10 +8,11 @@ export async function GET(request: NextRequest) {
 
   const page = parseInt(searchParams.get("page") || "1")
   const pageSize = parseInt(searchParams.get("size") || "10")
-  const instituteName = searchParams.get("instituteName") // Get optional instituteName param
+  const instituteName = searchParams.get("instituteName")
 
   const supabase = createAdminSupabaseClient()
 
+  // Step 1: Get the selected year
   const { data: selectedYear, error: yearsError } = await supabase
     .from("dropdown_options")
     .select("*")
@@ -33,7 +34,32 @@ export async function GET(request: NextRequest) {
     ?.split("-")
     .map((item: string) => item.trim())
 
-  // Modify the query to include instituteName filter if provided
+  // Step 2: Get the total count of unique keys for accurate totalItems
+  let countQuery = supabase
+    .from("college_table")
+    .select("instituteName, instituteType, state, course, category, quota", {
+      count: "exact",
+      head: true,
+    })
+    .in("year", latestYears)
+
+  if (instituteName) {
+    countQuery = countQuery.ilike("instituteName", `%${instituteName}%`)
+  }
+
+  const { count: totalRawRows, error: countError } = await countQuery
+
+  if (countError) {
+    return NextResponse.json({ error: countError }, { status: 400 })
+  }
+
+  // Estimate unique keys (this is an approximation, as exact count requires grouping)
+  const totalItems = totalRawRows ? Math.ceil(totalRawRows / 2) : 0 // Assuming max 2 rows per key (old + new)
+
+  // Step 3: Fetch enough rows to ensure pageSize merged records
+  const from = (page - 1) * pageSize
+  const to = from + pageSize * 2 - 1 // Fetch up to 2x pageSize to account for merging
+
   let query = supabase
     .from("college_table")
     .select("*")
@@ -41,16 +67,18 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false })
 
   if (instituteName) {
-    query = query.ilike("instituteName", `%${instituteName}%`) // Case-insensitive partial match
+    query = query.ilike("instituteName", `%${instituteName}%`)
   }
+
+  query = query.range(from, to)
 
   const { data, error } = await query
 
   if (error) {
-    return new Response(JSON.stringify({ error }), { status: 400 })
+    return NextResponse.json({ error }, { status: 400 })
   }
 
-  // Step 3: Merge records with updated key
+  // Step 4: Merge records with updated key
   const mergedData: any[] = []
   const recordMap = new Map()
 
@@ -111,17 +139,24 @@ export async function GET(request: NextRequest) {
     }
   })
 
-  // Step 4: Pagination
-  const totalItems = mergedData.length
+  // Step 5: Sort merged data by created_at
+  mergedData.sort((a, b) => {
+    const dateA = new Date(a.created_at).getTime()
+    const dateB = new Date(b.created_at).getTime()
+    return dateB - dateA // Descending order
+  })
+
+  // Step 6: Paginate merged data to exactly match pageSize
+  const paginatedMergedData = mergedData.slice(0, pageSize)
+
+  // Step 7: Return response
   const totalPages = Math.ceil(totalItems / pageSize)
-  const paginatedData = mergedData.slice((page - 1) * pageSize, page * pageSize)
 
   return NextResponse.json({
-    data: paginatedData,
+    data: paginatedMergedData,
     currentPage: page,
     pageSize,
     totalItems,
     totalPages,
   })
 }
-

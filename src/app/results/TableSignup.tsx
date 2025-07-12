@@ -107,7 +107,7 @@ function TableSignup({
   }
 
   return (
-    <div className="h-52 bg-[#ecbc00] sticky left-0">
+    <div className="h-52 bg-[#ecbc00] translate-y-[-20px] rounded-md">
       <div className="h-full w-full grid place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="text-white text-center flex flex-col gap-2 justify-center items-center">
           <h2 className="text-[26px] font-medium">

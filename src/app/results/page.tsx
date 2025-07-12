@@ -105,6 +105,9 @@ export default function ResultPage() {
       return
     }
 
+    setPaid(false)
+    payment = false
+
     for (let i = 0; i < userPurchases?.payload?.data?.length; i++) {
       const purchase =
         userPurchases?.payload?.data[i]?.college_predictor_details
@@ -115,6 +118,7 @@ export default function ResultPage() {
         purchase?.year === configRes &&
         !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
       ) {
+        console.log("purchase", purchase?.rank, "->", getSearchParams("rank"))
         setPaid(true)
         payment = true
         break
@@ -588,17 +592,6 @@ export default function ResultPage() {
               columns={generateCols()}
               data={tableData?.data}
               className="mt-6 min-h-[600px]"
-              renderBelowTable={
-                paid || isEmpty(tableData?.data) ? null : (
-                  <TableSignup
-                    params={getSearchParams("courseType")}
-                    totalRecords={tableData?.totalItems}
-                    setUpdateUI={setUpdateUI}
-                    amount={amount}
-                    configYear={configYear}
-                  />
-                )
-              }
             />
 
             <Pagination
@@ -609,6 +602,16 @@ export default function ResultPage() {
               wrapperClass="pb-[50px]"
               onPageChange={(page: number) => getData(paid, page)}
             />
+
+            {paid || isEmpty(tableData?.data) ? null : (
+              <TableSignup
+                params={getSearchParams("courseType")}
+                totalRecords={tableData?.totalItems}
+                setUpdateUI={setUpdateUI}
+                amount={amount}
+                configYear={configYear}
+              />
+            )}
           </div>
         </div>
 

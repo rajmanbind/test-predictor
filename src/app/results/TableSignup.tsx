@@ -6,7 +6,7 @@ import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { paymentType } from "@/utils/static"
 import { getPhoneFromUser } from "@/utils/utils"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, CircleCheckBig } from "lucide-react"
 import { SetStateAction, useState } from "react"
 
 interface TableSignupProps {
@@ -14,6 +14,7 @@ interface TableSignupProps {
   setUpdateUI: React.Dispatch<SetStateAction<boolean>>
   amount: number
   configYear?: any
+  params?: any
 }
 
 function TableSignup({
@@ -21,6 +22,7 @@ function TableSignup({
   setUpdateUI,
   amount,
   configYear,
+  params,
 }: TableSignupProps) {
   const { getSearchParams } = useInternalSearchParams()
 
@@ -146,6 +148,23 @@ function TableSignup({
           <p className="pt-2 uppercase poppinsFont">
             Please Make Payment To View All Options
           </p>
+        }
+        whatWillYouGet={
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li className="flex font-poppins gap-2">
+              <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+              <h3 className="text-[15px] leading-[1.4]">
+                {params === "UG"
+                  ? "All Round's Complete Category and Quota Wise MBBS Cut-off RANK/MARKS Details (NEET UG 2024) of your Selected College."
+                  : "Access All Round's MD/MS/Diploma Cut-off Rank / Percentile Details (NEET PG 2024) – Specialization, Category & Quota Wise for Your Selected College."}
+              </h3>
+            </li>
+
+            <li className="flex font-poppins gap-2">
+              <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+              <h3 className="text-[15px]">Instant Access after Payment!</h3>
+            </li>
+          </ul>
         }
         btnText={`Unlock Now @ ₹${amount}`}
         amount={amount}

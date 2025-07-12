@@ -330,22 +330,21 @@ function Renderer({
               </p>
             }
             whatWillYouGet={
-           <ul className="space-y-3 text-sm text-muted-foreground">
-  <li className="flex font-poppins gap-2">
-    <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
-    <h3 className="text-[15px] leading-[1.4]">
-      {params?.id?.toString()?.toUpperCase() === "UG"
-        ? "All Round's Complete Category and Quota Wise MBBS Cut-off RANK/MARKS Details (NEET UG 2024) of your Selected College."
-        : "Access All Round's MD/MS/Diploma Cut-off Rank / Percentile Details (NEET PG 2024) – Specialization, Category & Quota Wise for Your Selected College."}
-    </h3>
-  </li>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li className="flex font-poppins gap-2">
+                  <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+                  <h3 className="text-[15px] leading-[1.4]">
+                    {params?.id?.toString()?.toUpperCase() === "UG"
+                      ? "All Round's Complete Category and Quota Wise MBBS Cut-off RANK/MARKS Details (NEET UG 2024) of your Selected College."
+                      : "Access All Round's MD/MS/Diploma Cut-off Rank / Percentile Details (NEET PG 2024) – Specialization, Category & Quota Wise for Your Selected College."}
+                  </h3>
+                </li>
 
-  <li className="flex font-poppins gap-2">
-    <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
-    <h3 className="text-[15px]">Instant Access after Payment!</h3>
-  </li>
-</ul>
-
+                <li className="flex font-poppins gap-2">
+                  <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+                  <h3 className="text-[15px]">Instant Access after Payment!</h3>
+                </li>
+              </ul>
             }
             btnText={`Unlock Cut-Off Now @ ₹${amount}`}
           />

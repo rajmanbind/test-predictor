@@ -591,6 +591,7 @@ export default function ResultPage() {
               renderBelowTable={
                 paid || isEmpty(tableData?.data) ? null : (
                   <TableSignup
+                    params={getSearchParams("courseType")}
                     totalRecords={tableData?.totalItems}
                     setUpdateUI={setUpdateUI}
                     amount={amount}

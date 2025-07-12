@@ -34,35 +34,10 @@ export async function GET(request: NextRequest) {
     ?.split("-")
     .map((item: string) => item.trim())
 
-  // Step 2: Get the total count of unique keys for accurate totalItems
-  let countQuery = supabase
-    .from("college_table")
-    .select("instituteName, instituteType, state, course, category, quota", {
-      count: "exact",
-      head: true,
-    })
-    .in("year", latestYears)
-
-  if (instituteName) {
-    countQuery = countQuery.ilike("instituteName", `%${instituteName}%`)
-  }
-
-  const { count: totalRawRows, error: countError } = await countQuery
-
-  if (countError) {
-    return NextResponse.json({ error: countError }, { status: 400 })
-  }
-
-  // Estimate unique keys (this is an approximation, as exact count requires grouping)
-  const totalItems = totalRawRows ? Math.ceil(totalRawRows / 2) : 0 // Assuming max 2 rows per key (old + new)
-
-  // Step 3: Fetch enough rows to ensure pageSize merged records
-  const from = (page - 1) * pageSize
-  const to = from + pageSize * 2 - 1 // Fetch up to 2x pageSize to account for merging
-
+  // Step 2: Build the query with pagination
   let query = supabase
     .from("college_table")
-    .select("*")
+    .select("*", { count: "exact" }) // Include count for total rows
     .in("year", latestYears)
     .order("created_at", { ascending: false })
 
@@ -70,15 +45,18 @@ export async function GET(request: NextRequest) {
     query = query.ilike("instituteName", `%${instituteName}%`)
   }
 
+  // Apply pagination at the database level
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
   query = query.range(from, to)
 
-  const { data, error } = await query
+  const { data, error, count } = await query
 
   if (error) {
     return NextResponse.json({ error }, { status: 400 })
   }
 
-  // Step 4: Merge records with updated key
+  // Step 3: Merge records with updated key
   const mergedData: any[] = []
   const recordMap = new Map()
 
@@ -139,21 +117,12 @@ export async function GET(request: NextRequest) {
     }
   })
 
-  // Step 5: Sort merged data by created_at
-  mergedData.sort((a, b) => {
-    const dateA = new Date(a.created_at).getTime()
-    const dateB = new Date(b.created_at).getTime()
-    return dateB - dateA // Descending order
-  })
-
-  // Step 6: Paginate merged data to exactly match pageSize
-  const paginatedMergedData = mergedData.slice(0, pageSize)
-
-  // Step 7: Return response
+  // Step 4: Return paginated response
+  const totalItems = count || mergedData.length
   const totalPages = Math.ceil(totalItems / pageSize)
 
   return NextResponse.json({
-    data: paginatedMergedData,
+    data: mergedData,
     currentPage: page,
     pageSize,
     totalItems,

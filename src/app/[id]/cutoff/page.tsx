@@ -20,6 +20,7 @@ import {
   isExpired,
   saveToLocalStorage,
 } from "@/utils/utils"
+import { CircleCheckBig } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -327,6 +328,22 @@ function Renderer({
                 Please Make Payment To View Cutoff of: <br />
                 {getSearchParams("college")}
               </p>
+            }
+            whatWillYouGet={
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li className="flex font-poppins gap-2">
+                  <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+                  <h3 className="text-[15px] leading-[1.4]">
+                    {`All Round's Complete Category and Quota Wise MBBS Cut-off RANK/
+    MARKS Details (NEET ${params?.id?.toString()?.toUpperCase() === "UG" ? "UG" : "PG"} 2024) of your Selected College.`}
+                  </h3>
+                </li>
+                <li className="flex font-poppins gap-2">
+                  <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
+
+                  <h3 className="text-[15px]">Instant Access after Payment!</h3>
+                </li>
+              </ul>
             }
             btnText={`Unlock Cut-Off Now @ ₹${amount}`}
           />

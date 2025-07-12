@@ -212,7 +212,7 @@ export function generateCols(
                 size={20}
                 className="text-color-text cursor-pointer"
                 onClick={() => {
-                  const link = `https://www.collegecutoff.net/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
+                  const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
 
                   copyToClipboard(link)
                   showToast?.("success", "Copied to clipboard")
@@ -246,7 +246,7 @@ export function generateCols(
               size={20}
               className="text-color-text cursor-pointer"
               onClick={() => {
-                const link = `https://www.collegecutoff.net/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
+                const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
 
                 copyToClipboard(link)
                 showToast?.("success", "Copied to clipboard")

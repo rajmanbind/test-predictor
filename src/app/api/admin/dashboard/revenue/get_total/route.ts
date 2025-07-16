@@ -1,12 +1,17 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
 import { startOfMonth } from "date-fns"
+import { toZonedTime } from "date-fns-tz"
 import { NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 
 export async function GET() {
   const supabase = createAdminSupabaseClient()
-  const currentMonthStart = startOfMonth(new Date()).toISOString()
+  const timeZone = "Asia/Kolkata"
+
+  // Get current UTC time and convert to IST
+  const zonedNow = toZonedTime(new Date(), timeZone)
+  const currentMonthStart = startOfMonth(zonedNow).toISOString()
 
   const { data: totalData, error: totalError } =
     await supabase.rpc("total_revenue")

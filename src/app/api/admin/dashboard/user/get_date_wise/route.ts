@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
-import { format, subDays } from "date-fns"
+import { subDays } from "date-fns"
+import { format, toZonedTime } from "date-fns-tz"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -16,7 +17,10 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminSupabaseClient()
-  const fromDate = subDays(new Date(), days)
+  const timeZone = "Asia/Kolkata"
+
+  const zonedNow = toZonedTime(new Date(), timeZone)
+  const fromDate = subDays(zonedNow, days)
 
   const { data, error } = await supabase
     .from("user")
@@ -33,15 +37,16 @@ export async function GET(request: NextRequest) {
   const grouped: Record<string, number> = {}
 
   for (const row of data) {
-    const date = format(new Date(row.created_at), "yyyy-MM-dd")
-    grouped[date] = (grouped[date] || 0) + 1
+    const rowDate = toZonedTime(new Date(row.created_at), timeZone)
+    const dateKey = format(rowDate, "yyyy-MM-dd", { timeZone })
+    grouped[dateKey] = (grouped[dateKey] || 0) + 1
   }
 
   const result = Array.from({ length: days }).map((_, index) => {
-    const dateObj = subDays(new Date(), days - 1 - index)
-    const key = format(dateObj, "yyyy-MM-dd")
+    const dateObj = subDays(zonedNow, days - 1 - index)
+    const key = format(dateObj, "yyyy-MM-dd", { timeZone })
     return {
-      date: dateObj.toString(),
+      date: format(dateObj, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone }),
       userCount: grouped[key] || 0,
     }
   })

@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
-import { format, subDays } from "date-fns"
+import { subDays } from "date-fns"
+import { format, toZonedTime } from "date-fns-tz"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -16,7 +17,13 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminSupabaseClient()
-  const fromDate = subDays(new Date(), days)
+  const timeZone = "Asia/Kolkata"
+
+  // Always get current UTC, then convert to IST
+  const now = new Date()
+  const zonedNow = toZonedTime(now, timeZone)
+
+  const fromDate = subDays(zonedNow, days)
 
   const { data, error } = await supabase
     .from("payment")
@@ -35,7 +42,10 @@ export async function GET(request: NextRequest) {
   const grouped: Record<string, number> = {}
 
   for (const row of data) {
-    const date = format(new Date(row.created_at), "yyyy-MM-dd")
+    // Convert DB timestamp to IST
+    const rowDate = toZonedTime(new Date(row.created_at), timeZone)
+    const dateKey = format(rowDate, "yyyy-MM-dd", { timeZone })
+
     const total =
       (row.SINGLE_COLLEGE_CLOSING_RANK || 0) +
       (row.STATE_CLOSING_RANK || 0) +
@@ -43,14 +53,15 @@ export async function GET(request: NextRequest) {
       (row.COLLEGE_CUT_OFF || 0) +
       (row.RANK_COLLEGE_PREDICTOR || 0)
 
-    grouped[date] = (grouped[date] || 0) + total
+    grouped[dateKey] = (grouped[dateKey] || 0) + total
   }
 
   const result = Array.from({ length: days }).map((_, index) => {
-    const dateObj = subDays(new Date(), days - 1 - index)
-    const key = format(dateObj, "yyyy-MM-dd")
+    const dateObj = subDays(zonedNow, days - 1 - index)
+    const key = format(dateObj, "yyyy-MM-dd", { timeZone })
+
     return {
-      date: dateObj.toString(), // gives "Mon May 12 2025 17:52:32 GMT+0530 (India Standard Time)"
+      date: format(dateObj, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone }),
       revenue: grouped[key] || 0,
     }
   })

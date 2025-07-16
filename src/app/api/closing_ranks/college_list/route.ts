@@ -2,9 +2,9 @@ import {
   createAdminSupabaseClient,
   createUserSupabaseClient,
 } from "@/lib/supabase"
-import { courseType, paymentType } from "@/utils/static"
 import { isExpired } from "@/utils/utils"
 import { addMonths, isBefore, parseISO } from "date-fns"
+import { toZonedTime } from "date-fns-tz"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -60,7 +60,6 @@ export async function GET(request: NextRequest) {
   const to = from + pageSize - 1
 
   if (courseType === "UG") {
-    // Use the RPC
     const { data, error } = await supabase.rpc("get_grouped_colleges", {
       year_array: latestYears,
       course_type: courseType,
@@ -149,7 +148,6 @@ async function checkPurchases(
 ) {
   const supabaseUser = createUserSupabaseClient()
 
-  // Manual pagination
   const paginated = filteredData?.slice(from, to + 1)
   const totalItems = filteredData?.length
   const totalPages = Math.ceil(totalItems / pageSize)
@@ -177,29 +175,51 @@ async function checkPurchases(
       )
     }
 
-    // Premium Plan Check
-    if (userPurchases && userPurchases.length > 0 && paginated.length > 0) {
-      const currentDate = new Date()
+    const timeZone = "Asia/Kolkata"
+    const currentDate = toZonedTime(new Date(), timeZone)
 
-      let hasValidPremiumPlan = false
+    let hasValidPremiumPlan = false
 
-      const hasUGPurchased = userPurchases.some(
-        (purchase: any) =>
-          purchase.plans === "UG Package" && !isExpired(purchase.created_at, 6),
-      )
+    const hasUGPurchased = userPurchases.some(
+      (purchase: any) =>
+        purchase.plans === "UG Package" && !isExpired(purchase.created_at, 6),
+    )
 
-      const hasPGPurchased = userPurchases.some(
-        (purchase: any) =>
-          purchase.plans === "PG Package" && !isExpired(purchase.created_at, 6),
-      )
+    const hasPGPurchased = userPurchases.some(
+      (purchase: any) =>
+        purchase.plans === "PG Package" && !isExpired(purchase.created_at, 6),
+    )
 
-      if (courseType === "UG" && hasUGPurchased) {
-        hasValidPremiumPlan = true
-      } else if (courseType === "PG" && hasPGPurchased) {
-        hasValidPremiumPlan = true
+    if (courseType === "UG" && hasUGPurchased) {
+      hasValidPremiumPlan = true
+    } else if (courseType === "PG" && hasPGPurchased) {
+      hasValidPremiumPlan = true
+    }
+
+    if (hasValidPremiumPlan) {
+      hiddenData = paginated
+
+      for (let i = 0; i < hiddenData.length; i++) {
+        hiddenData[i].purchased = true
+        hiddenData[i].statePurchased = true
       }
+    } else {
+      const hasValidStatePurchase = userPurchases.some((purchase) => {
+        const purchase_state = purchase?.closing_rank_details?.state
+        const purchase_courseType = purchase?.closing_rank_details?.courseType
 
-      if (hasValidPremiumPlan) {
+        const purchaseDate = parseISO(purchase.created_at)
+        const expiryDate = addMonths(purchaseDate, 6)
+
+        return (
+          purchase.payment_type === "STATE_CLOSING_RANK" &&
+          purchase_courseType === courseType &&
+          purchase_state === state &&
+          isBefore(currentDate, expiryDate)
+        )
+      })
+
+      if (hasValidStatePurchase) {
         hiddenData = paginated
 
         for (let i = 0; i < hiddenData.length; i++) {
@@ -207,46 +227,20 @@ async function checkPurchases(
           hiddenData[i].statePurchased = true
         }
       } else {
-        // State Plan Check
-        const hasValidStatePurchase = userPurchases.some((purchase) => {
-          const purchase_state = purchase?.closing_rank_details?.state
-          const purchase_courseType = purchase?.closing_rank_details?.courseType
+        hiddenData = hiddenData.map((college: any) => {
+          const matchingPurchase = userPurchases.find((p) => {
+            const purchaseDate = parseISO(p.created_at)
+            const expiryDate = addMonths(purchaseDate, 6)
 
-          const purchaseDate = parseISO(purchase.created_at)
-          const expiryDate = addMonths(purchaseDate, 6)
-
-          return (
-            purchase.payment_type === "STATE_CLOSING_RANK" &&
-            purchase_courseType === courseType &&
-            purchase_state === state &&
-            isBefore(currentDate, expiryDate)
-          )
-        })
-
-        if (hasValidStatePurchase) {
-          hiddenData = paginated
-
-          for (let i = 0; i < hiddenData.length; i++) {
-            hiddenData[i].purchased = true
-            hiddenData[i].statePurchased = true
-          }
-        } else {
-          // Single College Plan Check of UG and PG particularly state
-          hiddenData = hiddenData.map((college: any) => {
-            const matchingPurchase = userPurchases.find((p) => {
-              const purchaseDate = parseISO(p.created_at)
-              const expiryDate = addMonths(purchaseDate, 6)
-
-              return (
-                p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
-                isBefore(currentDate, expiryDate) &&
-                isCollegePurchased(college, p.closing_rank_details, coursesList)
-              )
-            })
-
-            return matchingPurchase ? { ...college, purchased: true } : college
+            return (
+              p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
+              isBefore(currentDate, expiryDate) &&
+              isCollegePurchased(college, p.closing_rank_details, coursesList)
+            )
           })
-        }
+
+          return matchingPurchase ? { ...college, purchased: true } : college
+        })
       }
     }
   }

@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
-import { startOfMonth, startOfToday, startOfYear, subDays } from "date-fns"
+import { startOfDay, startOfMonth, startOfYear, subDays } from "date-fns"
+import { toZonedTime } from "date-fns-tz"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -21,20 +22,23 @@ export async function GET(request: NextRequest) {
   const from = (page - 1) * pageSize
   const to = from + pageSize - 1
 
+  const timeZone = "Asia/Kolkata"
+  const zonedNow = toZonedTime(new Date(), timeZone)
+
   let dateFilter: string | null = null
 
   switch (range) {
     case "today":
-      dateFilter = startOfToday().toISOString()
+      dateFilter = startOfDay(zonedNow).toISOString()
       break
     case "last7Days":
-      dateFilter = subDays(new Date(), 7).toISOString()
+      dateFilter = subDays(zonedNow, 7).toISOString()
       break
     case "thisMonth":
-      dateFilter = startOfMonth(new Date()).toISOString()
+      dateFilter = startOfMonth(zonedNow).toISOString()
       break
     case "thisYear":
-      dateFilter = startOfYear(new Date()).toISOString()
+      dateFilter = startOfYear(zonedNow).toISOString()
       break
     case "allTime":
     default:

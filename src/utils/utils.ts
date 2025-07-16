@@ -1,5 +1,6 @@
 import { IOption } from "@/types/GlobalTypes"
 import clsx, { ClassValue } from "clsx"
+import { toZonedTime } from "date-fns-tz"
 import { Dispatch, SetStateAction } from "react"
 import { twMerge } from "tailwind-merge"
 
@@ -202,6 +203,10 @@ export function isExpired(dateStr: string, expiryMonths: number): boolean {
   const expiryDate = new Date(originalDate)
   expiryDate.setMonth(expiryDate.getMonth() + expiryMonths)
 
-  return new Date() > expiryDate
+  // Always get current date in IST
+  const timeZone = "Asia/Kolkata"
+  const currentDate = toZonedTime(new Date(), timeZone)
+
+  return currentDate > expiryDate
 }
 

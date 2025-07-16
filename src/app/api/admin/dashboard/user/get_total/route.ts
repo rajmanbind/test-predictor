@@ -1,11 +1,13 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
 import { startOfMonth } from "date-fns"
+import { toZonedTime } from "date-fns-tz"
 import { NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 
 export async function GET() {
   const supabase = createAdminSupabaseClient()
+  const timeZone = "Asia/Kolkata"
 
   // Total count
   const { count: totalUsers, error: totalError } = await supabase
@@ -19,8 +21,9 @@ export async function GET() {
     )
   }
 
-  // This month's count
-  const monthStart = startOfMonth(new Date()).toISOString()
+  // This month's count in IST
+  const zonedNow = toZonedTime(new Date(), timeZone)
+  const monthStart = startOfMonth(zonedNow).toISOString()
 
   const { count: monthlyUsers, error: monthError } = await supabase
     .from("user")

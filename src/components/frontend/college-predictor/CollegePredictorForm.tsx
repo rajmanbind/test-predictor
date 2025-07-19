@@ -132,10 +132,10 @@ export function CollegePredictorForm() {
           label="Course Type"
           placeholder="Select your Course Type"
           value={formData?.courseType}
-          defaultOption={{
-            id: "ug",
-            text: "UG",
-          }}
+          // defaultOption={{
+          //   id: "ug",
+          //   text: "UG",
+          // }}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
 

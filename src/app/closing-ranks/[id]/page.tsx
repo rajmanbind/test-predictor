@@ -164,10 +164,7 @@ export default function ClosingRanks() {
                 boxWrapperClass="border-color-accent"
                 placeholder="Course Type"
                 value={selectedType}
-                defaultOption={{
-                  id: params.id,
-                  text: params.id.toString().toUpperCase(),
-                }}
+                
                 onChange={({ selectedValue }) => {
                   router.replace(
                     `/closing-ranks/${selectedValue?.text.toLowerCase()}`,

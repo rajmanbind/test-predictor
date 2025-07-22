@@ -323,7 +323,7 @@ export default function CollegeListClosingRanksPage() {
   }
 
   function backURL() {
-    return `/closing-ranks/${params.id}?course=${getSearchParams("course")}`
+    return `/closing-ranks/ug`
   }
 
   return (

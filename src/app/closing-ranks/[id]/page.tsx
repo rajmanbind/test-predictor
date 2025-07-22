@@ -14,9 +14,9 @@ import {
   clearReactHookFormValueAndStates,
   isEmpty,
 } from "@/utils/utils"
-import { ArrowRight, Info, MapPin, Search, Users } from "lucide-react"
+import { ArrowRight, MapPin, Search, Users } from "lucide-react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import React, { useEffect } from "react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -80,9 +80,13 @@ export default function ClosingRanks() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("all")
   const [courseList, setCourseList] = useState<IOption[]>([])
-  const [selectedType, setSelectedType] = useState<IOption | undefined>()
+  const [selectedType, setSelectedType] = useState<IOption | undefined>(
+    courseTypeList[0],
+  )
   const [selectedCourse, setSelectedCourse] = useState<IOption | undefined>()
-  const { getSearchParams } = useInternalSearchParams()
+  const searchParams = useSearchParams()
+
+  const courseParam = searchParams.get("course") || ""
 
   const router = useRouter()
   const params = useParams()
@@ -99,10 +103,22 @@ export default function ClosingRanks() {
   } = useForm()
 
   useEffect(() => {
-    if (params.id === "ug") {
+    if (params?.id === "ug") {
       getCoursesData()
+      setSelectedCourse({ id: "", text: "EMPTY" })
+    } else {
+      setAppState({ isLoading: true })
+
+      console.log("PGCourseSubTypeList", PGCourseSubTypeList)
+
+      setTimeout(() => {
+        setCourseList([...PGCourseSubTypeList])
+        setAppState({ isLoading: false })
+        setSelectedCourse({ id: "", text: "EMPTY" })
+        clearReactHookFormValueAndStates(["course"], setValue)
+      }, 1000)
     }
-  }, [])
+  }, [params.id])
 
   async function getCoursesData() {
     const res = await fetchData({
@@ -132,7 +148,7 @@ export default function ClosingRanks() {
       return ""
     }
 
-    return `/closing-ranks/${params.id}/${state}?course=${getSearchParams("course")}`
+    return `/closing-ranks/${params.id}/${state}?course=${courseParam}`
   }
 
   function onLinkClick() {
@@ -174,20 +190,6 @@ export default function ClosingRanks() {
                   )
 
                   setSelectedType(selectedValue)
-
-                  if (selectedValue?.id === "ug") {
-                    getCoursesData()
-                    setSelectedCourse({ id: "", text: "EMPTY" })
-                  } else {
-                    setAppState({ isLoading: true })
-                    setCourseList([])
-                    setTimeout(() => {
-                      setCourseList(PGCourseSubTypeList)
-                      setAppState({ isLoading: false })
-                      setSelectedCourse({ id: "", text: "EMPTY" })
-                      clearReactHookFormValueAndStates(["course"], setValue)
-                    }, 1000)
-                  }
                 }}
                 control={control}
                 setValue={setValue}
@@ -224,8 +226,8 @@ export default function ClosingRanks() {
                 control={control}
                 setValue={setValue}
                 defaultOption={{
-                  id: getSearchParams("course").replaceAll(" ", ""),
-                  text: getSearchParams("course"),
+                  id: courseParam.replaceAll(" ", ""),
+                  text: courseParam,
                 }}
                 required
                 errorClass="absolute"

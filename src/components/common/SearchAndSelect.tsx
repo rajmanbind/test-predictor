@@ -225,7 +225,7 @@ export const SearchAndSelect = ({
 
               <ChevronDown
                 className={cn(
-                  "flex-shrink-0 text-color-text transition-transform duration-300",
+                  "flex-shrink-0 text-color-text transition-transform duration-300 cursor-pointer",
                   optionListOpen ? "rotate-180" : "",
                 )}
                 onClick={() => {

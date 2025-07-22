@@ -9,12 +9,11 @@ import { SignInPopup } from "@/components/common/popups/SignInPopup"
 import { Container } from "@/components/frontend/Container"
 import { FELayout } from "@/components/frontend/FELayout"
 import useFetch from "@/hooks/useFetch"
-import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
-import { paymentType, years } from "@/utils/static"
-import { cn, getLocalStorageItem, isEmpty, onPageChange } from "@/utils/utils"
-import { ChevronLeft, Info, Users } from "lucide-react"
+import { paymentType } from "@/utils/static"
+import { cn, getLocalStorageItem, isEmpty } from "@/utils/utils"
+import { ChevronLeft, Users } from "lucide-react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function StateClosingRanksPage() {
@@ -24,7 +23,10 @@ export default function StateClosingRanksPage() {
 
   const params = useParams()
   const state = decodeURIComponent(params.state as any)
-  const { getSearchParams } = useInternalSearchParams()
+  const searchParams = useSearchParams()
+
+  const page = Number(searchParams.get("page") || 1)
+  const courseParams = searchParams.get("course")
 
   const { fetchData } = useFetch()
 
@@ -39,8 +41,6 @@ export default function StateClosingRanksPage() {
   }, [])
 
   async function getData(closingRankCollege: any) {
-    const page = Number(getSearchParams("page") || 1)
-
     const [configRes, closingRanksRes] = await Promise.all([
       fetchData({
         url: "/api/admin/configure/get",
@@ -400,7 +400,7 @@ export default function StateClosingRanksPage() {
   }
 
   function backURL() {
-    return `/closing-ranks/${params.id}/${state}?course=${getSearchParams("course")}`
+    return `/closing-ranks/${params.id}/${state}?course=${courseParams}`
   }
 
   return (
@@ -419,7 +419,7 @@ export default function StateClosingRanksPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 capitalize text-color-table-header">
-                  {getSearchParams("college")}
+                  {searchParams.get("college")}
                 </h1>
                 <p className="text-gray-600">
                   NEET UG {configYear?.[0] - configYear?.[1]} Closing Ranks

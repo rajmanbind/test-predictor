@@ -6,6 +6,13 @@ export async function POST(request: NextRequest) {
   try {
     const reqData = await request.json()
 
+    if (process.env.NODE_ENV === "development") {
+      return NextResponse.json({
+        reqData,
+        msg: "Data Not inserted In Dev Mode",
+      })
+    }
+
     const supabase = createUserSupabaseClient()
 
     const {

@@ -3,7 +3,7 @@
 import useFetch from "@/hooks/useFetch"
 import { useEffect, useState } from "react"
 
-interface IBackupData {
+interface IStatusData {
   college_table_last_inserted: string
   courses_last_inserted: string
   dropdown_options_last_inserted: string
@@ -13,18 +13,18 @@ interface IBackupData {
   user_last_inserted: string
 }
 
-function BackupPage() {
+function StatusPage() {
   const { fetchData } = useFetch()
 
-  const [backupData, setBackupData] = useState<IBackupData>()
+  const [statusData, setStatusData] = useState<IStatusData>()
 
   useEffect(() => {
-    fetchBackupData()
+    fetchStatusData()
   }, [])
 
-  async function fetchBackupData() {
-    const data = await fetchData({ url: "/api/admin/backup" })
-    setBackupData(data?.payload)
+  async function fetchStatusData() {
+    const data = await fetchData({ url: "/api/admin/status" })
+    setStatusData(data?.payload)
   }
 
   return (
@@ -44,13 +44,13 @@ function BackupPage() {
           <tr>
             <td className="border border-gray-300 px-4 py-2">College Table</td>
             <td className="border border-gray-300 px-4 py-2">
-              {backupData?.college_table_last_inserted || "-"}
+              {statusData?.college_table_last_inserted || "-"}
             </td>
           </tr>
           <tr>
             <td className="border border-gray-300 px-4 py-2">Courses</td>
             <td className="border border-gray-300 px-4 py-2">
-              {backupData?.courses_last_inserted || "-"}
+              {statusData?.courses_last_inserted || "-"}
             </td>
           </tr>
           <tr>
@@ -58,7 +58,7 @@ function BackupPage() {
               Dropdown Options
             </td>
             <td className="border border-gray-300 px-4 py-2">
-              {backupData?.dropdown_options_last_inserted || "-"}
+              {statusData?.dropdown_options_last_inserted || "-"}
             </td>
           </tr>
 
@@ -73,25 +73,25 @@ function BackupPage() {
           <tr>
             <td className="border border-gray-300 px-4 py-2">Payment</td>
             <td className="border border-gray-300 px-4 py-2">
-              {backupData?.payment_last_inserted || "-"}
+              {statusData?.payment_last_inserted || "-"}
             </td>
           </tr>
           <tr>
             <td className="border border-gray-300 px-4 py-2">Price</td>
             <td className="border border-gray-300 px-4 py-2">
-              {backupData?.price_last_inserted || "-"}
+              {statusData?.price_last_inserted || "-"}
             </td>
           </tr>
           <tr>
             <td className="border border-gray-300 px-4 py-2">Purchase</td>
             <td className="border border-gray-300 px-4 py-2">
-              {backupData?.purchase_last_inserted || "-"}
+              {statusData?.purchase_last_inserted || "-"}
             </td>
           </tr>
           <tr>
             <td className="border border-gray-300 px-4 py-2">User</td>
             <td className="border border-gray-300 px-4 py-2">
-              {backupData?.user_last_inserted || "-"}
+              {statusData?.user_last_inserted || "-"}
             </td>
           </tr>
         </tbody>
@@ -100,5 +100,5 @@ function BackupPage() {
   )
 }
 
-export default BackupPage
+export default StatusPage
 

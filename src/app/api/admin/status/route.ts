@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
 import { format } from "date-fns"
+import { toZonedTime } from "date-fns-tz"
 import { NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -7,6 +8,7 @@ export const dynamic = "force-dynamic"
 export async function GET() {
   try {
     const supabase = createAdminSupabaseClient()
+    const timeZone = "Asia/Kolkata"
 
     const tables = [
       "college_table",
@@ -35,9 +37,16 @@ export async function GET() {
       }
 
       const timestamp = data?.[0]?.created_at
-      results[`${table}_last_inserted`] = timestamp
-        ? format(new Date(timestamp), "dd-MMMM-yyyy | hh:mm a")
-        : null
+
+      if (timestamp) {
+        const zonedDate = toZonedTime(new Date(timestamp), timeZone)
+        results[`${table}_last_inserted`] = format(
+          zonedDate,
+          "dd-MMMM-yyyy | hh:mm a",
+        )
+      } else {
+        results[`${table}_last_inserted`] = null
+      }
     }
 
     return NextResponse.json(results)

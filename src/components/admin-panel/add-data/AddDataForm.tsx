@@ -7,6 +7,7 @@ import { Input } from "@/components/common/Input"
 import SearchAndSelect from "@/components/common/SearchAndSelect"
 import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
+import { createAdminSupabaseClient } from "@/lib/supabase"
 import { IOption } from "@/types/GlobalTypes"
 import { courseType, instituteTypes, states, years } from "@/utils/static"
 import {
@@ -38,7 +39,13 @@ interface IFormData {
   closingRankR3?: string
   strayRound?: string
   lastStrayRound?: string
-  year?: IOption
+  year?: IOption;
+  counsellingType:IOption;
+  counsellingTypeList:IOption;
+  seatType:IOption;
+  seatTypeList:IOption;
+  categoryType:IOption;
+  categoryTypeList:IOption;
 }
 export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   const {
@@ -49,11 +56,16 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   } = useForm({
     shouldFocusError: true,
   })
+
+
   const [formData, setFormData] = useState<IFormData>()
   const [defaultValues, setDefaultValues] = useState<IFormData>()
   const [quotasList, setQuotasList] = useState<IOption[]>([])
   const [categoriesList, setCategoriesList] = useState<IOption[]>([])
   const [coursesList, setCoursesList] = useState<IOption[]>([])
+  const [counsellingTypeList, setCounsellingList] = useState<IOption[]>([])
+  const [seatTypeList, setSeatTypeList] = useState<IOption[]>([])
+  const [categoryTypeList, setSategoryTypeList] = useState<IOption[]>([])
 
   const params = useParams()
 
@@ -151,6 +163,76 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     setDefaultValues(formatData)
   }
 
+ async function fetchCounsellingTypes() {
+  const res = await fetch("/api/counselling-types")
+  const json = await res.json()
+  return json.data
+}
+
+async function fetchSeatTypes(counsellingTypeId: string, stateId?: string) {
+  const url = new URL("/api/seat-types", window.location.origin)
+  url.searchParams.set("counselling_type_id", counsellingTypeId)
+  if (stateId) url.searchParams.set("state_id", stateId)
+
+  const res = await fetch(url.toString())
+  const json = await res.json()
+  return json.data
+}
+
+async function fetchCategoryTypes(seatTypeId: string) {
+  const url = new URL("/api/category-types", window.location.origin)
+  url.searchParams.set("seat_type_id", seatTypeId)
+
+  const res = await fetch(url.toString())
+  const json = await res.json()
+  return json.data
+}
+
+
+useEffect(()=>{
+    const loadSeatTypes = async () => {
+    try {
+
+      const data = await fetchSeatTypes(formData?.counsellingType?.id,formData?.state?.id);
+      console.log("seat Data: ", data);
+      setSeatTypeList(data||[]); // Assuming you want to store this data in state
+    } catch (error) {
+      console.error("Failed to load seat types:", error);
+    }
+  };
+  if (formData?.counsellingType?.id || formData?.state?.id) {
+    loadSeatTypes()
+  }
+
+},[formData?.counsellingType?.id,formData?.state?.id]);
+useEffect(()=>{
+    const loadCategorytTypes = async () => {
+    try {
+
+      const data = await fetchCategoryTypes(formData?.seatType?.id);
+      console.log("Category Data: ", data);
+      setSategoryTypeList(data||[]); // Assuming you want to store this data in state
+    } catch (error) {
+      console.error("Failed to load category types:", error);
+    }
+  };
+if(formData?.seatType?.id)
+  loadCategorytTypes();
+},[formData?.seatType?.id]);
+
+useEffect(() => {
+  const loadCounsellingTypes = async () => {
+    try {
+      const data = await fetchCounsellingTypes();
+      console.log("Counselling Data: ", data);
+      setCounsellingList(data||[]); // Assuming you want to store this data in state
+    } catch (error) {
+      console.error("Failed to load counselling types:", error);
+    }
+  };
+
+  loadCounsellingTypes();
+}, []);
   async function onSubmit() {
     const payload = createPayload({
       instituteName: formData?.instituteName,
@@ -236,9 +318,143 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     }
   }
 
+
   return (
     <div>
+      <div className="flex items-center gap-8 w-full mb-4">
+          <SearchAndSelect
+          name="counselling Type"
+          label="Counselling Type"
+          placeholder="Select Counselling Type"
+          value={formData?.counsellingType}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+            // setCounsellingList()
+            console.log(selectedValue, formData)
+// setId(selectedValue?.id)
+setFormData((prev) => ({
+  ...prev,
+  counsellingType: selectedValue,
+  state: undefined,
+  seatType: undefined,
+  categoryType: undefined,
+}))
+
+
+  setSeatTypeList([])
+  setSategoryTypeList([])
+          }}
+          control={control}
+          setValue={setValue}
+          required
+          options={counsellingTypeList}
+          debounceDelay={0}
+          defaultOption={defaultValues?.counsellingTypeList}
+          wrapperClass="max-w-[395px]"
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, counsellingTypeList, setOptions)
+          }
+          errors={errors}
+        />
+{formData?.counsellingType?.id == 2 &&
+       
+        <SearchAndSelect
+              name="state"
+              label="State"
+              placeholder="Search and Select"
+              value={formData?.state}
+              onChange={({ name, selectedValue }) => {
+                onOptionSelected(name, selectedValue, setFormData)
+                setFormData((prev) => ({
+  ...prev,
+  state: selectedValue,
+  seatType: undefined,
+  categoryType: undefined,
+}))
+
+
+  setSeatTypeList([])
+  setSategoryTypeList([])
+              }}
+              control={control}
+              setValue={setValue}
+              required
+              options={filteredStates}
+              debounceDelay={0}
+              defaultOption={defaultValues?.state}
+              searchAPI={(text, setOptions) =>
+                autoComplete(text, filteredStates, setOptions)
+              }
+              errors={errors}
+            /> }
+          <SearchAndSelect
+          name="seat Type"
+          label="Seat Type"
+          placeholder="Select Seat Type"
+          value={formData?.seatType}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+           setFormData((prev) => ({
+  ...prev,
+  seatType: selectedValue,
+  categoryType: null,
+}))
+
+
+  setSategoryTypeList([])
+
+
+    // Load category immediately based on selectedValue.id
+  // fetchCategoryTypes(selectedValue.id)
+  //   .then(data=>{
+
+  //     setSategoryTypeList(data & data?.length?data:[])
+
+  //   })
+  //   .catch((err) => console.error("Category fetch failed:", err))
+
+          }}
+          control={control}
+          setValue={setValue}
+           disabled={!formData?.counsellingType?.id || seatTypeList?.length === 0}
+          required
+          options={seatTypeList}
+          debounceDelay={0}
+          defaultOption={defaultValues?.seatTypeList}
+          wrapperClass="max-w-[395px]"
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, seatTypeList, setOptions)
+          }
+          errors={errors}
+        />
+    
+          <SearchAndSelect
+          name="category Type"
+          label="Category Type"
+          placeholder="Select Category Type"
+          value={formData?.categoryType}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+          }}
+          control={control}
+          setValue={setValue}
+          required
+          options={categoryTypeList}
+          debounceDelay={0}
+          defaultOption={defaultValues?.categoryTypeList}
+          disabled={!formData?.seatType?.id || categoryTypeList.length === 0}
+          wrapperClass="max-w-[395px]"
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, categoryTypeList, setOptions)
+          }
+          errors={errors}
+        />
+    
+
+     
+      </div>
       <div className="flex items-center gap-8 w-full">
+      
         <SearchAndSelect
           name="year"
           label="Year"

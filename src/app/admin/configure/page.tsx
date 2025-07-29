@@ -26,6 +26,11 @@ import { Tooltip } from "react-tooltip"
 const dropDownType: IOption[] = [
   { id: 1, text: "CATEGORY" },
   { id: 2, text: "QUOTA" },
+  // { id: 3, text: "COUNSELLING-TYPE" },
+  // { id: 4, text: "STATE" },
+  // { id: 5, text: "SEAT-YPE" },
+  // { id: 6, text: "CATEGORY-YPE" },
+
 ]
 
 export default function ConfigureDropdownPage() {

@@ -39,14 +39,31 @@ interface IFormData {
   closingRankR3?: string
   strayRound?: string
   lastStrayRound?: string
-  year?: IOption;
-  counsellingType:IOption;
-  counsellingTypeList:IOption;
-  seatType:IOption;
-  seatTypeList:IOption;
-  categoryType:IOption;
-  categoryTypeList:IOption;
+  year?: IOption
+  counsellingType?: IOption
+  counsellingTypeList?: IOption
+  seatType?: IOption
+  seatTypeList?: IOption
+  categoryType?: IOption
+  categoryTypeList?: IOption
+  predictorType?: IOption
+  predictorDataList?: IOption
+  filteredCounsellingTypeDataList?: IOption
 }
+
+const predictorDataList :IOption[]= [
+  { id: 1, text: "NEET UG" },
+  { id: 2, text: "NEET PG" },
+  { id: 3, text: "NEET MDS" },
+  { id: 4, text: "DNB" },
+  { id: 5, text: "INICET" },
+  { id: 6, text: "NEET SS" },
+]
+
+const counsellingTypeDataList = [
+  { id: 1, text: "All India Counselling" },
+  { id: 2, text: "State Counselling" },
+]
 export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   const {
     handleSubmit,
@@ -57,7 +74,6 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     shouldFocusError: true,
   })
 
-
   const [formData, setFormData] = useState<IFormData>()
   const [defaultValues, setDefaultValues] = useState<IFormData>()
   const [quotasList, setQuotasList] = useState<IOption[]>([])
@@ -66,12 +82,22 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   const [counsellingTypeList, setCounsellingList] = useState<IOption[]>([])
   const [seatTypeList, setSeatTypeList] = useState<IOption[]>([])
   const [categoryTypeList, setSategoryTypeList] = useState<IOption[]>([])
+  const [courseTypeList, setCourseTypeList] = useState<IOption[]>([])
 
   const params = useParams()
 
   const { showToast } = useAppState()
 
   const { fetchData } = useFetch()
+
+// const filteredCounsellingTypeDataList : IOption[]= formData?.predictorType?.id &&  ["1","2","3"].includes(formData?.predictorType?.id)?counsellingTypeDataList:[counsellingTypeDataList[0]]
+
+const allowedPredictorIds = [1, 2, 3];
+
+const filteredCounsellingTypeDataList: IOption[] =
+  allowedPredictorIds.includes(formData?.predictorType?.id)
+    ? counsellingTypeDataList
+    : [counsellingTypeDataList[0]];
 
   useEffect(() => {
     if (editMode) {
@@ -93,6 +119,24 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     setQuotasList(quotaData?.payload?.data || [])
     setCategoriesList(categoryData?.payload?.data || [])
   }
+  async function getConfigCourseType() {
+ 
+    const [courseType] = await Promise.all([
+      fetchData({ url: "/api/admin/configure/get", params: { type: "COURSETYPE" } }),
+      // fetchData({
+      //   url: "/api/admin/configure/get",
+      //   params: { type: "CATEGORY" },
+      // }),
+    ])
+    console.log("For Test: ", courseType)
+
+    setCourseTypeList(courseType?.payload?.data || [])
+    // setCategoriesList(categoryData?.payload?.data || [])
+  }
+  useEffect(()=>{
+
+    getConfigCourseType()
+  },[])
 
   async function getDataById(id: any) {
     const res = await fetchData({
@@ -163,76 +207,74 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     setDefaultValues(formatData)
   }
 
- async function fetchCounsellingTypes() {
-  const res = await fetch("/api/counselling-types")
-  const json = await res.json()
-  return json.data
-}
-
-async function fetchSeatTypes(counsellingTypeId: string, stateId?: string) {
-  const url = new URL("/api/seat-types", window.location.origin)
-  url.searchParams.set("counselling_type_id", counsellingTypeId)
-  if (stateId) url.searchParams.set("state_id", stateId)
-
-  const res = await fetch(url.toString())
-  const json = await res.json()
-  return json.data
-}
-
-async function fetchCategoryTypes(seatTypeId: string) {
-  const url = new URL("/api/category-types", window.location.origin)
-  url.searchParams.set("seat_type_id", seatTypeId)
-
-  const res = await fetch(url.toString())
-  const json = await res.json()
-  return json.data
-}
-
-
-useEffect(()=>{
-    const loadSeatTypes = async () => {
-    try {
-
-      const data = await fetchSeatTypes(formData?.counsellingType?.id,formData?.state?.id);
-      console.log("seat Data: ", data);
-      setSeatTypeList(data||[]); // Assuming you want to store this data in state
-    } catch (error) {
-      console.error("Failed to load seat types:", error);
-    }
-  };
-  if (formData?.counsellingType?.id || formData?.state?.id) {
-    loadSeatTypes()
+  async function fetchCounsellingTypes() {
+    const res = await fetch("/api/counselling-types")
+    const json = await res.json()
+    return json.data
   }
 
-},[formData?.counsellingType?.id,formData?.state?.id]);
-useEffect(()=>{
+  async function fetchSeatTypes(counsellingTypeId: string, stateId?: string) {
+    const url = new URL("/api/seat-types", window.location.origin)
+    url.searchParams.set("counselling_type_id", counsellingTypeId)
+    if (stateId) url.searchParams.set("state_id", stateId)
+
+    const res = await fetch(url.toString())
+    const json = await res.json()
+    return json.data
+  }
+
+  async function fetchCategoryTypes(seatTypeId: string) {
+    const url = new URL("/api/category-types", window.location.origin)
+    url.searchParams.set("seat_type_id", seatTypeId)
+
+    const res = await fetch(url.toString())
+    const json = await res.json()
+    return json.data
+  }
+
+  useEffect(() => {
+    const loadSeatTypes = async () => {
+      try {
+        const data = await fetchSeatTypes(
+          formData?.counsellingType?.id,
+          formData?.state?.id,
+        )
+        console.log("seat Data: ", data)
+        setSeatTypeList(data || []) // Assuming you want to store this data in state
+      } catch (error) {
+        console.error("Failed to load seat types:", error)
+      }
+    }
+    if (formData?.counsellingType?.id || formData?.state?.id) {
+      loadSeatTypes()
+    }
+  }, [formData?.counsellingType?.id, formData?.state?.id])
+  useEffect(() => {
     const loadCategorytTypes = async () => {
-    try {
-
-      const data = await fetchCategoryTypes(formData?.seatType?.id);
-      console.log("Category Data: ", data);
-      setSategoryTypeList(data||[]); // Assuming you want to store this data in state
-    } catch (error) {
-      console.error("Failed to load category types:", error);
+      try {
+        const data = await fetchCategoryTypes(formData?.seatType?.id)
+        console.log("Category Data: ", data)
+        setSategoryTypeList(data || []) // Assuming you want to store this data in state
+      } catch (error) {
+        console.error("Failed to load category types:", error)
+      }
     }
-  };
-if(formData?.seatType?.id)
-  loadCategorytTypes();
-},[formData?.seatType?.id]);
+    if (formData?.seatType?.id) loadCategorytTypes()
+  }, [formData?.seatType?.id])
 
-useEffect(() => {
-  const loadCounsellingTypes = async () => {
-    try {
-      const data = await fetchCounsellingTypes();
-      console.log("Counselling Data: ", data);
-      setCounsellingList(data||[]); // Assuming you want to store this data in state
-    } catch (error) {
-      console.error("Failed to load counselling types:", error);
+  useEffect(() => {
+    const loadCounsellingTypes = async () => {
+      try {
+        const data = await fetchCounsellingTypes()
+        console.log("Counselling Data: ", data)
+        setCounsellingList(data || []) // Assuming you want to store this data in state
+      } catch (error) {
+        console.error("Failed to load counselling types:", error)
+      }
     }
-  };
 
-  loadCounsellingTypes();
-}, []);
+    loadCounsellingTypes()
+  }, [])
   async function onSubmit() {
     const payload = createPayload({
       instituteName: formData?.instituteName,
@@ -317,12 +359,38 @@ useEffect(() => {
       setCoursesList(res?.payload?.data)
     }
   }
-
-
+// console.log("rendered: ",filteredCounsellingTypeDataList)
   return (
     <div>
       <div className="flex items-center gap-8 w-full mb-4">
-          <SearchAndSelect
+        <SearchAndSelect
+          name="predictor Type"
+          label="Predictor Type"
+          placeholder="Select Predictor Type"
+          value={formData?.predictorType}
+          onChange={({ name, selectedValue }) => {
+            onOptionSelected(name, selectedValue, setFormData)
+            console.log(selectedValue, formData)
+               setFormData((prev) => ({
+                ...prev,
+                predictorType: selectedValue,
+                counsellingType:undefined
+              }))
+
+          }}
+          control={control}
+          setValue={setValue}
+          required
+          options={courseTypeList}
+          debounceDelay={0}
+          defaultOption={defaultValues?.courseType}
+          wrapperClass="max-w-[395px]"
+          searchAPI={(text, setOptions) =>
+            autoComplete(text, courseTypeList, setOptions)
+          }
+          errors={errors}
+        />
+        <SearchAndSelect
           name="counselling Type"
           label="Counselling Type"
           placeholder="Select Counselling Type"
@@ -331,92 +399,80 @@ useEffect(() => {
             onOptionSelected(name, selectedValue, setFormData)
             // setCounsellingList()
             console.log(selectedValue, formData)
-// setId(selectedValue?.id)
-setFormData((prev) => ({
-  ...prev,
-  counsellingType: selectedValue,
-  state: undefined,
-  seatType: undefined,
-  categoryType: undefined,
-}))
+            // setId(selectedValue?.id)
+            setFormData((prev) => ({
+              ...prev,
+              counsellingType: selectedValue,
+              state: undefined,
+              seatType: undefined,
+              categoryType: undefined,
+            }))
 
-
-  setSeatTypeList([])
-  setSategoryTypeList([])
+            setSeatTypeList([])
+            setSategoryTypeList([])
           }}
           control={control}
           setValue={setValue}
           required
-          options={counsellingTypeList}
+          options={filteredCounsellingTypeDataList}
           debounceDelay={0}
-          defaultOption={defaultValues?.counsellingTypeList}
+          disabled = {!formData?.predictorType?.id}
+          defaultOption={defaultValues?.filteredCounsellingTypeDataList}
           wrapperClass="max-w-[395px]"
           searchAPI={(text, setOptions) =>
-            autoComplete(text, counsellingTypeList, setOptions)
+            autoComplete(text, filteredCounsellingTypeDataList, setOptions)
           }
           errors={errors}
         />
-{formData?.counsellingType?.id == 2 &&
-       
-        <SearchAndSelect
-              name="state"
-              label="State"
-              placeholder="Search and Select"
-              value={formData?.state}
-              onChange={({ name, selectedValue }) => {
-                onOptionSelected(name, selectedValue, setFormData)
-                setFormData((prev) => ({
-  ...prev,
-  state: selectedValue,
-  seatType: undefined,
-  categoryType: undefined,
-}))
-
-
-  setSeatTypeList([])
-  setSategoryTypeList([])
-              }}
-              control={control}
-              setValue={setValue}
-              required
-              options={filteredStates}
-              debounceDelay={0}
-              defaultOption={defaultValues?.state}
-              searchAPI={(text, setOptions) =>
-                autoComplete(text, filteredStates, setOptions)
-              }
-              errors={errors}
-            /> }
+        {formData?.counsellingType?.id == 2 && (
           <SearchAndSelect
+            name="state"
+            label="State"
+            placeholder="Search and Select"
+            value={formData?.state}
+            onChange={({ name, selectedValue }) => {
+              onOptionSelected(name, selectedValue, setFormData)
+              setFormData((prev) => ({
+                ...prev,
+                state: selectedValue,
+                seatType: undefined,
+                categoryType: undefined,
+              }))
+
+              setSeatTypeList([])
+              setSategoryTypeList([])
+            }}
+            control={control}
+            setValue={setValue}
+            required
+            options={filteredStates}
+            debounceDelay={0}
+            defaultOption={defaultValues?.state}
+            searchAPI={(text, setOptions) =>
+              autoComplete(text, filteredStates, setOptions)
+            }
+            errors={errors}
+          />
+        )}
+        <SearchAndSelect
           name="seat Type"
           label="Seat Type"
           placeholder="Select Seat Type"
           value={formData?.seatType}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
-           setFormData((prev) => ({
-  ...prev,
-  seatType: selectedValue,
-  categoryType: null,
-}))
-
-
-  setSategoryTypeList([])
-
-
-    // Load category immediately based on selectedValue.id
-  // fetchCategoryTypes(selectedValue.id)
-  //   .then(data=>{
-
-  //     setSategoryTypeList(data & data?.length?data:[])
-
-  //   })
-  //   .catch((err) => console.error("Category fetch failed:", err))
-
+            setFormData((prev) => ({
+              ...prev,
+              seatType: selectedValue,
+              categoryType: undefined,
+            }))
+            setSategoryTypeList([])
           }}
           control={control}
           setValue={setValue}
-           disabled={!formData?.counsellingType?.id || seatTypeList?.length === 0}
+          disabled={
+            !formData?.counsellingType?.id || seatTypeList?.length === 0
+          }
           required
           options={seatTypeList}
           debounceDelay={0}
@@ -427,8 +483,8 @@ setFormData((prev) => ({
           }
           errors={errors}
         />
-    
-          <SearchAndSelect
+
+        <SearchAndSelect
           name="category Type"
           label="Category Type"
           placeholder="Select Category Type"
@@ -449,12 +505,8 @@ setFormData((prev) => ({
           }
           errors={errors}
         />
-    
-
-     
       </div>
       <div className="flex items-center gap-8 w-full">
-      
         <SearchAndSelect
           name="year"
           label="Year"

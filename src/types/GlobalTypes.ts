@@ -5,6 +5,8 @@ export interface IOption {
   text: string
   disable?: boolean
   otherValues?: any
+  code?:string
+  type?:string
 }
 
 export interface ICommonComponentProps {

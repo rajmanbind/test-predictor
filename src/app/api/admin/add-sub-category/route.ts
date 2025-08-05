@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const { data: existing, error: checkError } = await supabase
       .from("sub_categories")
       .select("id")
-      .eq("name", name)
+      .eq("text", name)
       .eq("category_id", category_id)
       .maybeSingle();
 
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     // 🚀 Insert sub-category
     const { data, error } = await supabase
       .from("sub_categories")
-      .insert({ name, category_id })
+      .insert({ text:name, category_id })
       .select()
       .single();
 

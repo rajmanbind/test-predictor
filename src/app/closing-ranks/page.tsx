@@ -25,67 +25,110 @@ type StateData = {
   name: string
   slug: string
   popular?: boolean
+  code:string
 }
 
-// States and Union Territories data
-const states: StateData[] = [
-  {
-    name: "Andaman and Nicobar Islands",
-    slug: "andaman-and-nicobar-islands",
-  },
-  { name: "Andhra Pradesh", slug: "andhra-pradesh", popular: true },
-  { name: "Arunachal Pradesh", slug: "arunachal-pradesh" },
-  { name: "Assam", slug: "assam" },
-  { name: "Bihar", slug: "bihar" },
-  { name: "Chandigarh", slug: "chandigarh" },
-  { name: "Chhattisgarh", slug: "chhattisgarh" },
-  { name: "Dadra and Nagar Haveli", slug: "dadra-and-nagar-haveli" },
-  { name: "Delhi", slug: "delhi" },
-  { name: "Daman and Diu", slug: "daman-and-diu" },
-  { name: "Goa", slug: "goa" },
-  { name: "Gujarat", slug: "gujarat", popular: true },
-  { name: "Haryana", slug: "haryana" },
-  { name: "Himachal Pradesh", slug: "himachal-pradesh" },
-  { name: "Jammu and Kashmir", slug: "jammu-and-kashmir" },
-  { name: "Jharkhand", slug: "jharkhand" },
-  { name: "Karnataka", slug: "karnataka", popular: true },
-  { name: "Kerala", slug: "kerala", popular: true },
-  { name: "Ladakh", slug: "ladakh" },
-  { name: "Lakshadweep", slug: "lakshadweep" },
-  { name: "Madhya Pradesh", slug: "madhya-pradesh" },
-  { name: "Maharashtra", slug: "maharashtra", popular: true },
-  { name: "Manipur", slug: "manipur" },
-  { name: "Meghalaya", slug: "meghalaya" },
-  { name: "Mizoram", slug: "mizoram" },
-  { name: "Nagaland", slug: "nagaland" },
-  { name: "Odisha", slug: "odisha" },
-  { name: "Pondicherry", slug: "pondicherry" },
-  { name: "Punjab", slug: "punjab" },
-  { name: "Rajasthan", slug: "rajasthan" },
-  { name: "Sikkim", slug: "sikkim" },
-  { name: "Tamil Nadu", slug: "tamil-nadu", popular: true },
-  { name: "Telangana", slug: "telangana", popular: true },
-  { name: "Tripura", slug: "tripura" },
-  { name: "Uttar Pradesh", slug: "uttar-pradesh", popular: true },
-  { name: "Uttarakhand", slug: "uttarakhand" },
-  { name: "West Bengal", slug: "west-bengal" },
+// // States and Union Territories data
+// const states: StateData[] = [
+//   {
+//     name: "Andaman and Nicobar Islands",
+//     slug: "andaman-and-nicobar-islands",
+//   },
+//   { name: "Andhra Pradesh", slug: "andhra-pradesh", popular: true },
+//   { name: "Arunachal Pradesh", slug: "arunachal-pradesh" },
+//   { name: "Assam", slug: "assam" },
+//   { name: "Bihar", slug: "bihar" },
+//   { name: "Chandigarh", slug: "chandigarh" },
+//   { name: "Chhattisgarh", slug: "chhattisgarh" },
+//   { name: "Dadra and Nagar Haveli", slug: "dadra-and-nagar-haveli" },
+//   { name: "Delhi", slug: "delhi" },
+//   { name: "Daman and Diu", slug: "daman-and-diu" },
+//   { name: "Goa", slug: "goa" },
+//   { name: "Gujarat", slug: "gujarat", popular: true },
+//   { name: "Haryana", slug: "haryana" },
+//   { name: "Himachal Pradesh", slug: "himachal-pradesh" },
+//   { name: "Jammu and Kashmir", slug: "jammu-and-kashmir" },
+//   { name: "Jharkhand", slug: "jharkhand" },
+//   { name: "Karnataka", slug: "karnataka", popular: true },
+//   { name: "Kerala", slug: "kerala", popular: true },
+//   { name: "Ladakh", slug: "ladakh" },
+//   { name: "Lakshadweep", slug: "lakshadweep" },
+//   { name: "Madhya Pradesh", slug: "madhya-pradesh" },
+//   { name: "Maharashtra", slug: "maharashtra", popular: true },
+//   { name: "Manipur", slug: "manipur" },
+//   { name: "Meghalaya", slug: "meghalaya" },
+//   { name: "Mizoram", slug: "mizoram" },
+//   { name: "Nagaland", slug: "nagaland" },
+//   { name: "Odisha", slug: "odisha" },
+//   { name: "Pondicherry", slug: "pondicherry" },
+//   { name: "Punjab", slug: "punjab" },
+//   { name: "Rajasthan", slug: "rajasthan" },
+//   { name: "Sikkim", slug: "sikkim" },
+//   { name: "Tamil Nadu", slug: "tamil-nadu", popular: true },
+//   { name: "Telangana", slug: "telangana", popular: true },
+//   { name: "Tripura", slug: "tripura" },
+//   { name: "Uttar Pradesh", slug: "uttar-pradesh", popular: true },
+//   { name: "Uttarakhand", slug: "uttarakhand" },
+//   { name: "West Bengal", slug: "west-bengal" },
+// ]
+
+// type StateData = {
+//   name: string
+//   slug: string
+//   popular?: boolean
+//   code: string 
+// }
+
+const states:StateData[] = [
+  { name: "Andaman and Nicobar Islands", slug: "andaman-and-nicobar-islands", code: "AN" },
+  { name: "Andhra Pradesh", slug: "andhra-pradesh", popular: true, code: "AP" },
+  { name: "Arunachal Pradesh", slug: "arunachal-pradesh", code: "AR" },
+  { name: "Assam", slug: "assam", code: "AS" },
+  { name: "Bihar", slug: "bihar", code: "BR" },
+  { name: "Chandigarh", slug: "chandigarh", code: "CH" },
+  { name: "Chhattisgarh", slug: "chhattisgarh", code: "CG" },
+  { name: "Dadra and Nagar Haveli", slug: "dadra-and-nagar-haveli", code: "DN" },
+  { name: "Delhi", slug: "delhi", code: "DL" },
+  { name: "Daman and Diu", slug: "daman-and-diu", code: "DD" },
+  { name: "Goa", slug: "goa", code: "GA" },
+  { name: "Gujarat", slug: "gujarat", popular: true, code: "GJ" },
+  { name: "Haryana", slug: "haryana", code: "HR" },
+  { name: "Himachal Pradesh", slug: "himachal-pradesh", code: "HP" },
+  { name: "Jammu and Kashmir", slug: "jammu-and-kashmir", code: "JK" },
+  { name: "Jharkhand", slug: "jharkhand", code: "JH" },
+  { name: "Karnataka", slug: "karnataka", popular: true, code: "KA" },
+  { name: "Kerala", slug: "kerala", popular: true, code: "KL" },
+  { name: "Ladakh", slug: "ladakh", code: "LA" },
+  { name: "Lakshadweep", slug: "lakshadweep", code: "LD" },
+  { name: "Madhya Pradesh", slug: "madhya-pradesh", code: "MP" },
+  { name: "Maharashtra", slug: "maharashtra", popular: true, code: "MH" },
+  { name: "Manipur", slug: "manipur", code: "MN" },
+  { name: "Meghalaya", slug: "meghalaya", code: "ML" },
+  { name: "Mizoram", slug: "mizoram", code: "MZ" },
+  { name: "Nagaland", slug: "nagaland", code: "NL" },
+  { name: "Odisha", slug: "odisha", code: "OR" },
+  { name: "Pondicherry", slug: "pondicherry", code: "PY" },
+  { name: "Punjab", slug: "punjab", code: "PB" },
+  { name: "Rajasthan", slug: "rajasthan", code: "RJ" },
+  { name: "Sikkim", slug: "sikkim", code: "SK" },
+  { name: "Tamil Nadu", slug: "tamil-nadu", popular: true, code: "TN" },
+  { name: "Telangana", slug: "telangana", popular: true, code: "TG" },
+  { name: "Tripura", slug: "tripura", code: "TR" },
+  { name: "Uttar Pradesh", slug: "uttar-pradesh", popular: true, code: "UP" },
+  { name: "Uttarakhand", slug: "uttarakhand", code: "UT" },
+  { name: "West Bengal", slug: "west-bengal", code: "WB" },
 ]
 
-const courseTypeList: IOption[] = [
-  { id: "ug", text: "UG" },
-  { id: "pg", text: "PG" },
-]
 
 export default function ClosingRanks() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("all")
   const [courseList, setCourseList] = useState<IOption[]>([])
-  const [selectedType, setSelectedType] = useState<IOption | undefined>(
-    courseTypeList[0],
-  )
+  const [selectedType, setSelectedType] = useState<IOption | undefined>()
   const [selectedCourse, setSelectedCourse] = useState<IOption | undefined>()
   const searchParams = useSearchParams()
-
+  const [predictorTypeList, setpredictorTypeList] = useState<IOption[]>([])
+  const [coursesList, setCoursesList] = useState<IOption[]>([])
   const courseParam = searchParams.get("course") || ""
 
   const router = useRouter()
@@ -102,34 +145,100 @@ export default function ClosingRanks() {
     formState: { errors },
   } = useForm()
 
-  useEffect(() => {
-    if (params?.id === "ug") {
-      getCoursesData()
-      setSelectedCourse({ id: "", text: "EMPTY" })
-    } else {
-      setAppState({ isLoading: true })
+  // useEffect(() => {
+  //   if (params?.id === "ug") {
+  //     getCoursesData()
+  //     setSelectedCourse({ id: "", text: "EMPTY" })
+  //   } else {
+  //     setAppState({ isLoading: true })
 
-      console.log("PGCourseSubTypeList", PGCourseSubTypeList)
+  //     console.log("PGCourseSubTypeList", PGCourseSubTypeList)
 
-      setTimeout(() => {
-        setCourseList([...PGCourseSubTypeList])
-        setAppState({ isLoading: false })
-        setSelectedCourse({ id: "", text: "EMPTY" })
-        clearReactHookFormValueAndStates(["course"], setValue)
-      }, 1000)
-    }
-  }, [params.id])
+  //     setTimeout(() => {
+  //       setCourseList([...PGCourseSubTypeList])
+  //       setAppState({ isLoading: false })
+  //       setSelectedCourse({ id: "", text: "EMPTY" })
+  //       clearReactHookFormValueAndStates(["course"], setValue)
+  //     }, 1000)
+  //   }
+  // }, [params.id])
 
-  async function getCoursesData() {
-    const res = await fetchData({
-      url: "/api/admin/configure/courses/get",
-      params: { type: "ug" },
-    })
+  // async function getCoursesData() {
+  //   const res = await fetchData({
+  //     url: "/api/admin/configure/courses/get",
+  //     params: { type: "ug" },
+  //   })
 
-    if (res?.payload?.data?.length > 0) {
-      setCourseList(res?.payload?.data)
+  //   if (res?.payload?.data?.length > 0) {
+  //     setCourseList(res?.payload?.data)
+  //   }
+  // }
+
+
+  async function getCourses() {
+    try {
+      const res = await fetch("/api/get-courses-types")
+      const json = await res.json()
+console.log()
+      if (!json?.data || !Array.isArray(json.data)) {
+        console.error(
+          "Invalid data structure from /api/get-courses-types",
+          json,
+        )
+        return []
+      }
+
+      const data = json.data.map((q:IOption) => ({
+        id: q.id,
+        text: q.type,
+      }))
+      return data
+    } catch (error) {
+      console.error("getCourses error:", error)
+      return [] // Always return fallback
     }
   }
+
+
+  async function getCoursesBasedOnpredictorType(type: string) {
+    try {
+      const res = await fetch(
+        `/api/get-courses?type=${encodeURIComponent(type)}`,
+      )
+      const { data } = await res.json()
+
+      if (Array.isArray(data)) {
+        const mapped = data.map((item) => ({
+          id: item.id,
+          text: item.text, // <-- mapping `type` to `text` key
+        }))
+        setCoursesList(mapped)
+      } else {
+        setCoursesList([])
+      }
+
+      console.log("Mapped Course List data: ", data, type)
+    } catch (error) {
+      console.log("Error in course list fetch", error)
+    }
+  }
+
+  useEffect(() => {
+    const predictorType = async () => {
+      try {
+        const data = await getCourses()
+        setpredictorTypeList(data)
+        console.log("Course Data: ", data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    predictorType()
+  }, [])
+
+
+
+
 
   // Filter states based on search query and active tab
   const filteredStates = states.filter((state) => {
@@ -148,12 +257,13 @@ export default function ClosingRanks() {
       return ""
     }
 
-    return `/closing-ranks/${params.id}/${state}?course=${courseParam}`
+    return `/closing-ranks/${state.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
+    // return `/closing-ranks/${params.id}/${state}?course=${courseParam}`
   }
 
   function onLinkClick() {
     if (isEmpty(selectedCourse?.text) || selectedCourse?.text === "EMPTY") {
-      router.replace(`/closing-ranks/${params.id}`)
+      // router.replace(`/closing-ranks/${params.id}`)
 
       setError("course", {
         type: "manual",
@@ -182,18 +292,20 @@ export default function ClosingRanks() {
                 value={selectedType}
                 
                 onChange={({ selectedValue }) => {
-                  router.replace(
-                    `/closing-ranks/${selectedValue?.text.toLowerCase()}`,
-                  )
-
+                  // router.replace(
+                  //   `/closing-ranks/${selectedValue?.text.toLowerCase()}`,
+                  // )
+                  console.log(selectedValue)
+  getCoursesBasedOnpredictorType(selectedValue.text)
+    setValue("course", "") 
                   setSelectedType(selectedValue)
                 }}
                 control={control}
                 setValue={setValue}
-                options={courseTypeList}
+                options={predictorTypeList}
                 debounceDelay={0}
                 searchAPI={(text, setOptions) =>
-                  autoComplete(text, courseTypeList, setOptions)
+                  autoComplete(text, predictorTypeList, setOptions)
                 }
                 wrapperClass="max-w-[150px]"
                 errors={errors}
@@ -209,17 +321,25 @@ export default function ClosingRanks() {
                 placeholder="Select Course"
                 value={selectedCourse}
                 boxWrapperClass="border-color-accent"
-                onChange={({ selectedValue }) => {
-                  setSelectedCourse(selectedValue)
+//                 onChange={({ selectedValue }) => {
+//                   setValue("courseType",selectedValue.text)
+//                   setSelectedCourse(selectedValue)
+// console.log("selected course type: ",selectedValue)
+// getCoursesBasedOnpredictorType(selectedValue.text)
+//                   // router.replace(
+//                   //   `/closing-ranks/${params?.id}?course=${encodeURIComponent(
+//                   //     selectedValue?.text,
+//                   //   )}`,
+//                   // )
 
-                  router.replace(
-                    `/closing-ranks/${params?.id}?course=${encodeURIComponent(
-                      selectedValue?.text,
-                    )}`,
-                  )
+//                   clearErrors("course")
+//                 }}
+onChange={({ selectedValue }) => {
+  setValue("course", selectedValue.text)  // ✅ Use 'course' here instead of 'courseType'
+  setSelectedCourse(selectedValue)
 
-                  clearErrors("course")
-                }}
+  clearErrors("course")
+}}
                 control={control}
                 setValue={setValue}
                 defaultOption={{
@@ -228,13 +348,13 @@ export default function ClosingRanks() {
                 }}
                 required
                 errorClass="absolute"
-                options={courseList}
+                options={coursesList}
                 debounceDelay={0}
                 wrapperClass="max-w-full w-full"
                 searchAPI={(text, setOptions) =>
-                  autoComplete(text, courseList, setOptions)
+                  autoComplete(text, coursesList, setOptions)
                 }
-                disabled={isEmpty(courseList)}
+                disabled={isEmpty(coursesList)}
                 errors={errors}
               />
             </div>
@@ -309,7 +429,7 @@ export default function ClosingRanks() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredStates.map((state) => (
                 <Link
-                  href={redirectURL(state.name)}
+                  href={redirectURL(state)}
                   key={state.slug}
                   className="group bg-white rounded-xl border border-gray-200 p-5 transition-all hover:shadow-md hover:border-yellow-300 flex flex-col"
                   onClick={onLinkClick}

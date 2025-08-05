@@ -13,5 +13,24 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ success: true, data }, { status: 200 })
+
+    // Group by unique `type`
+  const groupedData = data.reduce((acc: Record<string, any>, curr) => {
+    if (!acc[curr.type]) {
+      acc[curr.type] = {
+        type: curr.type,
+        items: [],
+      }
+    }
+    acc[curr.type].items.push({
+      id: curr.id,
+      text: curr.text,
+    })
+    return acc
+  }, {})
+
+  // Convert to array
+  const result = Object.values(groupedData)
+
+  return NextResponse.json({ success: true, data:result }, { status: 200 })
 }

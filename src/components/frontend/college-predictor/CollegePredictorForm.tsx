@@ -15,7 +15,7 @@ import {
   onTextFieldChange,
 } from "@/utils/utils"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
 const domicileStates: IOption[] = states.slice(1)
@@ -114,6 +114,20 @@ export function CollegePredictorForm() {
       isEmpty(formData?.courses?.text)
     )
   }
+
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+// // Close dropdown on outside click
+// useEffect(() => {
+//   function handleClickOutside(event: MouseEvent) {
+//     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+//       props.setOpenDropdownName(null)
+//     }
+//   }
+
+//   document.addEventListener("mousedown", handleClickOutside)
+//   return () => document.removeEventListener("mousedown", handleClickOutside)
+// }, [])
 
   return (
     <Card className="mt-2 tab:mx-16 p-7 tab:p-10">

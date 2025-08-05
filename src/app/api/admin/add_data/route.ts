@@ -102,10 +102,21 @@ import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
 const na = ["NA", "N/A"]
-
+function getTableName(stateCode?: string | null): string {
+// console.log("State Code: ",stateCode)
+  if (
+    stateCode &&
+    stateCode !== "null" &&
+    stateCode !== "undefined" &&
+    stateCode !== ""
+  ) {
+    return `college_table_${stateCode.toUpperCase()}`;
+  }
+  return "college_table_all_india"
+}
 export async function POST(request: NextRequest) {
   try {
-    const reqData = await request.json()
+    const {stateCode,...restData} = await request.json()
     const supabase = createAdminSupabaseClient()
 
     const {
@@ -113,12 +124,12 @@ export async function POST(request: NextRequest) {
       instituteType,
       course,
       quota,
-      category,
-    } = reqData
-
+      category
+    } = restData
+const tbaleName = getTableName(stateCode)
     // Check if similar data already exists
 const { data: checkData, error: checkError } = await supabase
-  .from("college_table_CG")
+  .from(tbaleName)
   .select("*")
   .eq("instituteName", instituteName)
   .eq("instituteType", instituteType)
@@ -157,13 +168,13 @@ const rankFields = [
 ]
 
 rankFields.forEach(({ check, assign }) => {
-  const rawValue = reqData?.[check]
+  const rawValue = restData?.[check]
   const value =
     typeof rawValue === "string" || typeof rawValue === "number"
       ? String(rawValue).toUpperCase()
       : ""
 
-  reqData[assign] = na.includes(value) ? null : reqData?.[assign] ?? null
+  restData[assign] = na.includes(value) ? null : restData?.[assign] ?? null
 })
 
 
@@ -180,8 +191,8 @@ rankFields.forEach(({ check, assign }) => {
 
     // Insert new data
     const { error, data } = await supabase
-      .from("college_table_CG")
-      .insert(reqData)
+      .from(tbaleName)
+      .insert(restData)
       .select()
 
     if (error || isEmpty(data)) {

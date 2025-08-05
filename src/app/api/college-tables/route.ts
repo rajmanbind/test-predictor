@@ -17,7 +17,7 @@ const tableName = stateCode
 const { data, error } = await supabase
   .from(tableName)
  .select('quota, "subQuota", category, "subCategory"')
-
+// console.log("Table",tableName,data)
 
   if (error) {
     console.error("Supabase Error:", error)

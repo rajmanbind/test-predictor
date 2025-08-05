@@ -1,6 +1,8 @@
 import { Control, FieldErrors, FieldValues } from "react-hook-form"
 
 export interface IOption {
+  sub_categories?: never[]
+  sub_quotas?:never[]
   id: any
   text: string
   disable?: boolean

@@ -3,6 +3,7 @@ import Link from "next/link"
 import React from "react"
 
 import { CollegePredictorForm } from "../college-predictor/CollegePredictorForm"
+import { CollegePredictorTest } from "../college-predictor/CollegePredictorTest"
 
 export function Hero() {
   return (
@@ -60,7 +61,8 @@ export function Hero() {
         </div>
       </div>
 
-      <CollegePredictorForm />
+      {/* <CollegePredictorForm /> */}
+      <CollegePredictorTest />
     </div>
   )
 }

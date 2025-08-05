@@ -23,6 +23,10 @@ import { Tooltip } from "react-tooltip"
 const dropDownType: IOption[] = [
   { id: "College Cutoff - UG", text: "W College Cutoff - UG" },
   { id: "College Cutoff - PG", text: "W College Cutoff - PG" },
+  { id: "College Cutoff - MDS", text: "W College Cutoff - MDS" },
+  { id: "College Cutoff - SS", text: "W College Cutoff - PG" },
+  { id: "College Cutoff - DNB", text: "W College Cutoff - DNB" },
+  { id: "College Cutoff - INICET", text: "W College Cutoff - INICET" },
   { id: "College Predictor", text: "College Predictor" },
   {
     id: "Single College Closing Rank - UG",
@@ -32,8 +36,28 @@ const dropDownType: IOption[] = [
     id: "Single College Closing Rank - PG",
     text: "Single College Closing Rank - PG",
   },
+  {
+    id: "Single College Closing Rank - MDS",
+    text: "Single College Closing Rank - MDS",
+  },
+  {
+    id: "Single College Closing Rank - SS",
+    text: "Single College Closing Rank - SS",
+  },
+  {
+    id: "Single College Closing Rank - DNB",
+    text: "Single College Closing Rank - DNB",
+  },
+  {
+    id: "Single College Closing Rank - INICET",
+    text: "Single College Closing Rank - INICET",
+  },
   { id: "State Closing Rank - UG", text: "State Closing Rank - UG" },
   { id: "State Closing Rank - PG", text: "State Closing Rank - PG" },
+  { id: "State Closing Rank - MDS", text: "State Closing Rank - MDS" },
+  { id: "All India Closing Rank - DNB", text: "All India Closing Rank - DNB" },
+  { id: "All India Closing Rank - INICET", text: "All India Closing Rank - INICET" },
+  { id: "All India Closing Rank - SS", text: "All India Closing Rank - SS" },
   { id: "Packages", text: "Packages" },
 ]
 

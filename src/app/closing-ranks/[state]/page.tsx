@@ -21,7 +21,7 @@ import {
 } from "@/utils/utils"
 import { ChevronLeft, CircleCheckBig, Eye, Users } from "lucide-react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function CollegeListClosingRanksPage() {
@@ -36,13 +36,28 @@ export default function CollegeListClosingRanksPage() {
   const [statePaymentPopup, setStatePaymentPopup] = useState(false)
   const [paymentChecker, setPaymentChecker] = useState(false)
   const [statePurchaseMode, setStatePurchaseMode] = useState(false)
-
+ const currentYear = new Date().getFullYear()
+ const prevYear  = currentYear-1
   const [configYear, setConfigYear] = useState<any>(null)
 
   const [amount, setAmount] = useState<number>(49)
 
   const params = useParams()
-  const state = decodeURIComponent(params.state as any)
+
+
+    const searchParams = useSearchParams()
+
+  const courseType = searchParams.get("courseType")
+  const course = searchParams.get("course")
+  const stateCode = decodeURIComponent(params.state as any)
+const state = searchParams.get("state")
+// console.log(state)
+  useEffect(() => {
+    console.log("courseType:", courseType)
+    console.log("course:", course)
+    console.log("stateCode:", stateCode)
+  }, [courseType, course])
+
   const { getSearchParams } = useInternalSearchParams()
 
   const { fetchData } = useFetch()
@@ -56,26 +71,39 @@ export default function CollegeListClosingRanksPage() {
   }, [updateUI])
 
   async function getData() {
-    const [closingRankYear, price, statePrice] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CONFIG_YEAR" },
-      }),
+console.log("Lkasjdf;",courseType)
+
+    const page = Number(getSearchParams("page") || 1)
+    const [price, res,statePrice] = await Promise.all([
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
           type:
-            params.id === "ug"
+            !courseType&&courseType?.includes("UG")
               ? priceType.SINGLE_COLLEGE_CLOSING_RANK_UG
               : priceType.SINGLE_COLLEGE_CLOSING_RANK_PG,
           item: state,
         },
       }),
+
+fetchData({
+      url: "/api/closing_ranks/college_list",
+      params: {
+        page,
+        size: 20,
+        state,
+        courseType: courseType,
+        course: course,
+        stateCode:stateCode
+      },
+    })
+,
+
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
           type:
-            params.id === "ug"
+            !courseType&&courseType?.includes("UG")
               ? priceType.STATE_CLOSING_RANK_UG
               : priceType.STATE_CLOSING_RANK_PG,
           item: state,
@@ -83,13 +111,12 @@ export default function CollegeListClosingRanksPage() {
       }),
     ])
 
-    if (closingRankYear?.success) {
-      setConfigYear({
-        id: closingRankYear?.payload?.data?.[0]?.text,
-        text: closingRankYear?.payload?.data?.[0]?.text,
-      })
-    }
-
+    // if (closingRankYear?.success) {
+    //   setConfigYear({
+    //     id: closingRankYear?.payload?.data?.[0]?.text,
+    //     text: closingRankYear?.payload?.data?.[0]?.text,
+    //   })
+    // }
     if (price?.success) {
       setAmount(price?.payload?.data?.price)
     }
@@ -98,20 +125,22 @@ export default function CollegeListClosingRanksPage() {
       setStateAmount(statePrice?.payload?.data?.price)
     }
 
-    const page = Number(getSearchParams("page") || 1)
 
-    const res = await fetchData({
-      url: "/api/closing_ranks/college_list",
-      params: {
-        page,
-        size: 20,
-        state,
-        courseType: params.id?.toString()?.toUpperCase(), //ug pg
-        course: getSearchParams("course"),
-      },
-    })
+    // const res = await fetchData({
+    //   url: "/api/closing_ranks/college_list",
+    //   params: {
+    //     page,
+    //     size: 20,
+    //     state,
+    //     courseType: !courseType?"":courseType.toString()?.toUpperCase(), //ug pg
+    //     course: course,
+    //     stateCode:stateCode
+    //   },
+    // })
 
+    
     if (res?.success) {
+      console.log("ResP ",res.payload)
       setTableData(res?.payload)
     }
   }
@@ -131,14 +160,14 @@ export default function CollegeListClosingRanksPage() {
         disableMobStaticLeft: true,
       },
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
+      // { title: "State", tableKey: "state", width: "150px" },
       {
         title: "Course Type",
         tableKey: "courseType",
 
         width: "150px",
         renderer({ cellData }) {
-          return getSearchParams("course")
+          return courseType
         },
       },
       {
@@ -150,17 +179,15 @@ export default function CollegeListClosingRanksPage() {
             <div className="w-[120px] m-3">
               {rowData?.purchased ? (
                 <Link
-                  href={`/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams(
-                    "course",
-                  )}`}
+                  href={`/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course}`}
                   className="text-[14px] disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed flex items-center gap-2"
                   onClick={() => {
                     saveToLocalStorage(
                       paymentType.SINGLE_COLLEGE_CLOSING_RANK,
                       {
                         ...rowData,
-                        course: getSearchParams("course"),
-                        courseType: params.id?.toString()?.toUpperCase(),
+                        course: course,
+                        courseType: !courseType?"":courseType.toString()?.toUpperCase(),
                       },
                     )
                   }}
@@ -183,8 +210,8 @@ export default function CollegeListClosingRanksPage() {
                       paymentType.SINGLE_COLLEGE_CLOSING_RANK,
                       {
                         ...rowData,
-                        course: getSearchParams("course"),
-                        courseType: params.id?.toString()?.toUpperCase(),
+                        course: course,
+                        courseType: !courseType?"":courseType.toString()?.toUpperCase(),
                       },
                     )
 
@@ -239,8 +266,8 @@ export default function CollegeListClosingRanksPage() {
       payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
       closing_rank_details: {
         ...rowData,
-        courseType: params?.id === "ug" ? "UG" : "PG",
-        course: getSearchParams("course"),
+        courseType: courseType&&courseType?.includes("UG")? "UG" : "PG",
+        course:course,
         year: configYear?.text,
       },
     }
@@ -265,7 +292,7 @@ export default function CollegeListClosingRanksPage() {
 
       if (priceRes?.success) {
         router.push(
-          `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams("course")}`,
+          `/closing-ranks/${stateCode}/college-details?state=${state}&state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course||""}`,
         )
       }
     }
@@ -290,10 +317,10 @@ export default function CollegeListClosingRanksPage() {
       amount: stateAmount,
       payment_type: paymentType?.STATE_CLOSING_RANK,
       closing_rank_details: {
-        state: params?.state,
-        courseType: params?.id === "ug" ? "UG" : "PG",
-        course: getSearchParams("course"),
-        year: configYear?.text,
+        state: state,
+        courseType: courseType,
+        course: course,
+        // year: configYear?.text,
       },
     }
 
@@ -323,7 +350,7 @@ export default function CollegeListClosingRanksPage() {
   }
 
   function backURL() {
-    return `/closing-ranks/ug`
+    return `/closing-ranks`
   }
 
   return (
@@ -345,8 +372,7 @@ export default function CollegeListClosingRanksPage() {
                   {state} Medical Colleges
                 </h1>
                 <p className="text-gray-600">
-                  NEET {params?.id?.toString()?.toUpperCase()}{" "}
-                  {configYear?.text} <span className="capitalize">{state}</span>{" "}
+                  NEET UG {prevYear} - {currentYear} <span className="capitalize">{state}</span>{" "}
                   Medical Colleges List
                 </p>
               </div>
@@ -378,20 +404,29 @@ export default function CollegeListClosingRanksPage() {
               totalItems={tableData?.totalItems}
               itemsCountPerPage={tableData?.pageSize}
               wrapperClass="pb-[50px]"
-              onPageChange={(page: number) => {
-                onPageChange(
-                  page,
-                  "/api/closing_ranks/college_list",
-                  fetchData,
-                  setTableData,
-                  {
-                    page,
-                    size: 20,
-                    state,
-                    courseType: params.id?.toString()?.toUpperCase(),
-                    course: getSearchParams("course"),
-                  },
-                )
+              onPageChange={async (page: number) => {
+                
+
+
+
+ const res = await fetchData({
+      url: "/api/closing_ranks/college_list",
+      params: {
+        page,
+        size: 20,
+        state,
+        courseType: !courseType?"":courseType.toString()?.toUpperCase(),
+        course: course,
+        stateCode:stateCode
+      },
+    })
+
+    
+    if (res?.success) {
+      // console.log("ResP ",res.payload)
+      setTableData(res?.payload)
+    }
+
               }}
             />
           </Container>
@@ -410,12 +445,11 @@ export default function CollegeListClosingRanksPage() {
                       </div>
 
                       <h3 className="text-xl font-bold mb-2 text-color-table-header">
-                        {`Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
+                        {`Unlock All ${state}'s NEET ${course} Closing Ranks`}
                       </h3>
                       <p className="text-black">
-                        You can unlock state-wise NEET{" "}
-                        {getSearchParams("course")} closing ranks for all
-                        colleges in {params?.state} at once.
+                        You can unlock state-wise NEET {course} closing ranks for all
+                        colleges in {state} at once.
                       </p>
                     </div>
 
@@ -493,7 +527,7 @@ export default function CollegeListClosingRanksPage() {
             <li className="flex font-poppins gap-2">
               <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
               <h3 className="text-[15px] leading-[1.4]">
-                {params?.id?.toString()?.toUpperCase() === "UG"
+                {courseType?.includes("UG")
                   ? "All Round's Complete Category and Quota Wise MBBS Cut-off RANK/MARKS Details (NEET UG 2024) of your Selected College."
                   : "Access All Round's MD/MS/Diploma Cut-off Rank / Percentile Details (NEET PG 2024) – Specialization, Category & Quota Wise for Your Selected College."}
               </h3>
@@ -516,7 +550,7 @@ export default function CollegeListClosingRanksPage() {
         paymentDescription="CollegeCutOff.net Payment for State Closing Ranks"
         title={
           <p className="pt-2 uppercase poppinsFont">
-            {`Please make payment to Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
+            {`Please make payment to Unlock All ${state}'s NEET ${course} Closing Ranks`}
           </p>
         }
         btnText={`Unlock Now @ ₹${stateAmount}`}

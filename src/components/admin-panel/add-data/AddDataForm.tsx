@@ -59,7 +59,15 @@ type State = {
   code?: string
   name?: string
 }
-
+export interface IOptionProps {
+  sub_categories?: never[]
+  id: any
+  text: string
+  disable?: boolean
+  otherValues?: any
+  code?:string
+  type?:string
+}
 const predictorDataList: IOption[] = [
   { id: 1, text: "NEET UG" },
   { id: 2, text: "NEET PG" },
@@ -156,7 +164,7 @@ console.log()
         return []
       }
 
-      const data = json.data.map((q) => ({
+      const data = json.data.map((q:IOptionProps) => ({
         id: q.id,
         text: q.type,
       }))
@@ -309,7 +317,7 @@ console.log()
     const res = await fetch(url.toString())
     const json = await res.json()
 
-    const quotas = json.data.map((q) => ({
+    const quotas = json.data.map((q:IOptionProps) => ({
       ...q, // Spread all fields including sub_quotas
       id: q.id,
       text: q.text,
@@ -382,7 +390,7 @@ console.log()
         const data = await fetchCategoryTypes(formData?.quotas?.id)
 
         setCategoriesList(
-          data.map((cat) => ({
+          data.map((cat:IOptionProps) => ({
             id: cat.id,
             text: cat.text,
             otherValues: {
@@ -442,6 +450,8 @@ console.log()
       prevCRR3: formData?.prevClosingRankR3?.split("/")?.[1]?.trim(),
       prevSRR: formData?.prevStrayRound?.split("/")?.[1]?.trim(),
       prevlSRR: formData?.prevLastStrayRound?.split("/")?.[1]?.trim(),   
+
+      stateCode : formData?.state?.code
     })
 
     if (editMode) {
@@ -519,7 +529,7 @@ console.log()
           value={formData?.courseType}
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
-            console.log(selectedValue)
+            // console.log(selectedValue)
             getCoursesBasedOnCourseType(selectedValue?.text)
             setFormData((prev) => ({
               ...prev,
@@ -725,20 +735,6 @@ console.log()
               const subs = found?.otherValues?.sub_categories || []
               setSubCategoriesList(subs)
             }}
-            //   onChange={({ name, selectedValue }) => {
-            //   onOptionSelected(name, selectedValue, setFormData)
-
-            //   setFormData((prev) => ({
-            //     ...prev,
-            //     categories: selectedValue,
-            //     subCategory: undefined,        // <-- Already correct
-            //   }))
-
-            //   const found = categoriesList.find((cat) => cat.id === selectedValue?.id)
-            //   const subs = found?.otherValues?.sub_categories || []
-            //   setSubCategoriesList(subs)
-            // }}
-
             control={control}
             setValue={setValue}
             required

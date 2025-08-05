@@ -339,14 +339,14 @@ import { useEffect, useState } from "react"
 
 type CounsellingType = {
   id?: number
-  name?: string
+  text?: string
   type?: "all-india" | "state"
 }
 
 type State = {
   id?: number
   code?: string
-  name?: string
+  text?: string
 }
 
 export default function SeatManagement() {
@@ -579,7 +579,7 @@ export default function SeatManagement() {
           >
             <option value="">Select Counselling Type</option>
             {counsellingTypeList.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
+              <option key={c.id} value={c.id}>{c.text}</option>
             ))}
           </select>
         </div>
@@ -598,7 +598,7 @@ export default function SeatManagement() {
             >
               <option value="">Select State</option>
               {stateList.map(state => (
-                <option key={state.code} value={state.code}>{state.name}</option>
+                <option key={state.code} value={state.code}>{state.text}</option>
               ))}
             </select>
           </div>

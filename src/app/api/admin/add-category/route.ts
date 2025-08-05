@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
   const { data: existing, error: checkError } = await supabase
     .from("categories")
     .select("id")
-    .eq("name", name)
+    .eq("text", name)
     .eq("quota_type_id", quota_type_id)
     .maybeSingle();
 
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   // 🚀 Insert new category
   const { data, error: insertError } = await supabase
     .from("categories")
-    .insert({ name, quota_type_id })
+    .insert({ text:name, quota_type_id })
     .select()
     .single();
 

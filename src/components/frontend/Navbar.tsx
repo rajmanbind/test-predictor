@@ -22,7 +22,7 @@ export const navbarMenus = [
   },
   {
     title: "CLOSING RANKS",
-    href: "/closing-ranks/ug",
+    href: "/closing-ranks",
   },
   {
     title: "PACKAGES",

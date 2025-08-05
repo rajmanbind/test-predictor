@@ -107,12 +107,13 @@ export async function POST(request: NextRequest) {
     const { data: existingQuota, error: checkError } = await supabase
       .from("quota_types")
       .select("id")
-      .eq("name", name)
+      .eq("text", name)
       .eq("counselling_type_id", counselling_type_id || null)
       .eq("state_code", state_code || null)
       .maybeSingle();
 
     if (checkError) {
+      console.log(checkError)
       return NextResponse.json(
         { msg: "Error checking existing quota", error: checkError },
         { status: 500 }
@@ -133,7 +134,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from("quota_types")
       .insert({
-        name,
+        text:name,
         counselling_type_id: is_common ? null : counselling_type_id,
         state_code: is_common ? null : state_code,
       })

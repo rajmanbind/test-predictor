@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     const { data: existing, error: checkError } = await supabase
       .from("sub_quotas")
       .select("id")
-      .eq("name", name)
+      .eq("text", name)
       .eq("quota_type_id", quota_type_id)
       .maybeSingle();
 
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     // 🚀 Insert sub-quota
     const { data, error } = await supabase
       .from("sub_quotas")
-      .insert({ name, quota_type_id })
+      .insert({text: name, quota_type_id })
       .select()
       .single();
 

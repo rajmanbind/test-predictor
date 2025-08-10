@@ -3,14 +3,32 @@ import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
 
 const na = ["NA", "N/A"]
-
+ 
+function getTableName(stateCode?: string | null): string {
+  if (
+    stateCode &&
+    stateCode !== "null" &&
+    stateCode !== "undefined" &&
+    stateCode !== ""
+  ) {
+    return `college_table_${stateCode.toUpperCase()}`
+  }
+  return "college_table_all_india"
+}
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
   try {
+      const { searchParams } = new URL(request.url)
     const id = params.id
-    const updateData = await request.json()
+  const stateCode = searchParams.get("stateCode")
+  const {stateCode:fallBackStatusCode,...updateData} = await request.json()
+  const tableName =  getTableName(stateCode||fallBackStatusCode)
+
+
+
+
 
     if (!id) {
       return NextResponse.json(
@@ -42,7 +60,7 @@ export async function PUT(
       : updateData?.lSRR
 
     const { error, data } = await supabase
-      .from("college_table")
+      .from(tableName)
       .update(updateData)
       .eq("id", id)
       .select()

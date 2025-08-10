@@ -217,9 +217,12 @@ export const quotas = [
   },
 ]
 
+
 export const paymentType = {
   SINGLE_COLLEGE_CLOSING_RANK: "SINGLE_COLLEGE_CLOSING_RANK",
   STATE_CLOSING_RANK: "STATE_CLOSING_RANK",
+  ALL_INDIA_CLOSING_RANK: "ALL_INDIA_CLOSING_RANK",
+
   PREMIUM_PLAN: "PREMIUM_PLAN",
   COLLEGE_CUT_OFF: "COLLEGE_CUT_OFF",
   RANK_COLLEGE_PREDICTOR: "RANK_COLLEGE_PREDICTOR",
@@ -227,12 +230,42 @@ export const paymentType = {
 
 export const priceType = {
   COLLEGE_CUT_OFF_UG: "College Cutoff - UG",
+  COLLEGE_CUT_OFF_MDS: "College Cutoff - MDS",
   COLLEGE_CUT_OFF_PG: "College Cutoff - PG",
+  COLLEGE_CUT_OFF_SS: "College Cutoff - SS",
+  COLLEGE_CUT_OFF_DNB: "College Cutoff - DNB",
+  COLLEGE_CUT_OFF_INICET: "College Cutoff - INICET",
+  COLLEGE_CUT_OFF_AIAPGET: "College Cutoff - AIAPGET",
+  ALL_INDIA_COLLEGE_CUT_OFF_UG: "College Cutoff - UG",
+  ALL_INDIA_COLLEGE_CUT_OFF_MDS: "All India College Cutoff - MDS",
+  ALL_INDIA_COLLEGE_CUT_OFF_PG: "All India College Cutoff - PG",
+  ALL_INDIA_COLLEGE_CUT_OFF_SS: "All India College Cutoff - SS",
+  ALL_INDIA_COLLEGE_CUT_OFF_DNB: "All India College Cutoff - DNB",
+  ALL_INDIA_COLLEGE_CUT_OFF_INICET: "All India College Cutoff - INICET",
+  ALL_INDIA_COLLEGE_CUT_OFF_AIAPGET: "All India College Cutoff - AIAPGET",
   RANK_COLLEGE_PREDICTOR: "College Predictor",
   SINGLE_COLLEGE_CLOSING_RANK_UG: "Single College Closing Rank - UG",
   SINGLE_COLLEGE_CLOSING_RANK_PG: "Single College Closing Rank - PG",
+  SINGLE_COLLEGE_CLOSING_RANK_MDS: "Single College Closing Rank - MDS",
+  SINGLE_COLLEGE_CLOSING_RANK_SS: "Single College Closing Rank - SS",
+  SINGLE_COLLEGE_CLOSING_RANK_DNB: "Single College Closing Rank - DNB",
+  SINGLE_COLLEGE_CLOSING_RANK_INICET: "Single College Closing Rank - PG",
+  SINGLE_COLLEGE_CLOSING_RANK_AIAPGET: "Single College Closing Rank - AIAPGET",
   STATE_CLOSING_RANK_UG: "State Closing Rank - UG",
   STATE_CLOSING_RANK_PG: "State Closing Rank - PG",
+  STATE_CLOSING_RANK_MDS: "State Closing Rank - MDS",
+  STATE_CLOSING_RANK_SS: "State Closing Rank - SS",
+  STATE_CLOSING_RANK_DNB: "State Closing Rank - DNB",
+  STATE_CLOSING_RANK_INICET: "State Closing Rank - INICET",
+  STATE_CLOSING_RANK_AIAPGET: "State Closing Rank - AIAPGET",
+  ALL_INDIA_CLOSING_RANK_UG: "All India Closing Rank - UG",
+  ALL_INDIA_CLOSING_RANK_PG: "All India Closing Rank - PG",
+  ALL_INDIA_CLOSING_RANK_MDS: "All India Closing Rank - MDS",
+  ALL_INDIA_CLOSING_RANK_SS: "All India Closing Rank - SS",
+  ALL_INDIA_CLOSING_RANK_DNB: "All India Closing Rank - DNB",
+  ALL_INDIA_CLOSING_RANK_INICET: "All India Closing Rank - INICET",
+  ALL_INDIA_CLOSING_RANK_AIAPGET: "All India Closing Rank - AIAPGET",
+  ALL_INDIA_CLOSING_RANK: "All India Closing Rank",
   PREMIUM_PLAN: "Plans",
 }
 

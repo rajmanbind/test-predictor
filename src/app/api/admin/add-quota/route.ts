@@ -93,7 +93,8 @@ export async function POST(request: NextRequest) {
       name,
       counselling_type_id,
       state_code,
-      is_common = false
+      is_common = false,
+      courseType
     } = reqData;
 
     if (!name || (!is_common && !counselling_type_id && !state_code)) {
@@ -136,6 +137,7 @@ export async function POST(request: NextRequest) {
       .insert({
         text:name,
         counselling_type_id: is_common ? null : counselling_type_id,
+        courseType:courseType,
         state_code: is_common ? null : state_code,
       })
       .select()

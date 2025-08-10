@@ -18,6 +18,7 @@ import {
   onPageChange,
   saveToLocalStorage,
   shouldRenderComponent,
+  getLocalStorageItem
 } from "@/utils/utils"
 import { ChevronLeft, CircleCheckBig, Eye, Users } from "lucide-react"
 import Link from "next/link"
@@ -71,17 +72,41 @@ const state = searchParams.get("state")
   }, [updateUI])
 
   async function getData() {
-console.log("Lkasjdf;",courseType)
 
+// Type guard to ensure the key is valid
+function isValidPriceTypeKey(
+  key: string
+): key is keyof typeof priceType {
+  return key in priceType;
+}
     const page = Number(getSearchParams("page") || 1)
-    const [price, res,statePrice] = await Promise.all([
+ if(stateCode!=="all"){  
+  
+  const priceTypeName = courseType && courseType.includes(" ")
+  ? courseType.split(" ")[1]
+  : courseType;
+
+const fullKey = `SINGLE_COLLEGE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+
+const stateFullKey = `STATE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+// const allIndiakay1 = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+// const allIniaKey2 = `ALL_INDIA_CLOSING_RANK`;
+
+
+
+const priceTypeValue = isValidPriceTypeKey(fullKey)
+  ? priceType[fullKey]
+  : undefined;
+const statePriceTypeValue = isValidPriceTypeKey(stateFullKey)
+  ? priceType[stateFullKey]
+  : undefined;
+
+
+  const [price, res,statePrice] = await Promise.all([
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
-          type:
-            !courseType&&courseType?.includes("UG")
-              ? priceType.SINGLE_COLLEGE_CLOSING_RANK_UG
-              : priceType.SINGLE_COLLEGE_CLOSING_RANK_PG,
+          type:priceTypeValue,
           item: state,
         },
       }),
@@ -102,47 +127,96 @@ fetchData({
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
-          type:
-            !courseType&&courseType?.includes("UG")
-              ? priceType.STATE_CLOSING_RANK_UG
-              : priceType.STATE_CLOSING_RANK_PG,
+          type:statePriceTypeValue,
           item: state,
         },
       }),
     ])
-
-    // if (closingRankYear?.success) {
-    //   setConfigYear({
-    //     id: closingRankYear?.payload?.data?.[0]?.text,
-    //     text: closingRankYear?.payload?.data?.[0]?.text,
-    //   })
-    // }
-    if (price?.success) {
+   if (price?.success) {
       setAmount(price?.payload?.data?.price)
     }
 
     if (statePrice?.success) {
       setStateAmount(statePrice?.payload?.data?.price)
     }
+    if (res?.success) {
+      setTableData(res?.payload)
+    }
+  
+  }
+  else{
+
+      const priceTypeName = courseType && courseType.includes(" ")
+  ? courseType.split(" ")[1]
+  : courseType;
 
 
-    // const res = await fetchData({
-    //   url: "/api/closing_ranks/college_list",
-    //   params: {
-    //     page,
-    //     size: 20,
-    //     state,
-    //     courseType: !courseType?"":courseType.toString()?.toUpperCase(), //ug pg
-    //     course: course,
-    //     stateCode:stateCode
-    //   },
-    // })
+
+
+
+
+
+const allIndiaFullKey = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+const allIndiaFull = `ALL_INDIA_CLOSING_RANK`;
+
+
+
+const allIndiaPriceTypeValue = isValidPriceTypeKey(allIndiaFullKey)
+  ? priceType[allIndiaFullKey]
+  : undefined;
+
+const allIndiaPriceTypeValueForAll = isValidPriceTypeKey(allIndiaFull)
+  ? priceType[allIndiaFull]
+  : undefined;
+
+  const [price, res, allIndiaPrice] = await Promise.all([
+      fetchData({
+        url: "/api/admin/configure_prices/get",
+        params: {
+          type:allIndiaPriceTypeValue,
+          item: state==="all"?"All India":state,
+        },
+      }),
+
+fetchData({
+      url: "/api/closing_ranks/college_list",
+      params: {
+        page,
+        size: 20,
+        state,
+        courseType: courseType,
+        course: course,
+        stateCode:stateCode
+      },
+    })
+,
+
+      fetchData({
+        url: "/api/admin/configure_prices/get",
+        params: {
+          type:allIndiaPriceTypeValueForAll,
+          item: state==="all"?"All India":state,
+        },
+      }),
+    ])
+   if (price?.success) {
+      setAmount(price?.payload?.data?.price)
+    }
+
+    if (allIndiaPrice?.success) {
+      setStateAmount(allIndiaPrice?.payload?.data?.price)
+    }
+
 
     
     if (res?.success) {
-      console.log("ResP ",res.payload)
+      // console.log("ResP ",res.payload)
       setTableData(res?.payload)
     }
+  }
+
+
+   
   }
 
   function buttonText(rowData: any) {
@@ -175,9 +249,16 @@ fetchData({
         tableKey: "action",
         width: "120px",
         renderer({ rowData }) {
+//  college.toLowerCase().trim().split(" ").join("-")
+   const paymentStatus = getLocalStorageItem<any>(
+          `payment-${state?.replaceAll(" ","-").toLowerCase()}-${courseType?.replaceAll(" ","-").toLowerCase()}-${rowData.instituteName.toLowerCase().trim().split(" ").join("-")}`
+        )
+        // console.log(`payment-${state?.replaceAll(" ","-").toLowerCase()}-${courseType?.replaceAll(" ","-").toLowerCase()}-${rowData.instituteName}`)
+          // console.log("Row Data: ",paymentStatus)
           return (
             <div className="w-[120px] m-3">
-              {rowData?.purchased ? (
+              {/* payment-${state.replaceAll(" ","-").toLowerCase()}-${params?.id}-${college} */}
+              {rowData?.purchased ||paymentStatus? (
                 <Link
                   href={`/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course}`}
                   className="text-[14px] disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed flex items-center gap-2"
@@ -187,7 +268,8 @@ fetchData({
                       {
                         ...rowData,
                         course: course,
-                        courseType: !courseType?"":courseType.toString()?.toUpperCase(),
+                        courseType: courseType,
+                        state:state
                       },
                     )
                   }}
@@ -211,7 +293,8 @@ fetchData({
                       {
                         ...rowData,
                         course: course,
-                        courseType: !courseType?"":courseType.toString()?.toUpperCase(),
+                        courseType: courseType,
+                        state:state
                       },
                     )
 
@@ -266,8 +349,9 @@ fetchData({
       payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
       closing_rank_details: {
         ...rowData,
-        courseType: courseType&&courseType?.includes("UG")? "UG" : "PG",
+        courseType: courseType,
         course:course,
+        state:state,
         year: configYear?.text,
       },
     }
@@ -278,6 +362,9 @@ fetchData({
       data: payload,
     })
 
+
+
+    // console.log("ResPonse: ",res)
     if (res?.success) {
       // setUpdateUI((prev) => !prev)
 
@@ -292,7 +379,7 @@ fetchData({
 
       if (priceRes?.success) {
         router.push(
-          `/closing-ranks/${stateCode}/college-details?state=${state}&state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course||""}`,
+          `/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course||""}`,
         )
       }
     }
@@ -302,7 +389,6 @@ fetchData({
 
   async function successCallbackStatePayment(orderId: string) {
     setShowPaymentPopup(false)
-
     showToast(
       "success",
       <p>
@@ -315,27 +401,26 @@ fetchData({
     const payload = {
       orderId,
       amount: stateAmount,
-      payment_type: paymentType?.STATE_CLOSING_RANK,
+      payment_type: stateCode==="all"?paymentType?.ALL_INDIA_CLOSING_RANK:paymentType?.STATE_CLOSING_RANK,
       closing_rank_details: {
-        state: state,
         courseType: courseType,
         course: course,
-        // year: configYear?.text,
+        year: configYear?.text,
       },
     }
-
+// console.log("Payload: ",payload)
     const res = await fetchData({
       url: "/api/purchase",
       method: "POST",
       data: payload,
     })
-
+// console.log("Res state datas: ",res)
     if (res?.success) {
       const priceRes = await fetchData({
         url: "/api/payment",
         method: "POST",
         data: {
-          [paymentType?.STATE_CLOSING_RANK]: stateAmount,
+          [stateCode==="all"?paymentType?.ALL_INDIA_CLOSING_RANK:paymentType?.STATE_CLOSING_RANK]: stateAmount,
         },
         noToast: true,
       })
@@ -415,7 +500,7 @@ fetchData({
         page,
         size: 20,
         state,
-        courseType: !courseType?"":courseType.toString()?.toUpperCase(),
+        courseType: courseType,
         course: course,
         stateCode:stateCode
       },
@@ -441,14 +526,14 @@ fetchData({
                   <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
                       <div className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800 shadow-sm border border-green-200 mb-3 inline-block">
-                        State-Wise Purchase
+                       {stateCode!=="all"? "State-Wise Purchase":"All-India Purchages" }
                       </div>
 
                       <h3 className="text-xl font-bold mb-2 text-color-table-header">
                         {`Unlock All ${state}'s NEET ${course} Closing Ranks`}
                       </h3>
                       <p className="text-black">
-                        You can unlock state-wise NEET {course} closing ranks for all
+                        You can unlock {stateCode!=="all"? "state-wise":"all-india" } NEET {course} closing ranks for all
                         colleges in {state} at once.
                       </p>
                     </div>
@@ -463,12 +548,13 @@ fetchData({
                           if (user?.success) {
                             setStatePurchaseMode(true)
                             setStatePaymentPopup(true)
+                            setPaymentChecker(true)
                           } else {
                             setAppState({ signInModalOpen: true })
                           }
                         })
                       }}
-                      disabled
+                      // disabled
                       data-tooltip-id={"tooltip"}
                       data-tooltip-content="Coming Soon"
                     >

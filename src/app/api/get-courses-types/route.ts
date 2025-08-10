@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     if (!acc[curr.type]) {
       acc[curr.type] = {
         type: curr.type,
+        id:curr.id,
         items: [],
       }
     }
@@ -31,6 +32,6 @@ export async function GET(request: NextRequest) {
 
   // Convert to array
   const result = Object.values(groupedData)
-
+console.log("REsult: ",result)
   return NextResponse.json({ success: true, data:result }, { status: 200 })
 }

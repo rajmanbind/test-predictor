@@ -8,7 +8,7 @@ import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import { PGCourseSubTypeList } from "@/utils/static"
+import {  PGCourseSubTypeList } from "@/utils/static"
 import {
   autoComplete,
   clearReactHookFormValueAndStates,
@@ -256,6 +256,8 @@ console.log()
     if (isEmpty(selectedCourse?.text) || selectedCourse?.text === "EMPTY") {
       return ""
     }
+    if(state==="all")
+      return `/closing-ranks/${state}?state=All%20India&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
 
     return `/closing-ranks/${state.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
     // return `/closing-ranks/${params.id}/${state}?course=${courseParam}`
@@ -295,7 +297,7 @@ console.log()
                   // router.replace(
                   //   `/closing-ranks/${selectedValue?.text.toLowerCase()}`,
                   // )
-                  console.log(selectedValue)
+                  // console.log(selectedValue)
   getCoursesBasedOnpredictorType(selectedValue.text)
     setValue("course", "") 
                   setSelectedType(selectedValue)
@@ -427,6 +429,30 @@ onChange={({ selectedValue }) => {
 
             {/* States Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <Link
+                  href={redirectURL("all")}
+                  key="all"
+                  className="group bg-white rounded-xl border border-gray-200 p-5 transition-all hover:shadow-md hover:border-yellow-300 flex flex-col"
+                  onClick={onLinkClick}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-yellow-500" />
+                      <h3 className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors">
+                        All Inida
+                      </h3>
+                    </div>
+                    
+                  </div>
+                  <p className="text-sm text-gray-500 mb-3">
+                    All India - NEET UG/PG
+                    Medical
+                  </p>
+                  <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">
+                    View Closing Ranks
+                    <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </Link>
               {filteredStates.map((state) => (
                 <Link
                   href={redirectURL(state)}
@@ -448,7 +474,7 @@ onChange={({ selectedValue }) => {
                     )}
                   </div>
                   <p className="text-sm text-gray-500 mb-3">
-                    {state.name} - {params?.id?.toString()?.toUpperCase()}{" "}
+                    {state.name} -  NEET UG/PG
                     Medical
                   </p>
                   <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">

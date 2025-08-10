@@ -2,20 +2,32 @@ import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
-
+function getTableName(stateCode?: string | null): string {
+  if (
+    stateCode &&
+    stateCode !== "null" &&
+    stateCode !== "undefined" &&
+    stateCode !== ""
+  ) {
+    return `college_table_${stateCode.toUpperCase()}`
+  }
+  return "college_table_all_india"
+}
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get("id")
-
-    if (!id) {
-      return NextResponse.json({ msg: "ID is required" }, { status: 400 })
+    const stateCode = searchParams.get("stateCode")
+const tableName = getTableName(stateCode)
+ 
+    if (!id || !stateCode) {
+      return NextResponse.json({ msg: "ID and State are required" }, { status: 400 })
     }
 
     const supabase = createAdminSupabaseClient()
 
     const { data, error } = await supabase
-      .from("college_table")
+      .from(tableName)
       .select("*")
       .eq("id", id)
       .single()

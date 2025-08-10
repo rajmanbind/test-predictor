@@ -36,7 +36,7 @@ const state = searchParams.get("state")
     const closingRankCollege = getLocalStorageItem<any>(
       paymentType.SINGLE_COLLEGE_CLOSING_RANK,
     )
-
+console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
     // setYear(closingRankCollege?.year)
 
     getData(closingRankCollege)
@@ -99,6 +99,9 @@ const state = searchParams.get("state")
       },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
+      { title: "Sub - Quota", tableKey: "subQuota", width: "150px" },
+      { title: "Category", tableKey: "category", width: "150px" },
+      { title: "Sub - Category", tableKey: "subCategory", width: "150px" },
       {
         title: (
           <div>

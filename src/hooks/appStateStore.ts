@@ -10,8 +10,10 @@ export interface IAppState {
   user?: any
   ugPackage?: any
   pgPackage?: any
-  hasUGPackage?: boolean
+  coursePackage?:any
+  hasCoursePackage?: boolean
   hasPGPackage?: boolean
+  hasUGPackage?: boolean
   paymentRedirectPopupOpen: boolean
   toast: {
     showToast: boolean

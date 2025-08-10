@@ -13,6 +13,7 @@ console.log("State Code: ",stateCode)
     stateCode !== "undefined" &&
     stateCode !== ""
   ) {
+    if(stateCode==="all") return "college_table_all_india"
     return `college_table_${stateCode.toUpperCase()}`;
   }
   return "college_table_all_india"
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest) {
   }
 
   const college = body.closingRankCollege
+  // console.log("BODY: ",body)
   const stateCode = body.stateCode
     const tableName = getTableName(stateCode)
   if (

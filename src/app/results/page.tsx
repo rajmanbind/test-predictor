@@ -90,20 +90,20 @@ export default function ResultPage() {
 
     let payment = false
 
-    if (getSearchParams("courseType") === "UG" && appState?.hasUGPackage) {
-      setPaid(true)
-      payment = true
-      getData(payment, isEmpty(filterParams) ? null : 1)
-      return
-    } else if (
-      getSearchParams("courseType") === "PG" &&
-      appState?.hasPGPackage
-    ) {
-      setPaid(true)
-      payment = true
-      getData(payment, isEmpty(filterParams) ? null : 1)
-      return
-    }
+    // if (getSearchParams("courseType") === "UG" && appState?.hasUGPackage) {
+    //   setPaid(true)
+    //   payment = true
+    //   getData(payment, isEmpty(filterParams) ? null : 1)
+    //   return
+    // } else if (
+    //   getSearchParams("courseType") === "PG" &&
+    //   appState?.hasPGPackage
+    // ) {
+    //   setPaid(true)
+    //   payment = true
+    //   getData(payment, isEmpty(filterParams) ? null : 1)
+    //   return
+    // }
 
     setPaid(false)
     payment = false
@@ -118,7 +118,7 @@ export default function ResultPage() {
         purchase?.year === configRes &&
         !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
       ) {
-        console.log("purchase", purchase?.rank, "->", getSearchParams("rank"))
+        // console.log("purchase", purchase?.rank, "->", getSearchParams("rank"))
         setPaid(true)
         payment = true
         break
@@ -128,7 +128,31 @@ export default function ResultPage() {
     getData(payment, isEmpty(filterParams) ? null : 1)
   }
 
+  async function getCoursesBasedOnCourseType(type: string) {
+    try {
+      const res = await fetch(
+        `/api/get-courses?type=${encodeURIComponent(type)}`,
+      )
+      const { data } = await res.json()
+
+      if (Array.isArray(data)) {
+        const mapped = data.map((item) => ({
+          id: item.id,
+          text: item.text, // <-- mapping `type` to `text` key
+        }))
+        setCoursesList(mapped)
+      } else {
+        setCoursesList([])
+      }
+
+      console.log("Mapped Course List data: ", data, type)
+    } catch (error) {
+      console.log("Error in course list fetch", error)
+    }
+  }
+
   async function getConfigs() {
+    const predictorType = getSearchParams("predictorType")
     const [quotaData, categoryData, coursesData, priceData] = await Promise.all(
       [
         fetchData({
@@ -139,11 +163,10 @@ export default function ResultPage() {
           url: "/api/admin/configure/get",
           params: { type: "CATEGORY" },
         }),
-
         fetchData({
-          url: "/api/admin/configure/courses/get",
+          url: "/api/get-courses",
           params: {
-            type: getSearchParams("courseType")?.toString()?.toLowerCase(),
+            type: predictorType,
           },
         }),
 
@@ -174,8 +197,11 @@ export default function ResultPage() {
     const rank = getSearchParams("rank")
     const course = getSearchParams("course")
     const domicileState = getSearchParams("domicileState")
+    const predictorType = getSearchParams("predictorType")
     const rankType = getSearchParams("rankType") ?? null
     const courseType = getSearchParams("courseType")
+    const state = getSearchParams("state")
+    const stateCode = getSearchParams("stateCode")
 
     const params: Record<string, any> = {
       page,
@@ -186,6 +212,9 @@ export default function ResultPage() {
       courseType,
       domicileState,
       paymentStatus,
+      state,
+      predictorType,
+      stateCode,
     }
 
     if (domicileState === "All") {
@@ -251,6 +280,9 @@ export default function ResultPage() {
       },
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
+      { title: "Sub-Quota", tableKey: "subQuota", width: "150px" },
+      { title: "Category", tableKey: "category", width: "150px" },
+      { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
       {
         title: (
           <div>
@@ -384,18 +416,163 @@ export default function ResultPage() {
         title: (
           <div
             data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showClosingRankR1`,
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showClosingRankR2`,
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showClosingRankR3`,
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          >
+            {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          >
+            Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showLastStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
             data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${previousYear}`}
           >
             {`Closing Rank/ ${percentile_Marks} [R1] ${previousYear}`}
           </div>
         ),
-        tableKey: `closingRankR1_old`,
+        tableKey: "showPrevClosingRankR1",
         width: "190px",
         renderer({ cellData }) {
           return cellData !== "xxx" &&
-            (cellData === "undefined" || cellData === "null")
-            ? "NA"
-            : cellData
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
         },
       },
       {
@@ -407,18 +584,20 @@ export default function ResultPage() {
             {`Closing Rank/ ${percentile_Marks} [R2] ${previousYear}`}
           </div>
         ),
-        tableKey: `closingRankR2_old`,
+        tableKey: "showPrevClosingRankR2",
         width: "190px",
-        renderer({ cellData }: any) {
+        renderer({ cellData }) {
           return cellData !== "xxx" &&
-            (cellData === "undefined" || cellData === "null") ? (
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
             "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock @ ₹${amount}`}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -432,18 +611,20 @@ export default function ResultPage() {
             {`Closing Rank/ ${percentile_Marks} [R3] ${previousYear}`}
           </div>
         ),
-        tableKey: `closingRankR3_old`,
+        tableKey: "showPrevClosingRankR3",
         width: "190px",
-        renderer({ cellData }: any) {
+        renderer({ cellData }) {
           return cellData !== "xxx" &&
-            (cellData === "undefined" || cellData === "null") ? (
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
             "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock @ ₹${amount}`}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -457,18 +638,20 @@ export default function ResultPage() {
             {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
           </div>
         ),
-        tableKey: `strayRound_old`,
-        width: "190px",
-        renderer({ cellData }: any) {
+        tableKey: `showPrevStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
           return cellData !== "xxx" &&
-            (cellData === "undefined" || cellData === "null") ? (
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
             "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock @ ₹${amount}`}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData}
+              {cellData ?? "NA"}
             </div>
           )
         },
@@ -482,25 +665,26 @@ export default function ResultPage() {
             Last {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
           </div>
         ),
-        tableKey: `lastStrayRound_old`,
+        tableKey: `showPrevLastStrayRound`,
         width: "210px",
-        renderer({ cellData }: any) {
+        renderer({ cellData }) {
           return cellData !== "xxx" &&
-            (cellData === "undefined" || cellData === "null") ? (
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
             "NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-              data-tooltip-content={`Unlock @ ₹${amount}`}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {cellData}
+              {cellData ?? "NA"}
             </div>
           )
         },
       },
-
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
+      // { title: "State", tableKey: "state", width: "150px" },
       { title: "Fees", tableKey: "fees", width: "100px" },
     ]
 

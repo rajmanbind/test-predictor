@@ -267,25 +267,25 @@ console.log()
   }, [])
 
 
-  async function getCoursesData(type: string) {
-    const res = await fetchData({
-      url: "/api/admin/configure/courses/get",
-      params: { type },
-    })
+//   async function getCoursesData(type: string) {
+//     const res = await fetchData({
+//       url: "/api/admin/configure/courses/get",
+//       params: { type },
+//     })
 
-    if (res?.payload?.data?.length > 0) {
-      // setCoursesList([
-      //   {
-      //     id: "all",
-      //     text: `All ${type === "ug" ? "UG" : "PG"} Courses`,
-      //   },
+//     if (res?.payload?.data?.length > 0) {
+//       // setCoursesList([
+//       //   {
+//       //     id: "all",
+//       //     text: `All ${type === "ug" ? "UG" : "PG"} Courses`,
+//       //   },
 
-      //   ...res?.payload?.data,
-      // ])
-console.log(coursesList)
-      setCoursesList(res?.payload?.data || [])
-    }
-  }
+//       //   ...res?.payload?.data,
+//       // ])
+// // console.log(coursesList)
+//       setCoursesList(res?.payload?.data || [])
+//     }
+//   }
 
   function onSubmit() {
     if (selected === "Rank") {
@@ -315,16 +315,19 @@ console.log(coursesList)
     // searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
     searchParams.set("predictorType", formData?.predictorType?.text || "")
-console.log("PredictorType: ",formData.predictorType?.text)
-console.log("Rank: ",formData?.rank)
-console.log("RankType: ",selected)
-console.log("Course: ",formData?.courses?.text)
-console.log("CounsellingType: ",formData?.counsellingType?.text)
-console.log("Quota: ",formData?.quotas?.text)
-console.log("SubQuota: ",formData?.subQuota?.text)
-console.log("Category: ",formData?.categories?.text)
-console.log("SubQuota: ",formData?.subCategory?.text)
-    // router.push(`/results?${searchParams.toString()}`)
+    searchParams.set("state", formData?.state?.text || "")
+    searchParams.set("stateCode", formData?.state?.code || "")
+    
+// console.log("PredictorType: ",formData.predictorType?.text)
+// console.log("Rank: ",formData?.rank)
+// console.log("RankType: ",selected)
+// console.log("Course: ",formData?.courses?.text)
+// console.log("CounsellingType: ",formData?.counsellingType?.text)
+// console.log("Quota: ",formData?.quotas?.text)
+// console.log("SubQuota: ",formData?.subQuota?.text)
+// console.log("Category: ",formData?.categories?.text)
+// console.log("SubQuota: ",formData?.subCategory?.text)
+    router.push(`/results?${searchParams.toString()}`)
   }
 
   function disableCheck() {

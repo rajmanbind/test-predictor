@@ -16,6 +16,8 @@ function getTableName(stateCode?: string | null): string {
     stateCode !== "undefined" &&
     stateCode !== ""
   ) {
+    if(stateCode==='all')
+     return `college_table_all_india`;
     return `college_table_${stateCode.toUpperCase()}`;
   }
   return "college_table_all_india"
@@ -78,11 +80,16 @@ export async function GET(request: NextRequest) {
     // })
 
     // console.log("Table Name; ",tableName,courseType)
-const {data,error} = await supabase.from(tableName)
-.select("*")
-.eq("courseType",courseType)
+// const {data,error} = await supabase.from(tableName)
+// .select("*")
+// .eq("courseType",courseType)
 //  .ilike("courseType", courseType!);
 // .eq("course",course)
+
+const { data, error } = await supabase.rpc("get_unique_colleges_data", {
+  table_name: tableName,
+  course_type: courseType,
+})
 
 if (error) {
   console.error("Supabase  error:", error.message)
@@ -183,7 +190,7 @@ async function checkPurchases(
       .from("purchase")
       .select("*")
       .eq("phone", user.phone)
-
+// console.log("Purchage Details: ",userPurchases)
     if (purchasesError) {
       console.error("Supabase error:", purchasesError.message)
       return NextResponse.json(
@@ -198,32 +205,49 @@ async function checkPurchases(
     const timeZone = "Asia/Kolkata"
     const currentDate = toZonedTime(new Date(), timeZone)
 
-    let hasValidPremiumPlan = false
+    // let hasValidPremiumPlan = false
 
-    const hasUGPurchased = userPurchases.some(
-      (purchase: any) =>
-        purchase.plans === "UG Package" && !isExpired(purchase.created_at, 6),
-    )
+    // const hasUGPurchased = userPurchases.some(
+    //   (purchase: any) =>
+    //     purchase.plans === "UG Package" && !isExpired(purchase.created_at, 6),
+    // )
 
-    const hasPGPurchased = userPurchases.some(
-      (purchase: any) =>
-        purchase.plans === "PG Package" && !isExpired(purchase.created_at, 6),
-    )
+    // const hasPGPurchased = userPurchases.some(
+    //   (purchase: any) =>
+    //     purchase.plans === "PG Package" && !isExpired(purchase.created_at, 6),
+    // )
 
-    if (courseType && courseType.includes("UG") && hasUGPurchased) {
-      hasValidPremiumPlan = true
-    } else if (courseType && courseType.includes("PG") && hasPGPurchased) {
-      hasValidPremiumPlan = true
-    }
+    // if (courseType && courseType.includes("UG") && hasUGPurchased) {
+    //   hasValidPremiumPlan = true
+    // } else if (courseType && courseType.includes("PG") && hasPGPurchased) {
+    //   hasValidPremiumPlan = true
+    // }
 
-    if (hasValidPremiumPlan) {
-      hiddenData = paginated
+    // if (hasValidPremiumPlan) {
+    //   hiddenData = paginated
 
-      for (let i = 0; i < hiddenData.length; i++) {
-        hiddenData[i].purchased = true
-        hiddenData[i].statePurchased = true
-      }
-    } else {
+    //   for (let i = 0; i < hiddenData.length; i++) {
+    //     hiddenData[i].purchased = true
+    //     hiddenData[i].statePurchased = true
+    //   }
+    // } else {
+//       const justForTest = userPurchases.filter((purchase) => {
+//         const purchase_state = purchase?.closing_rank_details?.state
+//         const purchase_courseType = purchase?.closing_rank_details?.courseType
+
+//         const purchaseDate = parseISO(purchase.created_at)
+//         const expiryDate = addMonths(purchaseDate, 6)
+
+//             console.log("Purchage Data: ",purchase)
+// return purchase.payment_type==="STATE_CLOSING_RANK"
+//         return (
+//           purchase.payment_type === "STATE_CLOSING_RANK" &&
+//           purchase_courseType === courseType &&
+//           purchase_state === state &&
+//           isBefore(currentDate, expiryDate)
+//         )
+//       })
+// console.log("Just for Test: ",justForTest)
       const hasValidStatePurchase = userPurchases.some((purchase) => {
         const purchase_state = purchase?.closing_rank_details?.state
         const purchase_courseType = purchase?.closing_rank_details?.courseType
@@ -231,17 +255,19 @@ async function checkPurchases(
         const purchaseDate = parseISO(purchase.created_at)
         const expiryDate = addMonths(purchaseDate, 6)
 
+            // console.log("Purchage Data: ",purchase)
+
         return (
-          purchase.payment_type === "STATE_CLOSING_RANK" &&
+          (purchase.payment_type === "STATE_CLOSING_RANK" ||  purchase.payment_type === "ALL_INDIA_CLOSING_RANK") &&
           purchase_courseType === courseType &&
           purchase_state === state &&
           isBefore(currentDate, expiryDate)
         )
       })
 
+//       console.log("hasValidStatePurchase: ",hasValidStatePurchase)
       if (hasValidStatePurchase) {
         hiddenData = paginated
-
         for (let i = 0; i < hiddenData.length; i++) {
           hiddenData[i].purchased = true
           hiddenData[i].statePurchased = true
@@ -255,14 +281,14 @@ async function checkPurchases(
             return (
               p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
               isBefore(currentDate, expiryDate) &&
-              isCollegePurchased(college, p.closing_rank_details, coursesList)
+              isCollegePurchased(college, p.closing_rank_details)
             )
           })
 
           return matchingPurchase ? { ...college, purchased: true } : college
         })
       }
-    }
+    // }
   }
 
   return {
@@ -274,25 +300,13 @@ async function checkPurchases(
   }
 }
 
-function isCollegePurchased(college: any, userCollege: any, coursesList: any) {
-  const { instituteName, instituteType, state, courseType, year } = userCollege
+function isCollegePurchased(college: any, userCollege: any) {
+  const { instituteName, instituteType, courseType } = userCollege
 
-  if (courseType && courseType.includes("UG")) {
-    return (
-      college.instituteName === instituteName &&
-      college.course === coursesList &&
-      college.instituteType === instituteType &&
-      college.state === state &&
-      college.year === year
-    )
-  } else {
     return (
       college.instituteName === instituteName &&
       college.instituteType === instituteType &&
-      college.state === state &&
-      college.year === year &&
-      coursesList.includes(college.course)
+      college.courseType ===courseType
     )
-  }
 }
 

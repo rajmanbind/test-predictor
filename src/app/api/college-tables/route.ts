@@ -16,7 +16,7 @@ const tableName = stateCode
 
 const { data, error } = await supabase
   .from(tableName)
- .select('quota, "subQuota", category, "subCategory"')
+ .select('quota, "subQuota", category, "subCategory", "courseType"')
 // console.log("Table",tableName,data)
 
   if (error) {

@@ -19,7 +19,7 @@ import {
   onTextFieldChange,
 } from "@/utils/utils"
 import { Delete, Save } from "lucide-react"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -103,7 +103,8 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
   const [courseTypeList, setCourseTypeList] = useState<IOption[]>([])
 
   const [stateList, setStateList] = useState<IOption[]>([])
-
+    const searchParams = useSearchParams()
+  const stateCode = searchParams.get("stateCode")||""
   const params = useParams()
 
   const { showToast } = useAppState()
@@ -119,11 +120,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
 
   useEffect(() => {
     if (editMode) {
-      getDataById(params?.id)
+      getDataById(params?.id,stateCode)
     }
 
     getConfigData()
-  }, [params?.id])
+  }, [params?.id,stateCode])
 
   async function getConfigData() {
     const [quotaData, categoryData] = await Promise.all([
@@ -212,11 +213,11 @@ console.log()
     courseType()
   }, [])
 
-  async function getDataById(id: any) {
+  async function getDataById(id: any,stateCode:string) {
     const res = await fetchData({
       url: "/api/admin/get_data_by_id",
       params: {
-        id,
+        id,stateCode
       },
     })
 
@@ -254,34 +255,27 @@ console.log()
       },
     }
 //current year 
-    const r1 = data?.closingRankR1 + (data?.cRR1 ? `/ ${data.cRR1}` : "")
+    const r1 = data?.closingRankR1
     const r2 = data?.closingRankR2
-      ? data?.closingRankR2 + (data?.cRR2 ? `/ ${data.cRR2}` : "")
-      : ""
+     
+   
     const r3 = data?.closingRankR3
-      ? data?.closingRankR3 + (data?.cRR3 ? `/ ${data.cRR3}` : "")
-      : ""
+    
     const sr = data?.strayRound
-      ? data?.strayRound + (data?.sRR ? `/ ${data.sRR}` : "")
-      : ""
+    
     const lsr = data?.lastStrayRound
-      ? data?.lastStrayRound + (data?.lSRR ? `/ ${data.lSRR}` : "")
-      : ""
+     
 
 // prev year
-    const pr1 = data?.prevClosingRankR1 + (data?.prevCRR1 ? `/ ${data.prevCRR1}` : "")
+    const pr1 = data?.prevClosingRankR1 
     const pr2 = data?.prevClosingRankR2
-      ? data?.prevClosingRankR2 + (data?.prevCRR2 ? `/ ${data.prevCRR2}` : "")
-      : ""
+     
     const pr3 = data?.prevClosingRankR3
-      ? data?.prevClosingRankR3 + (data?.prevCRR3 ? `/ ${data.prevCRR3}` : "")
-      : ""
+     
     const pSr = data?.prevStrayRound
-      ? data?.prevStrayRound + (data?.prevSRR ? `/ ${data.prevSRR}` : "")
-      : ""
+     
     const pLsr = data?.prevLastStrayRound
-      ? data?.prevLastStrayRound + (data?.prevlSSR ? `/ ${data.prevlSSR}` : "")
-      : ""
+     
 
     setFormData({
       instituteName: data?.instituteName,
@@ -353,11 +347,6 @@ console.log()
   useEffect(() => {
     const fetchQ = async () => {
       try {
-        // console.log("Fetching quotas with:", {
-        //   counsellingId: formData?.counsellingType?.id,
-        //   stateId: formData?.state?.id,
-        //   stateCode: formData?.state?.code
-        // },formData);
 
         const data = await fetchQuotas(
           formData?.counsellingType?.id,
@@ -388,13 +377,13 @@ console.log()
     const loadCategories = async () => {
       if (formData?.quotas?.id) {
         const data = await fetchCategoryTypes(formData?.quotas?.id)
-
+if(data && Array.isArray(data))
         setCategoriesList(
           data.map((cat:IOptionProps) => ({
-            id: cat.id,
-            text: cat.text,
+            id: cat?.id,
+            text: cat?.text,
             otherValues: {
-              sub_categories: cat.sub_categories || [],
+              sub_categories: cat?.sub_categories || [],
             },
           })),
         )
@@ -453,12 +442,37 @@ console.log()
 
       stateCode : formData?.state?.code
     })
+    const uploadPayload = createPayload({
+           fees: formData?.fees,
+      closingRankR1: formData?.closingRankR1?.split("/")?.[0],
+      closingRankR2: formData?.closingRankR2?.split("/")?.[0],
+      closingRankR3: formData?.closingRankR3?.split("/")?.[0],
+      strayRound: formData?.strayRound?.split("/")?.[0],
+      lastStrayRound: formData?.lastStrayRound?.split("/")?.[0],
+      cRR1: formData?.closingRankR1?.split("/")?.[1]?.trim() ?? null,
+      cRR2: formData?.closingRankR2?.split("/")?.[1]?.trim(),
+      cRR3: formData?.closingRankR3?.split("/")?.[1]?.trim(),
+      sRR: formData?.strayRound?.split("/")?.[1]?.trim(),
+      lSRR: formData?.lastStrayRound?.split("/")?.[1]?.trim(),
+
+      prevClosingRankR1: formData?.prevClosingRankR1?.split("/")?.[0],
+      prevClosingRankR2: formData?.prevClosingRankR2?.split("/")?.[0],
+      prevClosingRankR3: formData?.prevClosingRankR3?.split("/")?.[0],
+      prevStrayRound: formData?.prevStrayRound?.split("/")?.[0],
+      prevLastStrayRound: formData?.prevLastStrayRound?.split("/")?.[0],
+      prevCRR1: formData?.prevClosingRankR1?.split("/")?.[1]?.trim() ?? null,
+      prevCRR2: formData?.prevClosingRankR2?.split("/")?.[1]?.trim(),
+      prevCRR3: formData?.prevClosingRankR3?.split("/")?.[1]?.trim(),
+      prevSRR: formData?.prevStrayRound?.split("/")?.[1]?.trim(),
+      prevlSRR: formData?.prevLastStrayRound?.split("/")?.[1]?.trim(),   
+  stateCode : formData?.state?.code
+    })
 
     if (editMode) {
       const res = await fetchData({
-        url: `/api/admin/update_data/${params?.id}`,
+        url: `/api/admin/update_data/${params?.id}?stateCode=${formData?.state?.code}`,
         method: "PUT",
-        data: payload,
+        data: uploadPayload,
       })
 
       if (res?.success) {
@@ -466,7 +480,7 @@ console.log()
       }
     } else {
 
-      console.log(payload)
+      // console.log(payload)
       const res = await fetchData({
         url: "/api/admin/add_data",
         method: "POST",
@@ -513,7 +527,6 @@ console.log()
       params: { type },
     })
 
-    console.log("Course List data: ", res?.payload?.data, type)
     if (res?.payload?.data?.length > 0) {
       setCoursesList(res?.payload?.data)
     }
@@ -854,7 +867,7 @@ console.log()
               type="text"
               setValue={setValue}
               placeholder="Enter here"
-              value={formData?.closingRankR1}
+             value={formData?.prevClosingRankR1??""}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               rules={{
@@ -920,7 +933,7 @@ console.log()
               type="text"
               setValue={setValue}
               placeholder="Enter here"
-              value={formData?.prevClosingRankR1}
+              value={formData?.prevClosingRankR1??""}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               rules={{

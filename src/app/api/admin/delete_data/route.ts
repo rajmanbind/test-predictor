@@ -1,15 +1,26 @@
 import { createAdminSupabaseClient } from "@/lib/supabase"
 import { isEmpty } from "@/utils/utils"
 import { NextRequest, NextResponse } from "next/server"
+function getTableName(stateCode?: string | null): string {
+  if (
+    stateCode &&
+    stateCode !== "null" &&
+    stateCode !== "undefined" &&
+    stateCode !== ""
+  ) {
+    return `college_table_${stateCode.toUpperCase()}`
+  }
+  return "college_table_all_india"
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { id } = await request.json()
-
+    const { id,stateCode } = await request.json()
+const tableName = getTableName(stateCode)
     const supabase = createAdminSupabaseClient()
 
     const { error, data } = await supabase
-      .from("college_table")
+      .from(tableName)
       .delete()
       .in("id", id)
       .select()

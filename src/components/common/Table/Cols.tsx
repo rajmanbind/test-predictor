@@ -15,9 +15,13 @@ export function generateCols(
   configYear: any[],
   adminMode?: adminMode,
   showToast?: any,
+  courseType?:string,
+  state?:any
 ) {
+
   let currentYear = new Date().getFullYear()
   let previousYear = currentYear - 1
+    const percentile_Marks = courseType?.includes("UG") || courseType?.includes("MDS")? "Marks" : "Percentile"
 
   if (!isEmpty(configYear)) {
     previousYear = configYear[0]
@@ -32,6 +36,9 @@ export function generateCols(
     },
     { title: "Course", tableKey: "course" },
     { title: "Quota", tableKey: "quota", width: "150px" },
+    { title: "Sub-Quota", tableKey: "subQuota", width: "150px" },
+    { title: "Category", tableKey: "category", width: "150px" },
+    { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
     {
       title: (
         <div>
@@ -42,157 +49,286 @@ export function generateCols(
       ),
       tableKey: "category",
     },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/ Marks Round 1 ${currentYear}`}
-        >
-          Closing Rank/ Marks [R1] {currentYear}
-        </div>
-      ),
-      tableKey: `closingRankR1_new`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/ Marks Round 2 ${currentYear}`}
-        >
-          Closing Rank/ Marks [R2] {currentYear}
-        </div>
-      ),
-      tableKey: `closingRankR2_new`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/ Marks Round 3 ${currentYear}`}
-        >
-          Closing Rank/ Marks [R3] {currentYear}
-        </div>
-      ),
-      tableKey: `closingRankR3_new`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Stray Round Rank/ Marks ${currentYear}`}
-        >
-          Stray Round Rank/ Marks {currentYear}
-        </div>
-      ),
-      tableKey: `strayRound_new`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Last Stray Round Rank/ Marks ${currentYear}`}
-        >
-          Last Stray Round Rank/ Marks {currentYear}
-        </div>
-      ),
-      tableKey: `lastStrayRound_new`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
 
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/ Marks Round 1 ${previousYear}`}
-        >
-          Closing Rank/ Marks [R1] {previousYear}
-        </div>
-      ),
-      tableKey: `closingRankR1_old`,
-      width: "185px",
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/ Marks Round 2 ${previousYear}`}
-        >
-          Closing Rank/ Marks [R2] {previousYear}
-        </div>
-      ),
-      tableKey: `closingRankR2_old`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/ Marks Round 3 ${previousYear}`}
-        >
-          Closing Rank/ Marks [R3] {previousYear}
-        </div>
-      ),
-      tableKey: `closingRankR3_old`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Stray Round Rank/ Marks ${previousYear}`}
-        >
-          Stray Round Rank/ Marks {previousYear}
-        </div>
-      ),
-      tableKey: `strayRound_old`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
-    {
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Last Stray Round Rank/ Marks ${previousYear}`}
-        >
-          Last Stray Round Rank/ Marks {previousYear}
-        </div>
-      ),
-      tableKey: `lastStrayRound_old`,
-      width: "185px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-      },
-    },
+   {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showClosingRankR1`,
+        width: "190px",
+        renderer({ cellData }) {
 
+
+
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showClosingRankR2`,
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showClosingRankR3`,
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          >
+            {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null ) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          >
+            Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
+          </div>
+        ),
+        tableKey: `showLastStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null ) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+
+
+
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${previousYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R1] ${previousYear}`}
+          </div>
+        ),
+      tableKey: "showPrevClosingRankR1",
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${previousYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R2] ${previousYear}`}
+          </div>
+        ),
+       tableKey: "showPrevClosingRankR2",
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${previousYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R3] ${previousYear}`}
+          </div>
+        ),
+       tableKey: "showPrevClosingRankR3",
+        width: "190px",
+        renderer({ cellData }) {
+
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          >
+            {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          </div>
+        ),
+        tableKey: `showPrevStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          >
+            Last {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          </div>
+        ),
+        tableKey: `showPrevLastStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
+      },
     { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-    { title: "State", tableKey: "state", width: "150px" },
     { title: "Fees", tableKey: "fees", width: "100px" },
   ]
 
@@ -205,40 +341,40 @@ export function generateCols(
       overrideInternalClick: true,
       width: "70px",
       renderer: ({ rowData }: any) => {
-        if (rowData?.new_id && rowData?.prev_id) {
-          return (
-            <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
-              <Copy
-                size={20}
-                className="text-color-text cursor-pointer"
-                onClick={() => {
-                  const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
+        // if (rowData?.id) {
 
-                  copyToClipboard(link)
-                  showToast?.("success", "Copied to clipboard")
-                }}
-              />
-              <Pencil
-                size={20}
-                className="text-color-text cursor-pointer"
-                onClick={() => {
-                  setRowData(rowData)
-                }}
-              />
+        //   return (
+        //     <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
+        //       <Copy
+        //         size={20}
+        //         className="text-color-text cursor-pointer"
+        //         onClick={() => {
+        //           const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
+        //           copyToClipboard(link)
+        //           showToast?.("success", "Copied to clipboard")
+        //         }}
+        //       />
+        //       <Pencil
+        //         size={20}
+        //         className="text-color-text cursor-pointer"
+        //         onClick={() => {
+        //           setRowData(rowData)
+        //         }}
+        //       />
 
-              <Trash2
-                size={20}
-                className="text-color-text cursor-pointer"
-                onClick={() => {
-                  setSingleDelete([rowData?.new_id, rowData?.prev_id])
-                  setPopupOpen(true)
-                }}
-              />
-            </div>
-          )
-        }
+        //       <Trash2
+        //         size={20}
+        //         className="text-color-text cursor-pointer"
+        //         onClick={() => {
+        //           setSingleDelete([rowData?.new_id, rowData?.prev_id])
+        //           setPopupOpen(true)
+        //         }}
+        //       />
+        //     </div>
+        //   )
+        // }
 
-        const id = rowData?.new_id || rowData?.prev_id
+        const id = rowData?.id
 
         return (
           <div className="flex items-center gap-2 bg-color-form-background px-4 py-5">
@@ -246,14 +382,13 @@ export function generateCols(
               size={20}
               className="text-color-text cursor-pointer"
               onClick={() => {
-                const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType?.toString()?.toLowerCase()}/cutoff?college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(rowData?.state ?? "")}`
-
+                const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType.replaceAll(" ", "-").toLowerCase()}/cutoff?stateCode=${state.code.toLowerCase()}&college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(state.text ?? "")}`
                 copyToClipboard(link)
                 showToast?.("success", "Copied to clipboard")
               }}
             />
 
-            <Link href={`/admin/edit-data/${id}`} target="_blank">
+            <Link href={`/admin/edit-data/${id}?stateCode=${state.code}`} target="_blank">
               <Pencil
                 size={20}
                 className="text-color-text hover:text-blue-600 cursor-pointer"
@@ -304,19 +439,19 @@ function copyToClipboard(text: string) {
 
 export function generateColsPublic(
   configYear: any[],
-  details?: { paid?: boolean; course_ug_pg?: string },
+  details?: { paid?: boolean; courseType?: string },
 ) {
   let currentYear = new Date().getFullYear()
   let previousYear = currentYear - 1
 
-  let paid, course_ug_pg
+  let paid, courseType
 
   if (details) {
     paid = details?.paid
-    course_ug_pg = details?.course_ug_pg
+    courseType = details?.courseType
   }
 
-  const percentile_Marks = course_ug_pg === "ug" ? "Marks" : "Percentile"
+  const percentile_Marks = courseType?.includes("UG")||courseType?.includes("MDS") ? "Marks" : "Percentile"
 
   if (!isEmpty(configYear)) {
     previousYear = configYear[0]
@@ -331,6 +466,9 @@ export function generateColsPublic(
     },
     { title: "Course", tableKey: "course" },
     { title: "Quota", tableKey: "quota", width: "150px" },
+    { title: "Sub-Quota", tableKey: "subQuota", width: "150px" },
+    { title: "Category", tableKey: "category", width: "150px" },
+    { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
     {
       title: (
         <div>
@@ -430,98 +568,161 @@ export function generateColsPublic(
     //   },
     // )
 
-    columns.push({
-      title: (
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${previousYear}`}
-        >
-          {`Closing Rank/ ${percentile_Marks} [R1] ${previousYear}`}
-        </div>
-      ),
-      tableKey: `closingRankR1_old`,
-      width: "190px",
-      renderer({ cellData }) {
-        return cellData === "undefined" || cellData === "null" ? "NA" : cellData
+    columns.push(
+      
+      
+ 
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${previousYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R1] ${previousYear}`}
+          </div>
+        ),
+      tableKey: "showPrevClosingRankR1",
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
+            <div
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
+            >
+              {cellData ?? "NA"}
+            </div>
+          )
+        },
       },
-    })
+  
+      
+  
+  
+  )
 
     if (paid) {
       columns.push(
-        {
-          title: (
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${previousYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R2] ${previousYear}`}
+          </div>
+        ),
+       tableKey: "showPrevClosingRankR2",
+        width: "190px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
             <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${previousYear}`}
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {`Closing Rank/ ${percentile_Marks} [R2] ${previousYear}`}
+              {cellData ?? "NA"}
             </div>
-          ),
-          tableKey: `closingRankR2_old`,
-          width: "190px",
-          renderer({ cellData }) {
-            return cellData === "undefined" || cellData === "null"
-              ? "NA"
-              : cellData
-          },
+          )
         },
-        {
-          title: (
+      },
+
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${previousYear}`}
+          >
+            {`Closing Rank/ ${percentile_Marks} [R3] ${previousYear}`}
+          </div>
+        ),
+       tableKey: "showPrevClosingRankR3",
+        width: "190px",
+        renderer({ cellData }) {
+
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
             <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${previousYear}`}
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {`Closing Rank/ ${percentile_Marks} [R3] ${previousYear}`}
+              {cellData ?? "NA"}
             </div>
-          ),
-          tableKey: `closingRankR3_old`,
-          width: "190px",
-          renderer({ cellData }) {
-            return cellData === "undefined" || cellData === "null"
-              ? "NA"
-              : cellData
-          },
+          )
         },
-        {
-          title: (
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          >
+            {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          </div>
+        ),
+        tableKey: `showPrevStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
             <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+              {cellData ?? "NA"}
             </div>
-          ),
-          tableKey: `strayRound_old`,
-          width: "190px",
-          renderer({ cellData }) {
-            return cellData === "undefined" || cellData === "null"
-              ? "NA"
-              : cellData
-          },
+          )
         },
-        {
-          title: (
+      },
+      {
+        title: (
+          <div
+            data-tooltip-id="tooltip"
+            data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          >
+            Last {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+          </div>
+        ),
+        tableKey: `showPrevLastStrayRound`,
+        width: "210px",
+        renderer({ cellData }) {
+          return cellData !== "xxx" &&
+            (cellData === "undefined" ||
+              cellData === "null" ||
+              cellData == null) ? (
+            "NA"
+          ) : (
             <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+              data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
+              data-tooltip-content={`Unlock This College @ ₹49`}
             >
-              Last {`Stray Round Rank/ ${percentile_Marks} ${previousYear}`}
+              {cellData ?? "NA"}
             </div>
-          ),
-          tableKey: `lastStrayRound_old`,
-          width: "190px",
-          renderer({ cellData }) {
-            return cellData === "undefined" || cellData === "null"
-              ? "NA"
-              : cellData
-          },
+          )
         },
+      },
       )
     }
 
     columns.push(
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
+      // { title: "State", tableKey: "state", width: "150px" },
       { title: "Fees", tableKey: "fees", width: "100px" },
     )
   }

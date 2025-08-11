@@ -34,36 +34,53 @@ export default function CutOffPage() {
   const { fetchData } = useFetch()
   const { appState } = useAppState()
   const { getSearchParams } = useInternalSearchParams()
+  let college = getSearchParams("college")
+  const state = getSearchParams("state")
+  const stateCode = getSearchParams("stateCode")
+  const params = useParams();
 
-  const params = useParams()
+const courseType = params?.id 
+? params?.id.toString().toUpperCase().replace(/-/g, " ") 
+: "";
 
   const [rendererStatus, setRendererStatus] = useState<any>(null)
 
+  // useEffect(() => {
+  //   if (
+  //     appState?.hasUGPackage !== undefined ||
+  //     appState?.hasPGPackage !== undefined
+  //   ) {
+  //     checkDataMode()
+  //   }
+  // }, [appState.hasUGPackage, appState.hasPGPackage])
   useEffect(() => {
-    if (
-      appState?.hasUGPackage !== undefined ||
-      appState?.hasPGPackage !== undefined
-    ) {
+    // if (
+    //   appState?.hasUGPackage !== undefined ||
+    //   appState?.hasPGPackage !== undefined
+    // ) {
       checkDataMode()
-    }
-  }, [appState.hasUGPackage, appState.hasPGPackage])
+    // }
+  }, [])
 
   async function checkPaymentStatus() {
-    let college = getSearchParams("college")
-    const state = getSearchParams("state")
 
-    if (params?.id === "ug" && appState?.hasUGPackage) {
-      await showCutoff()
-    } else if (params?.id === "pg" && appState?.hasPGPackage) {
-      await showCutoff()
-    } else {
+// console.log(courseType,appState)
+    // await showCutoff()
+    // if (courseType.includes("UG") && appState?.hasUGPackage) {
+    //   await showCutoff()
+    // } else if (courseType.includes("PG") && appState?.hasPGPackage) {
+    //   await showCutoff()
+    // } else {
       if (college) {
         college = college.toLowerCase().trim().split(" ").join("-")
-        const paymentStatus = getLocalStorageItem<any>(
-          `payment-${state}-${params?.id}-${college}`,
+     
+   const paymentStatus = getLocalStorageItem<any>(
+          `payment-${state.replaceAll(" ","-").toLowerCase()}-${params?.id}-${college}`,
         )
+        // console.log("Payment Status: ",paymentStatus)
 
         if (!isExpired(paymentStatus, 6)) {
+          // console.log("data received; ")
           await showCutoff()
         } else {
           setRendererStatus("NOT_PAID")
@@ -71,39 +88,72 @@ export default function CutOffPage() {
       } else {
         setRendererStatus("NOT_PAID")
       }
-    }
+    // }
   }
 
   async function showCutoff() {
     setRendererStatus("PAID")
-    const instituteName = getSearchParams("college")?.trim()
+    const instituteName = college?.trim()
 
     const payload: Record<string, any> = {
-      instituteName,
-      courseType: params?.id?.toString()?.toUpperCase(),
-      state: getSearchParams("state"),
+      instituteName: getSearchParams("college"),
+      courseType: courseType,
+      state: state,
+      stateCode:stateCode
     }
-
+// console.log("Payload: ",payload)
     const res = await fetchData({
       url: "/api/college_cut_off",
       params: payload,
     })
 
+    // console.log("Res: ",res)
     if (res?.success) {
       setTableData(res?.payload)
     }
   }
 
   async function checkDataMode() {
-    const instituteName = getSearchParams("college")?.trim()
+    const instituteName = college?.trim()
 
     const payload: Record<string, any> = {
       instituteName,
       dataCheckMode: true,
-      courseType: params?.id?.toString()?.toUpperCase(),
-      state: getSearchParams("state"),
+      courseType:courseType,
+      state: state,
+      stateCode:stateCode
     }
 
+//     const priceTypeName = courseType && courseType.includes(" ") ? courseType.split(" ")[1]:courseType
+// function isValidPriceTypeKey(
+//   key: string
+// ): key is keyof typeof priceType {
+//   return key in priceType;
+// }
+
+// const priceTypeValue = isValidPriceTypeKey("COLLEGE_CUT_OFF_"+priceTypeName)
+//   ? priceType["COLLEGE_CUT_OFF_"+priceTypeName]
+//   : undefined;
+
+
+const priceTypeName = courseType && courseType.includes(" ")
+  ? courseType.split(" ")[1]
+  : courseType;
+
+const fullKey = `ALL_INDIA_COLLEGE_CUT_OFF_${priceTypeName?.toUpperCase()}`;
+
+// Type guard to ensure the key is valid
+function isValidPriceTypeKey(
+  key: string
+): key is keyof typeof priceType {
+  return key in priceType;
+}
+
+const priceTypeValue = isValidPriceTypeKey(fullKey)
+  ? priceType[fullKey]
+  : undefined;
+
+  
     const [dataRes, configRes, price] = await Promise.all([
       fetchData({
         url: "/api/college_cut_off",
@@ -116,15 +166,12 @@ export default function CutOffPage() {
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
-          type:
-            params.id === "ug"
-              ? priceType.COLLEGE_CUT_OFF_UG
-              : priceType.COLLEGE_CUT_OFF_PG,
-          item: getSearchParams("state"),
+         type: priceTypeValue,
+          item: stateCode==="all"?"All India":state,
         },
       }),
     ])
-
+// console.log(dataRes,configRes,price)
     if (dataRes?.payload?.hasData) {
       checkPaymentStatus()
     } else {
@@ -139,7 +186,11 @@ export default function CutOffPage() {
       )
     }
 
+    console.log("PRice: ",price)
     if (price?.success) {
+      
+
+      
       setAmount(price?.payload?.data?.price)
     }
   }
@@ -149,7 +200,7 @@ export default function CutOffPage() {
       <Container className="pb-10 pt-1 pc:pt-10 bg-color-background">
         <div className="pb-4 pc:pb-8 flex justify-between flex-col pc:flex-row">
           <h2 className="text-color-text text-2xl pc:text-3xl w-full text-left pc:pb-6 pb-4 pt-4">
-            {getSearchParams("college")?.trim()}
+            {college}
           </h2>
 
           {rendererStatus === "PAID" && (
@@ -157,7 +208,7 @@ export default function CutOffPage() {
           )}
         </div>
 
-        <div
+      { rendererStatus === "PAID" &&  <div
           className={cn(
             "bg-sky-50 border border-sky-200 p-4 rounded-md text-color-text flex gap-2 pc:hidden overflow-hidden mb-3",
           )}
@@ -166,17 +217,19 @@ export default function CutOffPage() {
             Rotate your Phone to Landscape or Horizontal For Better view.
           </p>
         </div>
-
+}
         <Renderer
           rendererStatus={rendererStatus}
           generateCols={generateColsPublic(configYear, {
             paid: true,
-            course_ug_pg: params?.id?.toString(),
+            courseType: params?.id?.toString(),
           } as any)}
           tableData={tableData}
           showCutoff={showCutoff}
           amount={amount}
           configYear={configYear}
+          college = {college}
+          courseType = {courseType}
         />
       </Container>
       <SignInPopup />
@@ -191,6 +244,8 @@ function Renderer({
   showCutoff,
   amount,
   configYear,
+  college,
+  courseType
 }: {
   rendererStatus: string
   generateCols: TableColumn[]
@@ -198,6 +253,8 @@ function Renderer({
   showCutoff: () => void
   amount: number
   configYear: string[]
+  college:string
+  courseType:string
 }) {
   const { getSearchParams } = useInternalSearchParams()
 
@@ -223,9 +280,9 @@ function Renderer({
       payment_type: paymentType?.COLLEGE_CUT_OFF,
 
       college_cut_off_details: {
-        instituteName: getSearchParams("college")?.trim(),
+        instituteName: college?.trim(),
         state: getSearchParams("state"),
-        courseType: params?.id?.toString()?.toUpperCase(),
+        courseType: courseType,
         year: `${configYear[0]}-${configYear[1]}`,
       },
     }
@@ -248,14 +305,12 @@ function Renderer({
 
     if (res?.success) {
       showCutoff()
-
-      let college = getSearchParams("college")
       const state = getSearchParams("state")
 
       if (college && state) {
         college = college.toLowerCase().trim().split(" ").join("-")
         saveToLocalStorage(
-          `payment-${state}-${params?.id}-${college}`,
+         `payment-${state.replaceAll(" ","-").toLowerCase()}-${params?.id}-${college}`,
           new Date(),
         )
 
@@ -279,13 +334,13 @@ function Renderer({
           <div className="tab:hidden">
             <p className="text-xl tab:text-2xl pc:text-3xl">No Data found.</p>
             <p className="text-xl tab:text-2xl pc:text-3xl">
-              for: {getSearchParams("college")}
+              for: {college}
             </p>
           </div>
           <div className="hidden tab:block">
             <p className="text-xl tab:text-2xl pc:text-3xl">
-              No Data found. for: {getSearchParams("college")}{" "}
-              {params?.id?.toString()?.toUpperCase()}
+              No Data found. for: {college}{" "}
+              {courseType}
             </p>
 
             <Link href="/" className="w-full mt-6 block">
@@ -319,14 +374,14 @@ function Renderer({
   } else if (rendererStatus === "NOT_PAID") {
     return (
       <>
-        <div className="grid place-items-center min-h-[240px] w-full mt-12 mb-4 translate-y-[-100px]">
+        <div className="grid place-items-center min-h-[240px] w-full mt-20 mb-4 translate-y-[-100px]">
           <PaymentCard
             amount={amount}
             paymentDescription="Payment for Single College Cutoff at CollegeCutoff.net"
             title={
               <p className="uppercase poppinsFont">
                 Please Make Payment To View Cutoff of: <br />
-                {getSearchParams("college")}
+                {college}
               </p>
             }
             whatWillYouGet={
@@ -334,7 +389,7 @@ function Renderer({
                 <li className="flex font-poppins gap-2">
                   <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
                   <h3 className="text-[15px] leading-[1.4]">
-                    {params?.id?.toString()?.toUpperCase() === "UG"
+                    {courseType.includes("UG") 
                       ? "All Round's Complete Category and Quota Wise MBBS Cut-off RANK/MARKS Details (NEET UG 2024) of your Selected College."
                       : "Access All Round's MD/MS/Diploma Cut-off Rank / Percentile Details (NEET PG 2024) – Specialization, Category & Quota Wise for Your Selected College."}
                   </h3>

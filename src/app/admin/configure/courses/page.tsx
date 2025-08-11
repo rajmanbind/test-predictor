@@ -20,7 +20,7 @@ import {
   shouldRenderComponent,
 } from "@/utils/utils"
 import { X } from "lucide-react"
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Tooltip } from "react-tooltip"
 
@@ -35,10 +35,13 @@ export default function ConfigureCoursesPage() {
   const [popupOpen, setPopupOpen] = useState(false)
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [buttonText, setButtonText] = useState("Save Changes")
-
+  const [newCourse, setNewCourse] = useState("")
   const [renderTable, setRenderTable] = useState(false)
 
   const [formData, setFormData] = useState<any>({})
+  const [coursesList, setCoursesList] = useState<IOption[]>([])
+
+  const [courseTypeList, setCourseTypeList] = useState<IOption[]>([])
 
   const {
     control,
@@ -53,10 +56,76 @@ export default function ConfigureCoursesPage() {
   const { appState } = useAppState()
   const listRef = useRef<HTMLUListElement>(null)
 
-  async function getData(type: string, subType?: string) {
+  async function getCourses() {
+    try {
+      const res = await fetch("/api/get-courses-types")
+      const json = await res.json()
+      if (!json?.data || !Array.isArray(json.data)) {
+        console.error(
+          "Invalid data structure from /api/get-courses-types",
+          json,
+        )
+        return []
+      }
+
+      const data = json.data.map((q: IOption) => ({
+        id: q.id,
+        text: q.type,
+        type: q.type,
+      }))
+      return data
+    } catch (error) {
+      console.error("getCourses error:", error)
+      return [] // Always return fallback
+    }
+  }
+
+  async function getCoursesBasedOnCourseType(type: string) {
+    setRenderTable(true)
+    try {
+      const res = await fetch(
+        `/api/get-courses?type=${encodeURIComponent(type)}`,
+      )
+      const { data } = await res.json()
+
+      if (Array.isArray(data)) {
+        const mapped = data.map((item) => ({
+          id: item.id,
+          text: item.text, // <-- mapping `type` to `text` key
+          type: item.type,
+        }))
+        setCoursesList(mapped)
+
+        setConfigList(mapped)
+        setInitialConfigList(mapped)
+      } else {
+        setCoursesList([])
+      }
+
+      console.log("Mapped Course List data: ", data, type)
+    } catch (error) {
+      console.log("Error in course list fetch", error)
+    } finally {
+      // setRenderTable(false)
+    }
+  }
+  const courseType = async () => {
+    try {
+      const data = await getCourses()
+      setCourseTypeList(data)
+      console.log("Course Data: ", data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    courseType()
+  }, [])
+
+  async function getData(type: string) {
     const res = await fetchData({
       url: "/api/admin/configure/courses/get",
-      params: { type, subType },
+      params: { type },
     })
     if (res?.success) {
       setConfigList(res?.payload?.data || [])
@@ -64,68 +133,76 @@ export default function ConfigureCoursesPage() {
     }
   }
 
+  // function addNewRow() {
+  //   setConfigList((prev) => [{ id: null, text: "" }, ...prev])
+  //   listRef.current?.scrollTo({ top: 0, behavior: "smooth" })
+  // }
+
   function addNewRow() {
-    setConfigList((prev) => [{ id: null, text: "" }, ...prev])
+    setConfigList((prev) => [{ id: null, text: "", editing: true }, ...prev])
     listRef.current?.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  function updateText(index: number, text: string) {
-    setConfigList((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, text } : item)),
-    )
-  }
+  // function updateText(index: number, text: string) {
+  //   setConfigList((prev) =>
+  //     prev.map((item, i) => (i === index ? { ...item, text } : item)),
+  //   )
+  // }
+
+  //   function updateText(index: number, text: string) {
+  //   setConfigList((prev) =>
+  //     prev.map((item, i) =>
+  //       i === index ? { ...item, text } : item
+  //     )
+  //   )
+  // }
 
   //   add
-  async function onSubmit() {
-    if (!formData?.courseType?.id) return
+  async function addNewCourse() {
+    if (!newCourse) return
 
-    const newEntries = configList.filter(
-      (item) => item.id === null && item.text.trim() !== "",
-    )
-    if (newEntries.length === 0) return
-
+    // const newEntries = configList.filter(
+    //   (item) => item.id === null && item.text.trim() !== "",
+    // )
+    // if (newEntries.length === 0) return
+    // console.log("sending data: ",{
+    //             courseType: formData?.courseType?.type,
+    //             course:newCourse,
+    //           })
     const res = await fetchData({
       url: "/api/admin/configure/courses/add",
       method: "POST",
-      data: newEntries.map((item) => {
-        if (formData?.courseType?.id === "pg") {
-          return {
-            type: formData?.courseType?.id,
-            subType: formData?.subType?.text,
-            text: item.text.trim(),
-          }
-        }
-
-        return {
-          type: formData?.courseType?.id,
-          text: item.text.trim(),
-        }
-      }),
+      data: {
+        courseType: formData?.courseType?.type,
+        course: newCourse,
+      },
     })
 
     if (res?.success) {
+      // console.log("Data added ",res?.payload)
       showToast("success", res?.payload?.msg)
-      getData(formData?.courseType?.id, formData?.subType?.text)
+      getData(res?.payload?.data.type)
     } else {
       showToast("error", "Failed to add options")
     }
   }
 
   async function updateData(id: number, newText: string) {
-    if (!newText.trim()) return
+    if (!newCourse) return
 
     const res = await fetchData({
       url: "/api/admin/configure/courses/update",
       method: "POST",
       data: {
         id,
-        text: newText.trim(),
+        text: newCourse.trim(),
       },
     })
 
     if (res?.success) {
+    //  getData()
       showToast("success", "Updated successfully")
-      getData(formData?.courseType?.id, formData?.subType?.text)
+      getData(res?.payload?.data.type)
     }
   }
 
@@ -144,7 +221,7 @@ export default function ConfigureCoursesPage() {
 
     if (res?.success) {
       showToast("success", res?.payload?.msg)
-      getData(formData?.courseType?.id, formData?.subType?.text)
+ getData(formData?.courseType?.type)
       setPopupOpen(false)
     } else {
       showToast("error", "Failed to delete")
@@ -155,7 +232,6 @@ export default function ConfigureCoursesPage() {
     configList?.length === 0 ||
     configList?.some((item) => item.text.trim() === "") ||
     JSON.stringify(configList) === JSON.stringify(initialConfigList)
-
   return (
     <BELayout className="mb-10 tab:mb-0">
       <Heading>Configure Courses</Heading>
@@ -169,26 +245,32 @@ export default function ConfigureCoursesPage() {
             value={formData?.courseType}
             onChange={({ name, selectedValue }) => {
               onOptionSelected(name, selectedValue, setFormData)
-              if (selectedValue?.id === "ug") {
-                setRenderTable(true)
-                getData("ug")
-              } else {
-                setRenderTable(false)
-              }
+              // if (selectedValue?.id === "ug") {
+              //   setRenderTable(true)
+              //   getData("ug")
+              // } else {
+              //   setRenderTable(false)
+              // }
+              getCoursesBasedOnCourseType(selectedValue?.text)
+              // setFormData((prev) => ({
+              //   ...prev,
+              //   courseType: selectedValue,
+              //   counsellingType: undefined,
+              // }))
             }}
             control={control}
             setValue={setValue}
             required
-            options={courseType}
+            options={courseTypeList}
             debounceDelay={0}
             wrapperClass="max-w-[150px] w-full"
             searchAPI={(text, setOptions) =>
-              autoComplete(text, courseType, setOptions)
+              autoComplete(text, courseTypeList, setOptions)
             }
             errors={errors}
           />
 
-          {formData?.courseType?.id === "pg" && (
+          {/* {formData?.courseType?.id === "pg" && (
             <SearchAndSelect
               name="subType"
               label="Sub Type"
@@ -210,13 +292,13 @@ export default function ConfigureCoursesPage() {
               }
               errors={errors}
             />
-          )}
+          )} */}
         </div>
 
         {renderTable && (
-          <form
+          <div
             className="w-full max-w-[500px]"
-            onSubmit={handleSubmit(onSubmit)}
+            // onSubmit={handleSubmit(addNewCourse)}
           >
             <div className="text-xl text-color-text mt-8 mb-4 flex items-center justify-between">
               Courses Options
@@ -237,78 +319,198 @@ export default function ConfigureCoursesPage() {
               className="flex flex-col gap-3 w-full max-w-[500px] max-h-[calc(100vh-500px)] overflow-y-auto"
             >
               {configList?.map((item, index) => (
+                // <li
+                //   key={index}
+                //   className="flex items-center justify-between gap-2 text-color-subtext py-2 mr-4 text-sm"
+                // >
+                //   <Input
+                //     name={String(index)}
+                //     placeholder="Enter here"
+                //     value={item.text}
+                //     setValue={setValue}
+                //     onChange={(e) => {
+                //       updateText(index, e.target.value)
+                //     }}
+                //     onFocus={(e) => {
+                //       console.log("Item",item)
+                //       if (item?.id) {
+                //         setUpdateMode(e.target.name)
+                //         if (buttonText === "Update Changes") return
+                //         setButtonText("Update Changes")
+                //       } else {
+                //         if (buttonText === "Save Changes") return
+                //         setButtonText("Save Changes")
+                //       }
+                //     }}
+                //     onBlur={() => {
+                //       console.log("test")
+                //       if (item?.id) {
+                //         setUpdateMode("")
+                //         if (item.text !== initialConfigList?.[index]?.text)
+                //           updateData(item.id, item.text)
+                //       }
+                //     }}
+                //     control={control}
+                //     errors={errors}
+                //     wrapperClass={cn(
+                //       "w-full",
+                //       String(index) === updateMode && "z-[1001]",
+                //     )}
+                //   />
+
+                //   {item.id ? (
+                //     <X
+                //       className={cn(
+                //         "text-color-subtext hover:text-red-600 cursor-pointer border-none outline-none",
+                //         initialConfigList?.length === 1 && "opacity-50",
+                //       )}
+                //       size={20}
+                //       data-tooltip-id={
+                //         initialConfigList?.length === 1 ? "tooltip" : ""
+                //       }
+                //       data-tooltip-content="You Can't Delete the Last Option"
+                //       onClick={() => {
+                //         if (initialConfigList?.length === 1) return
+
+                //         setDeleteId(item.id)
+                //         setPopupOpen(true)
+                //       }}
+                //     />
+                //   ) : (
+                //     <X
+                //       className="text-color-subtext hover:text-red-600 cursor-pointer border-none outline-none"
+                //       size={20}
+                //       onClick={() => removeNewRow(index)}
+                //     />
+                //   )}
+                // </li>
                 <li
                   key={index}
                   className="flex items-center justify-between gap-2 text-color-subtext py-2 mr-4 text-sm"
                 >
-                  <Input
-                    name={String(index)}
-                    placeholder="Enter here"
-                    value={item.text}
-                    setValue={setValue}
-                    onChange={(e) => {
-                      updateText(index, e.target.value)
-                    }}
-                    onFocus={(e) => {
-                      if (item?.id) {
-                        setUpdateMode(e.target.name)
-                        if (buttonText === "Update Changes") return
-                        setButtonText("Update Changes")
-                      } else {
-                        if (buttonText === "Save Changes") return
-                        setButtonText("Save Changes")
-                      }
-                    }}
-                    onBlur={() => {
-                      if (item?.id) {
-                        setUpdateMode("")
-                        if (item.text !== initialConfigList?.[index]?.text)
-                          updateData(item.id, item.text)
-                      }
-                    }}
-                    control={control}
-                    errors={errors}
-                    wrapperClass={cn(
-                      "w-full",
-                      String(index) === updateMode && "z-[1001]",
-                    )}
-                  />
-
-                  {item.id ? (
-                    <X
-                      className={cn(
-                        "text-color-subtext hover:text-red-600 cursor-pointer border-none outline-none",
-                        initialConfigList?.length === 1 && "opacity-50",
+                  {item.editing ? (
+                    <Input
+                      name={String(index)}
+                      placeholder="Enter here"
+                      value={item.text}
+                      setValue={setValue}
+                      onChange={(e) => setNewCourse(e.target.value)}
+                      control={control}
+                      errors={errors}
+                      wrapperClass={cn(
+                        "w-full",
+                        String(index) === updateMode && "z-[1001]",
                       )}
-                      size={20}
-                      data-tooltip-id={
-                        initialConfigList?.length === 1 ? "tooltip" : ""
-                      }
-                      data-tooltip-content="You Can't Delete the Last Option"
-                      onClick={() => {
-                        if (initialConfigList?.length === 1) return
-
-                        setDeleteId(item.id)
-                        setPopupOpen(true)
-                      }}
                     />
                   ) : (
-                    <X
-                      className="text-color-subtext hover:text-red-600 cursor-pointer border-none outline-none"
-                      size={20}
-                      onClick={() => removeNewRow(index)}
-                    />
+                    <div className="w-full px-3 py-3 border border-color-border rounded-md">
+                      {item.text}
+                    </div>
                   )}
+
+                  <div className="flex gap-2">
+                    {item.id ? (
+                      <>
+                        {item.editing ? (
+                          <>
+                            <Button
+                              size="sm"
+                              className="p-3.5"
+                              onClick={() => {
+                                // const updated = [...configList]
+                                // updated[index].editing = false
+                                // setConfigList(updated)
+                                // updateData(item.id, item.text)
+                                updateData(item.id, newCourse)
+                              }}
+                            >
+                              Update
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-gray-500 p-3"
+                              onClick={() => {
+                                const updated = [...configList]
+                                updated[index] = {
+                                  ...initialConfigList[index],
+                                  editing: false,
+                                }
+                                setConfigList(updated)
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="p-3"
+                              onClick={() => {
+                                const updated = [...configList]
+                                updated[index].editing = true
+                                setConfigList(updated)
+                              }}
+                            >
+                              Edit
+                            </Button>
+
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              className="p-3"
+                              disabled={initialConfigList?.length === 1}
+                              onClick={() => {
+                                if (initialConfigList?.length === 1) return
+                                setDeleteId(item.id)
+                                setPopupOpen(true)
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          size="sm"
+                          className="p-3"
+                          onClick={() => {
+                            console.log("hari")
+                            // if (item.text.trim()) {
+                            // const updated = [...configList]
+                            // updated[index].editing = false
+                            // setConfigList(updated)
+                            addNewCourse()
+                            // }
+                          }}
+                        >
+                          Add
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-gray-500 p-3.5"
+                          onClick={() => removeNewRow(index)}
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
-
+            {/* 
             <div className="flex mt-8 items-center justify-end mb-8">
               <Button className="py-2" type="submit" disabled={isSaveDisabled}>
                 {buttonText}
               </Button>
-            </div>
-          </form>
+            </div> */}
+          </div>
         )}
       </Card>
 

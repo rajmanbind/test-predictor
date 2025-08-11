@@ -18,10 +18,11 @@ import {
   onPageChange,
   saveToLocalStorage,
   shouldRenderComponent,
+  getLocalStorageItem
 } from "@/utils/utils"
 import { ChevronLeft, CircleCheckBig, Eye, Users } from "lucide-react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function CollegeListClosingRanksPage() {
@@ -36,13 +37,28 @@ export default function CollegeListClosingRanksPage() {
   const [statePaymentPopup, setStatePaymentPopup] = useState(false)
   const [paymentChecker, setPaymentChecker] = useState(false)
   const [statePurchaseMode, setStatePurchaseMode] = useState(false)
-
+ const currentYear = new Date().getFullYear()
+ const prevYear  = currentYear-1
   const [configYear, setConfigYear] = useState<any>(null)
 
   const [amount, setAmount] = useState<number>(49)
 
   const params = useParams()
-  const state = decodeURIComponent(params.state as any)
+
+
+    const searchParams = useSearchParams()
+
+  const courseType = searchParams.get("courseType")
+  const course = searchParams.get("course")
+  const stateCode = decodeURIComponent(params.state as any)
+const state = searchParams.get("state")
+// console.log(state)
+  useEffect(() => {
+    console.log("courseType:", courseType)
+    console.log("course:", course)
+    console.log("stateCode:", stateCode)
+  }, [courseType, course])
+
   const { getSearchParams } = useInternalSearchParams()
 
   const { fetchData } = useFetch()
@@ -56,64 +72,151 @@ export default function CollegeListClosingRanksPage() {
   }, [updateUI])
 
   async function getData() {
-    const [closingRankYear, price, statePrice] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CONFIG_YEAR" },
-      }),
+
+// Type guard to ensure the key is valid
+function isValidPriceTypeKey(
+  key: string
+): key is keyof typeof priceType {
+  return key in priceType;
+}
+    const page = Number(getSearchParams("page") || 1)
+ if(stateCode!=="all"){  
+  
+  const priceTypeName = courseType && courseType.includes(" ")
+  ? courseType.split(" ")[1]
+  : courseType;
+
+const fullKey = `SINGLE_COLLEGE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+
+const stateFullKey = `STATE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+// const allIndiakay1 = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+// const allIniaKey2 = `ALL_INDIA_CLOSING_RANK`;
+
+
+
+const priceTypeValue = isValidPriceTypeKey(fullKey)
+  ? priceType[fullKey]
+  : undefined;
+const statePriceTypeValue = isValidPriceTypeKey(stateFullKey)
+  ? priceType[stateFullKey]
+  : undefined;
+
+
+  const [price, res,statePrice] = await Promise.all([
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
-          type:
-            params.id === "ug"
-              ? priceType.SINGLE_COLLEGE_CLOSING_RANK_UG
-              : priceType.SINGLE_COLLEGE_CLOSING_RANK_PG,
+          type:priceTypeValue,
           item: state,
         },
       }),
+
+fetchData({
+      url: "/api/closing_ranks/college_list",
+      params: {
+        page,
+        size: 20,
+        state,
+        courseType: courseType,
+        course: course,
+        stateCode:stateCode
+      },
+    })
+,
+
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
-          type:
-            params.id === "ug"
-              ? priceType.STATE_CLOSING_RANK_UG
-              : priceType.STATE_CLOSING_RANK_PG,
+          type:statePriceTypeValue,
           item: state,
         },
       }),
     ])
-
-    if (closingRankYear?.success) {
-      setConfigYear({
-        id: closingRankYear?.payload?.data?.[0]?.text,
-        text: closingRankYear?.payload?.data?.[0]?.text,
-      })
-    }
-
-    if (price?.success) {
+   if (price?.success) {
       setAmount(price?.payload?.data?.price)
     }
 
     if (statePrice?.success) {
       setStateAmount(statePrice?.payload?.data?.price)
     }
+    if (res?.success) {
+      setTableData(res?.payload)
+    }
+  
+  }
+  else{
 
-    const page = Number(getSearchParams("page") || 1)
+      const priceTypeName = courseType && courseType.includes(" ")
+  ? courseType.split(" ")[1]
+  : courseType;
 
-    const res = await fetchData({
+
+
+
+
+
+
+const allIndiaFullKey = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+const allIndiaFull = `ALL_INDIA_CLOSING_RANK`;
+
+
+
+const allIndiaPriceTypeValue = isValidPriceTypeKey(allIndiaFullKey)
+  ? priceType[allIndiaFullKey]
+  : undefined;
+
+const allIndiaPriceTypeValueForAll = isValidPriceTypeKey(allIndiaFull)
+  ? priceType[allIndiaFull]
+  : undefined;
+
+  const [price, res, allIndiaPrice] = await Promise.all([
+      fetchData({
+        url: "/api/admin/configure_prices/get",
+        params: {
+          type:allIndiaPriceTypeValue,
+          item: state==="all"?"All India":state,
+        },
+      }),
+
+fetchData({
       url: "/api/closing_ranks/college_list",
       params: {
         page,
         size: 20,
         state,
-        courseType: params.id?.toString()?.toUpperCase(), //ug pg
-        course: getSearchParams("course"),
+        courseType: courseType,
+        course: course,
+        stateCode:stateCode
       },
     })
+,
 
+      fetchData({
+        url: "/api/admin/configure_prices/get",
+        params: {
+          type:allIndiaPriceTypeValueForAll,
+          item: state==="all"?"All India":state,
+        },
+      }),
+    ])
+   if (price?.success) {
+      setAmount(price?.payload?.data?.price)
+    }
+
+    if (allIndiaPrice?.success) {
+      setStateAmount(allIndiaPrice?.payload?.data?.price)
+    }
+
+
+    
     if (res?.success) {
+      // console.log("ResP ",res.payload)
       setTableData(res?.payload)
     }
+  }
+
+
+   
   }
 
   function buttonText(rowData: any) {
@@ -131,14 +234,14 @@ export default function CollegeListClosingRanksPage() {
         disableMobStaticLeft: true,
       },
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      { title: "State", tableKey: "state", width: "150px" },
+      // { title: "State", tableKey: "state", width: "150px" },
       {
         title: "Course Type",
         tableKey: "courseType",
 
         width: "150px",
         renderer({ cellData }) {
-          return getSearchParams("course")
+          return courseType
         },
       },
       {
@@ -146,21 +249,27 @@ export default function CollegeListClosingRanksPage() {
         tableKey: "action",
         width: "120px",
         renderer({ rowData }) {
+//  college.toLowerCase().trim().split(" ").join("-")
+   const paymentStatus = getLocalStorageItem<any>(
+          `payment-${state?.replaceAll(" ","-").toLowerCase()}-${courseType?.replaceAll(" ","-").toLowerCase()}-${rowData.instituteName.toLowerCase().trim().split(" ").join("-")}`
+        )
+        // console.log(`payment-${state?.replaceAll(" ","-").toLowerCase()}-${courseType?.replaceAll(" ","-").toLowerCase()}-${rowData.instituteName}`)
+          // console.log("Row Data: ",paymentStatus)
           return (
             <div className="w-[120px] m-3">
-              {rowData?.purchased ? (
+              {/* payment-${state.replaceAll(" ","-").toLowerCase()}-${params?.id}-${college} */}
+              {rowData?.purchased ||paymentStatus? (
                 <Link
-                  href={`/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams(
-                    "course",
-                  )}`}
+                  href={`/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course}`}
                   className="text-[14px] disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed flex items-center gap-2"
                   onClick={() => {
                     saveToLocalStorage(
                       paymentType.SINGLE_COLLEGE_CLOSING_RANK,
                       {
                         ...rowData,
-                        course: getSearchParams("course"),
-                        courseType: params.id?.toString()?.toUpperCase(),
+                        course: course,
+                        courseType: courseType,
+                        state:state
                       },
                     )
                   }}
@@ -183,8 +292,9 @@ export default function CollegeListClosingRanksPage() {
                       paymentType.SINGLE_COLLEGE_CLOSING_RANK,
                       {
                         ...rowData,
-                        course: getSearchParams("course"),
-                        courseType: params.id?.toString()?.toUpperCase(),
+                        course: course,
+                        courseType: courseType,
+                        state:state
                       },
                     )
 
@@ -239,8 +349,9 @@ export default function CollegeListClosingRanksPage() {
       payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
       closing_rank_details: {
         ...rowData,
-        courseType: params?.id === "ug" ? "UG" : "PG",
-        course: getSearchParams("course"),
+        courseType: courseType,
+        course:course,
+        state:state,
         year: configYear?.text,
       },
     }
@@ -251,6 +362,9 @@ export default function CollegeListClosingRanksPage() {
       data: payload,
     })
 
+
+
+    // console.log("ResPonse: ",res)
     if (res?.success) {
       // setUpdateUI((prev) => !prev)
 
@@ -265,7 +379,7 @@ export default function CollegeListClosingRanksPage() {
 
       if (priceRes?.success) {
         router.push(
-          `/closing-ranks/${params?.id}/${state}/college-details?college=${rowData?.instituteName}&course=${getSearchParams("course")}`,
+          `/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course||""}`,
         )
       }
     }
@@ -275,7 +389,6 @@ export default function CollegeListClosingRanksPage() {
 
   async function successCallbackStatePayment(orderId: string) {
     setShowPaymentPopup(false)
-
     showToast(
       "success",
       <p>
@@ -288,27 +401,26 @@ export default function CollegeListClosingRanksPage() {
     const payload = {
       orderId,
       amount: stateAmount,
-      payment_type: paymentType?.STATE_CLOSING_RANK,
+      payment_type: stateCode==="all"?paymentType?.ALL_INDIA_CLOSING_RANK:paymentType?.STATE_CLOSING_RANK,
       closing_rank_details: {
-        state: params?.state,
-        courseType: params?.id === "ug" ? "UG" : "PG",
-        course: getSearchParams("course"),
+        courseType: courseType,
+        course: course,
         year: configYear?.text,
       },
     }
-
+// console.log("Payload: ",payload)
     const res = await fetchData({
       url: "/api/purchase",
       method: "POST",
       data: payload,
     })
-
+// console.log("Res state datas: ",res)
     if (res?.success) {
       const priceRes = await fetchData({
         url: "/api/payment",
         method: "POST",
         data: {
-          [paymentType?.STATE_CLOSING_RANK]: stateAmount,
+          [stateCode==="all"?paymentType?.ALL_INDIA_CLOSING_RANK:paymentType?.STATE_CLOSING_RANK]: stateAmount,
         },
         noToast: true,
       })
@@ -323,7 +435,7 @@ export default function CollegeListClosingRanksPage() {
   }
 
   function backURL() {
-    return `/closing-ranks/ug`
+    return `/closing-ranks`
   }
 
   return (
@@ -345,8 +457,7 @@ export default function CollegeListClosingRanksPage() {
                   {state} Medical Colleges
                 </h1>
                 <p className="text-gray-600">
-                  NEET {params?.id?.toString()?.toUpperCase()}{" "}
-                  {configYear?.text} <span className="capitalize">{state}</span>{" "}
+                  NEET UG {prevYear} - {currentYear} <span className="capitalize">{state}</span>{" "}
                   Medical Colleges List
                 </p>
               </div>
@@ -378,20 +489,29 @@ export default function CollegeListClosingRanksPage() {
               totalItems={tableData?.totalItems}
               itemsCountPerPage={tableData?.pageSize}
               wrapperClass="pb-[50px]"
-              onPageChange={(page: number) => {
-                onPageChange(
-                  page,
-                  "/api/closing_ranks/college_list",
-                  fetchData,
-                  setTableData,
-                  {
-                    page,
-                    size: 20,
-                    state,
-                    courseType: params.id?.toString()?.toUpperCase(),
-                    course: getSearchParams("course"),
-                  },
-                )
+              onPageChange={async (page: number) => {
+                
+
+
+
+ const res = await fetchData({
+      url: "/api/closing_ranks/college_list",
+      params: {
+        page,
+        size: 20,
+        state,
+        courseType: courseType,
+        course: course,
+        stateCode:stateCode
+      },
+    })
+
+    
+    if (res?.success) {
+      // console.log("ResP ",res.payload)
+      setTableData(res?.payload)
+    }
+
               }}
             />
           </Container>
@@ -406,16 +526,15 @@ export default function CollegeListClosingRanksPage() {
                   <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
                       <div className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800 shadow-sm border border-green-200 mb-3 inline-block">
-                        State-Wise Purchase
+                       {stateCode!=="all"? "State-Wise Purchase":"All-India Purchages" }
                       </div>
 
                       <h3 className="text-xl font-bold mb-2 text-color-table-header">
-                        {`Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
+                        {`Unlock All ${state}'s NEET ${course} Closing Ranks`}
                       </h3>
                       <p className="text-black">
-                        You can unlock state-wise NEET{" "}
-                        {getSearchParams("course")} closing ranks for all
-                        colleges in {params?.state} at once.
+                        You can unlock {stateCode!=="all"? "state-wise":"all-india" } NEET {course} closing ranks for all
+                        colleges in {state} at once.
                       </p>
                     </div>
 
@@ -429,12 +548,13 @@ export default function CollegeListClosingRanksPage() {
                           if (user?.success) {
                             setStatePurchaseMode(true)
                             setStatePaymentPopup(true)
+                            setPaymentChecker(true)
                           } else {
                             setAppState({ signInModalOpen: true })
                           }
                         })
                       }}
-                      disabled
+                      // disabled
                       data-tooltip-id={"tooltip"}
                       data-tooltip-content="Coming Soon"
                     >
@@ -493,7 +613,7 @@ export default function CollegeListClosingRanksPage() {
             <li className="flex font-poppins gap-2">
               <CircleCheckBig className="size-5 text-primary text-green-600 flex-shrink-0" />
               <h3 className="text-[15px] leading-[1.4]">
-                {params?.id?.toString()?.toUpperCase() === "UG"
+                {courseType?.includes("UG")
                   ? "All Round's Complete Category and Quota Wise MBBS Cut-off RANK/MARKS Details (NEET UG 2024) of your Selected College."
                   : "Access All Round's MD/MS/Diploma Cut-off Rank / Percentile Details (NEET PG 2024) – Specialization, Category & Quota Wise for Your Selected College."}
               </h3>
@@ -516,7 +636,7 @@ export default function CollegeListClosingRanksPage() {
         paymentDescription="CollegeCutOff.net Payment for State Closing Ranks"
         title={
           <p className="pt-2 uppercase poppinsFont">
-            {`Please make payment to Unlock All ${params?.state}'s NEET ${getSearchParams("course")} Closing Ranks`}
+            {`Please make payment to Unlock All ${state}'s NEET ${course} Closing Ranks`}
           </p>
         }
         btnText={`Unlock Now @ ₹${stateAmount}`}

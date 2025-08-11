@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr"
+import { createBrowserClient, createServerClient } from "@supabase/ssr"
 import { cookies, cookies as nextCookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
 
@@ -146,3 +146,7 @@ export function updateAdminSession(request: NextRequest) {
 
   return supabaseResponse
 }
+
+
+
+

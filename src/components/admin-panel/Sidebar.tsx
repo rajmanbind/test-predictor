@@ -28,9 +28,14 @@ export const sidebarMenus = [
     link: "/admin/payment-insights",
   },
   {
-    icon: <PlusSquare />,
+    icon: <PlusSquare/>,
     title: "Add Data",
     link: "/admin/add-data",
+  },
+  {
+    icon: <PlusSquare />,
+    title: "Add Bulk Data",
+    link: "/admin/add-bulk-data",
   },
   {
     icon: <Database />,

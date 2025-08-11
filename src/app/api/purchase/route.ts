@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const reqData = await request.json()
 
     const supabase = createUserSupabaseClient()
-
+// console.log("Req data purchagesd: ",reqData)
     const {
       data: { user },
       error: authError,
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       .from("purchase")
       .insert(reqData)
       .select()
-
+// console.log("PUshed data; ",reqData,data)
     if (error || isEmpty(data)) {
       return NextResponse.json(
         { msg: "Failed to insert data", error, data },

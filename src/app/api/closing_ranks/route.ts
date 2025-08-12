@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 function getTableName(stateCode?: string | null): string {
-console.log("State Code: ",stateCode)
   if (
     stateCode &&
     stateCode !== "null" &&

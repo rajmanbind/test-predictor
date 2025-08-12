@@ -16,11 +16,9 @@ import { useRouter } from "next/navigation"
 import { SetStateAction, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
-const domicileStates: IOption[] = states.slice(1)
 
 interface IFormData {
   rank?: number | string
-  domicileState?: IOption
   course?: IOption
 }
 
@@ -75,9 +73,12 @@ export function SearchForm({
 
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("rankType", getSearchParams("rankType") || "")
-    searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.course?.text || "")
     searchParams.set("courseType", getSearchParams("courseType") || "")
+    searchParams.set("stateCode", getSearchParams("stateCode") || "")
+    searchParams.set("state", getSearchParams("state") || "")
+    searchParams.set("counsellingTypeId", getSearchParams("counsellingTypeId") || "")
+    searchParams.set("page", getSearchParams("page") || "1")
 
     setAppState({ isLoading: true })
 
@@ -114,7 +115,7 @@ export function SearchForm({
         errors={errors}
       />
 
-      <SearchAndSelect
+      {/* <SearchAndSelect
         name="domicileState"
         label="State (Domicile State)"
         placeholder="Select your Domicile State"
@@ -136,7 +137,7 @@ export function SearchForm({
           autoComplete(text, domicileStates, setOptions)
         }
         errors={errors}
-      />
+      /> */}
 
       <SearchAndSelect
         name="course"

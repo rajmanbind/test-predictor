@@ -1,8 +1,10 @@
 "use client"
 
+import { IOptionProps } from "@/components/admin-panel/add-data/AddDataForm"
 import { Button } from "@/components/common/Button"
 import MultiSelect from "@/components/common/MultiSelect"
 import AnimatedPopup from "@/components/common/popups/AnimatedPopup"
+import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
 import { instituteTypes, states } from "@/utils/static"
 import { autoComplete, cn, onOptionSelected } from "@/utils/utils"
@@ -12,8 +14,6 @@ import { useForm } from "react-hook-form"
 import { FeeRangeSlider, MAX_FEE } from "../FeeRangeSlider"
 import { IFormData, IParams } from "./Filter"
 
-const filterStates = states.slice(1)
-
 interface IFilterPopupProps {
   isOpen: boolean
 
@@ -21,8 +21,8 @@ interface IFilterPopupProps {
   mobFilterFormData: IFormData
 
   setFilterParams: React.Dispatch<SetStateAction<any>>
-  categoryList: IOption[]
-  quotasList: IOption[]
+  // categoryList: IOption[]
+  // quotasList: IOption[]
 
   onConfirm: () => void
   onClose: () => void
@@ -30,8 +30,6 @@ interface IFilterPopupProps {
 
 export function FilterPopup({
   isOpen,
-  categoryList,
-  quotasList,
   setFilterParams,
   setMobFilterFormData,
   mobFilterFormData,
@@ -47,20 +45,76 @@ export function FilterPopup({
     shouldFocusError: true,
   })
 
+    const { getSearchParams } = useInternalSearchParams()
   const [range, setRange] = useState<[number, number]>([0, MAX_FEE])
   const [includeFeeRange, setIncludeFeeRange] = useState(false)
+  const [categoryList, setCategoriesList] = useState<IOption[]>([])
+  const [quotasList, setQuotasList] = useState<IOption[]>([])
+
+  const courseType = getSearchParams("courseType")
+  const stateCode = getSearchParams("stateCode")
+  const counsellingTypeId = getSearchParams("counsellingTypeId")
+
+  // Fetch quotas when relevant filter changes
+  useEffect(() => {
+    async function fetchQuotas() {
+      if (!counsellingTypeId) return
+      const url = new URL("/api/quota-types", window.location.origin)
+      url.searchParams.set("counselling_type_id", counsellingTypeId)
+      if (stateCode) url.searchParams.set("state_code", stateCode)
+      if (courseType) url.searchParams.set("course_type", courseType)
+      const res = await fetch(url.toString())
+      const json = await res.json()
+      setQuotasList(
+        (json.data || []).map((q: any) => ({
+          ...q,
+          id: q.id,
+          text: q.text,
+        }))
+      )
+    }
+    if (
+      counsellingTypeId === "1" ||
+      (counsellingTypeId === "2" && stateCode)
+    ) {
+      fetchQuotas()
+    }
+
+
+    // console.log("Hari")
+  }, [counsellingTypeId, stateCode, courseType])
+console.log({counsellingTypeId, stateCode, courseType})
+  // Fetch categories when quota changes
+  useEffect(() => {
+    async function fetchCategoryTypes() {
+      if (!mobFilterFormData?.quota?.[0]?.id) return
+      const url = new URL("/api/category-types", window.location.origin)
+      url.searchParams.set("quota_type_id", mobFilterFormData?.quota?.[0]?.id)
+      const res = await fetch(url.toString())
+      const json = await res.json()
+      setCategoriesList(
+       (json.data || []).map((cat: any) => ({
+          id: cat.id,
+          text: cat.text,
+          otherValues: { sub_categories: cat.sub_categories || [] },
+        }))
+      )
+    }
+    fetchCategoryTypes()
+  }, [mobFilterFormData?.quota])
+
 
   async function onSubmit() {
     let params: IParams = {}
 
     if (includeFeeRange) {
       params = {
+        //  ...params,
         feeFrom: range[0],
         feeTo: range[1],
       }
     }
 
-    includeInParams(mobFilterFormData?.state, "states", params)
     includeInParams(mobFilterFormData?.instituteType, "instituteType", params)
     includeInParams(mobFilterFormData?.category, "category", params)
     includeInParams(mobFilterFormData?.quota, "quota", params)
@@ -70,11 +124,11 @@ export function FilterPopup({
 
   function includeInParams(
     array: IOption[],
-    key: "states" | "category" | "instituteType" | "quota",
+    key: "category" | "instituteType" | "quota",
     params: IParams,
   ) {
     if (array?.length > 0) {
-      params[key] = array.map((item) => item.text).join(",")
+     params[key] = array.map((item) => item.text)
     }
   }
 
@@ -109,43 +163,6 @@ export function FilterPopup({
             errors={errors}
           />
 
-          <MultiSelect
-            name="state"
-            label="State"
-            placeholder="Select State"
-            value={mobFilterFormData?.state}
-            onChange={({ name, selectedOptions }) => {
-              onOptionSelected(name, selectedOptions, setMobFilterFormData)
-            }}
-            control={control}
-            setValue={setValue}
-            options={filterStates}
-            debounceDelay={0}
-            defaultOption={mobFilterFormData?.state}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, filterStates, setOptions)
-            }
-            errors={errors}
-          />
-
-          <MultiSelect
-            name="category"
-            label="Category"
-            placeholder="Select Category"
-            value={mobFilterFormData?.category}
-            onChange={({ name, selectedOptions }) => {
-              onOptionSelected(name, selectedOptions, setMobFilterFormData)
-            }}
-            control={control}
-            setValue={setValue}
-            options={categoryList}
-            debounceDelay={0}
-            defaultOption={mobFilterFormData?.category}
-            searchAPI={(text, setOptions) =>
-              autoComplete(text, categoryList, setOptions)
-            }
-            errors={errors}
-          />
 
           <MultiSelect
             name="quota"
@@ -166,6 +183,25 @@ export function FilterPopup({
             errors={errors}
           />
 
+          <MultiSelect
+            name="category"
+            label="Category"
+            placeholder="Select Category"
+            value={mobFilterFormData?.category}
+            onChange={({ name, selectedOptions }) => {
+              onOptionSelected(name, selectedOptions, setMobFilterFormData)
+            }}
+            control={control}
+            setValue={setValue}
+            options={categoryList}
+            debounceDelay={0}
+             disabled={!mobFilterFormData?.quota || mobFilterFormData?.quota.length === 0} // ✅ Disable until quota is selected
+            defaultOption={mobFilterFormData?.category}
+            searchAPI={(text, setOptions) =>
+              autoComplete(text, categoryList, setOptions)
+            }
+            errors={errors}
+          />
           <FeeRangeSlider
             range={range}
             setRange={setRange}

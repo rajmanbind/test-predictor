@@ -708,6 +708,7 @@
 
 "use client"
 
+import { Button } from "@/components/common/Button"
 import { useEffect, useState } from "react"
 
 type CounsellingType = {
@@ -901,7 +902,7 @@ export default function SeatManagement() {
         )}
       </div>
 
-      <button
+      <Button
         onClick={handleFetchAndInsert}
         className="px-4 py-2 bg-green-600 text-white rounded"
         disabled={
@@ -911,7 +912,7 @@ export default function SeatManagement() {
         }
       >
         {isLoading ? "Processing..." : "Import Data"}
-      </button>
+      </Button>
 
       {message && (
         <div className="mt-4 p-3 text-sm rounded bg-gray-100 text-gray-800">

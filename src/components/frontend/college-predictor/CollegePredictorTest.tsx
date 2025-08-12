@@ -24,7 +24,7 @@ const domicileStates: IOption[] = states.slice(1)
 //   rank?: number | string
 //   domicileState?: IOption
 //   courses?: IOption
-//   predictorType?: IOption
+//   courseType?: IOption
 //   predictoryType?: IOption
 // }
 
@@ -39,7 +39,7 @@ interface IFormData {
   categories?: IOption
   counsellingType?: IOption
   counsellingTypeList?: IOption
-  predictorType?: IOption
+  courseType?: IOption
   predictorDataList?: IOption
   filteredCounsellingTypeDataList?: IOption
   quotaTypeList?: IOption
@@ -80,7 +80,7 @@ export function CollegePredictorTest() {
     const [stateList, setStateList] = useState<IOption[]>([])
   const [radioOption, setRadioOption] = useState(["Rank", "Marks"])
   const [selected, setSelected] = useState("Rank")
-  const [predictorTypeList, setpredictorTypeList] = useState<IOption[]>([])
+  const [courseTypeList, setcourseTypeList] = useState<IOption[]>([])
   const [coursesList, setCoursesList] = useState<IOption[]>([])
 
 
@@ -89,7 +89,7 @@ export function CollegePredictorTest() {
     const allowedPredictorIds = ["NEET UG", "NEET PG", "NEET MDS"]
   
     const filteredCounsellingTypeDataList: IOption[] =
-      allowedPredictorIds.includes(formData?.predictorType?.text || "")
+      allowedPredictorIds.includes(formData?.courseType?.text || "")
         ? counsellingTypeDataList
         : [counsellingTypeDataList[0]]
   const { fetchData } = useFetch()
@@ -210,7 +210,7 @@ console.log()
   }
 
 
-  async function getCoursesBasedOnpredictorType(type: string) {
+  async function getCoursesBasedOncourseType(type: string) {
     try {
       const res = await fetch(
         `/api/get-courses?type=${encodeURIComponent(type)}`,
@@ -234,16 +234,16 @@ console.log()
   }
 
   useEffect(() => {
-    const predictorType = async () => {
+    const courseType = async () => {
       try {
         const data = await getCourses()
-        setpredictorTypeList(data)
+        setcourseTypeList(data)
         console.log("Course Data: ", data)
       } catch (error) {
         console.log(error)
       }
     }
-    predictorType()
+    courseType()
   }, [])
 
 
@@ -314,11 +314,12 @@ console.log()
     searchParams.set("rankType", selected || "")
     // searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
-    searchParams.set("predictorType", formData?.predictorType?.text || "")
+    searchParams.set("courseType", formData?.courseType?.text || "")
     searchParams.set("state", formData?.state?.text || "")
     searchParams.set("stateCode", formData?.state?.code || "")
+    searchParams.set("counsellingTypeId", formData?.counsellingType?.id || "")
     
-// console.log("PredictorType: ",formData.predictorType?.text)
+// console.log("courseType: ",formData.courseType?.text)
 // console.log("Rank: ",formData?.rank)
 // console.log("RankType: ",selected)
 // console.log("Course: ",formData?.courses?.text)
@@ -334,7 +335,7 @@ console.log()
     return (
       isEmpty(formData?.rank) ||
       isEmpty(selected) ||
-      isEmpty(formData?.predictorType?.text) ||
+      isEmpty(formData?.courseType?.text) ||
       // isEmpty(formData?.domicileState?.text) ||
       isEmpty(formData?.courses?.text)
     )
@@ -370,26 +371,26 @@ console.log()
               name="predictory Type"
               label="Pedictory Type"
               placeholder="Select Predictor Type"
-              value={formData?.predictorType}
+              value={formData?.courseType}
               onChange={({ name, selectedValue }) => {
                 onOptionSelected(name, selectedValue, setFormData)
-                console.log(selectedValue)
-                getCoursesBasedOnpredictorType(selectedValue?.text)
+                // console.log(selectedValue)
+              if(selectedValue?.text ) getCoursesBasedOncourseType(selectedValue?.text)
                 setFormData((prev) => ({
                   ...prev,
-                  predictorType: selectedValue,
+                  courseType: selectedValue,
                   counsellingType: undefined,
                 }))
               }}
               control={control}
               setValue={setValue}
               required
-              options={predictorTypeList}
+              options={courseTypeList}
               debounceDelay={0}
-              // defaultOption={defaultValues?.predictorType}
+              // defaultOption={defaultValues?.courseType}
               // wrapperClass="max-w-[395px]"
               searchAPI={(text, setOptions) =>
-                autoComplete(text, predictorTypeList, setOptions)
+                autoComplete(text, courseTypeList, setOptions)
               }
               errors={errors}
             />
@@ -453,7 +454,7 @@ console.log()
             autoComplete(text, coursesList, setOptions)
           }
           errors={errors}
-          disabled={isEmpty(formData?.predictorType?.text)}
+          disabled={isEmpty(formData?.courseType?.text)}
         />
 
         {/* <SearchAndSelect
@@ -501,7 +502,7 @@ console.log()
                   required
                   options={filteredCounsellingTypeDataList}
                   debounceDelay={0}
-                  disabled={!formData?.predictorType?.id}
+                  disabled={!formData?.courseType?.id}
                   defaultOption={defaultValues?.filteredCounsellingTypeDataList}
                   wrapperClass="max-w-[395px]"
                   searchAPI={(text, setOptions) =>
@@ -604,7 +605,7 @@ console.log()
                     options={quotasList}
                     debounceDelay={0}
                     disabled={
-                      !formData?.predictorType?.id ||
+                      !formData?.courseType?.id ||
                       !formData?.counsellingType?.id ||
                       (formData?.counsellingType?.id == 2 && !formData?.state?.id)
                     }

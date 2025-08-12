@@ -25,6 +25,7 @@ import { useEffect, useRef, useState } from "react"
 import { Tooltip } from "react-tooltip"
 
 import TableSignup from "./TableSignup"
+import { IOptionProps } from "@/components/admin-panel/add-data/AddDataForm"
 
 export default function ResultPage() {
   const [tableData, setTableData] = useState<any>(null)
@@ -107,18 +108,31 @@ export default function ResultPage() {
 
     setPaid(false)
     payment = false
+    // console.log("PUrchcase: ",userPurchases)
 
     for (let i = 0; i < userPurchases?.payload?.data?.length; i++) {
-      const purchase =
-        userPurchases?.payload?.data[i]?.college_predictor_details
+      // const purchase =
+      //   userPurchases?.payload?.data[i]?.college_predictor_details
+      // if (
+      //   purchase?.rank === getSearchParams("rank") &&
+      //   purchase?.course === getSearchParams("course") &&
+      //   purchase?.year === configRes &&
+      //   !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
+      // ) {
+      //   // console.log("purchase", purchase?.rank, "->", getSearchParams("rank"))
+      //   setPaid(true)
+      //   payment = true
+      //   break
+      // }
 
-      if (
-        purchase?.rank === getSearchParams("rank") &&
-        purchase?.course === getSearchParams("course") &&
-        purchase?.year === configRes &&
+      // console.log(userPurchases?.payload?.data[i])
+
+      const purchase =
+        userPurchases?.payload?.data[i].payment_type==="RANK_COLLEGE_PREDICTOR"
+
+       if(purchase &&
         !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
       ) {
-        // console.log("purchase", purchase?.rank, "->", getSearchParams("rank"))
         setPaid(true)
         payment = true
         break
@@ -152,7 +166,7 @@ export default function ResultPage() {
   }
 
   async function getConfigs() {
-    const predictorType = getSearchParams("predictorType")
+    const courseType = getSearchParams("courseType")
     const [quotaData, categoryData, coursesData, priceData] = await Promise.all(
       [
         fetchData({
@@ -166,7 +180,7 @@ export default function ResultPage() {
         fetchData({
           url: "/api/get-courses",
           params: {
-            type: predictorType,
+            type: courseType,
           },
         }),
 
@@ -185,6 +199,90 @@ export default function ResultPage() {
     setAmount(priceData?.payload?.data?.[0]?.price)
   }
 
+
+
+
+  //   async function fetchQuotas(counsellingTypeId: string, stateCode?: string) {
+
+
+  //     const url = new URL("/api/quota-types", window.location.origin)
+  //     url.searchParams.set("counselling_type_id", counsellingTypeId)
+  //     if (stateCode) url.searchParams.set("stateCode", stateCode)
+  //     if (courseType) url.searchParams.set("state_code", courseType)
+  
+  //     const res = await fetch(url.toString())
+  //     const json = await res.json()
+  
+  //     const quotas = json.data.map((q:IOptionProps) => ({
+  //       ...q, // Spread all fields including sub_quotas
+  //       id: q.id,
+  //       text: q.text,
+  //     }))
+  
+  //     return quotas
+  //   }
+  
+  
+  
+  //   async function fetchCategoryTypes(quotaId: string) {
+  //     const url = new URL("/api/category-types", window.location.origin)
+  //     url.searchParams.set("quota_type_id", quotaId)
+  //     const res = await fetch(url.toString())
+  //     const json = await res.json()
+  //     return json.data
+  //   }
+  
+  //   useEffect(() => {
+  //     const fetchQ = async () => {
+    
+  //       try {
+  
+  //         const data = await fetchQuotas(
+  //           counsellingTypeId,
+  //          stateCode ||counsellingTypeId,
+  //         )
+  
+  //         console.log("Received quota data:", data)
+  //         setQuotasList(data)
+  //       } catch (error) {
+  //         console.error("Failed to load quota types:", error)
+  //       }
+  //     }
+  
+  //     if (
+  //       counsellingTypeId === "1" ||
+  //       (counsellingTypeId === "2" && counsellingTypeId
+  //     )) {
+  //       fetchQ()
+  //     }
+  //   }, [
+  //     counsellingTypeId,
+  //     stateCode,
+  //     "stateId",
+  //   ])
+  
+  
+  //   useEffect(() => {
+  //     const loadCategories = async () => {
+  //       if (formData?.quotas?.id) {
+  //         const data = await fetchCategoryTypes(formData?.quotas?.id)
+  // if(data && Array.isArray(data))
+  //         setCategoriesList(
+  //           data.map((cat:IOptionProps) => ({
+  //             id: cat?.id,
+  //             text: cat?.text,
+  //             otherValues: {
+  //               sub_categories: cat?.sub_categories || [],
+  //             },
+  //           })),
+  //         )
+  //       }
+  //     }
+  
+  //     loadCategories()
+  //   }, [formData?.quotas?.id])
+  
+
   async function getData(paymentStatus: boolean, paginationPage: any) {
     let page = 1
 
@@ -197,9 +295,8 @@ export default function ResultPage() {
     const rank = getSearchParams("rank")
     const course = getSearchParams("course")
     const domicileState = getSearchParams("domicileState")
-    const predictorType = getSearchParams("predictorType")
-    const rankType = getSearchParams("rankType") ?? null
     const courseType = getSearchParams("courseType")
+    const rankType = getSearchParams("rankType") ?? null
     const state = getSearchParams("state")
     const stateCode = getSearchParams("stateCode")
 
@@ -213,13 +310,12 @@ export default function ResultPage() {
       domicileState,
       paymentStatus,
       state,
-      predictorType,
       stateCode,
     }
 
-    if (domicileState === "All") {
-      delete params.domicileState
-    }
+    // if (domicileState === "All") {
+    //   delete params.domicileState
+    // }
 
     if (!isEmpty(filterParams)) {
       Object.entries(filterParams).forEach(([key, value]: any) => {
@@ -293,125 +389,7 @@ export default function ResultPage() {
         ),
         tableKey: "category",
       },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
-      //     >
-      //       {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR1_new`,
-      //   width: "190px",
-      //   renderer({ cellData }) {
-      //     return cellData !== "xxx" &&
-      //       (cellData === "undefined" || cellData === "null")
-      //       ? "NA"
-      //       : cellData
-      //   },
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
-      //     >
-      //       {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR2_new`,
-      //   width: "190px",
-      //   renderer({ cellData }: any) {
-      //     return cellData !== "xxx" &&
-      //       (cellData === "undefined" || cellData === "null") ? (
-      //       "NA"
-      //     ) : (
-      //       <div
-      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-      //         data-tooltip-content={`Unlock @ ₹${amount}`}
-      //       >
-      //         {cellData}
-      //       </div>
-      //     )
-      //   },
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
-      //     >
-      //       {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
-      //     </div>
-      //   ),
-      //   tableKey: `closingRankR3_new`,
-      //   width: "190px",
-      //   renderer({ cellData }: any) {
-      //     return cellData !== "xxx" &&
-      //       (cellData === "undefined" || cellData === "null") ? (
-      //       "NA"
-      //     ) : (
-      //       <div
-      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-      //         data-tooltip-content={`Unlock @ ₹${amount}`}
-      //       >
-      //         {cellData}
-      //       </div>
-      //     )
-      //   },
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-      //     >
-      //       {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-      //     </div>
-      //   ),
-      //   tableKey: `strayRound_new`,
-      //   width: "190px",
-      //   renderer({ cellData }: any) {
-      //     return cellData !== "xxx" &&
-      //       (cellData === "undefined" || cellData === "null") ? (
-      //       "NA"
-      //     ) : (
-      //       <div
-      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-      //         data-tooltip-content={`Unlock @ ₹${amount}`}
-      //       >
-      //         {cellData}
-      //       </div>
-      //     )
-      //   },
-      // },
-      // {
-      //   title: (
-      //     <div
-      //       data-tooltip-id="tooltip"
-      //       data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-      //     >
-      //       Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-      //     </div>
-      //   ),
-      //   tableKey: `lastStrayRound_new`,
-      //   width: "210px",
-      //   renderer({ cellData }: any) {
-      //     return cellData !== "xxx" &&
-      //       (cellData === "undefined" || cellData === "null") ? (
-      //       "NA"
-      //     ) : (
-      //       <div
-      //         data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
-      //         data-tooltip-content={`Unlock @ ₹${amount}`}
-      //       >
-      //         {cellData}
-      //       </div>
-      //     )
-      //   },
-      // },
-
+      
       {
         title: (
           <div
@@ -428,7 +406,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -455,7 +433,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -482,7 +460,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -509,7 +487,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -536,7 +514,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -564,7 +542,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -591,7 +569,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -618,7 +596,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -645,7 +623,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -672,7 +650,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "NA"
+            "xxx"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -801,8 +779,8 @@ export default function ResultPage() {
 
         <FilterPopup
           isOpen={filterPopup}
-          quotasList={quotasList}
-          categoryList={categoriesList}
+          // quotasList={quotasList}
+          // categoryList={categoriesList}
           setFilterParams={setFilterParams}
           setMobFilterFormData={setMobFilterFormData}
           mobFilterFormData={mobFilterFormData}

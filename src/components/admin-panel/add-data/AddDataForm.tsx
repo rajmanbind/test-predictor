@@ -156,12 +156,12 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     try {
       const res = await fetch("/api/get-courses-types")
       const json = await res.json()
-console.log()
+// console.log()
       if (!json?.data || !Array.isArray(json.data)) {
-        console.error(
-          "Invalid data structure from /api/get-courses-types",
-          json,
-        )
+        // console.error(
+        //   "Invalid data structure from /api/get-courses-types",
+        //   json,
+        // )
         return []
       }
 
@@ -300,6 +300,20 @@ console.log()
     const json = await res.json()
     return json.data
   }
+  const fetchStates = async () => {
+    const res = await fetch("/api/states")
+    const json = await res.json()
+    console.log("State: ", json)
+    return json.data
+  }
+
+
+
+  useEffect(() => {
+    fetchStates()
+      .then(setStateList)
+      .catch((err) => console.error("State load error:", err))
+  }, [])
 
 
 
@@ -320,20 +334,6 @@ console.log()
     return quotas
   }
 
-  const fetchStates = async () => {
-    const res = await fetch("/api/states")
-    const json = await res.json()
-    console.log("State: ", json)
-    return json.data
-  }
-
-
-
-  useEffect(() => {
-    fetchStates()
-      .then(setStateList)
-      .catch((err) => console.error("State load error:", err))
-  }, [])
 
 
   async function fetchCategoryTypes(quotaId: string) {

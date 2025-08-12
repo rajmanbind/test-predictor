@@ -38,15 +38,16 @@ export const sidebarMenus = [
     link: "/admin/add-bulk-data",
   },
   {
+    icon: <PlusSquare />,
+    title: "Add category-quota",
+    link: "/admin/metadata",
+  },
+  {
     icon: <Database />,
     title: "Manage Data",
     link: "/admin/manage-data",
   },
-  {
-    icon: <Trash2 />,
-    title: "Delete Yearly Data",
-    link: "/admin/delete-yearly-data",
-  },
+
   {
     icon: <CalendarCog />,
     title: "Configure Current Year",
@@ -66,6 +67,11 @@ export const sidebarMenus = [
     icon: <BadgeIndianRupee />,
     title: "Configure Prices",
     link: "/admin/configure/prices",
+  },
+    {
+    icon: <Trash2 />,
+    title: "Delete Yearly Data",
+    link: "/admin/delete-yearly-data",
   },
 ]
 

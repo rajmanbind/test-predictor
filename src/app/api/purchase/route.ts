@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     reqData.phone = user?.phone
+    reqData.phone = user?.phone
 
     const { error, data } = await supabase
       .from("purchase")

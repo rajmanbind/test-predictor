@@ -23,20 +23,33 @@ export async function POST(req: NextRequest) {
 //       subCategories,  // [{ text, categoryName, quotaName, courseType }]
 //       counsellingTypeId,
 //       stateCode)
+
+
+
+
     // 1. Upsert quotas and build a map: quotaName|courseType -> id
     const quotaKeyToId: Record<string, number> = {};
     if (quotas?.length) {
+
+      console.log("Quotas: ",quotas)
       const { data, error } = await supabase.from("quota_types").upsert(
         quotas.map((q: any) => ({
           text: q.text,
           courseType: q.courseType,
           counselling_type_id: counsellingTypeId,
           state_code: stateCode,
-          // is_common: false,
         })),
-        { onConflict: "text,counselling_type_id,state_code" }
+        { onConflict: "text,courseType,counselling_type_id,state_code" }
       ).select();
-
+// const { data, error }  = await supabase.from("quota_types").upsert(
+//   quotas.map((q: any) => ({
+//     text: q.text,
+//     courseType: q.courseType,
+//     counselling_type_id: counsellingTypeId,
+//     state_code: stateCode,
+//   })),
+//   { onConflict: "text,courseType,counselling_type_id,state_code" }
+// );
       if (error) {
         logs.push(`❌ Quota insert error: ${error.message}`);
         results.quotas = { error: error.message };

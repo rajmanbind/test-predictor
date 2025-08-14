@@ -170,7 +170,7 @@
 //     },
 //   })
 //   getData(selectedType!.id)
-//   setAddValues((prev) => ({ ...prev, [state.code]: "" }))
+//   setAddValues((prev) => ({ ...prev, [state?.code]: "" }))
 // }
 // async function handleBulkUpdate() {
 //   if (!bulkPrice || isNaN(Number(bulkPrice))) {
@@ -283,11 +283,11 @@
 //                       name={`state-${index}`}
 //                       placeholder="Enter price"
 //                       type="number"
-//                       value={addValues[state.code] || ""}
+//                       value={addValues[state?.code] || ""}
 //                       onChange={(e) =>
 //                         setAddValues((prev) => ({
 //                           ...prev,
-//                           [state.code]: e.target.value,
+//                           [state?.code]: e.target.value,
 //                         }))
 //                       }
 //                       control={control}
@@ -299,9 +299,9 @@
 //   type="button"
 //   size="sm"
 //   onClick={async () => {
-//     await handleSingleAdd(state, addValues[state.code]);
+//     await handleSingleAdd(state, addValues[state?.code]);
 //   }}
-//   disabled={!addValues[state.code]}
+//   disabled={!addValues[state?.code]}
 // >
 //   Add
 // </Button>
@@ -630,7 +630,7 @@ export default function ConfigurePricesPage() {
       },
     })
     getData(selectedType!.id)
-    setAddValues((prev) => ({ ...prev, [state.code]: "" }))
+    setAddValues((prev) => ({ ...prev, [state?.code]: "" }))
   }
 
   // States for which price is already set
@@ -703,11 +703,11 @@ export default function ConfigurePricesPage() {
                       name={`state-${index}`}
                       placeholder="Enter price"
                       type="number"
-                      value={addValues[state.code] || ""}
+                      value={addValues[state?.code] || ""}
                       onChange={(e) =>
                         setAddValues((prev) => ({
                           ...prev,
-                          [state.code]: e.target.value,
+                          [state?.code]: e.target.value,
                         }))
                       }
                       control={control}
@@ -719,9 +719,9 @@ export default function ConfigurePricesPage() {
                       type="button"
                       size="sm"
                       onClick={async () => {
-                        await handleSingleAdd(state, addValues[state.code]);
+                        await handleSingleAdd(state, addValues[state?.code]);
                       }}
-                      disabled={!addValues[state.code]}
+                      disabled={!addValues[state?.code]}
                     >
                       Add
                     </Button>

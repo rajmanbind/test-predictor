@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const counselling_type_id = searchParams.get("counselling_type_id")
   const state_code = searchParams.get("state_code")
+  const course_type = searchParams.get("course_type")
 
 
   if (!counselling_type_id) {
@@ -15,7 +16,9 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase.rpc('get_quotas_with_subquotas', {
   p_counselling_type_id:counselling_type_id ? Number(counselling_type_id) : null,
-  p_state_code: state_code || null
+  p_state_code: state_code || null,
+p_course_type:course_type||null
+
 })
   if (error) {
     console.error("Supabase Error:", error)

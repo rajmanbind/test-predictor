@@ -317,10 +317,11 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
 
 
 
-  async function fetchQuotas(counsellingTypeId: string, stateCode?: string) {
+  async function fetchQuotas(counsellingTypeId: string, stateCode?: string,courseType?:string) {
     const url = new URL("/api/quota-types", window.location.origin)
     url.searchParams.set("counselling_type_id", counsellingTypeId)
     if (stateCode) url.searchParams.set("state_code", stateCode)
+    if (courseType) url.searchParams.set("course_type", courseType)
 
     const res = await fetch(url.toString())
     const json = await res.json()
@@ -351,6 +352,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
         const data = await fetchQuotas(
           formData?.counsellingType?.id,
           formData?.state?.code || formData?.state?.id,
+          formData?.courseType?.code||formData?.courseType?.text
         )
 
         console.log("Received quota data:", data)

@@ -223,6 +223,7 @@ const priceTypeValue = isValidPriceTypeKey(fullKey)
           generateCols={generateColsPublic(configYear, {
             paid: true,
             courseType: params?.id?.toString(),
+            stateCode
           } as any)}
           tableData={tableData}
           showCutoff={showCutoff}

@@ -99,10 +99,11 @@ export function CollegePredictorTest() {
   const router = useRouter()
 
 
-  async function fetchQuotas(counsellingTypeId: string, stateCode?: string) {
+  async function fetchQuotas(counsellingTypeId: string, stateCode?: string,courseType?:string) {
     const url = new URL("/api/quota-types", window.location.origin)
     url.searchParams.set("counselling_type_id", counsellingTypeId)
     if (stateCode) url.searchParams.set("state_code", stateCode)
+    if (courseType) url.searchParams.set("course_type", courseType)
 
     const res = await fetch(url.toString())
     const json = await res.json()
@@ -131,17 +132,11 @@ return category;
     useEffect(() => {
       const fetchQ = async () => {
         try {
-          // console.log("Fetching quotas with:", {
-          //   counsellingId: formData?.counsellingType?.id,
-          //   stateId: formData?.state?.id,
-          //   stateCode: formData?.state?.code
-          // },formData);
-  
-          const data = await fetchQuotas(
-            formData?.counsellingType?.id,
-            formData?.state?.code || formData?.state?.id,
-          )
-  
+    const data = await fetchQuotas(
+          formData?.counsellingType?.id,
+          formData?.state?.code || formData?.state?.id,
+          formData?.courseType?.code||formData?.courseType?.text
+        )
           console.log("Received quota data:", data)
           setQuotasList(data)
         } catch (error) {

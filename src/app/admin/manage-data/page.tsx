@@ -2,6 +2,7 @@
 "use client"
 
 import { BELayout } from "@/components/admin-panel/BELayout"
+import { Button } from "@/components/common/Button"
 import { Card } from "@/components/common/Card"
 import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import { Input } from "@/components/common/Input"
@@ -73,7 +74,7 @@ export default function ManageDataPage() {
         const coursesJson = await coursesRes.json()
 
         const states = [
-          { id: "All States", code: "All", text: "All States" },
+          { id: "All States", code: "All", text: "All State" },
           ...(statesJson?.data || []),
         ]
         const courses =
@@ -114,15 +115,15 @@ export default function ManageDataPage() {
     }
 
     const page = pageOverride ?? Number(searchParams.get("page") || 1)
-    const search = searchOverride ?? searchInput
-
+    const search = searchOverride ?? searchInput;
+console.log(seletectedState)
     const [dataRes, configRes] = await Promise.all([
       fetchData({
         url: "/api/admin/get_data",
         params: {
           page,
           size: 20,
-          stateCode: seletectedState.code,
+          stateCode: seletectedState?.code,
           courseType: courseType.text,
           ...(search && { instituteName: search }),
         },
@@ -222,7 +223,7 @@ export default function ManageDataPage() {
       </div>
 
       <Card className="mt-4 py-6 px-0">
-        <div className="flex items-center sm:flex-row flex-col  px-2 md:gap-20 gap-5 mb-7">
+        <div className="flex items-end sm:flex-row flex-col  px-2 md:gap-15 gap-5 mb-7">
           {/* <SearchAndSelect
             name="courseType"
             label="Course Type"
@@ -349,15 +350,15 @@ export default function ManageDataPage() {
 
 
 />
-          <button
-            className={cn(
-              "bg-color-accent hover:bg-color-accent-dark text-white text-sm py-[6px] px-4 rounded-md w-full tab:w-auto hidden md:block"
-            )}
+          <Button
+            // className={cn(
+            //   "bg-color-accent hover:bg-color-accent-dark text-white text-sm py-[6px] px-4 rounded-md w-full tab:w-auto hidden md:block"
+            // )}
             onClick={() => getData()}
             disabled={!seletectedState?.code || !courseType?.text}
           >
             Find
-          </button>
+          </Button>
         </div>
 
         <div className="flex flex-col tab:flex-row gap-4 tab:gap-0 justify-between mb-7 px-2">

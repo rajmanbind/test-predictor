@@ -37,8 +37,7 @@ export function generateCols(
     { title: "Course", tableKey: "course" },
     { title: "Quota", tableKey: "quota", width: "150px" },
     { title: "Sub-Quota", tableKey: "subQuota", width: "150px" },
-    { title: "Category", tableKey: "category", width: "150px" },
-    { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
+    // { title: "Category", tableKey: "category", width: "150px" },
     {
       title: (
         <div>
@@ -49,6 +48,7 @@ export function generateCols(
       ),
       tableKey: "category",
     },
+    { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
 
    {
         title: (
@@ -331,7 +331,13 @@ export function generateCols(
     { title: "Institute Type", tableKey: "instituteType", width: "150px" },
     { title: "Fees", tableKey: "fees", width: "100px" },
   ]
-
+    if (state?.code === "all"||state?.code === "All") {
+  columns.splice(
+    columns.length - 1, // Insert before the last column
+    0,
+    { title: "State", tableKey: "state", width: "150px" }
+  );
+}
   if (adminMode?.isAdmin) {
     const { setRowData, setPopupOpen, setSingleDelete } = adminMode
 
@@ -382,13 +388,13 @@ export function generateCols(
               size={20}
               className="text-color-text cursor-pointer"
               onClick={() => {
-                const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType.replaceAll(" ", "-").toLowerCase()}/cutoff?stateCode=${state.code.toLowerCase()}&college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(state.text ?? "")}`
+                const link = `${process.env.NEXT_PUBLIC_BASE_URL}/${rowData?.courseType.replaceAll(" ", "-").toLowerCase()}/cutoff?stateCode=${state?.code.toLowerCase()}&college=${encodeURIComponent(rowData?.instituteName ?? "")}&state=${encodeURIComponent(state.text ?? "")}`
                 copyToClipboard(link)
                 showToast?.("success", "Copied to clipboard")
               }}
             />
 
-            <Link href={`/admin/edit-data/${id}?stateCode=${state.code}`} target="_blank">
+            <Link href={`/admin/edit-data/${id}?stateCode=${state?.code}`} target="_blank">
               <Pencil
                 size={20}
                 className="text-color-text hover:text-blue-600 cursor-pointer"
@@ -439,7 +445,7 @@ function copyToClipboard(text: string) {
 
 export function generateColsPublic(
   configYear: any[],
-  details?: { paid?: boolean; courseType?: string },
+  details?: { paid?: boolean; courseType?: string,stateCode:string},
 ) {
   let currentYear = new Date().getFullYear()
   let previousYear = currentYear - 1
@@ -467,8 +473,6 @@ export function generateColsPublic(
     { title: "Course", tableKey: "course" },
     { title: "Quota", tableKey: "quota", width: "150px" },
     { title: "Sub-Quota", tableKey: "subQuota", width: "150px" },
-    { title: "Category", tableKey: "category", width: "150px" },
-    { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
     {
       title: (
         <div>
@@ -479,94 +483,10 @@ export function generateColsPublic(
       ),
       tableKey: "category",
     },
-    // {
-    //   title: (
-    //     <div
-    //       data-tooltip-id="tooltip"
-    //       data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 1 ${currentYear}`}
-    //     >
-    //       {`Closing Rank/ ${percentile_Marks} [R1] ${currentYear}`}
-    //     </div>
-    //   ),
-    //   tableKey: `closingRankR1_new`,
-    //   width: "190px",
-    //   renderer({ cellData }) {
-    //     return cellData === "undefined" || cellData === "null" ? "NA" : cellData
-    //   },
-    // },
+        { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
   ]
 
   if (paid) {
-    // columns.push(
-    //   {
-    //     title: (
-    //       <div
-    //         data-tooltip-id="tooltip"
-    //         data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 2 ${currentYear}`}
-    //       >
-    //         {`Closing Rank/ ${percentile_Marks} [R2] ${currentYear}`}
-    //       </div>
-    //     ),
-    //     tableKey: `closingRankR2_new`,
-    //     width: "190px",
-    //     renderer({ cellData }) {
-    //       return cellData === "undefined" || cellData === "null"
-    //         ? "NA"
-    //         : cellData
-    //     },
-    //   },
-    //   {
-    //     title: (
-    //       <div
-    //         data-tooltip-id="tooltip"
-    //         data-tooltip-content={`Closing Rank/ ${percentile_Marks} Round 3 ${currentYear}`}
-    //       >
-    //         {`Closing Rank/ ${percentile_Marks} [R3] ${currentYear}`}
-    //       </div>
-    //     ),
-    //     tableKey: `closingRankR3_new`,
-    //     width: "190px",
-    //     renderer({ cellData }) {
-    //       return cellData === "undefined" || cellData === "null"
-    //         ? "NA"
-    //         : cellData
-    //     },
-    //   },
-    //   {
-    //     title: (
-    //       <div
-    //         data-tooltip-id="tooltip"
-    //         data-tooltip-content={`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-    //       >
-    //         {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-    //       </div>
-    //     ),
-    //     tableKey: `strayRound_new`,
-    //     width: "190px",
-    //     renderer({ cellData }) {
-    //       return cellData === "undefined" || cellData === "null"
-    //         ? "NA"
-    //         : cellData
-    //     },
-    //   },
-    //   {
-    //     title: (
-    //       <div
-    //         data-tooltip-id="tooltip"
-    //         data-tooltip-content={`Last Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-    //       >
-    //         Last {`Stray Round Rank/ ${percentile_Marks} ${currentYear}`}
-    //       </div>
-    //     ),
-    //     tableKey: `lastStrayRound_new`,
-    //     width: "190px",
-    //     renderer({ cellData }) {
-    //       return cellData === "undefined" || cellData === "null"
-    //         ? "NA"
-    //         : cellData
-    //     },
-    //   },
-    // )
 
     columns.push(
       
@@ -605,8 +525,7 @@ export function generateColsPublic(
   
   )
 
-    if (paid) {
-      columns.push(
+       columns.push(
       {
         title: (
           <div
@@ -718,15 +637,24 @@ export function generateColsPublic(
         },
       },
       )
-    }
 
-    columns.push(
+
+
+  }
+      columns.push(
+
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
       // { title: "State", tableKey: "state", width: "150px" },
       { title: "Fees", tableKey: "fees", width: "100px" },
     )
-  }
 
+          if (details?.stateCode=== "all") {
+  columns.splice(
+    columns.length - 1, // Insert before the last column
+    0,
+    { title: "State", tableKey: "state", width: "150px" }
+  );
+}
   return columns
 }
 

@@ -10,7 +10,7 @@ function getTableName(stateCode?: string | null): string {
     stateCode !== "undefined" &&
     stateCode !== ""
   ) {
-    if (stateCode === "All") return "college_table_all_india"
+    if (stateCode === "All"||stateCode === "all") return "college_table_all_india"
     return `college_table_${stateCode.toUpperCase()}`
   }
   return "college_table_all_india"
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
   const supabase = createAdminSupabaseClient()
   const tableName = getTableName(stateCode)
-
+// console.log("GET DATA: ",tableName,stateCode)
   // Build query
   let query = supabase.from(tableName).select("*", { count: "exact" })
 
@@ -97,6 +97,7 @@ export async function GET(request: NextRequest) {
       showPrevLastStrayRound: item.prevLastStrayRound
         ? `${item.prevLastStrayRound}/${item.prevlSRR}`
         : null,
+          ...((stateCode === "all"||stateCode === "All") && { state: item.state }) 
     })) || []
 
   const totalItems = count || 0

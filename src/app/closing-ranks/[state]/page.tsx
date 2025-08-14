@@ -15,10 +15,10 @@ import { IOption } from "@/types/GlobalTypes"
 import { paymentType, priceType, years } from "@/utils/static"
 import {
   cn,
+  getLocalStorageItem,
   onPageChange,
   saveToLocalStorage,
   shouldRenderComponent,
-  getLocalStorageItem
 } from "@/utils/utils"
 import { ChevronLeft, CircleCheckBig, Eye, Users } from "lucide-react"
 import Link from "next/link"
@@ -37,22 +37,21 @@ export default function CollegeListClosingRanksPage() {
   const [statePaymentPopup, setStatePaymentPopup] = useState(false)
   const [paymentChecker, setPaymentChecker] = useState(false)
   const [statePurchaseMode, setStatePurchaseMode] = useState(false)
- const currentYear = new Date().getFullYear()
- const prevYear  = currentYear-1
+  const currentYear = new Date().getFullYear()
+  const prevYear = currentYear - 1
   const [configYear, setConfigYear] = useState<any>(null)
 
   const [amount, setAmount] = useState<number>(49)
 
   const params = useParams()
 
-
-    const searchParams = useSearchParams()
+  const searchParams = useSearchParams()
 
   const courseType = searchParams.get("courseType")
   const course = searchParams.get("course")
   const stateCode = decodeURIComponent(params.state as any)
-const state = searchParams.get("state")
-// console.log(state)
+  const state = searchParams.get("state")
+  // console.log(state)
   useEffect(() => {
     console.log("courseType:", courseType)
     console.log("course:", course)
@@ -72,151 +71,127 @@ const state = searchParams.get("state")
   }, [updateUI])
 
   async function getData() {
-
-// Type guard to ensure the key is valid
-function isValidPriceTypeKey(
-  key: string
-): key is keyof typeof priceType {
-  return key in priceType;
-}
+    // Type guard to ensure the key is valid
+    function isValidPriceTypeKey(key: string): key is keyof typeof priceType {
+      return key in priceType
+    }
     const page = Number(getSearchParams("page") || 1)
- if(stateCode!=="all"){  
-  
-  const priceTypeName = courseType && courseType.includes(" ")
-  ? courseType.split(" ")[1]
-  : courseType;
+    if (stateCode !== "all") {
+      const priceTypeName =
+        courseType && courseType.includes(" ")
+          ? courseType.split(" ")[1]
+          : courseType
 
-const fullKey = `SINGLE_COLLEGE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+      const fullKey = `SINGLE_COLLEGE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`
 
-const stateFullKey = `STATE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
-// const allIndiakay1 = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
-// const allIniaKey2 = `ALL_INDIA_CLOSING_RANK`;
+      const stateFullKey = `STATE_CLOSING_RANK_${priceTypeName?.toUpperCase()}`
+      // const allIndiakay1 = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
+      // const allIniaKey2 = `ALL_INDIA_CLOSING_RANK`;
 
+      const priceTypeValue = isValidPriceTypeKey(fullKey)
+        ? priceType[fullKey]
+        : undefined
+      const statePriceTypeValue = isValidPriceTypeKey(stateFullKey)
+        ? priceType[stateFullKey]
+        : undefined
 
+      const [price, res, statePrice] = await Promise.all([
+        fetchData({
+          url: "/api/admin/configure_prices/get",
+          params: {
+            type: priceTypeValue,
+            item: state,
+          },
+        }),
 
-const priceTypeValue = isValidPriceTypeKey(fullKey)
-  ? priceType[fullKey]
-  : undefined;
-const statePriceTypeValue = isValidPriceTypeKey(stateFullKey)
-  ? priceType[stateFullKey]
-  : undefined;
+        fetchData({
+          url: "/api/closing_ranks/college_list",
+          params: {
+            page,
+            size: 20,
+            state,
+            courseType: courseType,
+            course: course,
+            stateCode: stateCode,
+          },
+        }),
 
+        fetchData({
+          url: "/api/admin/configure_prices/get",
+          params: {
+            type: statePriceTypeValue,
+            item: state,
+          },
+        }),
+      ])
+      if (price?.success) {
+        setAmount(price?.payload?.data?.price)
+      }
 
-  const [price, res,statePrice] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure_prices/get",
-        params: {
-          type:priceTypeValue,
-          item: state,
-        },
-      }),
+      if (statePrice?.success) {
+        setStateAmount(statePrice?.payload?.data?.price)
+      }
+      if (res?.success) {
+        setTableData(res?.payload)
+      }
+    } else {
+      const priceTypeName =
+        courseType && courseType.includes(" ")
+          ? courseType.split(" ")[1]
+          : courseType
 
-fetchData({
-      url: "/api/closing_ranks/college_list",
-      params: {
-        page,
-        size: 20,
-        state,
-        courseType: courseType,
-        course: course,
-        stateCode:stateCode
-      },
-    })
-,
+      const allIndiaFullKey = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`
+      const allIndiaFull = `ALL_INDIA_CLOSING_RANK`
 
-      fetchData({
-        url: "/api/admin/configure_prices/get",
-        params: {
-          type:statePriceTypeValue,
-          item: state,
-        },
-      }),
-    ])
-   if (price?.success) {
-      setAmount(price?.payload?.data?.price)
+      const allIndiaPriceTypeValue = isValidPriceTypeKey(allIndiaFullKey)
+        ? priceType[allIndiaFullKey]
+        : undefined
+
+      const allIndiaPriceTypeValueForAll = isValidPriceTypeKey(allIndiaFull)
+        ? priceType[allIndiaFull]
+        : undefined
+
+      const [price, res, allIndiaPrice] = await Promise.all([
+        fetchData({
+          url: "/api/admin/configure_prices/get",
+          params: {
+            type: allIndiaPriceTypeValue,
+            item: stateCode === "all" ? "All India" : state,
+          },
+        }),
+
+        fetchData({
+          url: "/api/closing_ranks/college_list",
+          params: {
+            page,
+            size: 20,
+            state,
+            courseType: courseType,
+            course: course,
+            stateCode: stateCode,
+          },
+        }),
+        fetchData({
+          url: "/api/admin/configure_prices/get",
+          params: {
+            type: allIndiaPriceTypeValueForAll,
+            item: stateCode === "all"  ? "All India" : state,
+          },
+        }),
+      ])
+      if (price?.success) {
+        setAmount(price?.payload?.data?.price)
+      }
+
+      if (allIndiaPrice?.success) {
+        setStateAmount(allIndiaPrice?.payload?.data?.price)
+      }
+
+      if (res?.success) {
+        // console.log("ResP ",res.payload)
+        setTableData(res?.payload)
+      }
     }
-
-    if (statePrice?.success) {
-      setStateAmount(statePrice?.payload?.data?.price)
-    }
-    if (res?.success) {
-      setTableData(res?.payload)
-    }
-  
-  }
-  else{
-
-      const priceTypeName = courseType && courseType.includes(" ")
-  ? courseType.split(" ")[1]
-  : courseType;
-
-
-
-
-
-
-
-const allIndiaFullKey = `ALL_INDIA_CLOSING_RANK_${priceTypeName?.toUpperCase()}`;
-const allIndiaFull = `ALL_INDIA_CLOSING_RANK`;
-
-
-
-const allIndiaPriceTypeValue = isValidPriceTypeKey(allIndiaFullKey)
-  ? priceType[allIndiaFullKey]
-  : undefined;
-
-const allIndiaPriceTypeValueForAll = isValidPriceTypeKey(allIndiaFull)
-  ? priceType[allIndiaFull]
-  : undefined;
-
-  const [price, res, allIndiaPrice] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure_prices/get",
-        params: {
-          type:allIndiaPriceTypeValue,
-          item: state==="all"?"All India":state,
-        },
-      }),
-
-fetchData({
-      url: "/api/closing_ranks/college_list",
-      params: {
-        page,
-        size: 20,
-        state,
-        courseType: courseType,
-        course: course,
-        stateCode:stateCode
-      },
-    })
-,
-
-      fetchData({
-        url: "/api/admin/configure_prices/get",
-        params: {
-          type:allIndiaPriceTypeValueForAll,
-          item: state==="all"?"All India":state,
-        },
-      }),
-    ])
-   if (price?.success) {
-      setAmount(price?.payload?.data?.price)
-    }
-
-    if (allIndiaPrice?.success) {
-      setStateAmount(allIndiaPrice?.payload?.data?.price)
-    }
-
-
-    
-    if (res?.success) {
-      // console.log("ResP ",res.payload)
-      setTableData(res?.payload)
-    }
-  }
-
-
-   
   }
 
   function buttonText(rowData: any) {
@@ -249,16 +224,16 @@ fetchData({
         tableKey: "action",
         width: "120px",
         renderer({ rowData }) {
-//  college.toLowerCase().trim().split(" ").join("-")
-   const paymentStatus = getLocalStorageItem<any>(
-          `payment-${state?.replaceAll(" ","-").toLowerCase()}-${courseType?.replaceAll(" ","-").toLowerCase()}-${rowData.instituteName.toLowerCase().trim().split(" ").join("-")}`
-        )
-        // console.log(`payment-${state?.replaceAll(" ","-").toLowerCase()}-${courseType?.replaceAll(" ","-").toLowerCase()}-${rowData.instituteName}`)
+          //  college.toLowerCase().trim().split(" ").join("-")
+          const paymentStatus = getLocalStorageItem<any>(
+            `payment-${state?.replaceAll(" ", "-").toLowerCase()}-${courseType?.replaceAll(" ", "-").toLowerCase()}-${rowData.instituteName.toLowerCase().trim().split(" ").join("-")}`,
+          )
+          // console.log(`payment-${state?.replaceAll(" ","-").toLowerCase()}-${courseType?.replaceAll(" ","-").toLowerCase()}-${rowData.instituteName}`)
           // console.log("Row Data: ",paymentStatus)
           return (
             <div className="w-[120px] m-3">
               {/* payment-${state.replaceAll(" ","-").toLowerCase()}-${params?.id}-${college} */}
-              {rowData?.purchased ||paymentStatus? (
+              {rowData?.purchased || paymentStatus ? (
                 <Link
                   href={`/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course}`}
                   className="text-[14px] disabled:bg-color-table-header disabled:text-white disabled:cursor-not-allowed flex items-center gap-2"
@@ -269,7 +244,7 @@ fetchData({
                         ...rowData,
                         course: course,
                         courseType: courseType,
-                        state:state
+                        state: state,
                       },
                     )
                   }}
@@ -294,7 +269,7 @@ fetchData({
                         ...rowData,
                         course: course,
                         courseType: courseType,
-                        state:state
+                        state: state,
                       },
                     )
 
@@ -310,6 +285,7 @@ fetchData({
           )
         },
       },
+      
     ]
 
     return columns
@@ -348,10 +324,10 @@ fetchData({
       amount,
       payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
       closing_rank_details: {
-        ...rowData,
+        // ...rowData,
         courseType: courseType,
-        course:course,
-        state:state,
+        course: course,
+         state:  stateCode === "all"?"All India":state,
         year: configYear?.text,
       },
     }
@@ -361,8 +337,6 @@ fetchData({
       method: "POST",
       data: payload,
     })
-
-
 
     // console.log("ResPonse: ",res)
     if (res?.success) {
@@ -379,7 +353,7 @@ fetchData({
 
       if (priceRes?.success) {
         router.push(
-          `/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course||""}`,
+          `/closing-ranks/${stateCode}/college-details?state=${state}&college=${rowData?.instituteName}&courseType=${courseType}&course=${course || ""}`,
         )
       }
     }
@@ -401,26 +375,32 @@ fetchData({
     const payload = {
       orderId,
       amount: stateAmount,
-      payment_type: stateCode==="all"?paymentType?.ALL_INDIA_CLOSING_RANK:paymentType?.STATE_CLOSING_RANK,
+      payment_type:
+        stateCode === "all"
+          ? paymentType?.ALL_INDIA_CLOSING_RANK
+          : paymentType?.STATE_CLOSING_RANK,
       closing_rank_details: {
         courseType: courseType,
         course: course,
+         state:  stateCode === "all"?"All India":state,
         year: configYear?.text,
       },
     }
-// console.log("Payload: ",payload)
+    // console.log("Payload: ",payload)
     const res = await fetchData({
       url: "/api/purchase",
       method: "POST",
       data: payload,
     })
-// console.log("Res state datas: ",res)
+    // console.log("Res state datas: ",res)
     if (res?.success) {
       const priceRes = await fetchData({
         url: "/api/payment",
         method: "POST",
         data: {
-          [stateCode==="all"?paymentType?.ALL_INDIA_CLOSING_RANK:paymentType?.STATE_CLOSING_RANK]: stateAmount,
+          [stateCode === "all"
+            ? paymentType?.ALL_INDIA_CLOSING_RANK
+            : paymentType?.STATE_CLOSING_RANK]: stateAmount,
         },
         noToast: true,
       })
@@ -457,8 +437,9 @@ fetchData({
                   {state} Medical Colleges
                 </h1>
                 <p className="text-gray-600">
-                  NEET UG {prevYear} - {currentYear} <span className="capitalize">{state}</span>{" "}
-                  Medical Colleges List
+                  NEET UG {prevYear} - {currentYear}{" "}
+                  <span className="capitalize">{state}</span> Medical Colleges
+                  List
                 </p>
               </div>
             </div>
@@ -490,28 +471,22 @@ fetchData({
               itemsCountPerPage={tableData?.pageSize}
               wrapperClass="pb-[50px]"
               onPageChange={async (page: number) => {
-                
+                const res = await fetchData({
+                  url: "/api/closing_ranks/college_list",
+                  params: {
+                    page,
+                    size: 20,
+                    state,
+                    courseType: courseType,
+                    course: course,
+                    stateCode: stateCode,
+                  },
+                })
 
-
-
- const res = await fetchData({
-      url: "/api/closing_ranks/college_list",
-      params: {
-        page,
-        size: 20,
-        state,
-        courseType: courseType,
-        course: course,
-        stateCode:stateCode
-      },
-    })
-
-    
-    if (res?.success) {
-      // console.log("ResP ",res.payload)
-      setTableData(res?.payload)
-    }
-
+                if (res?.success) {
+                  // console.log("ResP ",res.payload)
+                  setTableData(res?.payload)
+                }
               }}
             />
           </Container>
@@ -526,15 +501,19 @@ fetchData({
                   <div className="mt-16 bg-gradient-to-r from-yellow-50 to-emerald-50 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
                       <div className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800 shadow-sm border border-green-200 mb-3 inline-block">
-                       {stateCode!=="all"? "State-Wise Purchase":"All-India Purchages" }
+                        {stateCode !== "all"
+                          ? "State-Wise Purchase"
+                          : "All-India Purchages"}
                       </div>
 
                       <h3 className="text-xl font-bold mb-2 text-color-table-header">
                         {`Unlock All ${state}'s NEET ${course} Closing Ranks`}
                       </h3>
                       <p className="text-black">
-                        You can unlock {stateCode!=="all"? "state-wise":"all-india" } NEET {course} closing ranks for all
-                        colleges in {state} at once.
+                        You can unlock{" "}
+                        {stateCode !== "all" ? "state-wise" : "all-india"} NEET{" "}
+                        {course} closing ranks for all colleges in {state} at
+                        once.
                       </p>
                     </div>
 

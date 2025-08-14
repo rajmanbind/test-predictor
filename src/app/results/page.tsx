@@ -377,8 +377,7 @@ export default function ResultPage() {
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
       { title: "Sub-Quota", tableKey: "subQuota", width: "150px" },
-      { title: "Category", tableKey: "category", width: "150px" },
-      { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
+      // { title: "Category", tableKey: "category", width: "150px" },
       {
         title: (
           <div>
@@ -389,6 +388,7 @@ export default function ResultPage() {
         ),
         tableKey: "category",
       },
+      { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
       
       {
         title: (

@@ -254,15 +254,28 @@ async function checkPurchases(
 
         const purchaseDate = parseISO(purchase.created_at)
         const expiryDate = addMonths(purchaseDate, 6)
+// if(purchase.payment_type.includes("ALL"))
+//             console.log("Purchage Data: ", purchase.payment_type,
+//        {   purchase_courseType, courseType} ,
+//          { purchase_state ,state} ,
+//           isBefore(currentDate, expiryDate))
+// if(purchase.payment_type === "STATE_CLOSING_RANK"){
+//   console.log("Details: ",purchase)
+// }
+// if(purchase.payment_type === "ALL_INDIA_CLOSING_RANK"){
+//    console.log(purchase,state)
+// }
+// if(purchase.payment_type === "STATE_CLOSING_RANK"){
+//    console.log(purchase,state)
+// }
 
-            // console.log("Purchage Data: ",purchase)
-
-        return (
-          (purchase.payment_type === "STATE_CLOSING_RANK" ||  purchase.payment_type === "ALL_INDIA_CLOSING_RANK") &&
-          purchase_courseType === courseType &&
+    return (
+         ( purchase.payment_type === "STATE_CLOSING_RANK"||purchase.payment_type === "ALL_INDIA_CLOSING_RANK") &&
           purchase_state === state &&
           isBefore(currentDate, expiryDate)
-        )
+        
+    )
+    
       })
 
 //       console.log("hasValidStatePurchase: ",hasValidStatePurchase)

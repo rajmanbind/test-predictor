@@ -259,7 +259,7 @@ console.log()
     if(state==="all")
       return `/closing-ranks/${state}?state=All%20India&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
 
-    return `/closing-ranks/${state.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
+    return `/closing-ranks/${state?.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
     // return `/closing-ranks/${params.id}/${state}?course=${courseParam}`
   }
 

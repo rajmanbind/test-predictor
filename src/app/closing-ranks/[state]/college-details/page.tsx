@@ -100,8 +100,8 @@ console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
       { title: "Course", tableKey: "course" },
       { title: "Quota", tableKey: "quota", width: "150px" },
       { title: "Sub - Quota", tableKey: "subQuota", width: "150px" },
-      { title: "Category", tableKey: "category", width: "150px" },
-      { title: "Sub - Category", tableKey: "subCategory", width: "150px" },
+      // { title: "Category", tableKey: "category", width: "150px" },
+      // { title: "Sub - Category", tableKey: "subCategory", width: "150px" },
       {
         title: (
           <div>
@@ -112,7 +112,7 @@ console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
         ),
         tableKey: "category",
       },
-
+    { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
 
       {
         title: (
@@ -393,8 +393,7 @@ console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
       },
 
       { title: "Institute Type", tableKey: "instituteType", width: "150px" },
-      // { title: "State", tableKey: "state", width: "150px" },
-
+   
       {
         title: "Fees",
         tableKey: "fees",
@@ -411,13 +410,20 @@ console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
         },
       },
     ]
+    if (stateCode === "all") {
+  columns.splice(
+    columns.length - 1, // Insert before the last column
+    0,
+    { title: "State", tableKey: "state", width: "150px" }
+  );
+}
 
     return columns
   }
 
   function backURL() {
     return `/closing-ranks/${stateCode}?state=${state}&courseType=${courseType}&course=${courseParams}`
-    // `/closing-ranks/${state.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}
+    // `/closing-ranks/${state?.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}
   }
 
   return (

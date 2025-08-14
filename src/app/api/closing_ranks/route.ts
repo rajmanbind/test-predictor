@@ -207,6 +207,7 @@ export async function POST(request: NextRequest) {
         showPrevStrayRound: (item.strayRound ? `${item.strayRound}/${item.prevSRR}` :null),
         showPrevLastStrayRound: (item.lastStrayRound ? `${item.lastStrayRound}/${item.prevlSRR}` :null),
        
+  ...(stateCode === "all" && { state: item.state }) 
       
     }))
   // })

@@ -65,7 +65,7 @@ const category = getFilterValues(searchParams.getAll("category[]"));
 const instituteType = getFilterValues(searchParams.getAll("instituteType[]"));
 const quota = getFilterValues(searchParams.getAll("quota[]"));
 
-console.log("Quota,And Categoery: ",quota,category,instituteType)
+// console.log("Quota,And Categoery: ",quota,category,instituteType)
 
   const feeFrom = parseInt(searchParams.get("feeFrom") || "0");
   const feeToRaw = searchParams.get("feeTo");

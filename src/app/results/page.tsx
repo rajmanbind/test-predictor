@@ -141,7 +141,7 @@ export default function ResultPage() {
 
     getData(payment, isEmpty(filterParams) ? null : 1)
   }
-
+// console.log("PAID: ",paid)
   async function getCoursesBasedOnCourseType(type: string) {
     try {
       const res = await fetch(
@@ -356,10 +356,10 @@ export default function ResultPage() {
     }
   }
 
-  function generateCols() {
+  function generateCols(paid:boolean) {
     let currentYear = new Date().getFullYear()
     let previousYear = currentYear - 1
-
+console.log("PAID: ",paid)
     const percentile_Marks =
       getSearchParams("rankType") === "Marks" ? "Marks" : "Percentile"
 
@@ -406,7 +406,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -433,7 +433,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -460,7 +460,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -487,7 +487,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -514,7 +514,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -542,7 +542,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -569,7 +569,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -596,7 +596,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -623,7 +623,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -650,7 +650,7 @@ export default function ResultPage() {
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-            "xxx"
+           !paid? "xxx":"NA"
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -751,7 +751,7 @@ export default function ResultPage() {
             />
 
             <Table
-              columns={generateCols()}
+              columns={generateCols(paid)}
               data={tableData?.data}
               className="mt-6 min-h-[600px]"
             />

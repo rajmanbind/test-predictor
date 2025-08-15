@@ -78,7 +78,7 @@ const courseType = params?.id
           `payment-${state.replaceAll(" ","-").toLowerCase()}-${params?.id}-${college}`,
         )
         // console.log("Payment Status: ",paymentStatus)
-
+console.log(paymentStatus)
         if (!isExpired(paymentStatus, 6)) {
           // console.log("data received; ")
           await showCutoff()
@@ -153,7 +153,7 @@ const priceTypeValue = isValidPriceTypeKey(fullKey)
   ? priceType[fullKey]
   : undefined;
 
-  
+  // console.log(priceTypeValue,fullKey,priceTypeName)
     const [dataRes, configRes, price] = await Promise.all([
       fetchData({
         url: "/api/college_cut_off",
@@ -186,7 +186,7 @@ const priceTypeValue = isValidPriceTypeKey(fullKey)
       )
     }
 
-    console.log("PRice: ",price)
+    // console.log("PRice: ",price)
     if (price?.success) {
       
 

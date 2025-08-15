@@ -85,12 +85,16 @@ export async function GET(request: NextRequest) {
 // .eq("courseType",courseType)
 //  .ilike("courseType", courseType!);
 // .eq("course",course)
-
+console.log("Table Name: ",tableName)
 const { data, error } = await supabase.rpc("get_unique_colleges_data", {
-  table_name: tableName,
-  course_type: courseType,
+  p_table_name: tableName,
+  p_course_type: courseType,
 })
 
+// console.log("COllege data: ",data,{
+//   table_name: tableName,
+//   course_type: courseType,
+// })
 if (error) {
   console.error("Supabase  error:", error.message)
   return NextResponse.json(

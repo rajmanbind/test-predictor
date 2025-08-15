@@ -1,6 +1,3 @@
-
-
-
 import { createAdminSupabaseClient } from "@/lib/supabase"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -25,34 +22,14 @@ type BatchStats = {
   errors: { record: number; error: string; data: CollegeRow }[]
 }
 
-function getTableName(
-  counsellingType: string | number,
-  stateCode?: string | null,
-): string {
-  const isAllIndia =
-    counsellingType === "All India Counselling" ||
-    counsellingType === 1 ||
-    counsellingType === "1"
-  if (
-    isAllIndia &&
-    (!stateCode ||
-      stateCode === "null" ||
-      stateCode === "undefined" ||
-      stateCode === "")
-  ) {
+function getTableName(stateCode?: string | null): string {
+  if (stateCode) {
+    if (stateCode == "All" || stateCode === "all")
+      return "college_table_all_india"
+    return `college_table_${stateCode.toUpperCase()}`
+  } else {
     return "college_table_all_india"
   }
-  if (
-    stateCode &&
-    stateCode !== "null" &&
-    stateCode !== "undefined" &&
-    stateCode !== ""
-  ) {
-    return `college_table_${stateCode}`
-  }
-  throw new Error(
-    "Table name cannot be determined (invalid counsellingType/stateCode).",
-  )
 }
 
 function cleanAndTrimValue(value: any) {
@@ -87,7 +64,7 @@ function cleanValue(value: any) {
 }
 
 function getConflictKey(row: CollegeRow): Record<string, any> {
-      return {
+  return {
     instituteName: cleanAndTrimValue(row.instituteName),
     instituteType: cleanAndTrimValue(row.instituteType),
     course: cleanAndTrimValue(row.course),
@@ -120,7 +97,7 @@ export async function POST(req: NextRequest) {
 
     let tableName: string
     try {
-      tableName = getTableName(counsellingType, stateCode)
+      tableName = getTableName(stateCode)
     } catch (err) {
       return NextResponse.json(
         { error: err instanceof Error ? err.message : String(err) },
@@ -192,46 +169,44 @@ export async function POST(req: NextRequest) {
     // }
 
     // Batch processing
-    
-    
-    
+
     for (let i = 0; i < data.length; i++) {
-  const row = data[i]
-  const cleanedRow = cleanAndTrimObject(row)
+      const row = data[i]
+      const cleanedRow = cleanAndTrimObject(row)
 
-  const missingFields = requiredFields.filter((field) => !cleanedRow[field])
-  if (missingFields.length > 0) {
-    invalidRowsBeforeInsert.push({
-      index: i + 1,
-      reason: `Missing required fields: ${missingFields.join(", ")}`,
-      row,
-    })
-    continue
-  }
+      const missingFields = requiredFields.filter((field) => !cleanedRow[field])
+      if (missingFields.length > 0) {
+        invalidRowsBeforeInsert.push({
+          index: i + 1,
+          reason: `Missing required fields: ${missingFields.join(", ")}`,
+          row,
+        })
+        continue
+      }
 
-  const key = JSON.stringify(getConflictKey(cleanedRow))
-  if (!seen.has(key)) {
-    seen.add(key)
-    dedupedRows.push(cleanedRow)
-    firstOccurrences.set(key, { index: i + 1, row: cleanedRow })
-  } else {
-    const original = firstOccurrences.get(key)
-    skippedDueToDuplicate.push({
-      index: i + 1,
-      row: cleanedRow,
-      duplicateOf: {
-        index: original!.index,
-        row: original!.row,
-      },
-    })
-    console.warn(
-      `⚠️ Skipped duplicate at index ${i + 1}:\nDuplicate Row:`,
-      cleanedRow,
-      `\n↪️ Duplicate of index ${original!.index}:\nOriginal Row:`,
-      original!.row,
-    )
-  }
-}
+      const key = JSON.stringify(getConflictKey(cleanedRow))
+      if (!seen.has(key)) {
+        seen.add(key)
+        dedupedRows.push(cleanedRow)
+        firstOccurrences.set(key, { index: i + 1, row: cleanedRow })
+      } else {
+        const original = firstOccurrences.get(key)
+        skippedDueToDuplicate.push({
+          index: i + 1,
+          row: cleanedRow,
+          duplicateOf: {
+            index: original!.index,
+            row: original!.row,
+          },
+        })
+        console.warn(
+          `⚠️ Skipped duplicate at index ${i + 1}:\nDuplicate Row:`,
+          cleanedRow,
+          `\n↪️ Duplicate of index ${original!.index}:\nOriginal Row:`,
+          original!.row,
+        )
+      }
+    }
 
     const totalBatches = Math.ceil(dedupedRows.length / BATCH_SIZE)
     const allBatchStats: BatchStats[] = []
@@ -268,12 +243,11 @@ export async function POST(req: NextRequest) {
           //     .map(([key, value]) => [key, cleanValue(value)]),
           // ) as CollegeRow
 
-const cleanData: CollegeRow = Object.fromEntries(
-  Object.entries(row)
-    .filter(([key]) => key !== "id")
-    .map(([key, value]) => [key, cleanAndTrimValue(value)]),
-) as CollegeRow
-
+          const cleanData: CollegeRow = Object.fromEntries(
+            Object.entries(row)
+              .filter(([key]) => key !== "id")
+              .map(([key, value]) => [key, cleanAndTrimValue(value)]),
+          ) as CollegeRow
 
           // Try to find existing record by unique key
           const { data: existing } = await supabase
@@ -385,9 +359,6 @@ const cleanData: CollegeRow = Object.fromEntries(
     )
   }
 }
-
-
-
 
 // import { createAdminSupabaseClient } from "@/lib/supabase"
 // import { NextRequest, NextResponse } from "next/server"
@@ -704,6 +675,4 @@ const cleanData: CollegeRow = Object.fromEntries(
 //     )
 //   }
 // }
-
-
 

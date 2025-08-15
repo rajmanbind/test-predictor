@@ -236,7 +236,7 @@ export const priceType = {
   COLLEGE_CUT_OFF_DNB: "College Cutoff - DNB",
   COLLEGE_CUT_OFF_INICET: "College Cutoff - INICET",
   COLLEGE_CUT_OFF_AIAPGET: "College Cutoff - AIAPGET",
-  ALL_INDIA_COLLEGE_CUT_OFF_UG: "College Cutoff - UG",
+  ALL_INDIA_COLLEGE_CUT_OFF_UG: "All India College Cutoff - UG",
   ALL_INDIA_COLLEGE_CUT_OFF_MDS: "All India College Cutoff - MDS",
   ALL_INDIA_COLLEGE_CUT_OFF_PG: "All India College Cutoff - PG",
   ALL_INDIA_COLLEGE_CUT_OFF_SS: "All India College Cutoff - SS",

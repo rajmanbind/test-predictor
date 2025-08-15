@@ -90,10 +90,10 @@ const tableName = getTableName(stateCode)
         showPrevClosingRankR3:(item.prevClosingRankR3 ? `${item.prevClosingRankR3}/${item.prevCRR3}` :null),
         showPrevStrayRound: (item.strayRound ? `${item.strayRound}/${item.prevSRR}` :null),
         showPrevLastStrayRound: (item.lastStrayRound ? `${item.lastStrayRound}/${item.prevlSRR}` :null),
-         ...(stateCode === "all" && { state: item.state }) 
+         ...((stateCode === "all" ||stateCode === "All" )&& { state: item.state }) 
       
     }))
-console.log("Sending Data: ",cleanData)
+// console.log("Sending Data: ",cleanData)
   //   mergedData.push({
   //     prev_id: old?.id,
   //     new_id: latest?.id,

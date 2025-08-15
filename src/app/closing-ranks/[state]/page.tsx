@@ -111,7 +111,7 @@ export default function CollegeListClosingRanksPage() {
             size: 20,
             state,
             courseType: courseType,
-            course: course,
+            // course: course,
             stateCode: stateCode,
           },
         }),
@@ -285,9 +285,15 @@ export default function CollegeListClosingRanksPage() {
           )
         },
       },
-      
-    ]
 
+    ]
+    if (stateCode === "all"||stateCode === "All") {
+  columns.splice(
+    columns.length - 1, // Insert before the last column
+    0,
+    { title: "State", tableKey: "state", width: "150px" }
+  );
+}
     return columns
   }
 

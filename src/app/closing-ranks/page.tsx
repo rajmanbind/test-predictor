@@ -8,7 +8,7 @@ import { useAppState } from "@/hooks/useAppState"
 import useFetch from "@/hooks/useFetch"
 import { useInternalSearchParams } from "@/hooks/useInternalSearchParams"
 import { IOption } from "@/types/GlobalTypes"
-import {  PGCourseSubTypeList } from "@/utils/static"
+import { PGCourseSubTypeList } from "@/utils/static"
 import {
   autoComplete,
   clearReactHookFormValueAndStates,
@@ -25,7 +25,7 @@ type StateData = {
   name: string
   slug: string
   popular?: boolean
-  code:string
+  code: string
 }
 
 // // States and Union Territories data
@@ -76,18 +76,26 @@ type StateData = {
 //   name: string
 //   slug: string
 //   popular?: boolean
-//   code: string 
+//   code: string
 // }
 
-const states:StateData[] = [
-  { name: "Andaman and Nicobar Islands", slug: "andaman-and-nicobar-islands", code: "AN" },
+const states: StateData[] = [
+  {
+    name: "Andaman and Nicobar Islands",
+    slug: "andaman-and-nicobar-islands",
+    code: "AN",
+  },
   { name: "Andhra Pradesh", slug: "andhra-pradesh", popular: true, code: "AP" },
   { name: "Arunachal Pradesh", slug: "arunachal-pradesh", code: "AR" },
   { name: "Assam", slug: "assam", code: "AS" },
   { name: "Bihar", slug: "bihar", code: "BR" },
   { name: "Chandigarh", slug: "chandigarh", code: "CH" },
   { name: "Chhattisgarh", slug: "chhattisgarh", code: "CG" },
-  { name: "Dadra and Nagar Haveli", slug: "dadra-and-nagar-haveli", code: "DN" },
+  {
+    name: "Dadra and Nagar Haveli",
+    slug: "dadra-and-nagar-haveli",
+    code: "DN",
+  },
   { name: "Delhi", slug: "delhi", code: "DL" },
   { name: "Daman and Diu", slug: "daman-and-diu", code: "DD" },
   { name: "Goa", slug: "goa", code: "GA" },
@@ -118,7 +126,6 @@ const states:StateData[] = [
   { name: "Uttarakhand", slug: "uttarakhand", code: "UT" },
   { name: "West Bengal", slug: "west-bengal", code: "WB" },
 ]
-
 
 export default function ClosingRanks() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -174,12 +181,11 @@ export default function ClosingRanks() {
   //   }
   // }
 
-
   async function getCourses() {
     try {
       const res = await fetch("/api/get-courses-types")
       const json = await res.json()
-console.log()
+      console.log()
       if (!json?.data || !Array.isArray(json.data)) {
         console.error(
           "Invalid data structure from /api/get-courses-types",
@@ -188,7 +194,7 @@ console.log()
         return []
       }
 
-      const data = json.data.map((q:IOption) => ({
+      const data = json.data.map((q: IOption) => ({
         id: q.id,
         text: q.type,
       }))
@@ -198,7 +204,6 @@ console.log()
       return [] // Always return fallback
     }
   }
-
 
   async function getCoursesBasedOnpredictorType(type: string) {
     try {
@@ -236,10 +241,6 @@ console.log()
     predictorType()
   }, [])
 
-
-
-
-
   // Filter states based on search query and active tab
   const filteredStates = states.filter((state) => {
     const matchesSearch = state.name
@@ -249,14 +250,17 @@ console.log()
       activeTab === "all" || (activeTab === "popular" && state.popular)
     return matchesSearch && matchesTab
   })
-
+console.log(filteredStates)
   const { showToast } = useAppState()
 
   function redirectURL(state: any) {
-    if (isEmpty(selectedCourse?.text) || selectedCourse?.text === "EMPTY") {
+    if ((selectedType?.text==="NEET UG"||selectedType?.code==="NEET UG")&&isEmpty((selectedCourse?.text) || selectedCourse?.text === "EMPTY")) {
+
       return ""
     }
-    if(state==="all")
+
+
+    if (state === "all")
       return `/closing-ranks/${state}?state=All%20India&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
 
     return `/closing-ranks/${state?.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
@@ -264,8 +268,7 @@ console.log()
   }
 
   function onLinkClick() {
-    if (isEmpty(selectedCourse?.text) || selectedCourse?.text === "EMPTY") {
-      // router.replace(`/closing-ranks/${params.id}`)
+    if ((selectedType?.text==="NEET UG"||selectedType?.code==="NEET UG")&&isEmpty((selectedCourse?.text) || selectedCourse?.text === "EMPTY")) {
 
       setError("course", {
         type: "manual",
@@ -292,14 +295,11 @@ console.log()
                 boxWrapperClass="border-color-accent"
                 placeholder="Course Type"
                 value={selectedType}
-                
                 onChange={({ selectedValue }) => {
-                  // router.replace(
-                  //   `/closing-ranks/${selectedValue?.text.toLowerCase()}`,
-                  // )
-                  // console.log(selectedValue)
-  getCoursesBasedOnpredictorType(selectedValue.text)
-    setValue("course", "") 
+                  if(selectedValue.text==="NEET UG"){
+                    getCoursesBasedOnpredictorType(selectedValue.text)
+                  }
+                  setValue("course", "")
                   setSelectedType(selectedValue)
                 }}
                 control={control}
@@ -312,7 +312,7 @@ console.log()
                 wrapperClass="max-w-[150px]"
                 errors={errors}
               />
-
+{selectedType?.code==="NEET UG"||selectedType?.text==="NEET UG"&&
               <SearchAndSelect
                 name="course"
                 labelNode={
@@ -323,25 +323,12 @@ console.log()
                 placeholder="Select Course"
                 value={selectedCourse}
                 boxWrapperClass="border-color-accent"
-//                 onChange={({ selectedValue }) => {
-//                   setValue("courseType",selectedValue.text)
-//                   setSelectedCourse(selectedValue)
-// console.log("selected course type: ",selectedValue)
-// getCoursesBasedOnpredictorType(selectedValue.text)
-//                   // router.replace(
-//                   //   `/closing-ranks/${params?.id}?course=${encodeURIComponent(
-//                   //     selectedValue?.text,
-//                   //   )}`,
-//                   // )
+                onChange={({ selectedValue }) => {
+                  setValue("course", selectedValue.text)
+                  setSelectedCourse(selectedValue)
 
-//                   clearErrors("course")
-//                 }}
-onChange={({ selectedValue }) => {
-  setValue("course", selectedValue.text)  // ✅ Use 'course' here instead of 'courseType'
-  setSelectedCourse(selectedValue)
-
-  clearErrors("course")
-}}
+                  clearErrors("course")
+                }}
                 control={control}
                 setValue={setValue}
                 defaultOption={{
@@ -358,12 +345,12 @@ onChange={({ selectedValue }) => {
                 }
                 disabled={isEmpty(coursesList)}
                 errors={errors}
-              />
+              />}
             </div>
 
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
               <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
-                NEET {params?.id?.toString()?.toUpperCase()}
+               {selectedType?.code||selectedType?.text}
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-color-table-header">
                 Medical College Closing Ranks
@@ -429,30 +416,28 @@ onChange={({ selectedValue }) => {
 
             {/* States Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <Link
-                  href={redirectURL("all")}
-                  key="all"
-                  className="group bg-white rounded-xl border border-gray-200 p-5 transition-all hover:shadow-md hover:border-yellow-300 flex flex-col"
-                  onClick={onLinkClick}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-yellow-500" />
-                      <h3 className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors">
-                        All Inida
-                      </h3>
-                    </div>
-                    
+              <Link
+                href={redirectURL("all")}
+                key="all"
+                className="group bg-white rounded-xl border border-gray-200 p-5 transition-all hover:shadow-md hover:border-yellow-300 flex flex-col"
+                onClick={onLinkClick}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-yellow-500" />
+                    <h3 className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors">
+                      All India
+                    </h3>
                   </div>
-                  <p className="text-sm text-gray-500 mb-3">
-                    All India - NEET UG/PG
-                    Medical
-                  </p>
-                  <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">
-                    View Closing Ranks
-                    <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </div>
-                </Link>
+                </div>
+                <p className="text-sm text-gray-500 mb-3">
+                  All India - {selectedType?.code||selectedType?.text} Medical
+                </p>
+                <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">
+                  View Closing Ranks
+                  <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </Link>
               {filteredStates.map((state) => (
                 <Link
                   href={redirectURL(state)}
@@ -474,8 +459,7 @@ onChange={({ selectedValue }) => {
                     )}
                   </div>
                   <p className="text-sm text-gray-500 mb-3">
-                    {state.name} -  NEET UG/PG
-                    Medical
+                    {state.name} - {selectedType?.code||selectedType?.text} Medical
                   </p>
                   <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">
                     View Closing Ranks

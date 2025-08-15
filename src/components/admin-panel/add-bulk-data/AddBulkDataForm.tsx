@@ -69,51 +69,133 @@ export default function BulkUploadForm() {
     fetchStates()
   }, [])
 
+  // const handleUpload = async () => {
+  //   if (!parsedData.length) return showToast("error", "No data to upload")
+  //   if (!counsellingType || (counsellingType === "State Counselling" && !stateCode)) {
+  //     return showToast("error", "Select counselling type and state")
+  //   }
+
+  //   setIsUploading(true)
+  //   setLogs(["🚀 Uploading..."])
+  //   setDetails(null)
+
+  //   try {
+  //     const res = await fetch("/api/admin/add_bulk_data", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         data: parsedData,
+  //         counsellingType,
+  //         stateCode: counsellingType === "State Counselling" ? stateCode : "all",
+  //       }),
+  //     })
+
+  //     const json = await res.json()
+
+  //     if (res.ok) {
+  //       setLogs([
+  //         `✅ Inserted: ${json.inserted}`,
+  //         `✅ Updated: ${json.updated}`,
+  //         `❌ Failed: ${json.failed}`,
+  //         "📋 Details:",
+  //         ...(json.logs || []),
+  //       ])
+  //       setDetails(json)
+  //       showToast("success", "Upload complete")
+  //     } else {
+  //       setLogs(["❌ Upload failed", json.error])
+  //       setDetails(json)
+  //       showToast("error", json.error || "Upload failed")
+  //     }
+  //   } catch (err) {
+  //     setLogs(["❌ Network error"])
+  //     showToast("error", "Upload failed")
+  //   } finally {
+  //     setIsUploading(false)
+  //   }
+  // }
+  function chunkArray(array:any, size:any) {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+}
   const handleUpload = async () => {
-    if (!parsedData.length) return showToast("error", "No data to upload")
-    if (!counsellingType || (counsellingType === "State Counselling" && !stateCode)) {
-      return showToast("error", "Select counselling type and state")
-    }
+  if (!parsedData.length) return showToast("error", "No data to upload")
+  if (!counsellingType || (counsellingType === "State Counselling" && !stateCode)) {
+    return showToast("error", "Select counselling type and state")
+  }
 
-    setIsUploading(true)
-    setLogs(["🚀 Uploading..."])
-    setDetails(null)
+  setIsUploading(true)
+  setLogs(["🚀 Uploading..."])
+  setDetails(null)
 
+  const BATCH_SIZE = 500;
+  const batches = chunkArray(parsedData, BATCH_SIZE);
+  let allLogs:any = [];
+  let allDetails = {
+    inserted: 0,
+    updated: 0,
+    failed: 0,
+    total: 0,
+    skippedDueToDuplicate: 0,
+    updatedRows: 0,
+    insertedRows: 0,
+    invalidBeforeInsert: 0,
+    batchStats: [],
+  };
+
+  for (let i = 0; i < batches.length; i++) {
+    setLogs((prev) => [...prev, `🚚 Uploading batch ${i + 1} of ${batches.length}...`]);
     try {
       const res = await fetch("/api/admin/add_bulk_data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          data: parsedData,
+          data: batches[i],
           counsellingType,
-          stateCode: counsellingType === "State Counselling" ? stateCode : null,
+          stateCode: counsellingType === "State Counselling" ? stateCode : "all",
         }),
-      })
+      });
 
-      const json = await res.json()
+      const json = await res.json();
 
       if (res.ok) {
-        setLogs([
-          `✅ Inserted: ${json.inserted}`,
-          `✅ Updated: ${json.updated}`,
-          `❌ Failed: ${json.failed}`,
-          "📋 Details:",
+        allLogs = [
+          ...allLogs,
+          `✅ Batch ${i + 1}: Inserted: ${json.inserted}, Updated: ${json.updated}, Failed: ${json.failed}`,
           ...(json.logs || []),
-        ])
-        setDetails(json)
-        showToast("success", "Upload complete")
+        ];
+        // Aggregate details
+        allDetails.inserted += json.inserted || 0;
+        allDetails.updated += json.updated || 0;
+        allDetails.failed += json.failed || 0;
+        allDetails.total += json.total || 0;
+        allDetails.skippedDueToDuplicate += json.skippedDueToDuplicate?.length || 0;
+        allDetails.updatedRows += json.updatedRows?.length || 0;
+        allDetails.insertedRows += json.insertedRows?.length || 0;
+        allDetails.invalidBeforeInsert += json.invalidBeforeInsert?.length || 0;
+        allDetails.batchStats.push(...(json.batchStats || []));
       } else {
-        setLogs(["❌ Upload failed", json.error])
-        setDetails(json)
-        showToast("error", json.error || "Upload failed")
+        allLogs = [...allLogs, `❌ Batch ${i + 1} failed: ${json.error}`];
       }
     } catch (err) {
-      setLogs(["❌ Network error"])
-      showToast("error", "Upload failed")
-    } finally {
-      setIsUploading(false)
+      allLogs = [...allLogs, `❌ Batch ${i + 1} network error`];
     }
   }
+
+  setLogs([
+    `✅ Inserted: ${allDetails.inserted}`,
+    `✅ Updated: ${allDetails.updated}`,
+    `❌ Failed: ${allDetails.failed}`,
+    "📋 Details:",
+    ...allLogs,
+  ]);
+  setDetails(allDetails);
+  showToast("success", "Upload complete");
+  setIsUploading(false);
+};
 
   return (
     <div className="p-4">

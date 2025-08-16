@@ -184,7 +184,6 @@ return category;
     try {
       const res = await fetch("/api/get-courses-types")
       const json = await res.json()
-console.log()
       if (!json?.data || !Array.isArray(json.data)) {
         console.error(
           "Invalid data structure from /api/get-courses-types",
@@ -253,7 +252,13 @@ console.log()
     return json.data
   }
 
+    //  const statesJson = await statesRes.json()
+    //     const coursesJson = await coursesRes.json()
 
+    //     const states = [
+    //       { id: "All States", code: "All", text: "All State" },
+    //       ...(statesJson?.data || []),
+    //     ]
 
   useEffect(() => {
     fetchStates()
@@ -310,19 +315,10 @@ console.log()
     // searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
     searchParams.set("courseType", formData?.courseType?.text || "")
-    searchParams.set("state", formData?.state?.text || "")
-    searchParams.set("stateCode", formData?.state?.code || "")
+    searchParams.set("state", formData?.state?.text || "All India")
+    searchParams.set("stateCode", formData?.state?.code || "all")
     searchParams.set("counsellingTypeId", formData?.counsellingType?.id || "")
     
-// console.log("courseType: ",formData.courseType?.text)
-// console.log("Rank: ",formData?.rank)
-// console.log("RankType: ",selected)
-// console.log("Course: ",formData?.courses?.text)
-// console.log("CounsellingType: ",formData?.counsellingType?.text)
-// console.log("Quota: ",formData?.quotas?.text)
-// console.log("SubQuota: ",formData?.subQuota?.text)
-// console.log("Category: ",formData?.categories?.text)
-// console.log("SubQuota: ",formData?.subCategory?.text)
     router.push(`/results?${searchParams.toString()}`)
   }
 

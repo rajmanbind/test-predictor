@@ -349,9 +349,9 @@ console.log(filteredStates)
             </div>
 
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-              <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
-               {selectedType?.code||selectedType?.text}
-              </div>
+              {(selectedType?.text)&&<div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
+               {selectedType?.text}
+              </div>}
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-color-table-header">
                 Medical College Closing Ranks
               </h1>
@@ -431,7 +431,7 @@ console.log(filteredStates)
                   </div>
                 </div>
                 <p className="text-sm text-gray-500 mb-3">
-                  All India - {selectedType?.code||selectedType?.text} Medical
+                  All India - {selectedType?.text} Colleges List
                 </p>
                 <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">
                   View Closing Ranks
@@ -459,7 +459,7 @@ console.log(filteredStates)
                     )}
                   </div>
                   <p className="text-sm text-gray-500 mb-3">
-                    {state.name} - {selectedType?.code||selectedType?.text} Medical
+                    {state.name} - {selectedType?.text} Colleges List
                   </p>
                   <div className="mt-auto flex items-center text-sm text-yellow-600 font-medium">
                     View Closing Ranks

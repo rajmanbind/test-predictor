@@ -1,4 +1,3 @@
-
 "use client"
 
 import { BELayout } from "@/components/admin-panel/BELayout"
@@ -61,7 +60,7 @@ export default function ManageDataPage() {
     },
   })
 
-  console.log(selectedRows)
+  // console.log(selectedRows)
   // Fetch dropdown data on first mount
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -74,7 +73,7 @@ export default function ManageDataPage() {
         const coursesJson = await coursesRes.json()
 
         const states = [
-          { id: "All States", code: "All", text: "All State" },
+          { id: "All States", code: "all", text: "All India" },
           ...(statesJson?.data || []),
         ]
         const courses =
@@ -87,12 +86,12 @@ export default function ManageDataPage() {
         setCourseTypeList(courses)
 
         const defaultState =
-          states.find((s:IOption) => s.code === "WB" || s.text === "WB") || states[0]
+          states.find((s: IOption) => s.code === "WB" || s.text === "WB") ||
+          states[0]
         const defaultCourse =
-          courses.find((c:IOption) => c.text === "NEET PG") || courses[0]
+          courses.find((c: IOption) => c.text === "NEET PG") || courses[0]
         setSeletectedState(defaultState)
         setCourseType(defaultCourse)
-
       } catch (error) {
         console.error("Initial data load error:", error)
       }
@@ -104,6 +103,7 @@ export default function ManageDataPage() {
   // Fetch table data after default dropdown values are loaded
   useEffect(() => {
     if (seletectedState?.code && courseType?.text) {
+      setSearchParams("page", "1")
       getData(1)
     }
   }, [seletectedState?.code, courseType?.text, updateUI])
@@ -115,8 +115,10 @@ export default function ManageDataPage() {
     }
 
     const page = pageOverride ?? Number(searchParams.get("page") || 1)
-    const search = searchOverride ?? searchInput;
-console.log(seletectedState)
+    const search = searchOverride ?? searchInput
+
+
+
     const [dataRes, configRes] = await Promise.all([
       fetchData({
         url: "/api/admin/get_data",
@@ -140,7 +142,7 @@ console.log(seletectedState)
       setConfigYear(
         configRes?.payload?.data?.[0]?.text
           ?.split("-")
-          .map((item: string) => item.trim())
+          .map((item: string) => item.trim()),
       )
     }
   }
@@ -167,39 +169,39 @@ console.log(seletectedState)
   // }
 
   async function deleteData() {
-  const idsToDelete: string[] =
-    singleDelete?.length > 0
-      ? singleDelete
-      : selectedRows?.map((row: any) => row.id)
-  if (!idsToDelete.length) {
-    showToast("error", "No rows selected for deletion.")
-    return
-  }
-  try {
-    const res = await fetchData({
-      url: "/api/admin/delete_data",
-      method: "POST",
-      data: {
-        id: idsToDelete,
-        stateCode: seletectedState?.code,
-      },
-    })
-
-    setSingleDelete([])
-    setSelectedRows([])
-    setPopupOpen(false)
-
-    if (res?.success) {
-      showToast("success", res?.payload?.msg || "Deleted successfully")
-      setUpdateUI((prev) => !prev)
-    } else {
-      showToast("error", res?.payload?.msg || "Failed to delete")
+    const idsToDelete: string[] =
+      singleDelete?.length > 0
+        ? singleDelete
+        : selectedRows?.map((row: any) => row.id)
+    if (!idsToDelete.length) {
+      showToast("error", "No rows selected for deletion.")
+      return
     }
-  } catch (error) {
-    showToast("error", "Something went wrong during deletion.")
-    console.error("Delete error:", error)
+    try {
+      const res = await fetchData({
+        url: "/api/admin/delete_data",
+        method: "POST",
+        data: {
+          id: idsToDelete,
+          stateCode: seletectedState?.code,
+        },
+      })
+
+      setSingleDelete([])
+      setSelectedRows([])
+      setPopupOpen(false)
+
+      if (res?.success) {
+        showToast("success", res?.payload?.msg || "Deleted successfully")
+        setUpdateUI((prev) => !prev)
+      } else {
+        showToast("error", res?.payload?.msg || "Failed to delete")
+      }
+    } catch (error) {
+      showToast("error", "Something went wrong during deletion.")
+      console.error("Delete error:", error)
+    }
   }
-}
 
   async function onSubmit() {
     setSearchParams("page", "1")
@@ -224,137 +226,59 @@ console.log(seletectedState)
 
       <Card className="mt-4 py-6 px-0">
         <div className="flex items-end sm:flex-row flex-col  px-2 md:gap-15 gap-5 mb-7">
-          {/* <SearchAndSelect
+  
+          <SearchAndSelect
             name="courseType"
             label="Course Type"
             placeholder="Select Course Type"
-            value={courseType}
-            onChange={({ selectedValue }) => {
-              setCourseType(selectedValue)
-            }}
+            options={courseTypeList}
             control={control}
             setValue={setValue}
             required
-            options={courseTypeList}
-            defaultOption={courseType}
-            wrapperClass="max-w-[395px]"
-            debounceDelay={0}
             searchAPI={(text, setOptions) =>
               autoComplete(text, courseTypeList, setOptions)
             }
-            errors={errors}
+            defaultOption={courseTypeList.find((c) => c.text === "NEET PG")}
+            wrapperClass="max-w-[395px]"
+            onChange={({ name, selectedValue }) => {
+              setValue("courseType", selectedValue)
+              setCourseType(selectedValue)
+                 setSearchParams("page", "1") // Reset page when course changes
+    paginationRef.current?.setActivePage(1) // Reset pagination UI
+            }}
+            value={courseType}
+errors={errors}
+            // value={courseType} errors={errors}
           />
 
           <SearchAndSelect
             name="state"
             label="State"
             placeholder="Search and Select"
-            value={seletectedState}
-            onChange={({ selectedValue }) => {
-              setSeletectedState(selectedValue)
-            }}
+            options={stateList}
             control={control}
             setValue={setValue}
             required
-            options={stateList}
-            defaultOption={seletectedState}
-            wrapperClass="max-w-[395px]"
-            debounceDelay={0}
             searchAPI={(text, setOptions) =>
               autoComplete(text, stateList, setOptions)
             }
-            errors={errors}
-          /> */}
-{/* <SearchAndSelect
-  name="courseType"
-  label="Course Type"
-  placeholder="Select Course Type"
-  value={courseType}
-  onChange={({ selectedValue }) => setCourseType(selectedValue)}
-  control={control}
-  setValue={setValue}
-  required
-  options={courseTypeList}
-  wrapperClass="max-w-[395px]"
-  debounceDelay={0}
-   defaultOption={stateList.find(s => s.text === "NEET PG")}
-  searchAPI={(text, setOptions) =>
-    autoComplete(text, courseTypeList, setOptions)
-  }
-  errors={errors}
-/>
-
-<SearchAndSelect
-  name="state"
-  label="State"
-  placeholder="Search and Select"
-  value={seletectedState}
-  onChange={({ selectedValue }) => setSeletectedState(selectedValue)}
-  control={control}
-  setValue={setValue}
-  required
-  options={stateList}
-  wrapperClass="max-w-[395px]"
-  debounceDelay={0}
- defaultOption={stateList.find(s => s.code === "WB")}
-  searchAPI={(text, setOptions) =>
-    autoComplete(text, stateList, setOptions)
-  }
-  errors={errors}
-/>
-
-// In your ManageDataPage component, update the SearchAndSelect components like this:
- */}
-<SearchAndSelect
-            name="courseType"
-            label="Course Type"
-            placeholder="Select Course Type"
-            options={courseTypeList}
-            control={control}
-            setValue={setValue}
-            required
-            searchAPI={(text, setOptions) => autoComplete(text, courseTypeList, setOptions)}
-            defaultOption={courseTypeList.find(c => c.text === "NEET PG")}
+            defaultOption={stateList.find((s) => s.code === "WB")}
             wrapperClass="max-w-[395px]"
             onChange={({ name, selectedValue }) => {
-              setValue("courseType", selectedValue)
-              setCourseType(selectedValue)
-            } } 
-            
+              setValue("state", selectedValue)
+              setSeletectedState(selectedValue)
+                setSearchParams("page", "1") // Reset page when state changes
+    paginationRef.current?.setActivePage(1) // Reset pagination UI
+            }}
+            value={seletectedState}
+errors={errors}
             // value={courseType} errors={errors}
-            
-            
-            
-            />
-
-<SearchAndSelect
-  name="state"
-  label="State"
-  placeholder="Search and Select"
-  options={stateList}
-  control={control}
-  setValue={setValue}
-  required
-  searchAPI={(text, setOptions) =>
-    autoComplete(text, stateList, setOptions)
-  }
-  defaultOption={stateList.find(s => s.code === "WB")}
-  wrapperClass="max-w-[395px]"
-  onChange={({ name, selectedValue }) => {
-    setValue("state", selectedValue);
-    setSeletectedState(selectedValue)
-  }}
-
-// value={courseType} errors={errors}
-
-
-
-/>
+          />
           <Button
             // className={cn(
             //   "bg-color-accent hover:bg-color-accent-dark text-white text-sm py-[6px] px-4 rounded-md w-full tab:w-auto hidden md:block"
             // )}
-            onClick={() => getData()}
+            onClick={() => getData(1)}
             disabled={!seletectedState?.code || !courseType?.text}
           >
             Find
@@ -392,7 +316,7 @@ console.log(seletectedState)
             <button
               className={cn(
                 "bg-color-accent hover:bg-color-accent-dark text-white text-sm py-[6px] px-4 rounded-md w-full tab:w-auto",
-                !searchInput && "opacity-50"
+                !searchInput && "opacity-50",
               )}
               disabled={!searchInput}
             >
@@ -403,10 +327,10 @@ console.log(seletectedState)
           <TableDeleteButton
             className="flex-shrink-0 w-fit self-end"
             title={`Delete ${selectedRows.length} row${selectedRows.length > 1 ? "s" : ""}`}
-            onClick={() =>{ setPopupOpen(true)
+            onClick={() => {
+              setPopupOpen(true)
 
-
-deleteData()
+              deleteData()
             }}
             disabled={isEmpty(selectedRows)}
           />
@@ -423,7 +347,7 @@ deleteData()
             },
             showToast,
             courseType?.text,
-seletectedState
+            seletectedState,
           )}
           data={tableData?.data}
           itemsCountPerPage={tableData?.pageSize}
@@ -459,6 +383,4 @@ seletectedState
     </BELayout>
   )
 }
-
-
 

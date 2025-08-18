@@ -1,5 +1,6 @@
 "use client"
 
+import { IOptionProps } from "@/components/admin-panel/add-data/AddDataForm"
 import { Button } from "@/components/common/Button"
 import { ClosingRankGuide } from "@/components/common/ClosingRankGuide"
 import { Pagination, PaginationHandle } from "@/components/common/Pagination"
@@ -25,7 +26,6 @@ import { useEffect, useRef, useState } from "react"
 import { Tooltip } from "react-tooltip"
 
 import TableSignup from "./TableSignup"
-import { IOptionProps } from "@/components/admin-panel/add-data/AddDataForm"
 
 export default function ResultPage() {
   const [tableData, setTableData] = useState<any>(null)
@@ -33,7 +33,6 @@ export default function ResultPage() {
   const [categoriesList, setCategoriesList] = useState<IOption[]>([])
   const [coursesList, setCoursesList] = useState<IOption[]>([])
   const [quotasList, setQuotasList] = useState<IOption[]>([])
-
   const [filterPopup, setFilterPopup] = useState(false)
   const [filterParams, setFilterParams] = useState<any>(null)
   const [updateUI, setUpdateUI] = useState(false)
@@ -48,12 +47,17 @@ export default function ResultPage() {
   const paginationRef = useRef<PaginationHandle>(null)
 
   const [mobFilterFormData, setMobFilterFormData] = useState<IFormData>({
-    state: [],
     instituteType: [],
     category: [],
     quota: [],
   })
-
+  const [fitlerFormData, setFilterFormData] = useState<IFormData>({
+    instituteType: [],
+    category: [],
+    quota: [],
+  })
+   const state = getSearchParams("state")
+    const stateCode = getSearchParams("stateCode")
   useEffect(() => {
     verifyPurchases()
   }, [filterParams, updateUI])
@@ -128,9 +132,11 @@ export default function ResultPage() {
       // console.log(userPurchases?.payload?.data[i])
 
       const purchase =
-        userPurchases?.payload?.data[i].payment_type==="RANK_COLLEGE_PREDICTOR"
+        userPurchases?.payload?.data[i].payment_type ===
+        "RANK_COLLEGE_PREDICTOR"
 
-       if(purchase &&
+      if (
+        purchase &&
         !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
       ) {
         setPaid(true)
@@ -138,31 +144,8 @@ export default function ResultPage() {
         break
       }
     }
-
+    // console.log(payment, filterParams)
     getData(payment, isEmpty(filterParams) ? null : 1)
-  }
-// console.log("PAID: ",paid)
-  async function getCoursesBasedOnCourseType(type: string) {
-    try {
-      const res = await fetch(
-        `/api/get-courses?type=${encodeURIComponent(type)}`,
-      )
-      const { data } = await res.json()
-
-      if (Array.isArray(data)) {
-        const mapped = data.map((item) => ({
-          id: item.id,
-          text: item.text, // <-- mapping `type` to `text` key
-        }))
-        setCoursesList(mapped)
-      } else {
-        setCoursesList([])
-      }
-
-      console.log("Mapped Course List data: ", data, type)
-    } catch (error) {
-      console.log("Error in course list fetch", error)
-    }
   }
 
   async function getConfigs() {
@@ -199,106 +182,25 @@ export default function ResultPage() {
     setAmount(priceData?.payload?.data?.[0]?.price)
   }
 
-
-
-
-  //   async function fetchQuotas(counsellingTypeId: string, stateCode?: string) {
-
-
-  //     const url = new URL("/api/quota-types", window.location.origin)
-  //     url.searchParams.set("counselling_type_id", counsellingTypeId)
-  //     if (stateCode) url.searchParams.set("stateCode", stateCode)
-  //     if (courseType) url.searchParams.set("state_code", courseType)
-  
-  //     const res = await fetch(url.toString())
-  //     const json = await res.json()
-  
-  //     const quotas = json.data.map((q:IOptionProps) => ({
-  //       ...q, // Spread all fields including sub_quotas
-  //       id: q.id,
-  //       text: q.text,
-  //     }))
-  
-  //     return quotas
-  //   }
-  
-  
-  
-  //   async function fetchCategoryTypes(quotaId: string) {
-  //     const url = new URL("/api/category-types", window.location.origin)
-  //     url.searchParams.set("quota_type_id", quotaId)
-  //     const res = await fetch(url.toString())
-  //     const json = await res.json()
-  //     return json.data
-  //   }
-  
-  //   useEffect(() => {
-  //     const fetchQ = async () => {
-    
-  //       try {
-  
-  //         const data = await fetchQuotas(
-  //           counsellingTypeId,
-  //          stateCode ||counsellingTypeId,
-  //         )
-  
-  //         console.log("Received quota data:", data)
-  //         setQuotasList(data)
-  //       } catch (error) {
-  //         console.error("Failed to load quota types:", error)
-  //       }
-  //     }
-  
-  //     if (
-  //       counsellingTypeId === "1" ||
-  //       (counsellingTypeId === "2" && counsellingTypeId
-  //     )) {
-  //       fetchQ()
-  //     }
-  //   }, [
-  //     counsellingTypeId,
-  //     stateCode,
-  //     "stateId",
-  //   ])
-  
-  
-  //   useEffect(() => {
-  //     const loadCategories = async () => {
-  //       if (formData?.quotas?.id) {
-  //         const data = await fetchCategoryTypes(formData?.quotas?.id)
-  // if(data && Array.isArray(data))
-  //         setCategoriesList(
-  //           data.map((cat:IOptionProps) => ({
-  //             id: cat?.id,
-  //             text: cat?.text,
-  //             otherValues: {
-  //               sub_categories: cat?.sub_categories || [],
-  //             },
-  //           })),
-  //         )
-  //       }
-  //     }
-  
-  //     loadCategories()
-  //   }, [formData?.quotas?.id])
-  
-
   async function getData(paymentStatus: boolean, paginationPage: any) {
-    let page = 1
-
-    if (paginationPage) {
-      page = paginationPage
-    } else {
-      page = Number(getSearchParams("page") || 1)
+  const page = paymentStatus ? (paginationPage || Number(getSearchParams("page") || 1)) : 1;
+  
+  // Update URL to show page=1 if not paid
+  if (!paymentStatus) {
+    setSearchParams("page", "1");
+    if (paginationRef.current) {
+      paginationRef.current.setActivePage(1);
     }
-
+  }
     const rank = getSearchParams("rank")
     const course = getSearchParams("course")
-    const domicileState = getSearchParams("domicileState")
     const courseType = getSearchParams("courseType")
     const rankType = getSearchParams("rankType") ?? null
-    const state = getSearchParams("state")
-    const stateCode = getSearchParams("stateCode")
+ 
+    const quota = getSearchParams("quota")
+    const subQuota = getSearchParams("subQuota")
+    const category = getSearchParams("category")
+    const subCategory = getSearchParams("subCategory")
 
     const params: Record<string, any> = {
       page,
@@ -307,15 +209,14 @@ export default function ResultPage() {
       rankType,
       course,
       courseType,
-      domicileState,
       paymentStatus,
-      state,
-      stateCode,
+      state:getSearchParams("state"),
+      stateCode:getSearchParams("stateCode"),
+      quota,
+      subCategory,
+      subQuota,
+      category
     }
-
-    // if (domicileState === "All") {
-    //   delete params.domicileState
-    // }
 
     if (!isEmpty(filterParams)) {
       Object.entries(filterParams).forEach(([key, value]: any) => {
@@ -332,6 +233,7 @@ export default function ResultPage() {
       }
     }
 
+    console.log("SENDING PARAMS: ",params)
     const [dataRes, configRes] = await Promise.all([
       fetchData({
         url: "/api/predict_college",
@@ -344,6 +246,7 @@ export default function ResultPage() {
     ])
 
     if (dataRes?.success) {
+      console.log(dataRes.payload)
       setTableData(dataRes?.payload)
     }
 
@@ -356,10 +259,9 @@ export default function ResultPage() {
     }
   }
 
-  function generateCols(paid:boolean) {
+  function generateCols(paid: boolean,  stateCode?:any) {
     let currentYear = new Date().getFullYear()
     let previousYear = currentYear - 1
-console.log("PAID: ",paid)
     const percentile_Marks =
       getSearchParams("rankType") === "Marks" ? "Marks" : "Percentile"
 
@@ -389,7 +291,7 @@ console.log("PAID: ",paid)
         tableKey: "category",
       },
       { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
-      
+
       {
         title: (
           <div
@@ -406,7 +308,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -429,11 +335,18 @@ console.log("PAID: ",paid)
         tableKey: `showClosingRankR2`,
         width: "190px",
         renderer({ cellData }) {
+
+
+
           return cellData !== "xxx" &&
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -460,7 +373,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -483,11 +400,18 @@ console.log("PAID: ",paid)
         tableKey: `showStrayRound`,
         width: "210px",
         renderer({ cellData }) {
+
+
+          console.log("Cell Data: ",cellData)
           return cellData !== "xxx" &&
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -514,7 +438,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -542,7 +470,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -569,7 +501,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -596,7 +532,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -623,7 +563,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -650,7 +594,11 @@ console.log("PAID: ",paid)
             (cellData === "undefined" ||
               cellData === "null" ||
               cellData == null) ? (
-           !paid? "xxx":"NA"
+            !paid ? (
+              "xxx"
+            ) : (
+              "NA"
+            )
           ) : (
             <div
               data-tooltip-id={cellData === "xxx" ? "tooltip" : ""}
@@ -665,16 +613,18 @@ console.log("PAID: ",paid)
       // { title: "State", tableKey: "state", width: "150px" },
       { title: "Fees", tableKey: "fees", width: "100px" },
     ]
-
+  if (stateCode === "all"||stateCode === "All") {
+  columns.splice(
+    columns.length - 1, // Insert before the last column
+    0,
+    { title: "State", tableKey: "state", width: "150px" }
+  );
+}
     return columns
   }
 
   function filterCount() {
     let count = 0
-
-    if (!isEmpty(mobFilterFormData?.state)) {
-      count += mobFilterFormData?.state?.length
-    }
 
     if (!isEmpty(mobFilterFormData?.instituteType)) {
       count += mobFilterFormData?.instituteType?.length
@@ -717,8 +667,10 @@ console.log("PAID: ",paid)
             <>
               <Filter
                 className="flex-shrink-0 w-[300px] hidden pc:flex"
-                quotasList={quotasList}
-                categoryList={categoriesList}
+                // quotasList={quotasList}
+                // categoryList={categoriesList}
+                setFilterFormData={setFilterFormData}
+                filterFormData={fitlerFormData}
                 setFilterParams={setFilterParams}
               />
 
@@ -751,7 +703,7 @@ console.log("PAID: ",paid)
             />
 
             <Table
-              columns={generateCols(paid)}
+              columns={generateCols(paid,stateCode)}
               data={tableData?.data}
               className="mt-6 min-h-[600px]"
             />
@@ -762,7 +714,8 @@ console.log("PAID: ",paid)
               totalItems={tableData?.totalItems}
               showOnlyOnePage={!paid}
               wrapperClass="pb-[50px]"
-              onPageChange={(page: number) => getData(paid, page)}
+              //  disabled={!paid} // Disable all controls when not paid
+              onPageChange={(page: number) => getData(paid, paid?page:1)}
             />
 
             {paid || isEmpty(tableData?.data) ? null : (

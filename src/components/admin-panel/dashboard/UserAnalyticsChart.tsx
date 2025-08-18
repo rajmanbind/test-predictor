@@ -127,7 +127,10 @@ export default function UserAnalyticsChart() {
                   return (
                     <div className="bg-color-form-background p-4 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
                       <p className="font-medium text-gray-900 dark:text-white">
-                        {format(new Date(label), "MMM d, yyyy")}
+                        {/* {format(new Date(label), "MMM d, yyyy")} */}
+                        {label && !isNaN(new Date(label).getTime())
+  ? format(new Date(label), "MMM d, yyyy")
+  : "Invalid Date"}
                       </p>
                       <p className="text-blue-600 dark:text-blue-500">
                         Registered: {payload[0].value}

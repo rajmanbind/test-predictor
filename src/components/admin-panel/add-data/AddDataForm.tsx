@@ -123,21 +123,21 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
       getDataById(params?.id,stateCode)
     }
 
-    getConfigData()
+    // getConfigData()
   }, [params?.id,stateCode])
 
-  async function getConfigData() {
-    const [quotaData, categoryData] = await Promise.all([
-      fetchData({ url: "/api/admin/configure/get", params: { type: "QUOTA" } }),
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CATEGORY" },
-      }),
-    ])
+  // async function getConfigData() {
+  //   const [quotaData, categoryData] = await Promise.all([
+  //     fetchData({ url: "/api/admin/configure/get", params: { type: "QUOTA" } }),
+  //     fetchData({
+  //       url: "/api/admin/configure/get",
+  //       params: { type: "CATEGORY" },
+  //     }),
+  //   ])
 
-    setQuotasList(quotaData?.payload?.data || [])
-    setCategoriesList(categoryData?.payload?.data || [])
-  }
+  //   setQuotasList(quotaData?.payload?.data || [])
+  //   setCategoriesList(categoryData?.payload?.data || [])
+  // }
 
   async function getConfigCourseType() {
     const [courseType] = await Promise.all([
@@ -156,12 +156,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     try {
       const res = await fetch("/api/get-courses-types")
       const json = await res.json()
-// console.log()
       if (!json?.data || !Array.isArray(json.data)) {
-        // console.error(
-        //   "Invalid data structure from /api/get-courses-types",
-        //   json,
-        // )
         return []
       }
 
@@ -222,6 +217,10 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
     })
 
     const data = res?.payload?.data
+  // Determine counselling type based on stateCode
+  const counsellingType = stateCode && stateCode !== "all" 
+    ? counsellingTypeDataList.find(ct => ct.text === "State Counselling")
+    : counsellingTypeDataList.find(ct => ct.text === "All India Counselling");
 
     const formatData = {
       instituteType: {
@@ -229,8 +228,9 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
         id: data?.instituteType,
       },
       state: {
-        text: data?.state,
-        id: data?.state,
+      text: data?.state,
+      id: data?.state,
+      code: stateCode,
       },
       courses: {
         text: data?.course,
@@ -240,6 +240,7 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
         text: data?.courseType,
         id: data?.courseType,
       },
+      counsellingType:counsellingType,
       quotas: {
         text: data?.quota,
         id: data?.quota,
@@ -276,8 +277,9 @@ export default function AddDataForm({ editMode }: { editMode?: boolean }) {
      
     const pLsr = data?.prevLastStrayRound
      
-
+console.log("PD",data)
     setFormData({
+       ...formatData,
       instituteName: data?.instituteName,
       fees: data?.fees,
       closingRankR1: r1,
@@ -573,7 +575,7 @@ if(data && Array.isArray(data))
           onChange={({ name, selectedValue }) => {
             onOptionSelected(name, selectedValue, setFormData)
             // setCounsellingList()
-            console.log(selectedValue, formData)
+            // console.log(selectedValue, formData)
             // setId(selectedValue?.id)
             setFormData((prev) => ({
               ...prev,
@@ -869,7 +871,7 @@ if(data && Array.isArray(data))
               type="text"
               setValue={setValue}
               placeholder="Enter here"
-             value={formData?.prevClosingRankR1??""}
+             value={formData?.closingRankR1??""}
               onChange={(e) => onTextFieldChange(e, setFormData)}
               control={control}
               rules={{

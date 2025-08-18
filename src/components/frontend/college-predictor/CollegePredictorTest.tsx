@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
-const domicileStates: IOption[] = states.slice(1)
+// const domicileStates: IOption[] = states.slice(1)
 
 // interface IFormData {
 //   rank?: number | string
@@ -137,7 +137,7 @@ return category;
           formData?.state?.code || formData?.state?.id,
           formData?.courseType?.code||formData?.courseType?.text
         )
-          console.log("Received quota data:", data)
+          // console.log("Received quota data:", data)
           setQuotasList(data)
         } catch (error) {
           console.error("Failed to load quota types:", error)
@@ -312,13 +312,15 @@ return category;
 
     searchParams.set("rank", formData?.rank?.toString() || "")
     searchParams.set("rankType", selected || "")
-    // searchParams.set("domicileState", formData?.domicileState?.text || "")
     searchParams.set("course", formData?.courses?.text || "")
     searchParams.set("courseType", formData?.courseType?.text || "")
     searchParams.set("state", formData?.state?.text || "All India")
     searchParams.set("stateCode", formData?.state?.code || "all")
     searchParams.set("counsellingTypeId", formData?.counsellingType?.id || "")
-    
+    searchParams.set("quota", formData?.quotas?.text || "")
+    searchParams.set("subQuota", formData?.subQuota?.text|| "")
+    searchParams.set("category", formData?.categories?.text|| "")
+    searchParams.set("subCategory", formData?.subCategory?.text || "")
     router.push(`/results?${searchParams.toString()}`)
   }
 
@@ -345,7 +347,7 @@ return category;
 //   document.addEventListener("mousedown", handleClickOutside)
 //   return () => document.removeEventListener("mousedown", handleClickOutside)
 // }, [])
-
+const isNeetPG = formData?.courseType?.text === "NEET PG";
   return (
     <Card className="mt-2 tab:mx-16 p-7 tab:p-10">
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
@@ -372,6 +374,15 @@ return category;
                   courseType: selectedValue,
                   counsellingType: undefined,
                 }))
+
+
+
+
+                  if (selectedValue?.text === "NEET UG"||selectedValue?.text === "NEET MDS") {
+       setRadioOption(["Rank", "Marks"])
+      } else {
+       setRadioOption(["Rank", "Percentile"])
+      }
               }}
               control={control}
               setValue={setValue}
@@ -551,7 +562,7 @@ return category;
                   />
                 )}
         
-                <div className="flex items-center flex-wrap gap-2">
+                {/* <div className="flex items-center flex-wrap gap-2">
                   <SearchAndSelect
                     name="quotas"
                     label="Quota"
@@ -701,7 +712,131 @@ return category;
                       errors={errors}
                     />
                   )}
-                </div>
+                </div> */}
+
+
+
+                {isNeetPG && (
+  <div className="flex items-center flex-wrap gap-2">
+    <SearchAndSelect
+      name="quotas"
+      label="Quota"
+      placeholder="Select Quota"
+      value={formData?.quotas}
+      onChange={({ name, selectedValue }) => {
+        onOptionSelected(name, selectedValue, setFormData);
+        setFormData((prev) => ({
+          ...prev,
+          quotas: selectedValue,
+          subQuota: undefined,
+          categories: undefined,
+          subCategory: undefined,
+        }));
+        setCategoriesList([]);
+        setSubCategoriesList([]);
+        const found = quotasList.find((q) => q.id === selectedValue?.id);
+        const subs = found?.sub_quotas || [];
+        setSubQuotasList(subs);
+      }}
+      control={control}
+      setValue={setValue}
+      required
+      options={quotasList}
+      debounceDelay={0}
+      disabled={
+        !formData?.courseType?.id ||
+        !formData?.counsellingType?.id ||
+        (formData?.counsellingType?.id == 2 && !formData?.state?.id)
+      }
+      defaultOption={defaultValues?.quotas}
+      wrapperClass="max-w-[395px]"
+      searchAPI={(text, setOptions) =>
+        autoComplete(text, quotasList, setOptions)
+      }
+      errors={errors}
+    />
+    {subQuotasList.length > 0 && (
+      <SearchAndSelect
+        name="subQuota"
+        label="Sub Quota"
+        placeholder="Select Sub Quota"
+        value={formData?.subQuota}
+        onChange={({ name, selectedValue }) => {
+          onOptionSelected(name, selectedValue, setFormData);
+        }}
+        control={control}
+        setValue={setValue}
+        required
+        options={subQuotasList}
+        debounceDelay={0}
+        defaultOption={defaultValues?.subQuota}
+        wrapperClass="max-w-[395px]"
+        searchAPI={(text, setOptions) =>
+          autoComplete(text, subQuotasList, setOptions)
+        }
+        errors={errors}
+      />
+    )}
+  </div>
+)}
+
+{isNeetPG && (
+  <div className="flex items-center flex-wrap gap-2">
+    <SearchAndSelect
+      name="categories"
+      label="Category"
+      placeholder="Select Category"
+      value={formData?.categories}
+      onChange={({ name, selectedValue }) => {
+        onOptionSelected(name, selectedValue, setFormData);
+        setFormData((prev) => ({
+          ...prev,
+          categories: selectedValue,
+          subCategory: undefined,
+        }));
+        const found = categoriesList.find(
+          (cat) => cat.id === selectedValue?.id
+        );
+        const subs = found?.otherValues?.sub_categories || [];
+        setSubCategoriesList(subs);
+      }}
+      control={control}
+      setValue={setValue}
+      required
+      options={categoriesList}
+      debounceDelay={0}
+      defaultOption={defaultValues?.categories}
+      disabled={!formData?.quotas?.id || categoriesList.length === 0}
+      wrapperClass="max-w-[395px]"
+      searchAPI={(text, setOptions) =>
+        autoComplete(text, categoriesList, setOptions)
+      }
+      errors={errors}
+    />
+    {subCategoriesList.length > 0 && (
+      <SearchAndSelect
+        name="subCategory"
+        label="Sub Category"
+        placeholder="Select Sub Category"
+        value={formData?.subCategory}
+        onChange={({ name, selectedValue }) => {
+          onOptionSelected(name, selectedValue, setFormData);
+        }}
+        control={control}
+        setValue={setValue}
+        required
+        options={subCategoriesList}
+        debounceDelay={0}
+        defaultOption={defaultValues?.subCategory}
+        wrapperClass="max-w-[395px]"
+        searchAPI={(text, setOptions) =>
+          autoComplete(text, subCategoriesList, setOptions)
+        }
+        errors={errors}
+      />
+    )}
+  </div>
+)}
 
         <Button
           className="mt-6"

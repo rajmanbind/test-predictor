@@ -124,23 +124,14 @@ console.log(paymentStatus)
       stateCode:stateCode
     }
 
-//     const priceTypeName = courseType && courseType.includes(" ") ? courseType.split(" ")[1]:courseType
-// function isValidPriceTypeKey(
-//   key: string
-// ): key is keyof typeof priceType {
-//   return key in priceType;
-// }
-
-// const priceTypeValue = isValidPriceTypeKey("COLLEGE_CUT_OFF_"+priceTypeName)
-//   ? priceType["COLLEGE_CUT_OFF_"+priceTypeName]
-//   : undefined;
-
-
 const priceTypeName = courseType && courseType.includes(" ")
   ? courseType.split(" ")[1]
   : courseType;
 
+
+
 const fullKey = `ALL_INDIA_COLLEGE_CUT_OFF_${priceTypeName?.toUpperCase()}`;
+const fullKeyState = `COLLEGE_CUT_OFF_${priceTypeName?.toUpperCase()}`;
 
 // Type guard to ensure the key is valid
 function isValidPriceTypeKey(
@@ -152,6 +143,11 @@ function isValidPriceTypeKey(
 const priceTypeValue = isValidPriceTypeKey(fullKey)
   ? priceType[fullKey]
   : undefined;
+const priceTypeValueState = isValidPriceTypeKey(fullKeyState)
+  ? priceType[fullKeyState]
+  : undefined;
+
+console.log(priceTypeValueState,priceTypeValue)
 
   // console.log(priceTypeValue,fullKey,priceTypeName)
     const [dataRes, configRes, price] = await Promise.all([
@@ -166,7 +162,7 @@ const priceTypeValue = isValidPriceTypeKey(fullKey)
       fetchData({
         url: "/api/admin/configure_prices/get",
         params: {
-         type: priceTypeValue,
+         type:  stateCode==="all"?priceTypeValue:priceTypeValueState,
           item: stateCode==="all"?"All India":state,
         },
       }),

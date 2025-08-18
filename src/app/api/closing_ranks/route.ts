@@ -195,18 +195,37 @@ export async function POST(request: NextRequest) {
     subQuota:item.subQuota,
     subCategory:item.subCategory,
 
-        showClosingRankR1:(item.closingRankR1 ? `${item.closingRankR1}/${item.cRR1}` :null),
-        showClosingRankR2:(item.closingRankR2 ? `${item.closingRankR2}/${item.cRR2}` :null),
-        showClosingRankR3:(item.closingRankR3 ? `${item.closingRankR3}/${item.cRR3}` :null),
-        showStrayRound: (item.strayRound ? `${item.strayRound }/${item.sRR}` :null),
-        showLastStrayRound: (item.lastStrayRound ? `${item.lastStrayRound}/${item.slRR}` :null),
-        
-        showPrevClosingRankR2:(item.prevClosingRankR1 ? `${item.prevClosingRankR1}/${item.prevCRR1}` :null),
-        showPrevClosingRankR1:(item.prevClosingRankR2 ? `${item.prevClosingRankR2}/${item.prevCRR2}` :null),
-        showPrevClosingRankR3:(item.prevClosingRankR3 ? `${item.prevClosingRankR3}/${item.prevCRR3}` :null),
-        showPrevStrayRound: (item.strayRound ? `${item.strayRound}/${item.prevSRR}` :null),
-        showPrevLastStrayRound: (item.lastStrayRound ? `${item.lastStrayRound}/${item.prevlSRR}` :null),
-       
+      showClosingRankR1: item.closingRankR1
+        ? `${item.closingRankR1}/${item.cRR1}`
+        : null,
+      showClosingRankR2: item.closingRankR2
+        ? `${item.closingRankR2}/${item.cRR2}`
+        : null,
+      showClosingRankR3: item.closingRankR3
+        ? `${item.closingRankR3}/${item.cRR3}`
+        : null,
+      showStrayRound: item.strayRound
+        ? `${item.strayRound}/${item.sRR}`
+        : null,
+      showLastStrayRound: item.lastStrayRound
+        ? `${item.lastStrayRound}/${item.lSRR}`
+        : null,
+
+      showPrevClosingRankR1: item.prevClosingRankR1
+        ? `${item.prevClosingRankR1}/${item.prevCRR1}`
+        : null,
+      showPrevClosingRankR2: item.prevClosingRankR2
+        ? `${item.prevClosingRankR2}/${item.prevCRR2}`
+        : null,
+      showPrevClosingRankR3: item.prevClosingRankR3
+        ? `${item.prevClosingRankR3}/${item.prevCRR3}`
+        : null,
+      showPrevStrayRound: item.prevStrayRound
+        ? `${item.prevStrayRound}/${item.prevSRR}`
+        : null,
+      showPrevLastStrayRound: item.prevLastStrayRound
+        ? `${item.prevLastStrayRound}/${item.prevlSRR}`
+        : null,
   ...(stateCode === "all" && { state: item.state }) 
       
     }))

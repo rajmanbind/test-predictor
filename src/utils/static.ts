@@ -90,6 +90,7 @@ export const instituteTypes = [
   { id: 0, text: "DEEMED MC" },
   { id: 1, text: "PRIVATE MC" },
   { id: 2, text: "PRIVATE UNIVERSITY MC" },
+  { id: 3, text: "GOVERNMENT MC" },
 ]
 
 export function years(): IOption[] {

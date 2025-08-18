@@ -83,13 +83,24 @@ export function FilterPopup({
 
     // console.log("Hari")
   }, [counsellingTypeId, stateCode, courseType])
-console.log({counsellingTypeId, stateCode, courseType})
   // Fetch categories when quota changes
   useEffect(() => {
     async function fetchCategoryTypes() {
-      if (!mobFilterFormData?.quota?.[0]?.id) return
-      const url = new URL("/api/category-types", window.location.origin)
-      url.searchParams.set("quota_type_id", mobFilterFormData?.quota?.[0]?.id)
+
+
+
+    const quotas = mobFilterFormData?.quota
+
+
+          if (!quotas || quotas.length === 0) return
+
+    // take latest (last) quota instead of first
+    const latestQuotaId = quotas[quotas.length - 1]?.id
+    if (!latestQuotaId) return
+
+   const url = new URL("/api/category-types", window.location.origin)
+    url.searchParams.set("quota_type_id", latestQuotaId)
+
       const res = await fetch(url.toString())
       const json = await res.json()
       setCategoriesList(
@@ -109,7 +120,7 @@ console.log({counsellingTypeId, stateCode, courseType})
 
     if (includeFeeRange) {
       params = {
-        //  ...params,
+         ...params,
         feeFrom: range[0],
         feeTo: range[1],
       }

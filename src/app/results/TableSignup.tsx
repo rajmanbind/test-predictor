@@ -25,7 +25,6 @@ function TableSignup({
   params,
 }: TableSignupProps) {
   const { getSearchParams } = useInternalSearchParams()
-
   const [showPaymentPopup, setShowPaymentPopup] = useState(false)
   const { setAppState } = useAppState()
 
@@ -33,10 +32,9 @@ function TableSignup({
 
   const { fetchData } = useFetch()
 
-  if (totalRecords <= 10) {
-    return null
-  }
-
+ if (totalRecords <= 0) {
+  return null
+}
   async function successCallback(orderId: string) {
     showToast(
       "success",
@@ -111,11 +109,11 @@ function TableSignup({
       <div className="h-full w-full grid place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="text-white text-center flex flex-col gap-2 justify-center items-center">
           <h2 className="text-[26px] font-medium">
-            +{totalRecords} More Options
+            +{totalRecords<5?totalRecords:totalRecords-5} More Options
           </h2>
 
           <p className="text-lg">
-            {`Get access to over +${totalRecords} more colleges, courses,
+            {`Get access to over +${totalRecords<5?totalRecords:totalRecords-5} more colleges, courses,
             fees, cut-offs, and much more.`}
           </p>
 

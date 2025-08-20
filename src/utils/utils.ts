@@ -16,9 +16,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function isEmpty(value: any) {
+// export function isEmpty(value: any) {
+//   return (
+//     value === undefined || value === null || value === "" || value?.length === 0
+//   )
+// }
+
+export function isEmpty(value: any): boolean {
   return (
-    value === undefined || value === null || value === "" || value?.length === 0
+    value === undefined ||
+    value === null ||
+    value === "" ||
+    (Array.isArray(value) && value.length === 0) ||
+    (typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0)
   )
 }
 

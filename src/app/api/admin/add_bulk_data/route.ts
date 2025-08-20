@@ -755,6 +755,7 @@ function getConflictKey(row: CollegeRow): Record<string, any> {
     quota: cleanAndTrimValue(row.quota),
     category: cleanAndTrimValue(row.category),
     course: cleanAndTrimValue(row.course),
+    courseType: cleanAndTrimValue(row.courseType),
   }
   if (row.subQuota && row.subCategory) {
     return {
@@ -819,6 +820,7 @@ export async function POST(req: NextRequest) {
       "course",
       "quota",
       "category",
+      "courseType"
     ]
     const skippedDueToDuplicate: SkippedDuplicate[] = []
 

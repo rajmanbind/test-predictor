@@ -111,7 +111,7 @@ export default function CollegeListClosingRanksPage() {
             size: 20,
             state,
             courseType: courseType,
-            // course: course,
+            course: course,
             stateCode: stateCode,
           },
         }),
@@ -124,6 +124,7 @@ export default function CollegeListClosingRanksPage() {
           },
         }),
       ])
+      // console.log("Price: ",price)
       if (price?.success) {
         setAmount(price?.payload?.data?.price)
       }
@@ -175,7 +176,7 @@ export default function CollegeListClosingRanksPage() {
           url: "/api/admin/configure_prices/get",
           params: {
             type: allIndiaPriceTypeValueForAll,
-            item: stateCode === "all"  ? "All India" : state,
+            item: stateCode === "all" ? "All India" : state,
           },
         }),
       ])
@@ -285,15 +286,14 @@ export default function CollegeListClosingRanksPage() {
           )
         },
       },
-
     ]
-    if (stateCode === "all"||stateCode === "All") {
-  columns.splice(
-    columns.length - 1, // Insert before the last column
-    0,
-    { title: "State", tableKey: "state", width: "150px" }
-  );
-}
+    if (stateCode === "all" || stateCode === "All") {
+      columns.splice(
+        columns.length - 1, // Insert before the last column
+        0,
+        { title: "State", tableKey: "state", width: "150px" },
+      )
+    }
     return columns
   }
 
@@ -330,10 +330,11 @@ export default function CollegeListClosingRanksPage() {
       amount,
       payment_type: paymentType?.SINGLE_COLLEGE_CLOSING_RANK,
       closing_rank_details: {
-        // ...rowData,
+        instituteName: rowData.instituteName,
+        instituteType: rowData.instituteType,
         courseType: courseType,
         course: course,
-         state:  stateCode === "all"?"All India":state,
+        state: stateCode === "all" ? "All India" : state,
         year: configYear?.text,
       },
     }
@@ -386,9 +387,11 @@ export default function CollegeListClosingRanksPage() {
           ? paymentType?.ALL_INDIA_CLOSING_RANK
           : paymentType?.STATE_CLOSING_RANK,
       closing_rank_details: {
+        instituteName: rowData?.instituteName,
+        instituteType: rowData?.instituteType,
         courseType: courseType,
         course: course,
-         state:  stateCode === "all"?"All India":state,
+        state: stateCode === "all" ? "All India" : state,
         year: configYear?.text,
       },
     }

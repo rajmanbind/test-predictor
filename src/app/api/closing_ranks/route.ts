@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     body = await request.json()
 
 
-    console.log("Received Data; ",body)
+    // console.log("Received Data; ",body)
   } catch {
     return NextResponse.json(
       { error: "Invalid JSON in request body" },
@@ -102,16 +102,21 @@ export async function POST(request: NextRequest) {
     // }
 
     // Fetch all data without pagination for merging
-    const { data,error } = await supabaseUser
-      .from(tableName)
-      .select("*")
-      .eq("instituteName", college.instituteName)
-      // .eq("instituteType", college.instituteType)
-      // .eq("course", college.course)
-      // .eq("state", college.state)
-      // .in("year", latestYears)
-      .order("created_at", { ascending: false })
+let query = supabaseUser
+  .from(tableName)
+  .select("*")
+  .eq("instituteName", college.instituteName)
+  // .eq("instituteType", college.instituteType)
+  .eq("courseType", college.courseType)
+  // .eq("state", college.state)
+  // .in("year", latestYears)
+  .order("created_at", { ascending: false });
+// Only apply course filter if provided
+if (college.course && college.course.trim() !== "") {
+  query = query.eq("course", college.course.trim());
+}
 
+const { data, error } = await query;
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }

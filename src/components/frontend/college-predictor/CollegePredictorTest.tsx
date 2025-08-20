@@ -347,7 +347,10 @@ return category;
 //   document.addEventListener("mousedown", handleClickOutside)
 //   return () => document.removeEventListener("mousedown", handleClickOutside)
 // }, [])
-const isNeetPG = formData?.courseType?.text === "NEET PG";
+
+
+const isNeetUG = formData?.courseType?.text === "NEET UG";
+
   return (
     <Card className="mt-2 tab:mx-16 p-7 tab:p-10">
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
@@ -375,14 +378,27 @@ const isNeetPG = formData?.courseType?.text === "NEET PG";
                   counsellingType: undefined,
                 }))
 
+// "AIAPGET (Ayurveda)"
 
 
+      //             if (selectedValue?.text === "NEET UG"||selectedValue?.text === "NEET MDS"||selectedValue?.text === "NEET SS"||selectedValue?.text === "AIAPGET (Ayurveda)") {
+      //  setRadioOption(["Rank", "Marks"])
+      // } else {
+      //  setRadioOption(["Rank", "Percentile"])
+      // }
 
-                  if (selectedValue?.text === "NEET UG"||selectedValue?.text === "NEET MDS") {
-       setRadioOption(["Rank", "Marks"])
-      } else {
-       setRadioOption(["Rank", "Percentile"])
-      }
+      const neetBasedExams = [
+  "NEET UG", 
+  "NEET MDS", 
+  "NEET SS", 
+  "AIAPGET (Ayurveda)"
+];
+
+if (selectedValue?.text && neetBasedExams.includes(selectedValue.text)) {
+  setRadioOption(["Rank", "Marks"]);
+} else {
+  setRadioOption(["Rank", "Percentile"]);
+}
               }}
               control={control}
               setValue={setValue}
@@ -716,7 +732,7 @@ const isNeetPG = formData?.courseType?.text === "NEET PG";
 
 
 
-                {isNeetPG && (
+                {isNeetUG && (
   <div className="flex items-center flex-wrap gap-2">
     <SearchAndSelect
       name="quotas"
@@ -755,7 +771,7 @@ const isNeetPG = formData?.courseType?.text === "NEET PG";
       }
       errors={errors}
     />
-    {subQuotasList.length > 0 && (
+    {/* {subQuotasList.length > 0 && (
       <SearchAndSelect
         name="subQuota"
         label="Sub Quota"
@@ -776,11 +792,11 @@ const isNeetPG = formData?.courseType?.text === "NEET PG";
         }
         errors={errors}
       />
-    )}
+    )} */}
   </div>
 )}
 
-{isNeetPG && (
+{isNeetUG && (
   <div className="flex items-center flex-wrap gap-2">
     <SearchAndSelect
       name="categories"
@@ -813,7 +829,7 @@ const isNeetPG = formData?.courseType?.text === "NEET PG";
       }
       errors={errors}
     />
-    {subCategoriesList.length > 0 && (
+    {/* {subCategoriesList.length > 0 && (
       <SearchAndSelect
         name="subCategory"
         label="Sub Category"
@@ -834,7 +850,7 @@ const isNeetPG = formData?.courseType?.text === "NEET PG";
         }
         errors={errors}
       />
-    )}
+    )} */}
   </div>
 )}
 

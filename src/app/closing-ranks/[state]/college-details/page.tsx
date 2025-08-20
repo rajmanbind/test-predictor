@@ -113,8 +113,9 @@ console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
         tableKey: "category",
       },
     { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
+...(courseType==="NEET UG"?[
 
-      {
+     {
         title: (
           <div
             data-tooltip-id="tooltip"
@@ -252,7 +253,11 @@ console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
           )
         },
       },
+]:[]),
+ 
 
+
+      
 
 
       {

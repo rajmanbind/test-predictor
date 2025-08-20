@@ -16,9 +16,8 @@ function getTableName(stateCode?: string | null): string {
     stateCode !== "undefined" &&
     stateCode !== ""
   ) {
-    if(stateCode==='all')
-     return `college_table_all_india`;
-    return `college_table_${stateCode.toUpperCase()}`;
+    if (stateCode === "all") return `college_table_all_india`
+    return `college_table_${stateCode.toUpperCase()}`
   }
   return "college_table_all_india"
 }
@@ -74,95 +73,94 @@ export async function GET(request: NextRequest) {
   const to = from + pageSize - 1
   const tableName = getTableName(stateCode)
   // if (courseType&& courseType.includes("UG")) {
-    // const { data, error } = await supabase.rpc("get_grouped_colleges", {
-    //   // year_array: latestYears,
-    //   course_type: courseType,
-    // })
+  // const { data, error } = await supabase.rpc("get_grouped_colleges", {
+  //   // year_array: latestYears,
+  //   course_type: courseType,
+  // })
 
-    // console.log("Table Name; ",tableName,courseType)
-// const {data,error} = await supabase.from(tableName)
-// .select("*")
-// .eq("courseType",courseType)
-//  .ilike("courseType", courseType!);
-// .eq("course",course)
-console.log("Table Name: ",tableName)
-const { data, error } = await supabase.rpc("get_unique_colleges_data", {
-  p_table_name: tableName,
-  p_course_type: courseType,
-})
+  // console.log("Table Name; ",tableName,courseType)
+  // const {data,error} = await supabase.from(tableName)
+  // .select("*")
+  // .eq("courseType",courseType)
+  //  .ilike("courseType", courseType!);
+  // .eq("course",course)
+  // console.log("Table Name: ",tableName)
+  const { data, error } = await supabase.rpc("get_unique_colleges_data", {
+    p_table_name: tableName,
+    p_course_type: courseType,
+  })
 
-// console.log("COllege data: ",data,{
-//   table_name: tableName,
-//   course_type: courseType,
-// })
-if (error) {
-  console.error("Supabase  error:", error.message)
-  return NextResponse.json(
-    { error: "Failed to fetch grouped colleges", details: error.message },
-    { status: 500 },
-  )
-}
-
-// console.log("Data : ",data)
-    // for (let i = 0; i < data?.length; i++) {
-    //   data[i].year = selectedYear.text
-    // }
-
-    // Filter by state if provided
-    // const filteredData =data.filter(
-    //       (item: any) =>
-    //         item.state=== state&&
-    //         item.course === course,
-    //     )
- 
-
-    const res = await checkPurchases(
-      data,
-      // filteredData,
-      from,
-      to,
-      state,
-      page,
-      pageSize,
-      course,
-      courseType,
+  // console.log("COllege data: ",data,{
+  //   table_name: tableName,
+  //   course_type: courseType,
+  // })
+  if (error) {
+    console.error("Supabase  error:", error.message)
+    return NextResponse.json(
+      { error: "Failed to fetch grouped colleges", details: error.message },
+      { status: 500 },
     )
-    return NextResponse.json(res)
+  }
+
+  // console.log("Data : ",data)
+  // for (let i = 0; i < data?.length; i++) {
+  //   data[i].year = selectedYear.text
+  // }
+
+  // Filter by state if provided
+  // const filteredData =data.filter(
+  //       (item: any) =>
+  //         item.state=== state&&
+  //         item.course === course,
+  //     )
+
+  const res = await checkPurchases(
+    data,
+    // filteredData,
+    from,
+    to,
+    state,
+    page,
+    pageSize,
+    course,
+    courseType,
+  )
+  return NextResponse.json(res)
   // } else {
   //   const { data: courseData, error: courseError } = await supabase
   //     .from("courses")
   //     .select("*")
   //     .eq("subType", course)
 
-    // const filterCourseList = courseData?.map((c) => c.text) ?? []
+  // const filterCourseList = courseData?.map((c) => c.text) ?? []
 
-    // const { data: collegeData, error: collegeError } = await supabase.rpc(
-    //   "get_distinct_colleges_by_institute",
-    //   {
-    //     // p_state: state,
-    //     // p_years: latestYears,
-    //     p_courses: filterCourseList,
-    //   },
-    // )
+  // const { data: collegeData, error: collegeError } = await supabase.rpc(
+  //   "get_distinct_colleges_by_institute",
+  //   {
+  //     // p_state: state,
+  //     // p_years: latestYears,
+  //     p_courses: filterCourseList,
+  //   },
+  // )
 
-    // for (let i = 0; i < collegeData?.length; i++) {
-    //   collegeData[i].instituteName = collegeData?.[i].institutename
-    //   collegeData[i].instituteType = collegeData?.[i].institutetype
-    //   // collegeData[i].year = selectedYear.text
-    //   delete collegeData?.[i].institutename
-    //   delete collegeData?.[i].institutetype
-    // }
+  // for (let i = 0; i < collegeData?.length; i++) {
+  //   collegeData[i].instituteName = collegeData?.[i].institutename
+  //   collegeData[i].instituteType = collegeData?.[i].institutetype
+  //   // collegeData[i].year = selectedYear.text
+  //   delete collegeData?.[i].institutename
+  //   delete collegeData?.[i].institutetype
+  // }
 
-    // const res = await checkPurchases(
-    //   collegeData,
-    //   from,
-    //   to,
-    //   state,
-    //   page,
-    //   pageSize,
-    //   filterCourseList,
-    //   courseType,
-    // )
+  // const res = await checkPurchases(
+  //   collegeData,
+  //   from,
+  //   to,
+  //   state,
+  //   page,
+  //   pageSize,
+  //   filterCourseList,
+  //   courseType,
+  // )
   //   return NextResponse.json(courseData)
   // }
 }
@@ -174,8 +172,8 @@ async function checkPurchases(
   state: any,
   page: number,
   pageSize: number,
-  coursesList: any,
-  courseType: any,
+  course: string,
+  courseType: string,
 ) {
   const supabaseUser = createUserSupabaseClient()
 
@@ -194,7 +192,7 @@ async function checkPurchases(
       .from("purchase")
       .select("*")
       .eq("phone", user.phone)
-// console.log("Purchage Details: ",userPurchases)
+    // console.log("Purchage Details: ",userPurchases)
     if (purchasesError) {
       console.error("Supabase error:", purchasesError.message)
       return NextResponse.json(
@@ -235,76 +233,75 @@ async function checkPurchases(
     //     hiddenData[i].statePurchased = true
     //   }
     // } else {
-//       const justForTest = userPurchases.filter((purchase) => {
-//         const purchase_state = purchase?.closing_rank_details?.state
-//         const purchase_courseType = purchase?.closing_rank_details?.courseType
+    //       const justForTest = userPurchases.filter((purchase) => {
+    //         const purchase_state = purchase?.closing_rank_details?.state
+    //         const purchase_courseType = purchase?.closing_rank_details?.courseType
 
-//         const purchaseDate = parseISO(purchase.created_at)
-//         const expiryDate = addMonths(purchaseDate, 6)
+    //         const purchaseDate = parseISO(purchase.created_at)
+    //         const expiryDate = addMonths(purchaseDate, 6)
 
-//             console.log("Purchage Data: ",purchase)
-// return purchase.payment_type==="STATE_CLOSING_RANK"
-//         return (
-//           purchase.payment_type === "STATE_CLOSING_RANK" &&
-//           purchase_courseType === courseType &&
-//           purchase_state === state &&
-//           isBefore(currentDate, expiryDate)
-//         )
-//       })
-// console.log("Just for Test: ",justForTest)
-      const hasValidStatePurchase = userPurchases.some((purchase) => {
-        const purchase_state = purchase?.closing_rank_details?.state
-        const purchase_courseType = purchase?.closing_rank_details?.courseType
+    //             console.log("Purchage Data: ",purchase)
+    // return purchase.payment_type==="STATE_CLOSING_RANK"
+    //         return (
+    //           purchase.payment_type === "STATE_CLOSING_RANK" &&
+    //           purchase_courseType === courseType &&
+    //           purchase_state === state &&
+    //           isBefore(currentDate, expiryDate)
+    //         )
+    //       })
+    // console.log("Just for Test: ",justForTest)
+    const hasValidStatePurchase = userPurchases.some((purchase) => {
+      const purchase_state = purchase?.closing_rank_details?.state
+      const purchase_courseType = purchase?.closing_rank_details?.courseType
 
-        const purchaseDate = parseISO(purchase.created_at)
-        const expiryDate = addMonths(purchaseDate, 6)
-// if(purchase.payment_type.includes("ALL"))
-//             console.log("Purchage Data: ", purchase.payment_type,
-//        {   purchase_courseType, courseType} ,
-//          { purchase_state ,state} ,
-//           isBefore(currentDate, expiryDate))
-// if(purchase.payment_type === "STATE_CLOSING_RANK"){
-//   console.log("Details: ",purchase)
-// }
-// if(purchase.payment_type === "ALL_INDIA_CLOSING_RANK"){
-//    console.log(purchase,state)
-// }
-// if(purchase.payment_type === "STATE_CLOSING_RANK"){
-//    console.log(purchase,state)
-// }
+      const purchaseDate = parseISO(purchase.created_at)
+      const expiryDate = addMonths(purchaseDate, 6)
+      // if(purchase.payment_type.includes("ALL"))
+      //             console.log("Purchage Data: ", purchase.payment_type,
+      //        {   purchase_courseType, courseType} ,
+      //          { purchase_state ,state} ,
+      //           isBefore(currentDate, expiryDate))
+      // if(purchase.payment_type === "STATE_CLOSING_RANK"){
+      //   console.log("Details: ",purchase)
+      // }
+      // if(purchase.payment_type === "ALL_INDIA_CLOSING_RANK"){
+      //    console.log(purchase,state)
+      // }
+      // if(purchase.payment_type === "STATE_CLOSING_RANK"){
+      //    console.log(purchase,state)
+      // }
 
-    return (
-         ( purchase.payment_type === "STATE_CLOSING_RANK"||purchase.payment_type === "ALL_INDIA_CLOSING_RANK") &&
-          purchase_state === state &&
-          isBefore(currentDate, expiryDate)
-        
-    )
-    
-      })
+      return (
+        (purchase.payment_type === "STATE_CLOSING_RANK" ||
+          purchase.payment_type === "ALL_INDIA_CLOSING_RANK") &&
+        purchase_state === state &&
+        isBefore(currentDate, expiryDate)
+      )
+    })
 
-//       console.log("hasValidStatePurchase: ",hasValidStatePurchase)
-      if (hasValidStatePurchase) {
-        hiddenData = paginated
-        for (let i = 0; i < hiddenData.length; i++) {
-          hiddenData[i].purchased = true
-          hiddenData[i].statePurchased = true
-        }
-      } else {
-        hiddenData = hiddenData.map((college: any) => {
-          const matchingPurchase = userPurchases.find((p) => {
-            const purchaseDate = parseISO(p.created_at)
-            const expiryDate = addMonths(purchaseDate, 6)
-
-            return (
-              p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
-              isBefore(currentDate, expiryDate) &&
-              isCollegePurchased(college, p.closing_rank_details)
-            )
-          })
-
-          return matchingPurchase ? { ...college, purchased: true } : college
-        })
+    //       console.log("hasValidStatePurchase: ",hasValidStatePurchase)
+    if (hasValidStatePurchase) {
+      hiddenData = paginated
+      for (let i = 0; i < hiddenData.length; i++) {
+        hiddenData[i].purchased = true
+        hiddenData[i].statePurchased = true
       }
+    } else {
+      hiddenData = hiddenData.map((college: any) => {
+        const matchingPurchase = userPurchases.find((p) => {
+          const purchaseDate = parseISO(p.created_at)
+          const expiryDate = addMonths(purchaseDate, 6)
+
+          return (
+            p.payment_type === "SINGLE_COLLEGE_CLOSING_RANK" &&
+            isBefore(currentDate, expiryDate) &&
+            isCollegePurchased(college, p.closing_rank_details)
+          )
+        })
+
+        return matchingPurchase ? { ...college, purchased: true } : college
+      })
+    }
     // }
   }
 
@@ -320,10 +317,10 @@ async function checkPurchases(
 function isCollegePurchased(college: any, userCollege: any) {
   const { instituteName, instituteType, courseType } = userCollege
 
-    return (
-      college.instituteName === instituteName &&
-      college.instituteType === instituteType &&
-      college.courseType ===courseType
-    )
+  return (
+    college.instituteName === instituteName &&
+    college.instituteType === instituteType &&
+    college.courseType === courseType
+  )
 }
 

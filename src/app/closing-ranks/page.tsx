@@ -250,26 +250,29 @@ export default function ClosingRanks() {
       activeTab === "all" || (activeTab === "popular" && state.popular)
     return matchesSearch && matchesTab
   })
-console.log(filteredStates)
+  console.log(filteredStates)
   const { showToast } = useAppState()
 
   function redirectURL(state: any) {
-    if ((selectedType?.text==="NEET UG"||selectedType?.code==="NEET UG")&&isEmpty((selectedCourse?.text) || selectedCourse?.text === "EMPTY")) {
-
+    if (
+      (selectedType?.text === "NEET UG" || selectedType?.code === "NEET UG") &&
+      isEmpty(selectedCourse?.text || selectedCourse?.text === "EMPTY")
+    ) {
       return ""
     }
 
-
     if (state === "all")
-      return `/closing-ranks/${state}?state=All%20India&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
+      return `/closing-ranks/${state}?state=All%20India&courseType=${selectedType?.text || ""}&&course=${selectedCourse?.text || ""}`
 
-    return `/closing-ranks/${state?.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text}&&course=${selectedCourse?.text}`
+    return `/closing-ranks/${state?.code.toLowerCase()}?state=${state.name}&courseType=${selectedType?.text || ""}&&course=${selectedCourse?.text || ""}`
     // return `/closing-ranks/${params.id}/${state}?course=${courseParam}`
   }
 
   function onLinkClick() {
-    if ((selectedType?.text==="NEET UG"||selectedType?.code==="NEET UG")&&isEmpty((selectedCourse?.text) || selectedCourse?.text === "EMPTY")) {
-
+    if (
+      (selectedType?.text === "NEET UG" || selectedType?.code === "NEET UG") &&
+      isEmpty(selectedCourse?.text || selectedCourse?.text === "EMPTY")
+    ) {
       setError("course", {
         type: "manual",
         message: "Please select a Course",
@@ -296,7 +299,7 @@ console.log(filteredStates)
                 placeholder="Course Type"
                 value={selectedType}
                 onChange={({ selectedValue }) => {
-                  if(selectedValue.text==="NEET UG"){
+                  if (selectedValue.text === "NEET UG") {
                     getCoursesBasedOnpredictorType(selectedValue.text)
                   }
                   setValue("course", "")
@@ -312,46 +315,50 @@ console.log(filteredStates)
                 wrapperClass="max-w-[150px]"
                 errors={errors}
               />
-{selectedType?.code==="NEET UG"||selectedType?.text==="NEET UG"&&
-              <SearchAndSelect
-                name="course"
-                labelNode={
-                  <div className="text-lg font-bold text-color-accent">
-                    Select Course
-                  </div>
-                }
-                placeholder="Select Course"
-                value={selectedCourse}
-                boxWrapperClass="border-color-accent"
-                onChange={({ selectedValue }) => {
-                  setValue("course", selectedValue.text)
-                  setSelectedCourse(selectedValue)
+              {selectedType?.code === "NEET UG" ||
+                (selectedType?.text === "NEET UG" && (
+                  <SearchAndSelect
+                    name="course"
+                    labelNode={
+                      <div className="text-lg font-bold text-color-accent">
+                        Select Course
+                      </div>
+                    }
+                    placeholder="Select Course"
+                    value={selectedCourse}
+                    boxWrapperClass="border-color-accent"
+                    onChange={({ selectedValue }) => {
+                      setValue("course", selectedValue.text)
+                      setSelectedCourse(selectedValue)
 
-                  clearErrors("course")
-                }}
-                control={control}
-                setValue={setValue}
-                defaultOption={{
-                  id: courseParam.replaceAll(" ", ""),
-                  text: courseParam,
-                }}
-                required
-                errorClass="absolute"
-                options={coursesList}
-                debounceDelay={0}
-                wrapperClass="max-w-full w-full"
-                searchAPI={(text, setOptions) =>
-                  autoComplete(text, coursesList, setOptions)
-                }
-                disabled={isEmpty(coursesList)}
-                errors={errors}
-              />}
+                      clearErrors("course")
+                    }}
+                    control={control}
+                    setValue={setValue}
+                    defaultOption={{
+                      id: courseParam.replaceAll(" ", ""),
+                      text: courseParam,
+                    }}
+                    required
+                    errorClass="absolute"
+                    options={coursesList}
+                    debounceDelay={0}
+                    wrapperClass="max-w-full w-full"
+                    searchAPI={(text, setOptions) =>
+                      autoComplete(text, coursesList, setOptions)
+                    }
+                    disabled={isEmpty(coursesList)}
+                    errors={errors}
+                  />
+                ))}
             </div>
 
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-              {(selectedType?.text)&&<div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
-               {selectedType?.text}
-              </div>}
+              {selectedType?.text && (
+                <div className="inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-800 shadow-sm border border-yellow-200 mb-4">
+                  {selectedType?.text}
+                </div>
+              )}
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-color-table-header">
                 Medical College Closing Ranks
               </h1>

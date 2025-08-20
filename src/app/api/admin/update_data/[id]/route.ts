@@ -39,26 +39,48 @@ export async function PUT(
 
     const supabase = createAdminSupabaseClient()
 
-    updateData.cRR1 = na.includes(updateData?.closingRankR1.toUpperCase())
-      ? null
-      : updateData?.cRR1
+    const rankFields = [
+  { check: "closingRankR1", assign: "cRR1" },
+  { check: "closingRankR2", assign: "cRR2" },
+  { check: "closingRankR3", assign: "cRR3" },
+  { check: "strayRound", assign: "sRR" },
+  { check: "lastStrayRound", assign: "lSRR" },
+  { check: "prevClosingRankR1", assign: "prevCRR1" },
+  { check: "prevClosingRankR2", assign: "prevCRR2" },
+  { check: "prevClosingRankR3", assign: "prevCRR3" },
+  { check: "prevStrayRound", assign: "prevSRR" },
+  { check: "prevLastStrayRound", assign: "prevlSRR" },
+]
 
-    updateData.cRR2 = na.includes(updateData?.closingRankR2.toUpperCase())
-      ? null
-      : updateData?.cRR2
+rankFields.forEach(({ check, assign }) => {
+  const rawValue = updateData?.[check]
+  const value =
+    typeof rawValue === "string" || typeof rawValue === "number"
+      ? String(rawValue).toUpperCase()
+      : ""
 
-    updateData.cRR3 = na.includes(updateData?.closingRankR3.toUpperCase())
-      ? null
-      : updateData?.cRR3
+  updateData[assign] = na.includes(value) ? null : updateData?.[assign] ?? null
+})
+    // updateData.cRR1 = na.includes(updateData?.closingRankR1.toUpperCase())
+    //   ? null
+    //   : updateData?.cRR1
 
-    updateData.sRR = na.includes(updateData?.strayRound.toUpperCase())
-      ? null
-      : updateData?.sRR
+    // updateData.cRR2 = na.includes(updateData?.closingRankR2.toUpperCase())
+    //   ? null
+    //   : updateData?.cRR2
 
-    updateData.lSRR = na.includes(updateData?.lastStrayRound.toUpperCase())
-      ? null
-      : updateData?.lSRR
+    // updateData.cRR3 = na.includes(updateData?.closingRankR3.toUpperCase())
+    //   ? null
+    //   : updateData?.cRR3
 
+    // updateData.sRR = na.includes(updateData?.strayRound.toUpperCase())
+    //   ? null
+    //   : updateData?.sRR
+
+    // updateData.lSRR = na.includes(updateData?.lastStrayRound.toUpperCase())
+    //   ? null
+    //   : updateData?.lSRR
+console.log("UPdated: ",updateData)
     const { error, data } = await supabase
       .from(tableName)
       .update(updateData)

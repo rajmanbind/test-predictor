@@ -43,7 +43,7 @@ export default function ResultPage() {
   const { fetchData } = useFetch()
   const { appState } = useAppState()
   const { getSearchParams, setSearchParams } = useInternalSearchParams()
-
+  const [showTableSignup, setShowTableSignup] = useState(false); // Add this state
   const paginationRef = useRef<PaginationHandle>(null)
 
   const [mobFilterFormData, setMobFilterFormData] = useState<IFormData>({
@@ -58,96 +58,153 @@ export default function ResultPage() {
   })
    const state = getSearchParams("state")
     const stateCode = getSearchParams("stateCode")
+
   useEffect(() => {
     verifyPurchases()
   }, [filterParams, updateUI])
+
+
 
   useEffect(() => {
     getConfigs()
   }, [])
 
-  async function verifyPurchases() {
-    // eslint-disable-next-line prefer-const
-    let [configRes, userPurchases] = await Promise.all([
-      fetchData({
-        url: "/api/admin/configure/get",
-        params: { type: "CONFIG_YEAR" },
-      }),
-      fetchData({
-        url: "/api/purchase",
-        method: "GET",
-        params: {
-          paymentType: paymentType.RANK_COLLEGE_PREDICTOR,
-        },
-        noToast: true,
-      }),
-    ])
+  const [showSignup, setShowSignup] = useState(false);
 
-    if (configRes?.success) {
-      setConfigYear(
-        configRes?.payload?.data?.[0]?.text
-          ?.split("-")
-          .map((item: string) => item.trim()),
-      )
+useEffect(() => {
+  if (!paid && tableData) {
+    setShowSignup(true);
+  }
+}, [paid, tableData]);
+  // console.log(paid,tableData,isEmpty(tableData?.data))
+//   async function verifyPurchases() {
+//     // eslint-disable-next-line prefer-const
+//     let [configRes, userPurchases] = await Promise.all([
+//       fetchData({
+//         url: "/api/admin/configure/get",
+//         params: { type: "CONFIG_YEAR" },
+//       }),
+//       fetchData({
+//         url: "/api/purchase",
+//         method: "GET",
+//         params: {
+//           paymentType: paymentType.RANK_COLLEGE_PREDICTOR,
+//         },
+//         noToast: true,
+//       }),
+//     ])
 
-      configRes = configRes?.payload?.data?.[0]?.text?.replaceAll(" ", "")
-    }
+//     if (configRes?.success) {
+//       setConfigYear(
+//         configRes?.payload?.data?.[0]?.text
+//           ?.split("-")
+//           .map((item: string) => item.trim()),
+//       )
 
-    let payment = false
+//       configRes = configRes?.payload?.data?.[0]?.text?.replaceAll(" ", "")
+//     }
 
-    // if (getSearchParams("courseType") === "UG" && appState?.hasUGPackage) {
-    //   setPaid(true)
-    //   payment = true
-    //   getData(payment, isEmpty(filterParams) ? null : 1)
-    //   return
-    // } else if (
-    //   getSearchParams("courseType") === "PG" &&
-    //   appState?.hasPGPackage
-    // ) {
-    //   setPaid(true)
-    //   payment = true
-    //   getData(payment, isEmpty(filterParams) ? null : 1)
-    //   return
-    // }
+//     let payment = false
 
-    setPaid(false)
-    payment = false
-    // console.log("PUrchcase: ",userPurchases)
+//     // if (getSearchParams("courseType") === "UG" && appState?.hasUGPackage) {
+//     //   setPaid(true)
+//     //   payment = true
+//     //   getData(payment, isEmpty(filterParams) ? null : 1)
+//     //   return
+//     // } else if (
+//     //   getSearchParams("courseType") === "PG" &&
+//     //   appState?.hasPGPackage
+//     // ) {
+//     //   setPaid(true)
+//     //   payment = true
+//     //   getData(payment, isEmpty(filterParams) ? null : 1)
+//     //   return
+//     // }
 
-    for (let i = 0; i < userPurchases?.payload?.data?.length; i++) {
-      // const purchase =
-      //   userPurchases?.payload?.data[i]?.college_predictor_details
-      // if (
-      //   purchase?.rank === getSearchParams("rank") &&
-      //   purchase?.course === getSearchParams("course") &&
-      //   purchase?.year === configRes &&
-      //   !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
-      // ) {
-      //   // console.log("purchase", purchase?.rank, "->", getSearchParams("rank"))
-      //   setPaid(true)
-      //   payment = true
-      //   break
-      // }
+//     setPaid(false)
+//     payment = false
+//     // console.log("PUrchcase: ",userPurchases)
+// // console.log(userPurchases?.payload?.data)
+//     for (let i = 0; i < userPurchases?.payload?.data?.length; i++) {
+//       console.log("Payment type:", userPurchases?.payload?.data[i].payment_type)
+// console.log("Expired:", isExpired(userPurchases?.payload?.data[i]?.created_at, 6))
 
-      // console.log(userPurchases?.payload?.data[i])
+//       // const purchase =
+//       //   userPurchases?.payload?.data[i]?.college_predictor_details
+//       // if (
+//       //   purchase?.rank === getSearchParams("rank") &&
+//       //   purchase?.course === getSearchParams("course") &&
+//       //   !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
+//       // ) {
+//       //   // console.log("purchase", purchase?.rank, "->", getSearchParams("rank"))
+//       //   setPaid(true)
+//       //   payment = true
+//       //   break
+//       // }
 
-      const purchase =
-        userPurchases?.payload?.data[i].payment_type ===
-        "RANK_COLLEGE_PREDICTOR"
+//       // console.log(userPurchases?.payload?.data[i])
 
-      if (
-        purchase &&
-        !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
-      ) {
-        setPaid(true)
-        payment = true
-        break
-      }
-    }
-    // console.log(payment, filterParams)
-    getData(payment, isEmpty(filterParams) ? null : 1)
+//       const purchase =
+//         userPurchases?.payload?.data[i].payment_type ===
+//         "RANK_COLLEGE_PREDICTOR"
+
+//       if (
+//         purchase &&
+//         !isExpired(userPurchases?.payload?.data[i]?.created_at, 6)
+//       ) {
+//         setPaid(true)
+//         payment = true
+//         break
+//       }
+//     }
+//     getData(payment, isEmpty(filterParams) ? null : 1)
+//   }
+
+async function verifyPurchases() {
+  const [configRes, userPurchases] = await Promise.all([
+    fetchData({
+      url: "/api/admin/configure/get",
+      params: { type: "CONFIG_YEAR" },
+    }),
+    fetchData({
+      url: "/api/purchase",
+      method: "GET",
+      params: {
+        paymentType: paymentType.RANK_COLLEGE_PREDICTOR,
+      },
+      noToast: true,
+    }),
+  ]);
+
+  if (configRes?.success) {
+    setConfigYear(
+      configRes?.payload?.data?.[0]?.text
+        ?.split("-")
+        .map((item: string) => item.trim()),
+    );
   }
 
+  let payment = false;
+
+  // First check if user has any purchases at all
+  if (userPurchases&&userPurchases?.payload?.data?.length > 0) {
+    for (let i = 0; i < userPurchases.payload.data.length; i++) {
+      const purchase = userPurchases.payload.data[i];
+      
+      if (
+        purchase.payment_type === "RANK_COLLEGE_PREDICTOR" &&
+        !isExpired(purchase.created_at, 6)
+      ) {
+        payment = true;
+        break;
+      }
+    }
+  }
+
+  setPaid(payment);
+    setShowTableSignup(!payment); // Only show if not paid
+  getData(payment, isEmpty(filterParams) ? null : 1);
+}
   async function getConfigs() {
     const courseType = getSearchParams("courseType")
     const [quotaData, categoryData, coursesData, priceData] = await Promise.all(
@@ -184,7 +241,7 @@ export default function ResultPage() {
 
   async function getData(paymentStatus: boolean, paginationPage: any) {
   const page = paymentStatus ? (paginationPage || Number(getSearchParams("page") || 1)) : 1;
-  
+  console.log("Calling",paymentStatus)
   // Update URL to show page=1 if not paid
   if (!paymentStatus) {
     setSearchParams("page", "1");
@@ -233,7 +290,7 @@ export default function ResultPage() {
       }
     }
 
-    console.log("SENDING PARAMS: ",params)
+    // console.log("SENDING PARAMS: ",params)
     const [dataRes, configRes] = await Promise.all([
       fetchData({
         url: "/api/predict_college",
@@ -291,8 +348,9 @@ export default function ResultPage() {
         tableKey: "category",
       },
       { title: "Sub-Category", tableKey: "subCategory", width: "150px" },
-
-      {
+ ...(getSearchParams("courseType") === "NEET UG"
+    ? [
+     {
         title: (
           <div
             data-tooltip-id="tooltip"
@@ -402,7 +460,6 @@ export default function ResultPage() {
         renderer({ cellData }) {
 
 
-          console.log("Cell Data: ",cellData)
           return cellData !== "xxx" &&
             (cellData === "undefined" ||
               cellData === "null" ||
@@ -454,6 +511,10 @@ export default function ResultPage() {
         },
       },
 
+
+    ]
+    : []),
+ 
       {
         title: (
           <div
@@ -640,6 +701,7 @@ export default function ResultPage() {
 
     return count
   }
+// console.log("Render check → paid:", paid, "tableData:", tableData);
 
   return (
     <FELayout>
@@ -718,7 +780,7 @@ export default function ResultPage() {
               onPageChange={(page: number) => getData(paid, paid?page:1)}
             />
 
-            {paid || isEmpty(tableData?.data) ? null : (
+            {/* {paid || isEmpty(tableData?.data) ? null : (
               <TableSignup
                 params={getSearchParams("courseType")}
                 totalRecords={tableData?.totalItems}
@@ -726,7 +788,31 @@ export default function ResultPage() {
                 amount={amount}
                 configYear={configYear}
               />
-            )}
+            )} */}
+            {/* {(!paid || isEmpty(tableData?.data)) && (
+  <TableSignup
+    params={getSearchParams("courseType")}
+    totalRecords={tableData?.totalItems}
+    setUpdateUI={setUpdateUI}
+    amount={amount}
+    configYear={configYear}
+  />
+)} */}
+{/* {paid && (
+
+)} */}
+
+  {/* {paid || isEmpty(tableData?.data) ? null : ( */}
+  {showSignup&&(
+       <TableSignup
+        params={getSearchParams("courseType")}
+        totalRecords={tableData?.totalItems}
+        setUpdateUI={setUpdateUI}
+        amount={amount}
+        configYear={configYear}
+       />
+      )}
+
           </div>
         </div>
 

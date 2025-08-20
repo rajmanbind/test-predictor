@@ -237,6 +237,7 @@ export const priceType = {
   COLLEGE_CUT_OFF_DNB: "College Cutoff - DNB",
   COLLEGE_CUT_OFF_INICET: "College Cutoff - INICET",
   COLLEGE_CUT_OFF_AIAPGET: "College Cutoff - AIAPGET",
+  
   ALL_INDIA_COLLEGE_CUT_OFF_UG: "All India College Cutoff - UG",
   ALL_INDIA_COLLEGE_CUT_OFF_MDS: "All India College Cutoff - MDS",
   ALL_INDIA_COLLEGE_CUT_OFF_PG: "All India College Cutoff - PG",
@@ -244,7 +245,9 @@ export const priceType = {
   ALL_INDIA_COLLEGE_CUT_OFF_DNB: "All India College Cutoff - DNB",
   ALL_INDIA_COLLEGE_CUT_OFF_INICET: "All India College Cutoff - INICET",
   ALL_INDIA_COLLEGE_CUT_OFF_AIAPGET: "All India College Cutoff - AIAPGET",
+
   RANK_COLLEGE_PREDICTOR: "College Predictor",
+
   SINGLE_COLLEGE_CLOSING_RANK_UG: "Single College Closing Rank - UG",
   SINGLE_COLLEGE_CLOSING_RANK_PG: "Single College Closing Rank - PG",
   SINGLE_COLLEGE_CLOSING_RANK_MDS: "Single College Closing Rank - MDS",
@@ -252,6 +255,7 @@ export const priceType = {
   SINGLE_COLLEGE_CLOSING_RANK_DNB: "Single College Closing Rank - DNB",
   SINGLE_COLLEGE_CLOSING_RANK_INICET: "Single College Closing Rank - PG",
   SINGLE_COLLEGE_CLOSING_RANK_AIAPGET: "Single College Closing Rank - AIAPGET",
+
   STATE_CLOSING_RANK_UG: "State Closing Rank - UG",
   STATE_CLOSING_RANK_PG: "State Closing Rank - PG",
   STATE_CLOSING_RANK_MDS: "State Closing Rank - MDS",
@@ -259,6 +263,7 @@ export const priceType = {
   STATE_CLOSING_RANK_DNB: "State Closing Rank - DNB",
   STATE_CLOSING_RANK_INICET: "State Closing Rank - INICET",
   STATE_CLOSING_RANK_AIAPGET: "State Closing Rank - AIAPGET",
+
   ALL_INDIA_CLOSING_RANK_UG: "All India Closing Rank - UG",
   ALL_INDIA_CLOSING_RANK_PG: "All India Closing Rank - PG",
   ALL_INDIA_CLOSING_RANK_MDS: "All India Closing Rank - MDS",
@@ -266,7 +271,9 @@ export const priceType = {
   ALL_INDIA_CLOSING_RANK_DNB: "All India Closing Rank - DNB",
   ALL_INDIA_CLOSING_RANK_INICET: "All India Closing Rank - INICET",
   ALL_INDIA_CLOSING_RANK_AIAPGET: "All India Closing Rank - AIAPGET",
+
   ALL_INDIA_CLOSING_RANK: "All India Closing Rank",
+
   PREMIUM_PLAN: "Plans",
 }
 

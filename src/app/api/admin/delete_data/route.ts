@@ -8,7 +8,11 @@ function getTableName(stateCode?: string | null): string {
     stateCode !== "undefined" &&
     stateCode !== ""
   ) {
-    return `college_table_${stateCode.toUpperCase()}`
+    if(stateCode?.toLowerCase()==="all"){
+      return "college_table_all_india"
+}
+    
+    return `college_table_${stateCode?.toUpperCase()}`
   }
   return "college_table_all_india"
 }
@@ -18,7 +22,7 @@ export async function POST(request: NextRequest) {
     const { id,stateCode } = await request.json()
 const tableName = getTableName(stateCode)
     const supabase = createAdminSupabaseClient()
-
+console.log(tableName,id,stateCode)
     const { error, data } = await supabase
       .from(tableName)
       .delete()

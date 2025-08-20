@@ -1401,40 +1401,155 @@ export async function GET(request: NextRequest) {
   }
 
   // Filter based on rank or marks
-  const filteredData = data.filter(item => {
-    if (rank <= 0) return true
+  // const filteredData = data.filter(item => {
+  //   if (rank <= 0) return true
 
-    if (rankType === "RANK") {
-      const bestRank = getBestRank(item)
-      return bestRank !== Infinity && rank <= bestRank
-    } else {
-      const bestMark = getBestMark(item)
-      return bestMark !== -Infinity && rank >= bestMark
-    }
-  })
+  //   if (rankType === "RANK") {
+  //     const bestRank = getBestRank(item)
+  //     return bestRank !== Infinity && rank <= bestRank
+  //   } else {
+  //     const bestMark = getBestMark(item)
+  //     return bestMark !== -Infinity && rank >= bestMark
+  //   }
+  // })
 
   // Sort filtered data by rank or mark ascending, fallback alphabetical
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (rankType === "RANK") {
-      const aBest = getBestRank(a)
-      const bBest = getBestRank(b)
-      if (aBest === bBest) {
-        return a.instituteName.localeCompare(b.instituteName, undefined, { sensitivity: "base" })
-      }
-      if (aBest === Infinity) return 1
-      if (bBest === Infinity) return -1
-      return aBest - bBest
-    } else {
-      const aBest = getBestMark(a)
-      const bBest = getBestMark(b)
-      if (aBest === bBest) {
-        return a.instituteName.localeCompare(b.instituteName, undefined, { sensitivity: "base" })
-      }
-      if (aBest === -Infinity) return 1
-      if (bBest === -Infinity) return -1
-      return aBest - bBest // Ascending per your requirement (lowest mark first)
-    }
-  })
+  // const sortedData = [...filteredData].sort((a, b) => {
+  //   if (rankType === "RANK") {
+  //     const aBest = getBestRank(a)
+  //     const bBest = getBestRank(b)
+  //     if (aBest === bBest) {
+  //       return a.instituteName.localeCompare(b.instituteName, undefined, { sensitivity: "base" })
+  //     }
+  //     if (aBest === Infinity) return 1
+  //     if (bBest === Infinity) return -1
+  //     return aBest - bBest
+  //   } else {
+  //     const aBest = getBestMark(a)
+  //     const bBest = getBestMark(b)
+  //     if (aBest === bBest) {
+  //       return a.instituteName.localeCompare(b.instituteName, undefined, { sensitivity: "base" })
+  //     }
+  //     if (aBest === -Infinity) return 1
+  //     if (bBest === -Infinity) return -1
+  //     return aBest - bBest // Ascending per your requirement (lowest mark first)
+  //   }
+  // })
+
+
+
+
+  // const filteredData = data.filter(item => {
+//   if (rank <= 0) return true; // No filter
+
+//   if (rankType === "RANK") {
+//     const bestRank = getBestRank(item);
+//     return bestRank !== Infinity && rank <= bestRank;
+//   } else {
+//     const bestMark = getBestMark(item);
+//     return bestMark !== -Infinity && rank >= bestMark;
+//   }
+// });
+
+
+
+
+  const filteredData = data.filter((item,index) => {
+      // console.log(`\nProcessing item ${index}:`, item);
+ if (rank <= 0) {
+    console.log("Including item - no rank filter");
+    return true;
+  }
+  if (rankType === "RANK") {
+    //  console.log("Checking rank fields...");
+    const rankFields = [
+      item.prevLastStrayRound,
+      item.prevStrayRound,
+      item.prevClosingRankR3,
+      item.prevClosingRankR2,
+      item.prevClosingRankR1,
+    ].filter(mark => mark != null && mark !== "");
+
+ // If no valid marks at all, exclude
+    if (rankFields.length === 0) return false;
+  // Check against only valid marks
+    return rankFields.some(mark => {
+      const cleanMarks = cleanMark(mark);
+      return cleanMarks > 0 && rank <= cleanMarks;
+    });
+  
+  } else {
+    // console.log("Checking mark fields...");
+    // const markFields = [
+    //   item.prevlSRR,
+    //   item.prevSRR,
+    //   item.prevCRR3,
+    //   item.prevCRR2,
+    //   item.prevCRR1,
+    // ];
+
+    
+    // return markFields.some(mark => {
+    //   if (mark == null || mark === "") return false;
+    //   const cleanMark = cleanMarks(mark);
+    //   return rank >= cleanMark;
+    // });
+    // More lenient mark filtering
+    const markFields = [
+      item.prevlSRR,
+      item.prevSRR,
+      item.prevCRR3,
+      item.prevCRR2,
+      item.prevCRR1,
+    ].filter(mark => mark != null && mark !== "");
+// const hasValidFields = markFields.some(mark =>
+//       mark != null && mark !== "" && cleanMark(mark) > 0
+//     );
+
+    // If no valid marks at all, exclude
+  if (markFields.length === 0) return false;
+
+    // Check against only valid marks
+    return markFields.some(mark => {
+      const cleanMars = cleanMark(mark);
+      return cleanMars > 0 && rank >= cleanMars;
+    });
+  }
+});
+// // console.log(data)
+// // console.log(filteredData)
+
+const sortedData = [...filteredData].sort((a, b) => {
+  if (rankType === "RANK") {
+    // Get the smallest valid rank from each item (lower rank = better/closed first)
+    const minA = Math.min(
+      ...[a.prevLastStrayRound, a.prevStrayRound, a.prevClosingRankR3, a.prevClosingRankR2, a.prevClosingRankR1]
+        .map(r => cleanRank(r))
+        .filter(r => r > 0)
+    );
+    const minB = Math.min(
+      ...[b.prevLastStrayRound, b.prevStrayRound, b.prevClosingRankR3, b.prevClosingRankR2, b.prevClosingRankR1]
+        .map(r => cleanRank(r))
+        .filter(r => r > 0)
+    );
+    return  minA-minB ; // ascending → lower (closed) ranks first
+  } else {
+    // For marks/percentile (higher is better → show those first)
+    const maxA = Math.min(
+      ...[a.prevlSRR, a.prevSRR, a.prevCRR3, a.prevCRR2, a.prevCRR1]
+        .map(m => cleanMark(m))
+        .filter(m => m > 0)
+    );
+    const maxB = Math.min(
+      ...[b.prevlSRR, b.prevSRR, b.prevCRR3, b.prevCRR2, b.prevCRR1]
+        .map(m => cleanMark(m))
+        .filter(m => m > 0)
+    );
+    return  maxA-maxB; // descending → higher marks first
+  }
+});
+
+// console.log(sortedData.slice(0, 5))
 
   // Map for response, conditionally show ranks & marks fields based on payment
   const responseData = sortedData.map(item => {
@@ -1498,7 +1613,7 @@ export async function GET(request: NextRequest) {
     totalPages = 1
     paginatedData = responseData.slice(0, 5)
   }
-
+// console.log(paginatedData)
   return NextResponse.json({
     data: paginatedData,
     currentPage: page,

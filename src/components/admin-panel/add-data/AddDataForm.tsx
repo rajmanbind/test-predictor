@@ -1217,20 +1217,59 @@ useEffect(() => {
       console.log("Fetched data for edit:", data);
 
       // Create base form data object
-      const formatData: IFormData = {
-        instituteName: data?.instituteName || "",
-        fees: data?.fees || "",
-        closingRankR1: data?.closingRankR1 || "",
-        closingRankR2: data?.closingRankR2 || "",
-        closingRankR3: data?.closingRankR3 || "",
-        strayRound: data?.strayRound || "",
-        lastStrayRound: data?.lastStrayRound || "",
-        prevClosingRankR1: data?.prevClosingRankR1 || "",
-        prevClosingRankR2: data?.prevClosingRankR2 || "",
-        prevClosingRankR3: data?.prevClosingRankR3 || "",
-        prevStrayRound: data?.prevStrayRound || "",
-        prevLastStrayRound: data?.prevLastStrayRound || "",
-      };
+      // const formatData: IFormData = {
+      //   instituteName: data?.instituteName || "",
+      //   fees: data?.fees || "",
+      //   closingRankR1: (data?.closingRankR1 + (data?.cRR1 ? `/ ${data.cRR1}` : ""))||"",
+      //   closingRankR2: (data?.closingRankR2 + (data?.cRR2 ? `/ ${data.cRR2}` : ""))||"",
+      //   closingRankR3: (data?.closingRankR3 + (data?.cRR3 ? `/ ${data.cRR3}` : "")||""),
+      //   strayRound: (data?.strayRound + (data?.sRR ? `/ ${data.sRR}` : ""))||"",
+      //   lastStrayRound: (data?.lastStrayRound + (data?.lSRR ? `/ ${data.lSRR}` : ""))||"",
+
+      //   prevClosingRankR1: (data?.prevClosingRankR1 + (data?.prevCRR1 ? `/ ${data.prevCRR1}` : ""))||"",
+      //   prevClosingRankR2: (data?.prevClosingRankR2 + (data?.prevCRR2 ? `/ ${data.prevCRR2}` : ""))||"",
+      //   prevClosingRankR3: (data?.prevClosingRankR3 + (data?.prevCRR3 ? `/ ${data.prevCRR3}` : ""))||"",
+      //   prevStrayRound: (data?.prevStrayRound + (data?.prevSRR ? `/ ${data.prevSRR}` : ""))||"",
+      //   prevLastStrayRound: (data?.prevLastStrayRound + (data?.prevlSRR ? `/ ${data.prevlSRR}` : ""))||"",
+      // };
+
+// Create base form data object
+const formatData: IFormData = {
+  instituteName: data?.instituteName || "",
+  fees: data?.fees || "",
+  
+  // Current year ranks
+  closingRankR1: data?.closingRankR1&& data?.closingRankR1!=="null" ? 
+    `${data.closingRankR1}${data?.cRR1 ? `/${data.cRR1}` : ''}` : "",
+  
+  closingRankR2: data?.closingRankR2 && data?.closingRankR2!=='null'? 
+    `${data.closingRankR2}${data?.cRR2 ? `/${data.cRR2}` : ''}` : "",
+  
+  closingRankR3: data?.closingRankR3 &&data?.closingRankR3 !=="null"? 
+    `${data.closingRankR3}${data?.cRR3 ? `/${data.cRR3}` : ''}` : "",
+  
+  strayRound: data?.strayRound&&data?.strayRound!=="null" ? 
+    `${data.strayRound}${data?.sRR ? `/${data.sRR}` : ''}` : "",
+  
+  lastStrayRound: data?.lastStrayRound&&data?.lastStrayRound!=="null" ? 
+    `${data.lastStrayRound}${data?.lSRR ? `/${data.lSRR}` : ''}` : "",
+  
+  // Previous year ranks
+  prevClosingRankR1: data?.prevClosingRankR1&&data?.prevClosingRankR1!=="null" ? 
+    `${data.prevClosingRankR1}${data?.prevCRR1 ? `/${data.prevCRR1}` : ''}` : "",
+  
+  prevClosingRankR2: data?.prevClosingRankR2&&data?.prevClosingRankR2!=="null" ? 
+    `${data.prevClosingRankR2}${data?.prevCRR2 ? `/${data.prevCRR2}` : ''}` : "",
+  
+  prevClosingRankR3: data?.prevClosingRankR3&&data?.prevClosingRankR3!=="null" ? 
+    `${data.prevClosingRankR3}${data?.prevCRR3 ? `/${data.prevCRR3}` : ''}` : "",
+  
+  prevStrayRound: data?.prevStrayRound&& data?.prevStrayRound!=="null" ? 
+    `${data.prevStrayRound}${data?.prevSRR ? `/${data.prevSRR}` : ''}` : "",
+  
+  prevLastStrayRound: data?.prevLastStrayRound&&data?.prevLastStrayRound!=="null" ? 
+    `${data.prevLastStrayRound}${data?.prevlSRR ? `/${data.prevlSRR}` : ''}` : "",
+};
 
       // Set basic fields first
       Object.entries(formatData).forEach(([key, value]) => {
@@ -1523,6 +1562,9 @@ useEffect(() => {
     })
 
     if (editMode) {
+
+      console.log("Payload: ",payload)
+      console.log("FormData: : ",formData)
       const res = await fetchData({
         url: `/api/admin/update_data/${params?.id}?stateCode=${formData?.state?.code || stateCode}`,
         method: "PUT",

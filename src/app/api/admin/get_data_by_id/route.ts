@@ -9,6 +9,10 @@ function getTableName(stateCode?: string | null): string {
     stateCode !== "undefined" &&
     stateCode !== ""
   ) {
+    if(stateCode.toLowerCase()==="all"){
+
+      return "college_table_all_india"
+    }
     return `college_table_${stateCode.toUpperCase()}`
   }
   return "college_table_all_india"

@@ -143,32 +143,12 @@ export default function ConfigureCoursesPage() {
     listRef.current?.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  // function updateText(index: number, text: string) {
-  //   setConfigList((prev) =>
-  //     prev.map((item, i) => (i === index ? { ...item, text } : item)),
-  //   )
-  // }
-
-  //   function updateText(index: number, text: string) {
-  //   setConfigList((prev) =>
-  //     prev.map((item, i) =>
-  //       i === index ? { ...item, text } : item
-  //     )
-  //   )
-  // }
-
+  
   //   add
   async function addNewCourse() {
     if (!newCourse) return
 
-    // const newEntries = configList.filter(
-    //   (item) => item.id === null && item.text.trim() !== "",
-    // )
-    // if (newEntries.length === 0) return
-    // console.log("sending data: ",{
-    //             courseType: formData?.courseType?.type,
-    //             course:newCourse,
-    //           })
+
     const res = await fetchData({
       url: "/api/admin/configure/courses/add",
       method: "POST",

@@ -450,7 +450,7 @@ console.log("Data from LocalStorage: ",paymentType.SINGLE_COLLEGE_CLOSING_RANK)
                   {searchParams.get("college")}
                 </h1>
                 <p className="text-gray-600">
-                  NEET UG {prevYear} - {currentYear} Closing Ranks
+                 {courseType} {prevYear} - {currentYear} Closing Ranks
                 </p>
               </div>
             </div>

@@ -214,9 +214,38 @@ return category;
       if (Array.isArray(data)) {
         const mapped = data.map((item) => ({
           id: item.id,
-          text: item.text, // <-- mapping `type` to `text` key
+          text: item.text, 
         }))
-        setCoursesList(mapped)
+        
+      // Apply custom sorting only for NEET PG
+      let sorted = mapped
+      if (type.toLowerCase() === "neet pg") {
+        const priority: Record<string, number> = {
+          md: 1,
+          ms: 2,
+          diploma: 3,
+        }
+
+        sorted = mapped.sort((a, b) => {
+          const aKey = a.text.toLowerCase()
+          const bKey = b.text.toLowerCase()
+
+          const aPriority =
+            Object.keys(priority).find((k) => aKey.includes(k)) ?
+            priority[Object.keys(priority).find((k) => aKey.includes(k)) as string] :
+            99
+
+          const bPriority =
+            Object.keys(priority).find((k) => bKey.includes(k)) ?
+            priority[Object.keys(priority).find((k) => bKey.includes(k)) as string] :
+            99
+
+          return aPriority - bPriority
+        })
+      }
+
+      setCoursesList(sorted)
+      console.log("Mapped & Sorted Course List: ", sorted, type)
       } else {
         setCoursesList([])
       }

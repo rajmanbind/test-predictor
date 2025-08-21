@@ -79,7 +79,7 @@ export default function AddQuotaCategorySubQuotaSubCategory() {
       const uniqueSubQuotas = new Map();
       const uniqueCategories = new Map();
       const uniqueSubCategories = new Map();
-console.log("COllege data: ",collegeData)
+console.log("College data: ",collegeData)
 let count = 1;
       for (const row of collegeData || []) {
         if (row.quota && row.courseType) {
@@ -126,7 +126,7 @@ let count = 1;
           }
         }
       }
-
+// counselling_type_id
       const res = await fetch("/api/admin/bulk-insert-metadata", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

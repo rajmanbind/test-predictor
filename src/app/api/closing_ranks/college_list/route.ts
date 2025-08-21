@@ -102,6 +102,13 @@ export async function GET(request: NextRequest) {
     )
   }
 
+  let colleges = data || []
+
+if (stateCode?.toLowerCase() === "all") {
+  colleges = colleges.sort((a: any, b: any) =>
+    (a.state || "").localeCompare(b.state || ""),
+  )
+}
   // console.log("Data : ",data)
   // for (let i = 0; i < data?.length; i++) {
   //   data[i].year = selectedYear.text
@@ -115,7 +122,7 @@ export async function GET(request: NextRequest) {
   //     )
 
   const res = await checkPurchases(
-    data,
+    colleges,
     // filteredData,
     from,
     to,

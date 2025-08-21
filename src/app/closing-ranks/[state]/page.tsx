@@ -424,7 +424,7 @@ export default function CollegeListClosingRanksPage() {
   }
 
   function backURL() {
-    return `/closing-ranks`
+    return `/closing-ranks?courseType=${courseType}&course=${course}`
   }
 
   return (
@@ -446,7 +446,7 @@ export default function CollegeListClosingRanksPage() {
                   {state} Medical Colleges
                 </h1>
                 <p className="text-gray-600">
-                  NEET UG {prevYear} - {currentYear}{" "}
+                  {courseType} {prevYear} - {currentYear}{" "}
                   <span className="capitalize">{state}</span> Medical Colleges
                   List
                 </p>
@@ -542,7 +542,7 @@ export default function CollegeListClosingRanksPage() {
                           }
                         })
                       }}
-                      // disabled
+                      disabled
                       data-tooltip-id={"tooltip"}
                       data-tooltip-content="Coming Soon"
                     >

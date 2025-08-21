@@ -137,6 +137,7 @@ export default function ClosingRanks() {
   const [predictorTypeList, setpredictorTypeList] = useState<IOption[]>([])
   const [coursesList, setCoursesList] = useState<IOption[]>([])
   const courseParam = searchParams.get("course") || ""
+ const [loading, setLoading] = useState(true) // 🔑 Loading state
 
   const router = useRouter()
   const params = useParams()
@@ -152,40 +153,30 @@ export default function ClosingRanks() {
     formState: { errors },
   } = useForm()
 
-  // useEffect(() => {
-  //   if (params?.id === "ug") {
-  //     getCoursesData()
-  //     setSelectedCourse({ id: "", text: "EMPTY" })
-  //   } else {
-  //     setAppState({ isLoading: true })
 
-  //     console.log("PGCourseSubTypeList", PGCourseSubTypeList)
 
-  //     setTimeout(() => {
-  //       setCourseList([...PGCourseSubTypeList])
-  //       setAppState({ isLoading: false })
-  //       setSelectedCourse({ id: "", text: "EMPTY" })
-  //       clearReactHookFormValueAndStates(["course"], setValue)
-  //     }, 1000)
-  //   }
-  // }, [params.id])
+const courseType = searchParams.get("courseType")
+const course = searchParams.get("course")
 
-  // async function getCoursesData() {
-  //   const res = await fetchData({
-  //     url: "/api/admin/configure/courses/get",
-  //     params: { type: "ug" },
-  //   })
+useEffect(() => {
+  async function fetchTypes() {
+    try {
+      const data = await getCourses()
+      setpredictorTypeList(data)
+      // console.log("Course Types: ", data)
+    } catch (error) {
+      console.error("Error fetching course types:", error)
+    }
+  }
+  fetchTypes()
+}, [])
 
-  //   if (res?.payload?.data?.length > 0) {
-  //     setCourseList(res?.payload?.data)
-  //   }
-  // }
 
   async function getCourses() {
     try {
       const res = await fetch("/api/get-courses-types")
       const json = await res.json()
-      console.log()
+
       if (!json?.data || !Array.isArray(json.data)) {
         console.error(
           "Invalid data structure from /api/get-courses-types",
@@ -215,33 +206,20 @@ export default function ClosingRanks() {
       if (Array.isArray(data)) {
         const mapped = data.map((item) => ({
           id: item.id,
-          text: item.text, // <-- mapping `type` to `text` key
+          text: item.text, 
         }))
         setCoursesList(mapped)
+        return mapped
       } else {
         setCoursesList([])
       }
 
-      console.log("Mapped Course List data: ", data, type)
+      // console.log("Mapped Course List data: ", data, type)
     } catch (error) {
       console.log("Error in course list fetch", error)
     }
   }
 
-  useEffect(() => {
-    const predictorType = async () => {
-      try {
-        const data = await getCourses()
-        setpredictorTypeList(data)
-        console.log("Course Data: ", data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    predictorType()
-  }, [])
-
-  // Filter states based on search query and active tab
   const filteredStates = states.filter((state) => {
     const matchesSearch = state.name
       .toLowerCase()
@@ -250,7 +228,6 @@ export default function ClosingRanks() {
       activeTab === "all" || (activeTab === "popular" && state.popular)
     return matchesSearch && matchesTab
   })
-  console.log(filteredStates)
   const { showToast } = useAppState()
 
   function redirectURL(state: any) {
@@ -295,6 +272,7 @@ export default function ClosingRanks() {
                     Course Type
                   </div>
                 }
+             
                 boxWrapperClass="border-color-accent"
                 placeholder="Course Type"
                 value={selectedType}
@@ -303,9 +281,15 @@ export default function ClosingRanks() {
                     getCoursesBasedOnpredictorType(selectedValue.text)
                   }
                   setValue("course", "")
+                  console.log(selectedValue)
+                  console.log(setValue)
                   setSelectedType(selectedValue)
                 }}
                 control={control}
+                  defaultOption={{
+                      id: courseType?.replaceAll(" ", ""),
+                      text: courseType||"",
+                    }}
                 setValue={setValue}
                 options={predictorTypeList}
                 debounceDelay={0}
@@ -315,8 +299,7 @@ export default function ClosingRanks() {
                 wrapperClass="max-w-[150px]"
                 errors={errors}
               />
-              {selectedType?.code === "NEET UG" ||
-                (selectedType?.text === "NEET UG" && (
+              {selectedType?.text === "NEET UG" && (
                   <SearchAndSelect
                     name="course"
                     labelNode={
@@ -350,7 +333,7 @@ export default function ClosingRanks() {
                     disabled={isEmpty(coursesList)}
                     errors={errors}
                   />
-                ))}
+                )}
             </div>
 
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
